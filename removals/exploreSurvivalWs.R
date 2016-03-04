@@ -4,7 +4,7 @@ rm(list=ls(all=TRUE))
 graphics.off();
 
 root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests/removals/",sep="")); # modify as needed 
+setwd(paste(root,"/ExperimentTests/removals",sep="")); # modify as needed 
 
 #####################
 #  1. Calculate W's
@@ -52,6 +52,9 @@ for(j in 1:length(sppList)){
   D <- D[,c("X","quad","year","trackID","area","survives","age","distEdgeMin","allEdge","seedling","QuadName","Grazing","Group","logarea","species")]
   D <- cbind(D,W)
   
+  # write output
+  outfile <- paste(sppList[j],"_survWs.csv",sep="")
+  write.csv(D,outfile,row.names=F)
   allD[[j]] <- D
   
 } # next j species
@@ -84,31 +87,38 @@ for(i in 1:length(sppList)){
 dev.off()
 
 # wind rose (four dimensions)
-# first format data for segments()
+myRoot <- 3
 Nspp <-length(sppList)
-xyDat <- matrix(0,NROW(D),2*Nspp + 2)
-xyDat[,2] <- D[,Wcols[1]]
-xyDat[,3] <- D[,Wcols[2]]
-xyDat[,6] <- D[,Wcols[3]]
-xyDat[,7] <- D[,Wcols[4]]
-xyDat[,10] <- D[,Wcols[1]]
-xyDat <- sqrt(xyDat)
-xyDat[,6] <- -1*xyDat[,6]; xyDat[,7] <- -1*xyDat[,7]
-xyLong <- matrix(as.vector(t(xyDat)),nrow=NROW(xyDat)*5,2,byrow=T)
+pdf("W-windrose.pdf",height=2.5,width=8.5)
+par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,4,2))
 
-# plot on sqrt scale
-maxW <- max(abs(xyLong))*1.02
-myTics <- c(-round(maxW),-round(maxW/2),round(maxW),round(maxW/2))
-par(mfrow=c(1,1),mgp=c(2,0.5,0),tcl=-0.2)
-plot(x=0,y=0,xlim=c(-1*maxW,maxW),ylim=c(-1*maxW,maxW),type="n",main=doSpp,axes=F,xlab="",ylab="")
-axis(1,pos=0,at=myTics); axis(2,pos=0,at=myTics);
-mtext("sqrt(W.ARTR)",side=3,at=0.5)
-mtext("sqrt(W.HECO)",side=4,at=0.5)
-mtext("sqrt(W.POSE)",side=1,at=0.5)
-mtext("sqrt(W.PSSP)",side=2,at=0.5)
-for(i in 1:NROW(D)){
-  lines(xyLong[(1+(i-1)*5):(5+(i-1)*5),],col="#0000FF07",lwd=2)
-}
+for(i in 1:length(sppList)){
+  
+  # first format data for lines()
+  xyDat <- matrix(0,NROW(allD[[i]]),2*Nspp + 2)
+  xyDat[,2] <- allD[[i]][,Wcols[1]]
+  xyDat[,3] <- allD[[i]][,Wcols[2]]
+  xyDat[,6] <- allD[[i]][,Wcols[3]]
+  xyDat[,7] <- allD[[i]][,Wcols[4]]
+  xyDat[,10] <- allD[[i]][,Wcols[1]]
+  xyDat <- xyDat^(1/myRoot)
+  xyDat[,6] <- -1*xyDat[,6]; xyDat[,7] <- -1*xyDat[,7]
+  xyLong <- matrix(as.vector(t(xyDat)),nrow=NROW(xyDat)*5,2,byrow=T)
+  
+  # plot on sqrt scale
+  maxW <- max(abs(xyLong))*1.02
+  myTics <- c(-round(maxW),-round(maxW/2),round(maxW),round(maxW/2))
+  plot(x=0,y=0,xlim=c(-1*maxW,maxW),ylim=c(-1*maxW,maxW),type="n",main=sppList[i],axes=F,xlab="",ylab="")
+  axis(1,pos=0,at=myTics); axis(2,pos=0,at=myTics);
+  mtext("W.ARTR",side=3,at=0.5,cex=0.7)
+  mtext("W.HECO",side=4,at=0.5,cex=0.7)
+  mtext("W.POSE",side=1,at=0.5,cex=0.7)
+  mtext("W.PSSP",side=2,at=0.5,cex=0.7)
+  for(k in 1:NROW(allD[[i]])){
+    lines(xyLong[(1+(k-1)*5):(5+(k-1)*5),],col="#0000FF07",lwd=1.5)
+  }
 
+} # next i spp
 
+dev.off()
 
