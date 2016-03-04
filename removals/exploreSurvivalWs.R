@@ -75,15 +75,20 @@ Nspp <-length(sppList)
 xyDat <- matrix(0,NROW(D),2*Nspp + 2)
 xyDat[,2] <- D[,Wcols[1]]
 xyDat[,3] <- D[,Wcols[2]]
-xyDat[,6] <- -1*D[,Wcols[3]]
-xyDat[,7] <- -1*D[,Wcols[4]]
+xyDat[,6] <- D[,Wcols[3]]
+xyDat[,7] <- D[,Wcols[4]]
 xyDat[,10] <- D[,Wcols[1]]
-xyLong <- matrix(as.vector(t(xyDat)),nrow=NROW(xyDat*5),2,byrow=T)
+xyDat <- sqrt(xyDat)
+xyDat[,6] <- -1*xyDat[,6]; xyDat[,7] <- -1*xyDat[,7]
+xyLong <- matrix(as.vector(t(xyDat)),nrow=NROW(xyDat)*5,2,byrow=T)
 
 # plot on sqrt scale
-maxW <- max(sqrt(D[,Wcols]))*1.02
+maxW <- max(abs(xyLong))*1.02
 par(mfrow=c(1,1),mgp=c(2,0.5,0),tcl=-0.2)
 plot(1,1,xlim=c(-1*maxW,maxW),ylim=c(-1*maxW,maxW),type="n",main=doSpp)
-lines(xyLong[1:5,])
+for(i in 1:NROW(D)){
+  lines(xyLong[(1+(i-1)*5):(5+(i-1)*5),],col="#FF000010")
+}
+
 
 
