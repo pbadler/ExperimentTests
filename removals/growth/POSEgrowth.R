@@ -133,3 +133,27 @@ m1b <- lmer(logarea.t1~logarea.t0+Treatment2+W.ARTR + W.HECO + W.POSE + W.PSSP+
 m1c <- lmer(logarea.t1~logarea.t0+Treatment3+W.ARTR + W.HECO + W.POSE + W.PSSP+
              (logarea.t0|year),data=allD) 
 
+# put indicators on intercept and size only
+m2a <- lmer(logarea.t1~logarea.t0+Treatment+logarea.t0:Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+
+             (logarea.t0|year),data=allD) 
+m2b <- lmer(logarea.t1~logarea.t0+Treatment2+logarea.t0:Treatment2+W.ARTR + W.HECO + W.POSE + W.PSSP+
+             (logarea.t0|year),data=allD) 
+m2c <- lmer(logarea.t1~logarea.t0+Treatment3+logarea.t0:Treatment3+W.ARTR + W.HECO + W.POSE + W.PSSP+
+             (logarea.t0|year),data=allD) 
+
+# put indicators on intercept and W's only
+m3a <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+
+              Treatment:W.ARTR + Treatment:W.HECO + Treatment:W.POSE + Treatment:W.PSSP+
+             (logarea.t0|year),data=allD) 
+m3b <- lmer(logarea.t1~logarea.t0+Treatment2+W.ARTR + W.HECO + W.POSE + W.PSSP+
+              Treatment2:W.ARTR + Treatment2:W.HECO + Treatment2:W.POSE + Treatment2:W.PSSP+
+             (logarea.t0|year),data=allD) 
+m3c <- lmer(logarea.t1~logarea.t0+Treatment3+W.ARTR + W.HECO + W.POSE + W.PSSP+
+              Treatment3:W.ARTR + Treatment3:W.HECO + Treatment3:W.POSE + Treatment3:W.PSSP+
+             (logarea.t0|year),data=allD) 
+
+# compare AIC
+tmp <- c("m0","m1a","1b","m1c","m2a","2b","m2c","m3a","3b","m3c")
+myAIC <- c(AIC(m0),AIC(m1a),AIC(m1b),AIC(m1c),AIC(m2a),AIC(m2b),AIC(m2c),AIC(m3a),AIC(m3b),AIC(m3c))
+names(myAIC)<-tmp
+myAIC
