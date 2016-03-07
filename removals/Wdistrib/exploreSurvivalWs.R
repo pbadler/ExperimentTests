@@ -4,7 +4,7 @@ rm(list=ls(all=TRUE))
 graphics.off();
 
 root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests/removals",sep="")); # modify as needed 
+setwd(paste(root,"/ExperimentTests/removals/Wdistrib",sep="")); # modify as needed 
 
 #####################
 #  1. Calculate W's
