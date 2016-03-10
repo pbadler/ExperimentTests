@@ -167,3 +167,13 @@ myAIC <- c(AIC(m0),AIC(m1a),AIC(m1b),AIC(m1c),AIC(m2a),AIC(m2b),AIC(m2c)) #,AIC(
 names(myAIC)<-tmp
 myAIC
 
+# try another subset
+tmpD <- subset(allD,Treatment3=="Control")
+m0.old <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+
+             (logarea.t0|year),data=tmpD) 
+
+# does effect diminish with time?
+allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
+                       as.numeric(as.character(allD$year))-2010,0))
+test <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+
+             (logarea.t0|year),data=allD) 
