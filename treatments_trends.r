@@ -47,6 +47,28 @@ names(mean.change)[NCOL(mean.change)] <- "pcgr"
 mean.change <- subset(mean.change,year>2010)
 mean.change <- reshape(mean.change,direction="wide",timevar="Treatment",idvar=c("species","year"))
 mean.change <- mean.change[order(mean.change$species,mean.change$year),]
+# statistical tests
+library(lme4)
+
+dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub")
+dARTR$year <- as.factor(dARTR$year)
+mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
+anova(mARTR)
+
+dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass")
+dHECO$year <- as.factor(dHECO$year)
+mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
+anova(mHECO)
+
+dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass")
+dPOSE$year <- as.factor(dPOSE$year)
+mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
+anova(mPOSE)
+
+dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass")
+dPSSP$year <- as.factor(dPSSP$year)
+mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
+anova(mPSSP)
 
 # calculate deviations from pretreatment year
 sppD.q.2011<-subset(sppD.q,year==2011) #get pre-treatment year

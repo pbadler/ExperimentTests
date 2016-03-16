@@ -171,6 +171,10 @@ myAIC
 tmpD <- subset(allD,Treatment3=="Control")
 m0.old <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+
              (logarea.t0|year),data=tmpD) 
+# all controls
+tmpD <- subset(allD,Treatment=="Control")
+m0.controls <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+
+                      (logarea.t0|year),data=tmpD,control=lmerControl(optimizer="bobyqa")) 
 
 # does effect diminish with time?
 allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",

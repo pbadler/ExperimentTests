@@ -85,9 +85,7 @@ N=dim(D)[1]
 Nspp=length(sppList)
 Group=as.numeric(D$Group)
 Ngroups=length(unique(Group))
-modern.control = ifelse(D$Treatment=="Control" & D$year > 2000, 1, 0)
-no.shrub = ifelse(D$Treatment=="No_shrub",1,0)
-no.grass = ifelse(D$Treatment=="No_grass",1,0)
+modern.control = ifelse(D$year > 2000, 1, 0)
 
 # plots
 pdf("recruit_data.pdf",height=6,width=8)
@@ -101,31 +99,35 @@ for(i in 1:Nspp){
 dev.off()
 
 
-# fit as negative binomial with random effects in WinBUGS
-library(boot)
-library(R2WinBUGS)
-
-data=list("N","y","parents1","parents2",
-  "year","Nyrs","Nspp","Ngroups","Group","modern.control","no.shrub","no.grass")
-
-inits=list(1)
-inits[[1]]=list(intcpt.yr=matrix(1,Nyrs,Nspp),intcpt.mu=rep(1,Nspp),intcpt.tau=rep(1,Nspp),
-  intcpt.mod=rep(0,Nspp),intcpt.noshrub=rep(0,Nspp), intcpt.nograss=rep(0,Nspp),
-  intcpt.gr=matrix(1,Ngroups,Nspp),g.tau=rep(1,Nspp),
-  dd=matrix(0,Nspp,Nspp),theta=rep(1,Nspp)) 
-inits[[2]]=list(intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.mu=rep(0,Nspp),intcpt.tau=rep(10,Nspp),
-  intcpt.mod=rep(0,Nspp),intcpt.noshrub=rep(0,Nspp), intcpt.nograss=rep(0,Nspp),
-  intcpt.gr=matrix(0,Ngroups,Nspp),g.tau=rep(0.1,Nspp),
-  dd=matrix(0,Nspp,Nspp),theta=rep(2,Nspp))
-  
-params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.mod","intcpt.noshrub","intcpt.nograss",
-  "intcpt.gr","g.tau","dd","theta","u","lambda") 
-
-# try with jags
+# fit as negative binomial with random effects in jags
 library(coda)
 library(rjags)
 
-modelFile <- "bugs-Trt3.txt"
+dataJ=list(N=N,y=y,parents1=parents1,parents2=parents2,
+  year=year,Nyrs=Nyrs,Nspp=Nspp,Ngroups=Ngroups,Group=Group,modern.control=modern.control)
+
+inits=list(1)
+inits[[1]]=list(intcpt.yr=matrix(1,Nyrs,Nspp),intcpt.mu=rep(1,Nspp),intcpt.tau=rep(1,Nspp),
+  intcpt.mod=rep(0,Nspp),
+  intcpt.gr=matrix(1,Ngroups,Nspp),g.tau=rep(1,Nspp),
+  dd=matrix(0,Nspp,Nspp),theta=rep(1,Nspp)) 
+inits[[2]]=list(intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.mu=rep(0,Nspp),intcpt.tau=rep(10,Nspp),
+  intcpt.mod=rep(0,Nspp),
+  intcpt.gr=matrix(0,Ngroups,Nspp),g.tau=rep(0.1,Nspp),
+  dd=matrix(0,Nspp,Nspp),theta=rep(2,Nspp))
+  
+params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.mod",
+  "intcpt.gr","g.tau","dd","theta","u","lambda") 
+
+modelFile <- "bugs-Trt1.txt"
+
+jm <- jags.model(modelFile, data=dataJ, n.chains=length(inits),
+                 inits = inits, n.adapt = 10)
+update(jm, n.iter=10)
+out <- coda.samples(jm, variable.names=params, n.iter=10, n.thin=1)
+
+outStat <- summary(out)$stat
+return(outStat)
 
 # out=bugs(data,inits,params,
 #   model.file="bugs-Trt3.txt",

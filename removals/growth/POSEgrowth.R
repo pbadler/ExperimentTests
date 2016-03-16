@@ -169,13 +169,23 @@ myAIC
 
 
 # look at other subsets
+
 # old data only
 tmpD <- subset(allD,Treatment3=="Control")
 m0.old <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+
              (logarea.t0|year),data=tmpD) 
+# all controls
+tmpD <- subset(allD,Treatment=="Control")
+m0.controls <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+
+                 (logarea.t0|year),data=tmpD) 
+
 # does effect diminish with time?
 allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
                        as.numeric(as.character(allD$year))-2010,0))
 test <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+
              (logarea.t0|year),data=allD) 
+
+# only use no Shrub data
+tmpD <- subset(allD,Treatment3=="No_shrub")
+test <-lm(logarea.t1~logarea.t0 + W.HECO + W.POSE + W.PSSP,data=tmpD) 
 

@@ -85,9 +85,10 @@ N=dim(D)[1]
 Nspp=length(sppList)
 Group=as.numeric(D$Group)
 Ngroups=length(unique(Group))
-modern.control = ifelse(D$Treatment=="Control" & D$year > 2000, 1, 0)
-no.shrub = ifelse(D$Treatment=="No_shrub",1,0)
-no.grass = ifelse(D$Treatment=="No_grass",1,0)
+modern.control = ifelse(D$year > 2000, 1, 0)
+#modern.control = ifelse(D$Treatment=="Control" & D$year > 2000, 1, 0)
+#no.shrub = ifelse(D$Treatment=="No_shrub",1,0)
+#no.grass = ifelse(D$Treatment=="No_grass",1,0)
 
 # plots
 pdf("recruit_data.pdf",height=6,width=8)
@@ -106,36 +107,30 @@ library(boot)
 library(R2WinBUGS)
 
 data=list("N","y","parents1","parents2",
-  "year","Nyrs","Nspp","Ngroups","Group","modern.control","no.shrub","no.grass")
+  "year","Nyrs","Nspp","Ngroups","Group","modern.control")
 
 inits=list(1)
 inits[[1]]=list(intcpt.yr=matrix(1,Nyrs,Nspp),intcpt.mu=rep(1,Nspp),intcpt.tau=rep(1,Nspp),
-  intcpt.mod=rep(0,Nspp),intcpt.noshrub=rep(0,Nspp), intcpt.nograss=rep(0,Nspp),
+  intcpt.mod=rep(0,Nspp),
   intcpt.gr=matrix(1,Ngroups,Nspp),g.tau=rep(1,Nspp),
   dd=matrix(0,Nspp,Nspp),theta=rep(1,Nspp)) 
 inits[[2]]=list(intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.mu=rep(0,Nspp),intcpt.tau=rep(10,Nspp),
-  intcpt.mod=rep(0,Nspp),intcpt.noshrub=rep(0,Nspp), intcpt.nograss=rep(0,Nspp),
+  intcpt.mod=rep(0,Nspp),
   intcpt.gr=matrix(0,Ngroups,Nspp),g.tau=rep(0.1,Nspp),
   dd=matrix(0,Nspp,Nspp),theta=rep(2,Nspp))
   
-params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.mod","intcpt.noshrub","intcpt.nograss",
+params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.mod",
   "intcpt.gr","g.tau","dd","theta","u","lambda") 
 
-# try with jags
-library(coda)
-library(rjags)
-
-modelFile <- "bugs-Trt3.txt"
-
-# out=bugs(data,inits,params,
-#   model.file="bugs-Trt3.txt",
-#   n.chains=2,
-#   n.iter=20000,
-#   n.burnin=10000,
-#   #n.iter=40000,
-#   #n.burnin=20000,
-#   n.thin=10, 
-#   debug=T,DIC=T,bugs.directory="c:/WinBUGS14/")  
+out=bugs(data,inits,params,
+  model.file="bugs-Trt1.txt",
+  n.chains=2,
+  n.iter=20000,
+  n.burnin=10000,
+  #n.iter=40000,
+  #n.burnin=20000,
+  n.thin=10, 
+  debug=T,DIC=T,bugs.directory="c:/WinBUGS14/")  
 #   
 # tmp=grep("lambda",row.names(out$summary))
 # A=row.names(out$summary)[tmp]
