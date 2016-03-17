@@ -6,7 +6,7 @@ root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as need
 setwd(paste(root,"/ExperimentTests/removals/recruitment",sep="")); # modify as needed 
 
 sppList=c("ARTR","HECO","POSE","PSSP")
-outfile="recruit_params_m0.csv"
+outfile="recruit_params_modern.csv"
 dataDir1 <- paste(root,"/driversdata/data/idaho/speciesData/",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")
 #--------------------------------------------------------
@@ -85,7 +85,7 @@ N=dim(D)[1]
 Nspp=length(sppList)
 Group=as.numeric(D$Group)
 Ngroups=length(unique(Group))
-modern.control = ifelse(D$year > 2000, 1, 0)
+modern.control = ifelse(D$Treatment=="No_shrub",1,0) # ifelse(D$year > 2000, 1, 0)
 #modern.control = ifelse(D$Treatment=="Control" & D$year > 2000, 1, 0)
 #no.shrub = ifelse(D$Treatment=="No_shrub",1,0)
 #no.grass = ifelse(D$Treatment=="No_grass",1,0)
@@ -125,29 +125,29 @@ params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.mod",
 out=bugs(data,inits,params,
   model.file="bugs-Trt1.txt",
   n.chains=2,
-  n.iter=20000,
-  n.burnin=10000,
+  n.iter=200, #00,
+  n.burnin=100, #00,
   #n.iter=40000,
   #n.burnin=20000,
   n.thin=10, 
   debug=T,DIC=T,bugs.directory="c:/WinBUGS14/")  
-#   
-# tmp=grep("lambda",row.names(out$summary))
-# A=row.names(out$summary)[tmp]
-# B=out$summary[tmp,1]
-# lambda=matrix(NA,dim(y)[1],Nspp)
-# C=paste(A,"<-",B,sep="")
-# eval(parse(n=length(A),text=C))
-# lambda[is.na(lambda)]=0
-# par(mfrow=c(2,2))
-# for(i in 1:Nspp){
-#   plot(y[,i],lambda[,i],xlab="Obs",ylab="Pred",main=sppList[i])
-# }
-# par(mfrow=c(2,2))
-# for(i in 1:Nspp){
-#   plot(parents1[,i],lambda[,i],xlab="Obs",ylab="Pred",main=sppList[i])
-# }
-# 
+   
+tmp=grep("lambda",row.names(out$summary))
+A=row.names(out$summary)[tmp]
+B=out$summary[tmp,1]
+lambda=matrix(NA,dim(y)[1],Nspp)
+C=paste(A,"<-",B,sep="")
+eval(parse(n=length(A),text=C))
+lambda[is.na(lambda)]=0
+par(mfrow=c(2,2))
+for(i in 1:Nspp){
+  plot(y[,i],lambda[,i],xlab="Obs",ylab="Pred",main=sppList[i])
+}
+par(mfrow=c(2,2))
+for(i in 1:Nspp){
+  plot(parents1[,i],lambda[,i],xlab="Obs",ylab="Pred",main=sppList[i])
+}
+
 # write.table(out$summary,outfile,row.names=T,sep=",")
 # tmp=paste("DIC",out$DIC,sep=",")
 # write.table(tmp,outfile,col.names=F,row.names=F,append=T)
