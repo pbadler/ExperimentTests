@@ -82,8 +82,8 @@ allD$GroupID <- as.numeric(allD$Group)
 allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
 
 # baseline model
-m0 <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
+m0 <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
@@ -92,8 +92,8 @@ m0 <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
 # add intercepts
-m1a <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
+m1a <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+ logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
@@ -101,8 +101,8 @@ m1a <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-m1b <- inla(survives ~ logarea+ Treatment2 + W.ARTR + W.HECO + W.POSE + W.PSSP+
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
+m1b <- inla(survives ~ logarea+ Treatment2 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
@@ -110,8 +110,8 @@ m1b <- inla(survives ~ logarea+ Treatment2 + W.ARTR + W.HECO + W.POSE + W.PSSP+
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-m1c <- inla(survives ~ logarea+ Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
+m1c <- inla(survives ~ logarea+ Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
@@ -120,8 +120,8 @@ m1c <- inla(survives ~ logarea+ Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
 # add treatment intercepts and interactions with size
-m2a <- inla(survives ~ logarea+ Treatment + logarea:Treatment+ W.ARTR + W.HECO + W.POSE + W.PSSP+
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
+m2a <- inla(survives ~ logarea+ Treatment + logarea:Treatment+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
@@ -129,8 +129,8 @@ m2a <- inla(survives ~ logarea+ Treatment + logarea:Treatment+ W.ARTR + W.HECO +
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-m2b <- inla(survives ~ logarea+ Treatment2 + logarea:Treatment2+ W.ARTR + W.HECO + W.POSE + W.PSSP+
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
+m2b <- inla(survives ~ logarea+ Treatment2 + logarea:Treatment2+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
@@ -138,8 +138,8 @@ m2b <- inla(survives ~ logarea+ Treatment2 + logarea:Treatment2+ W.ARTR + W.HECO
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-m2c <- inla(survives ~ logarea+ Treatment3 + logarea:Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
+m2c <- inla(survives ~ logarea+ Treatment3 + logarea:Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
