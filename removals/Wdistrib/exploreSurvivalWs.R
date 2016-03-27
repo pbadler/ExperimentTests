@@ -6,71 +6,140 @@ graphics.off();
 root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
 setwd(paste(root,"/ExperimentTests/removals/Wdistrib",sep="")); # modify as needed 
 
+#########################################
+#  1. Import data and calculate W's
+#########################################
+
+sppList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
+dataDir1 <- paste(root,"/driversdata/data/idaho",sep="")
+dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
+
+# set up distance weights
+dists <- read.csv(paste(dataDir1,"/speciesdata/IdahoDistanceWeights.csv",sep=""));
+dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
+dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
+
+# import old data
+setwd("..")
+source("survival/fetchSurvData.r")
+setwd("Wdistrib")
+
+allD <-list()
+for(iSpp in 1:4){
+  
+  doSpp <- sppList[iSpp]
+  D1 <- fetchSdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir1,distWts=dists)
+  D1$Treatment <- "Control"
+  
+  # import modern data
+  D2 <- fetchSdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir2,distWts=dists)
+  
+  # merge in treatment data
+  tmp <- read.csv(paste(dataDir2,"/quad_info.csv",sep=""))
+  tmp <- tmp[,c("quad","Treatment")]
+  D2 <- merge(D2,tmp, all.x=T)
+  
+  # account for removal in baseline years
+  ii <- which(D2$year>=2011 & D2$Treatment=="No_shrub")
+  D2$W.ARTR[ii] <- 0
+  ii <- which(D2$year>=2011 & D2$Treatment=="No_grass")
+  D2$W.HECO[ii] <- 0 ; D2$W.POSE[ii] <- 0 ; D2$W.PSSP[ii] <- 0
+  
+  # combine old and modern
+  tmp <- rbind(D1,D2)
+  allD[[iSpp]] <- tmp[,c("Treatment","W.ARTR", "W.HECO","W.POSE","W.PSSP","W.allcov","W.allpts")]
+  rm(D1,D2,tmp)
+
+}
+
+names(allD) <- sppList[1:4]
+
 #####################
-#  1. Calculate W's
+#  2. Model W's (with help from Giles Hooker)
 ####################
 
-sppList <- c("ARTR","HECO","POSE","PSSP")
-dataDir <- paste(root,"/driversdata/data/idaho",sep="")
-nonCompLength.s=5 #Number of columns in SppData that are not measures of competitors 
+# look at PSSP
+trt = allD$PSSP$Treatment
+Wdat = allD$PSSP[trt=="Control",2:ncol(allD$PSSP)]
+Wnonzero = Wdat > 0
 
-allD <- list(NULL)
+# Brief analysis -- are there correlations among whether there is a zero or not
+cor(Wnonzero)
+# All pretty tiny. 
 
-for(j in 1:length(sppList)){
+# To analyze the rest, we'll look at Box-Cox transformations - these find lambda 
+# so that X^lambda is as close to normal as possible. boxcox() in R just produces
+# a list of lambdas and the corresponding likelihood so we have to do a bit of
+# processing
+library(MASS)
+W.bc = Wdat  # will store transformed data
+for(i in 1:6){
+  
+  # Select non-zero entries for this column
+  t.dat = Wdat[Wnonzero[,i],i]
+  
+  # boxcox
+  bc = boxcox(t.dat~1,lambda = seq(-2,2,by=0.01),plotit=FALSE)
+ 
+  # optimal lambda
+  lambda = bc$x[which.max(bc$y)]
+  
+  # Add into W.bc
+  W.bc[Wnonzero[,i],i] = t.dat^lambda
+}
 
-  # import survival data
-  doSpp <- sppList[j]
-  survDfile=paste(dataDir,"/speciesdata/",doSpp,"/survD.csv",sep="")
-  survD=read.csv(file=survDfile)
-  D=survD[survD$allEdge==0,];
-  D$year <- D$year
-  D$logarea=log(D$area)
-  D$quad=as.character(D$quad)
-  
-  # import neighbor data
-  ringD <- read.csv(paste(dataDir,"/speciesdata/",doSpp,"/",doSpp,"_nbhood_rings.csv",sep=""))
-  ringD$year<-ringD$year
-  
-  # merge D with ringD (D contains fewer rows)
-  D<-merge(D,ringD,by.x=c("quad","year","trackID"),by.y=c("quad","year","genetID"))
-  D=D[order(D$X),]
-  rm(ringD,survD)
-  row.names(D) <- NULL  
-  
-  # calculate W's (MAKE SURE NOT TO REORDER D!)
-  W <- matrix(NA,NROW(D),length(sppList))
-  colnames(W) <- paste("W.",sppList,sep="")
-  dists <- read.csv(paste(dataDir,"/speciesdata/IdahoDistanceWeights.csv",sep=""));
-  for(iSpp in 1:length(sppList)){
-    neighborCols=which(substr(names(D),1,4)==sppList[iSpp]) # pull out annulus data for the focal species 
-    dist_wts<- dists[,paste0(sppList[iSpp])]
-    C <- data.matrix(D[,neighborCols]) #matrix of conspecific areas in the annuli 
-    W[,iSpp] <- C%*%dist_wts 
-  }
-  
-  # reformat D
-  D <- D[,c("X","quad","year","trackID","area","survives","age","distEdgeMin","allEdge","seedling","QuadName","Grazing","Group","logarea","species")]
-  D <- cbind(D,W)
-  
-  # write output
-  outfile <- paste(sppList[j],"_survWs.csv",sep="")
-  write.csv(D,outfile,row.names=F)
-  allD[[j]] <- D
-  
-} # next j species
 
-names(allD) <- sppList
+# A first analysis: correlation based on rows where there are no zeros
+W.all = apply(Wnonzero,1,prod)
+cor(W.bc[W.all==1,])
+# Just a few correlations larger than 0.1, none over 0.15
+
+# do it again with just PSSP and ARTR
+W.all = apply(Wnonzero[,c(1,4)],1,prod)
+cor(W.bc[W.all==1,c(1,4)])
+# almost 0.19
+
+# Further analyses are based on conditionals; here we'll regress each column on 
+# the others, allowing a separate effect for being zero in each. We'll also 
+# predict whether or not the response is non-zero via a logistic regression. 
+
+lm.mods = list()       # Models for non-zeros
+glm.mods = list()      # Models to predict whether or not you're zero
+Rsq = rep(0,4)         # R-squared for non-zero model
+ave.dev = rep(0,4)     # Average drop in deviance per observation
+
+for(i in 1:6){
+ # Linear regression for non-zeros
+ t.dat = data.frame(y = W.bc[Wnonzero[,i],i],W.bc[Wnonzero[,i],-i], Wnonzero[Wnonzero[,i],-i])
+ 
+ lm.mods[[i]] = lm(y~.,data=t.dat)
+
+ print(summary(lm.mods[[i]]))
+ Rsq[i] = summary(lm.mods[[i]])$r.squared
+
+ # Generalized Linear regression for whether or not the record is zero
+ t.dat = data.frame(y = Wnonzero[,i],W.bc[,-i], Wnonzero[,-i])
+ glm.mods[[i]] = glm(y~.,data=t.dat,family='binomial')
+
+ print(summary(glm.mods[[i]])) 
+ 
+ ave.dev[i] = (glm.mods[[i]]$null.deviance - glm.mods[[i]]$deviance)/nrow(t.dat)
+}
+
+# Some of these effects are significant, but the change in explanatory power is 
+# tiny
+
 
 #####################
-#  2. Visualize W's
+#  3. Visualize W's
 ####################
 
 Wcols <- grep("W.*",names(allD[[1]]))
 
 # histograms
-pdf("W-histograms.pdf",height=6,width=6)
-par(mfcol=c(2,4),mgp=c(2,0.5,0),tcl=-0.2,oma=c(0,0,2,0))
-for(i in 1:length(sppList)){
+pdf("W-histograms.pdf",height=10,width=4)
+par(mfrow=c(6,2),mgp=c(2,0.5,0),tcl=-0.2,oma=c(0,0,2,0))
+for(i in 1:4){
   for(j in 1:length(sppList)){
     hist(allD[[i]][,Wcols[j]],breaks=20,xlab="W",main=names(allD[[i]])[Wcols[j]])
     hist(sqrt(allD[[i]][,Wcols[j]]),breaks=20,xlab="sqrt(W)",main="")
@@ -81,44 +150,44 @@ dev.off()
 
 # scatter plot matrix
 pdf("W-scatter.pdf",height=6,width=6)
-for(i in 1:length(sppList)){
+for(i in 1:4){
   pairs(sqrt(allD[[i]][,Wcols]),main=sppList[i])
 }
 dev.off()
 
 # wind rose (four dimensions)
-myRoot <- 3
-Nspp <-length(sppList)
-pdf("W-windrose.pdf",height=2.5,width=8.5)
-par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,4,2))
-
-for(i in 1:length(sppList)){
-  
-  # first format data for lines()
-  xyDat <- matrix(0,NROW(allD[[i]]),2*Nspp + 2)
-  xyDat[,2] <- allD[[i]][,Wcols[1]]
-  xyDat[,3] <- allD[[i]][,Wcols[2]]
-  xyDat[,6] <- allD[[i]][,Wcols[3]]
-  xyDat[,7] <- allD[[i]][,Wcols[4]]
-  xyDat[,10] <- allD[[i]][,Wcols[1]]
-  xyDat <- xyDat^(1/myRoot)
-  xyDat[,6] <- -1*xyDat[,6]; xyDat[,7] <- -1*xyDat[,7]
-  xyLong <- matrix(as.vector(t(xyDat)),nrow=NROW(xyDat)*5,2,byrow=T)
-  
-  # plot on sqrt scale
-  maxW <- max(abs(xyLong))*1.02
-  myTics <- c(-round(maxW),-round(maxW/2),round(maxW),round(maxW/2))
-  plot(x=0,y=0,xlim=c(-1*maxW,maxW),ylim=c(-1*maxW,maxW),type="n",main=sppList[i],axes=F,xlab="",ylab="")
-  axis(1,pos=0,at=myTics); axis(2,pos=0,at=myTics);
-  mtext("W.ARTR",side=3,at=0.5,cex=0.7)
-  mtext("W.HECO",side=4,at=0.5,cex=0.7)
-  mtext("W.POSE",side=1,at=0.5,cex=0.7)
-  mtext("W.PSSP",side=2,at=0.5,cex=0.7)
-  for(k in 1:NROW(allD[[i]])){
-    lines(xyLong[(1+(k-1)*5):(5+(k-1)*5),],col="#0000FF07",lwd=1.5)
-  }
-
-} # next i spp
-
-dev.off()
-
+# myRoot <- 3
+# Nspp <-length(sppList)
+# pdf("W-windrose.pdf",height=2.5,width=8.5)
+# par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,4,2))
+# 
+# for(i in 1:length(sppList)){
+#   
+#   # first format data for lines()
+#   xyDat <- matrix(0,NROW(allD[[i]]),2*Nspp + 2)
+#   xyDat[,2] <- allD[[i]][,Wcols[1]]
+#   xyDat[,3] <- allD[[i]][,Wcols[2]]
+#   xyDat[,6] <- allD[[i]][,Wcols[3]]
+#   xyDat[,7] <- allD[[i]][,Wcols[4]]
+#   xyDat[,10] <- allD[[i]][,Wcols[1]]
+#   xyDat <- xyDat^(1/myRoot)
+#   xyDat[,6] <- -1*xyDat[,6]; xyDat[,7] <- -1*xyDat[,7]
+#   xyLong <- matrix(as.vector(t(xyDat)),nrow=NROW(xyDat)*5,2,byrow=T)
+#   
+#   # plot on sqrt scale
+#   maxW <- max(abs(xyLong))*1.02
+#   myTics <- c(-round(maxW),-round(maxW/2),round(maxW),round(maxW/2))
+#   plot(x=0,y=0,xlim=c(-1*maxW,maxW),ylim=c(-1*maxW,maxW),type="n",main=sppList[i],axes=F,xlab="",ylab="")
+#   axis(1,pos=0,at=myTics); axis(2,pos=0,at=myTics);
+#   mtext("W.ARTR",side=3,at=0.5,cex=0.7)
+#   mtext("W.HECO",side=4,at=0.5,cex=0.7)
+#   mtext("W.POSE",side=1,at=0.5,cex=0.7)
+#   mtext("W.PSSP",side=2,at=0.5,cex=0.7)
+#   for(k in 1:NROW(allD[[i]])){
+#     lines(xyLong[(1+(k-1)*5):(5+(k-1)*5),],col="#0000FF07",lwd=1.5)
+#   }
+# 
+# } # next i spp
+# 
+# dev.off()
+# 
