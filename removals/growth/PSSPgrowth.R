@@ -51,6 +51,12 @@ if(doSpp!="ARTR"){
 allD <- rbind(D1,D2)
 rm(D1,D2,tmp)
 
+# merge data on removals at individual level
+tmp <- read.csv(paste(dataDir2,"/speciesData/",doSpp,"/",doSpp,"_within_ARTRremovals.csv",sep=""))
+tmp <- tmp[,c("quad","year","trackID","inARTR")] 
+allD<-merge(allD,tmp,all.x=T)
+allD$inARTR[is.na(allD$inARTR)] <- 0
+
 # clean up dataset ----------------------------------------------
 allD$year[allD$year<2000] <- allD$year[allD$year<2000] + 1900
 
@@ -114,6 +120,10 @@ tmp <- c("m0","m1a","m1b","m1c","m2a","2b","m2c") #,"m3a","3b","m3c")
 myAIC <- c(AIC(m0),AIC(m1a),AIC(m1b),AIC(m1c),AIC(m2a),AIC(m2b),AIC(m2c)) #,AIC(m3a),AIC(m3b),AIC(m3c))
 names(myAIC)<-tmp
 myAIC
+
+# add individual level removal info to best model
+m1a.new <- update(m1a,~ . + inARTR)
+AIC(m1a.new)
 
 # try another subset
 tmpD <- subset(allD,Treatment3=="Control")
