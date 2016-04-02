@@ -28,27 +28,30 @@ allD <-list()
 for(iSpp in 1:4){
   
   doSpp <- sppList[iSpp]
+  
+  # get old data
   D1 <- fetchSdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir1,distWts=dists)
-  D1$Treatment <- "Control"
+  D1$year <- D1$year+1900
   
   # import modern data
   D2 <- fetchSdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir2,distWts=dists)
   
+  # combine old and modern
+  Dall <- rbind(D1,D2)
+  
   # merge in treatment data
   tmp <- read.csv(paste(dataDir2,"/quad_info.csv",sep=""))
-  tmp <- tmp[,c("quad","Treatment")]
-  D2 <- merge(D2,tmp, all.x=T)
+  tmp <- tmp[,c("quad","Treatment","Group")]
+  Dall <- merge(Dall,tmp, all.x=T)
   
   # account for removal in baseline years
-  ii <- which(D2$year>=2011 & D2$Treatment=="No_shrub")
-  D2$W.ARTR[ii] <- 0
-  ii <- which(D2$year>=2011 & D2$Treatment=="No_grass")
-  D2$W.HECO[ii] <- 0 ; D2$W.POSE[ii] <- 0 ; D2$W.PSSP[ii] <- 0
-  
-  # combine old and modern
-  tmp <- rbind(D1,D2)
-  allD[[iSpp]] <- tmp[,c("Treatment","W.ARTR", "W.HECO","W.POSE","W.PSSP","W.allcov","W.allpts")]
-  rm(D1,D2,tmp)
+  #   ii <- which(Dall$year>=2011 & Dall$Treatment=="No_shrub")
+  #   Dall$W.ARTR[ii] <- 0
+  #   ii <- which(Dall$year>=2011 & Dall$Treatment=="No_grass")
+  #   Dall$W.HECO[ii] <- 0 ; Dall$W.POSE[ii] <- 0 ; Dall$W.PSSP[ii] <- 0
+
+  allD[[iSpp]] <- Dall[,c("year","Treatment","Group","W.ARTR", "W.HECO","W.POSE","W.PSSP","W.allcov","W.allpts")]
+  rm(Dall,D1,D2,tmp)
 
 }
 
@@ -58,14 +61,22 @@ names(allD) <- sppList[1:4]
 #  2. Model W's (with help from Giles Hooker)
 ####################
 
-# look at PSSP
-trt = allD$PSSP$Treatment
-Wdat = allD$PSSP[trt=="Control",2:ncol(allD$PSSP)]
+doSpp <- 4 # look at PSSP
+
+# grab control treatment data
+cD <- subset(allD[[doSpp]],Treatment=="Control") 
+groupI <- which(cD$Group=="E1") # keep track of this for later
+Wdat = cD[,4:ncol(cD)]
 Wnonzero = Wdat > 0
 
+# grab data from no shrub plots
+trtD <- subset(allD[[doSpp]],Treatment=="No_shrub" & year==2011)  
+Wdat.trt = trtD[,4:ncol(trtD)]
+Wnonzero.trt = Wdat.trt > 0
+
 # Brief analysis -- are there correlations among whether there is a zero or not
-cor(Wnonzero)
-# All pretty tiny. 
+cor(Wnonzero) # All pretty tiny. 
+cor(Wnonzero.trt) # pretty strong negative correlation with HECO
 
 # To analyze the rest, we'll look at Box-Cox transformations - these find lambda 
 # so that X^lambda is as close to normal as possible. boxcox() in R just produces
@@ -73,6 +84,7 @@ cor(Wnonzero)
 # processing
 library(MASS)
 W.bc = Wdat  # will store transformed data
+W.bc.trt = Wdat.trt
 for(i in 1:6){
   
   # Select non-zero entries for this column
@@ -86,8 +98,39 @@ for(i in 1:6){
   
   # Add into W.bc
   W.bc[Wnonzero[,i],i] = t.dat^lambda
+  
+  # apply same transformation to treatment plots
+  W.bc.trt[Wnonzero.trt[,i],i] = Wdat.trt[Wnonzero.trt[,i],i]^lambda
+  
 }
 
+# compare distributions of control and treatment plot W's
+
+filename <- paste0(sppList[doSpp],"_W_byTrt.pdf")
+pdf(filename,height=5,width=8.5)
+  par(mfrow=c(2,3),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+  for(i in 1:6){
+    
+    pNonZero <-sum(Wnonzero[groupI,i])/length(Wnonzero[groupI,i]) # just E1 control quads
+    #pNonZero <-sum(Wnonzero[,i])/length(Wnonzero[,i])  # all control quads
+    pNonZero.trt <- sum(Wnonzero.trt[,i])/length(Wnonzero.trt[,i]) 
+    dens <- density(W.bc[which(Wnonzero[,i]==1 & cD$Group=="E1"),i]) # just E1 control quads
+    #dens <- density(W.bc[Wnonzero[,i],i])  # all control quads
+    dens.trt <- density(W.bc.trt[Wnonzero.trt[,i],i])
+    ylims <- c(0,1.2*max(c(dens$y,dens.trt$y)))
+    xlims <- c(min(c(dens$x,dens.trt$x)),max(c(dens$x,dens.trt$x)))
+    plot(dens,xlab="",ylab="",,xlim=xlims,ylim=ylims,main=names(cD)[3+i],col="black")
+    lines(dens.trt,col="red")
+    legend("topleft",c(paste0("Control, p(W>0)=",round(pNonZero,2)),
+                       paste0("No shrub, p(W>0)=",round(pNonZero.trt,2))),
+           lty=1,col=c("black","red"),bty="n")
+    
+  }
+  
+  mtext("Box-Cox W",side=1,line=0.5,outer=T)
+  mtext("Density",side=2,line=0.5,outer=T)
+
+dev.off()
 
 # A first analysis: correlation based on rows where there are no zeros
 W.all = apply(Wnonzero,1,prod)
