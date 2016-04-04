@@ -15,7 +15,10 @@ trts<-read.csv(paste(dataDir,"quad_info.csv",sep=""))
 allquadyrs<-unique(covD[,c("quad","year")],MARGIN=2)
 tmp<-expand.grid(species=sppList,year=sort(unique(covD$year)))
 allquadyrs<-merge(allquadyrs,tmp,all=T)
-allquadyrs<-merge(allquadyrs,trts[,c("quad","Treatment")])
+allquadyrs<-merge(allquadyrs,trts[,c("Group","quad","Treatment")])
+
+# focus on exclosures
+allquadyrs <- subset(allquadyrs,Group=="E1")
 
 # calculate treatment means by year
 keep<-which(is.element(covD$species,sppList))

@@ -42,7 +42,7 @@ for(i in 1:length(sppList)){
       names(obsDen)=c("year",sppList[i])
       obsN=merge(obsN,obsDen,all.x=T)
       tmpD2=subset(tmpD,year==startYr)
-      if(dim(tmpD2)[1]>0){
+      if(dim(tmpD2)[1]>0 & !is.element(sppList[i],removeSpp)){  # don't include removal spp in inits
           spp=rep(i,dim(tmpD2)[1])
           id=(lastID+1:length(spp))
           tmpD2=data.frame(cbind(spp,tmpD2[,c("area","x","y")],id))
@@ -54,46 +54,31 @@ for(i in 1:length(sppList)){
 }
 rm(tmpD)
 
-# if one species missing, add in zeros
+# add in missing species, set NAs to zero (since no missing yrs, should be no "false" zeros)
 tmp=which(!is.element(sppList,names(obsA)))
-if(length(tmp)==1){
-  missing=rep(0,dim(obsA)[1])
-  missing[rowSums(!is.na(obsA[,2:NCOL(obsA)]))==0]=NA
-  obsA$missing=missing
-  obsN$missing=missing
-  names(obsA)[NCOL(obsA)]=sppList[tmp]
-  names(obsN)[NCOL(obsN)]=sppList[tmp]
-  obsA=obsA[,c("year",sppList)]
-  obsN=obsN[,c("year",sppList)]
-}
-
-# find true zeros
-tmp1=rowSums(is.na(obsA))<Nspp
-tmp1=matrix(tmp1,length(tmp1),Nspp)
-tmp2=is.na(obsA[,2:NCOL(obsA)])
-tmp3=which(tmp1==T & tmp2==T,arr.ind=T)
-tmp4=matrix(FALSE,dim(tmp2)[1],dim(tmp2)[2])
-tmp4[tmp3]=T
-tmp5=obsA[,2:NCOL(obsA)]
-tmp5[tmp4]=0
-obsA[,2:NCOL(obsA)]=tmp5
-tmp5=obsN[,2:NCOL(obsA)]
-tmp5[tmp4]=0
-obsN[,2:NCOL(obsN)]=tmp5
-rm(tmp1,tmp2,tmp3,tmp4,tmp5)
-
+tmp.df=matrix(0,dim(obsA)[1],length(tmp))
+colnames(tmp.df)=sppList[tmp]
+obsA <- cbind(obsA,tmp.df)
+obsA <- obsA[,c("year",sppList)]
+obsA[is.na(obsA)] <- 0
+obsN <- cbind(obsN,tmp.df)
+obsN <- obsN[,c("year",sppList)]
+obsN[is.na(obsN)] <- 0
 
 # FORMAT PARAMETERS ------------------------------------------------
 Nspp=length(sppList)
 
 # use model from Adler et al. 2010
-
+curDir <- getwd()
+Nyrs <- 22
+setwd("H:/idahochart/ipm/multispp_glm_v3/")
 # set up survival parameters and function
-source("H:/idahochart/ipm/multispp_glm_v3/survival/import2ibm.r")
+source("survival/import2ibm.r")
 # set up growth parameters and function
 source("H:/idahochart/ipm/multispp_glm_v3/growth/import2ibm.r")
 # set up recruitment parameters and function
 source("H:/idahochart/ipm/multispp_glm_v3/recruitment/import2ibm.r")
+setwd(curDir)
 
 # model spatial group variation (or not)
 if(!is.na(doGroup)){
@@ -101,6 +86,11 @@ if(!is.na(doGroup)){
   Gpars$intcpt=Gpars$intcpt+Gpars$intcpt.gr[doGroup,]
   Rpars$intcpt.yr=Rpars$intcpt.yr+matrix(Rpars$intcpt.gr[doGroup,],Nyrs,Nspp,byrow=T)
 }
+
+# zero out random year effects
+Gpars$intcpt.yr[]=0; Gpars$slope.yr[]=0; Gpars$nb.yr[]=0
+Spars$intcpt.yr[]=0; Spars$slope.yr[]=0 ; Spars$nb.yr[] = 0
+Rpars$intcpt.yr=matrix(Rpars$intcpt.mu,Nyrs,Nspp,byrow=T)
 
 # FUNCTIONS---------------------------------------------------------
 library(boot)
@@ -138,20 +128,19 @@ getCrowding=function(plants,alpha,L,expand){
 }
 
 # MAIN LOOP -------------------------------------------------------
-if(qName=="Q11" |  qName=="Q13" | qName=="Q14")  yrList=yrList[yrList<50 | yrList>55]
-doYrList=yrList[yrList>=startYr]
-Nyrs=length(doYrList)
-bigA=array(NA,dim=c((Nyrs+1),Nspp,totSims))
-bigN=array(NA,dim=c((Nyrs+1),Nspp,totSims))
+doYrList=2011:2014
+simYrs=length(doYrList)
+bigA=array(NA,dim=c((simYrs+1),Nspp,totSims))
+bigN=array(NA,dim=c((simYrs+1),Nspp,totSims))
 for(iSim in 1:totSims){
   # initialize with N.init plants of size.init for each species
-  plants=init.plants[[1]]
+  plants=init.plants
   lastID=max(plants[,5])
   
   # arrays to store results
-  N=matrix(0,(Nyrs+1),Nspp)
+  N=matrix(0,(simYrs+1),Nspp)
   N[1,1:4]=as.numeric(obsN[1,2:5])
-  A=matrix(0,(Nyrs+1),Nspp)
+  A=matrix(0,(simYrs+1),Nspp)
   A[1,1:4]=as.numeric(obsA[1,2:5])
   
   # plot initial conditions
@@ -159,14 +148,10 @@ for(iSim in 1:totSims){
   symbols(x = plants[,3], y = plants[,4], circles = sqrt(plants[,2]/pi),fg=myCol[plants[,1]],
     xlim=c(0,L*expand),ylim=c(0,L*expand),main ="Time=1",xlab="x",ylab="y",inches=F,lwd=2)
   
-  for(tt in 1:Nyrs){
-     # draw year effects
-     doYr=which(yrList==doYrList[tt])
+  for(tt in 1:simYrs){
      
-     if(doYr==restartYrs[1]) plants=init.plants[[2]]
-     if(doYr==restartYrs[2]) plants=init.plants[[3]]
-     if(doYr==restartYrs[3]) plants=init.plants[[4]]
-     if(doYr==restartYrs[4]) plants=init.plants[[5]]
+    # draw year effects
+     doYr=1  # no year effects
      
      nextplants=plants
      
@@ -190,14 +175,14 @@ for(iSim in 1:totSims){
         # put it all together
         tmp=which(plants[,1]==ss)  # only alter plants of focal spp        
         nextplants[tmp,2]=newsizes[tmp]*live[tmp]   #update with G and S
-   
 
-        
        } # end if no plants
      } # next ss  
      
      nextplants=nextplants[nextplants[,2]>0,]    # remove dead plants 
      nextplants=rbind(nextplants,newplants)     # add recruits
+     
+     if(dim(nextplants)[1]==0) break()  # end simulation
 
      # output cover and density
      tmp=aggregate(nextplants[,2],by=list(nextplants[,1]),FUN=sum)
@@ -232,14 +217,10 @@ year=c(doYrList[1],1+doYrList)
 predA=data.frame(cbind(year,predA))
 names(predA)[2:dim(predA)[2]]=paste(sppList,"pred",sep="")
 output1=merge(obsA,predA,all.x=T)
-tmp=which(is.element(output1$year,init.yrs[2:5]))
-output1[tmp,(2+Nspp):NCOL(output1)]=output1[tmp,2:(Nspp+1)]
 
 predN=data.frame(cbind(year,predN))
 names(predN)[2:dim(predN)[2]]=paste(sppList,"pred",sep="")
 output2=merge(obsN,predN,all.x=T)
-tmp=which(is.element(output2$year,init.yrs[2:5]))
-output2[tmp,(2+Nspp):NCOL(output2)]=output2[tmp,2:(Nspp+1)]
 
 par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0))
 matplot(output1[,1],output1[,2:NCOL(output1)],type="o",
@@ -249,8 +230,6 @@ matplot(output2[,1],output2[,2:NCOL(output2)],type="o",
   col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
   pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Density")
 
-setwd("H:/idahochart/ipm/multispp_glm_v3/validate")
-write.table(output1,outfile1,row.names=F,sep=",")
-write.table(output2,outfile2,row.names=F,sep=",")
+write.table(output1,paste0("validate/",outfile1),row.names=F,sep=",")
+write.table(output2,paste0("validate/",outfile2),row.names=F,sep=",")
 
-setwd("H:/idahochart/ipm/multispp_glm_v3")
