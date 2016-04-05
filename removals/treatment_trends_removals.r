@@ -1,9 +1,5 @@
 
-rm(list=ls(all=TRUE))
-graphics.off();
-
-root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests",sep="")); # modify as needed 
+# call from removal_analysis_wrapper.r
 
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
 dataDir <- paste(root,"/driversdata/data/idaho_modern/",sep="")
@@ -43,20 +39,6 @@ spp.mean <- reshape(spp.mean,direction="wide",timevar="Treatment",idvar=c("speci
 spp.mean <- subset(spp.mean,year>2010)
 spp.mean <- spp.mean[order(spp.mean$species,spp.mean$year),]
 
-# calculate deviations from pretreatment year
-sppD.q.2011<-subset(sppD.q,year==2011) #get pre-treatment year
-names(sppD.q.2011)[NCOL(sppD.q.2011)]<-"cover.2011"
-i<-which(names(sppD.q.2011)=="year")
-sppD.q.2011<-sppD.q.2011[,-i]
-sppD.q<-subset(sppD.q,year>2010)
-sppD.q<-merge(sppD.q,sppD.q.2011)
-sppD.q$coverDiff<-sppD.q$cover-sppD.q$cover.2011
-spp.mean.diff<-aggregate(sppD.q$coverDiff,by=list(species=sppD.q$species,Treatment=sppD.q$Treatment,
-                  year=sppD.q$year),FUN=mean)
-names(spp.mean.diff)[NCOL(spp.mean.diff)]<-"coverDiff"
-spp.mean.diff <- reshape(spp.mean.diff,direction="wide",timevar="Treatment",idvar=c("species","year"))
-spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
-
 # calculate year-to-year log changes
 tmp <- sppD.q
 tmp$year <- tmp$year + 1
@@ -71,6 +53,21 @@ names(mean.change)[NCOL(mean.change)] <- "pcgr"
 mean.change <- subset(mean.change,year>2010)
 mean.change <- reshape(mean.change,direction="wide",timevar="Treatment",idvar=c("species","year"))
 mean.change <- mean.change[order(mean.change$species,mean.change$year),]
+
+# calculate deviations from pretreatment year
+sppD.q.2011<-subset(sppD.q,year==2011) #get pre-treatment year
+names(sppD.q.2011)[NCOL(sppD.q.2011)]<-"cover.2011"
+i<-which(names(sppD.q.2011)=="year")
+sppD.q.2011<-sppD.q.2011[,-i]
+sppD.q<-subset(sppD.q,year>2010)
+sppD.q<-merge(sppD.q,sppD.q.2011)
+sppD.q$coverDiff<-sppD.q$cover-sppD.q$cover.2011
+spp.mean.diff<-aggregate(sppD.q$coverDiff,by=list(species=sppD.q$species,Treatment=sppD.q$Treatment,
+                  year=sppD.q$year),FUN=mean)
+names(spp.mean.diff)[NCOL(spp.mean.diff)]<-"coverDiff"
+spp.mean.diff <- reshape(spp.mean.diff,direction="wide",timevar="Treatment",idvar=c("species","year"))
+spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
+
 
 # statistical tests ####################################################
 library(lme4)
@@ -119,6 +116,7 @@ par(mfrow=c(2,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2,lwd=1)
   
   
   # log change
+  myLims <- c(-1,1)
   for(doSpp in sppList){
     tmp.mean<-subset(mean.change,species==doSpp )
     tmp.mean[1,3:5] <- NA  # get rid of control plot value in 2011

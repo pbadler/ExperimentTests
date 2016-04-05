@@ -6,7 +6,7 @@ root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as need
 setwd(paste(root,"/ExperimentTests/removals/recruitment",sep="")); # modify as needed 
 
 sppList=c("ARTR","HECO","POSE","PSSP")
-outfile="recruit_params_trt3.csv"
+outfile="recruit_params_trt2.csv"
 dataDir1 <- paste(root,"/driversdata/data/idaho/speciesData/",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")
 #--------------------------------------------------------
@@ -73,7 +73,6 @@ names(tmpD)[3:NCOL(tmpD)]=paste("Gcov.",sppList,sep="")
 
 D=merge(D,tmpD,all.x=T)
 
-
 # set up data objects for bugs  
 y=as.matrix(D[,c(paste("R.",sppList,sep=""))])
 R.tot=rowSums(y)
@@ -85,17 +84,13 @@ N=dim(D)[1]
 Nspp=length(sppList)
 Group=as.numeric(D$Group)
 Ngroups=length(unique(Group))
-# code treatment specific intercepts: 1 = old control, 2 = modern control, 3 = no shrub, 4 = no grass
+# code treatment specific intercepts: 1 = old and modern control, 2 = no shrub, 3 = no grass
 TreatCode=matrix(1,length(y),Nspp)
-tmp=which(D$Treatment=="Control" & D$year > 2000)
-TreatCode[tmp,]=2
 tmp=which(D$Treatment=="No_shrub")
-TreatCode[tmp,2:4]=3
-TreatCode[tmp,1]=2
-tmp=which(D$Treatment=="No_grass")
-TreatCode[tmp,1]=4
 TreatCode[tmp,2:4]=2
-#test=cbind(D$year,D$Treatment,TreatCode)
+tmp=which(D$Treatment=="No_grass")
+TreatCode[tmp,1]=3
+test=data.frame(D$year,D$Treatment,TreatCode)
 
 # plots
 pdf("recruit_data.pdf",height=6,width=8)
@@ -118,21 +113,20 @@ data=list("N","y","parents1","parents2",
 
 inits=list(1)
 inits[[1]]=list(intcpt.yr=matrix(1,Nyrs,Nspp),intcpt.mu=rep(1,Nspp),intcpt.tau=rep(1,Nspp),
-  intcpt.trt=rbind(rep(NA,4),matrix(1,3,Nspp)),
+  intcpt.trt=rbind(rep(NA,4),matrix(1,2,Nspp)),
   intcpt.gr=matrix(1,Ngroups,Nspp),g.tau=rep(1,Nspp),
   dd=matrix(0,Nspp,Nspp),theta=rep(1,Nspp)) 
 inits[[2]]=list(intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.mu=rep(0,Nspp),intcpt.tau=rep(10,Nspp),
-  intcpt.trt=rbind(rep(NA,4),matrix(1,3,Nspp)),
+  intcpt.trt=rbind(rep(NA,4),matrix(1,2,Nspp)),
   intcpt.gr=matrix(0,Ngroups,Nspp),g.tau=rep(0.1,Nspp),
   dd=matrix(0,Nspp,Nspp),theta=rep(2,Nspp))
   
 params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.trt",
   "intcpt.gr","g.tau","dd","theta","u","lambda") 
 
-modelFile <- "bugs-Trt3.txt"
 
 out=bugs(data,inits,params,
-  model.file="bugs-Trt3.txt",
+  model.file="bugs-Trt2.txt",
   n.chains=2,
   n.iter=20000,
   n.burnin=10000,

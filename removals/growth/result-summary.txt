@@ -1,5 +1,0 @@
-ARTR grows faster in modern than historical (no grass removal effect)
-HECO grows same everywhere (no treatment or period effects)
-POSE grows better in shrub removal treatment (and a little better in modern)
-PSSP grows better in shrub removal treatment (no period effect); no difference between plants
-	located in ex-ARTR polygon locations and other plants

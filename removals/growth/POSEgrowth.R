@@ -1,10 +1,6 @@
 # PBA March 2016
 
-rm(list=ls(all=TRUE))
-graphics.off();
-
-root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests/removals/growth",sep="")); # modify as needed 
+# call from removal_analysis_wrapper.r
 
 #########################################
 #  1. Import data and calculate W's
@@ -89,60 +85,17 @@ m0 <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W
              (logarea.t0|year),data=allD) 
 
 # put indicators on intercept only
-m1a <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+m1 <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
              (logarea.t0|year),data=allD) 
-m1b <- lmer(logarea.t1~logarea.t0+Treatment2+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-m1c <- lmer(logarea.t1~logarea.t0+Treatment3+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-
-# put indicators on intercept and size only
-m2a <- lmer(logarea.t1~logarea.t0+Treatment+logarea.t0:Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-m2b <- lmer(logarea.t1~logarea.t0+Treatment2+logarea.t0:Treatment2+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-m2c <- lmer(logarea.t1~logarea.t0+Treatment3+logarea.t0:Treatment3+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-
-# # put indicators on intercept and W's only
-# m3a <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+
-#               Treatment:W.ARTR + Treatment:W.HECO + Treatment:W.POSE + Treatment:W.PSSP+
-#              (logarea.t0|year),data=allD) 
-# m3b <- lmer(logarea.t1~logarea.t0+Treatment2+W.ARTR + W.HECO + W.POSE + W.PSSP+
-#               Treatment2:W.ARTR + Treatment2:W.HECO + Treatment2:W.POSE + Treatment2:W.PSSP+
-#              (logarea.t0|year),data=allD) 
-# m3c <- lmer(logarea.t1~logarea.t0+Treatment3+W.ARTR + W.HECO + W.POSE + W.PSSP+
-#               Treatment3:W.ARTR + Treatment3:W.HECO + Treatment3:W.POSE + Treatment3:W.PSSP+
-#              (logarea.t0|year),data=allD) 
-
-# compare AIC
-tmp <- c("m0","m1a","1b","m1c","m2a","2b","m2c") #,"m3a","3b","m3c")
-myAIC <- c(AIC(m0),AIC(m1a),AIC(m1b),AIC(m1c),AIC(m2a),AIC(m2b),AIC(m2c)) #,AIC(m3a),AIC(m3b),AIC(m3c))
-names(myAIC)<-tmp
-myAIC
 
 # add individual level removal info to best model
-m1a.new <- update(m1a,~ . + inARTR)
-AIC(m1a.new)
-
-# look at other subsets
-
-# old data only
-tmpD <- subset(allD,Treatment3=="Control")
-m0.old <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=tmpD) 
-# all controls
-tmpD <- subset(allD,Treatment=="Control")
-m0.controls <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-                 (logarea.t0|year),data=tmpD) 
+m1.new <- update(m1a,~ . + inARTR)
+summary(m1.new)
 
 # does effect diminish with time?
 allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
                        as.numeric(as.character(allD$year))-2010,0))
-test <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+m.time <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
              (logarea.t0|year),data=allD) 
-
-# only use no Shrub data
-tmpD <- subset(allD,Treatment3=="No_shrub")
-test <-lm(logarea.t1~logarea.t0 + W.HECO + W.POSE + W.PSSP +W.allcov + W.allpts +,data=tmpD) 
+summary(m.time)
 

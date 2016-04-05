@@ -4,7 +4,7 @@ model{
     y[i,j]~dnegbin(q[i,j],theta[j])
     q[i,j]<-theta[j]/(theta[j]+lambda[i,j])
     lambda[i,j]<-trueP[i,j]*fecundity[i,j]
-    log(fecundity[i,j])<-modern.control[i]*intcpt.mod[j]+no.shrub[i]*intcpt.noshrub[j]+no.grass[i]*intcpt.nograss[j] + intcpt.yr[year[i],j]+intcpt.gr[Group[i],j]+inprod(dd[1:Nspp,j],trueP[i,1:Nspp])
+    log(fecundity[i,j])<-intcpt.trt[TreatCode[i,j],j] + intcpt.yr[year[i],j]+intcpt.gr[Group[i],j]+inprod(dd[1:Nspp,j],trueP[i,1:Nspp])
     trueP[i,j]<-parents1[i,j]*u[j]+parents2[i,j]*(1-u[j])
   }
  }
@@ -23,9 +23,10 @@ model{
    for(k in 1:Nspp){
      dd[k,s]~dnorm(0,0.001)
    }
-   intcpt.mod[s]~dnorm(0,0.001)
-   intcpt.nograss[s]~dnorm(0,0.001)
-   intcpt.noshrub[s]~dnorm(0,0.001)
+   intcpt.trt[1,s] <- 0 # row one is fixed at zero
+   for(trt in 2:4){   
+     intcpt.trt[trt,s]~dnorm(0,0.001)
+   }
    intcpt.mu[s]~dnorm(0,0.001)
    intcpt.tau[s]~dgamma(0.001,0.001)
    for(m in 1:Nyrs){

@@ -75,8 +75,6 @@ allD$year <- as.factor(allD$year)
 
 # Fit models with INLA
 
-library("INLA")
-
 # Set up ID variables for INLA random effects
 allD$GroupID <- as.numeric(allD$Group)
 allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
@@ -91,8 +89,8 @@ m0 <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.a
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-# add intercepts
-m1a <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+# Treatment effects
+m1 <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
   logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+ logarea:W.allcov + logarea:W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
@@ -101,88 +99,3 @@ m1a <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+ W
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-m1b <- inla(survives ~ logarea+ Treatment2 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("binomial"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-
-m1c <- inla(survives ~ logarea+ Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("binomial"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-
-# add treatment intercepts and interactions with size
-m2a <- inla(survives ~ logarea+ Treatment + logarea:Treatment+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("binomial"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-
-m2b <- inla(survives ~ logarea+ Treatment2 + logarea:Treatment2+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("binomial"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-
-m2c <- inla(survives ~ logarea+ Treatment3 + logarea:Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("binomial"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-
-# # add treatment intercepts and interactions with W
-# m3a <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+
-#   logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
-#   Treatment:W.ARTR +Treatment:W.HECO + Treatment:W.POSE + Treatment:W.PSSP+
-#   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-#   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-#   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-#   family=c("binomial"), verbose=FALSE,
-#   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-#   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-# 
-# m3b <- inla(survives ~ logarea+ Treatment2 + W.ARTR + W.HECO + W.POSE + W.PSSP+
-#   logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
-#   Treatment2:W.ARTR +Treatment2:W.HECO + Treatment2:W.POSE + Treatment2:W.PSSP+
-#   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-#   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-#   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-#   family=c("binomial"), verbose=FALSE,
-#   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-#   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-# 
-# m3c <- inla(survives ~ logarea+ Treatment3 + W.ARTR + W.HECO + W.POSE + W.PSSP+
-#   logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+
-#   Treatment3:W.ARTR +Treatment3:W.HECO + Treatment3:W.POSE + Treatment3:W.PSSP+
-#   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-#   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-#   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-#   family=c("binomial"), verbose=FALSE,
-#   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-#   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-# 
-
-# compare DIC
-tmp <- c("m0","m1a","m1b","m1c","m2a","m2b","m2c") #,"m3a","m3b","m3c")
-myDIC <- c(summary(m0)$dic[1],summary(m1a)$dic[1],summary(m1b)$dic[1],summary(m1c)$dic[1],
-           summary(m2a)$dic[1],summary(m2b)$dic[1],summary(m2c)$dic[1]) #,
-          # summary(m3a)$dic[1],summary(m3b)$dic[1],summary(m3c)$dic[1])
-names(myDIC)<-tmp
-myDIC
