@@ -1,10 +1,6 @@
 # PBA March 2016
 
-rm(list=ls(all=TRUE))
-graphics.off();
-
-root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests/removals/survival",sep="")); # modify as needed 
+# call from removal_analaysis_wrapper.r
 
 #########################################
 #  1. Import data and calculate W's

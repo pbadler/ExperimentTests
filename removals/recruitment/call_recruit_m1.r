@@ -1,12 +1,8 @@
 
-rm(list=ls(all=TRUE))
-graphics.off();
-
-root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests/removals/recruitment",sep="")); # modify as needed 
+# call from removal_analysis_wrapper.r
 
 sppList=c("ARTR","HECO","POSE","PSSP")
-outfile="recruit_params_trt2.csv"
+outfile="recruit_params_m1.csv"
 dataDir1 <- paste(root,"/driversdata/data/idaho/speciesData/",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")
 #--------------------------------------------------------
@@ -92,21 +88,19 @@ tmp=which(D$Treatment=="No_grass")
 TreatCode[tmp,1]=3
 test=data.frame(D$year,D$Treatment,TreatCode)
 
-# plots
-pdf("recruit_data.pdf",height=6,width=8)
-par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,3,1))
-wts=c(0.6,1,0.65,0.9)
-for(i in 1:Nspp){
- plot(parents1[,i],y[,i],xlab="Local parents (% cover)",ylab="Recruits",main=sppList[i],pch=1,col=year)
- trueparents=wts[1]*parents1[,i]+(1-wts[1])*parents2[,i]
- plot(trueparents,y[,i],xlab="Mixed parents (% cover)",ylab="Recruits",main=sppList[i],pch=1,col=year)
-}
-dev.off()
+# # plots
+# pdf("recruit_data.pdf",height=6,width=8)
+# par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,3,1))
+# wts=c(0.6,1,0.65,0.9)
+# for(i in 1:Nspp){
+#  plot(parents1[,i],y[,i],xlab="Local parents (% cover)",ylab="Recruits",main=sppList[i],pch=1,col=year)
+#  trueparents=wts[1]*parents1[,i]+(1-wts[1])*parents2[,i]
+#  plot(trueparents,y[,i],xlab="Mixed parents (% cover)",ylab="Recruits",main=sppList[i],pch=1,col=year)
+# }
+# dev.off()
 
 
 # fit as negative binomial with random effects in WinBUGS
-library(boot)
-library(R2WinBUGS)
 
 data=list("N","y","parents1","parents2",
   "year","Nyrs","Nspp","Ngroups","Group","TreatCode")
@@ -126,14 +120,14 @@ params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.trt",
 
 
 out=bugs(data,inits,params,
-  model.file="bugs-Trt2.txt",
+  model.file="bugs-m1.txt",
   n.chains=2,
-  n.iter=20000,
-  n.burnin=10000,
+  n.iter=20, #000,
+  n.burnin=10, #000,
   #n.iter=40000,
   #n.burnin=20000,
-  n.thin=10, 
-  debug=T,DIC=T,bugs.directory="c:/WinBUGS14/")  
+  n.thin=1, 
+  debug=F,DIC=T,bugs.directory="c:/WinBUGS14/")  
    
 tmp=grep("lambda",row.names(out$summary))
 A=row.names(out$summary)[tmp]

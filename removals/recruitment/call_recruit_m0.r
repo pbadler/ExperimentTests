@@ -1,9 +1,5 @@
 
-rm(list=ls(all=TRUE))
-graphics.off();
-
-root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests/removals/recruitment",sep="")); # modify as needed 
+# call from removal_analysis_wrapper.r
 
 sppList=c("ARTR","HECO","POSE","PSSP")
 outfile="recruit_params_m0.csv"
@@ -124,7 +120,7 @@ out=bugs(data,inits,params,
   #n.iter=40000,
   #n.burnin=20000,
   n.thin=10, 
-  debug=T,DIC=T,bugs.directory="c:/WinBUGS14/")  
+  debug=F,DIC=T,bugs.directory="c:/WinBUGS14/")  
   
 tmp=grep("lambda",row.names(out$summary))
 A=row.names(out$summary)[tmp]
