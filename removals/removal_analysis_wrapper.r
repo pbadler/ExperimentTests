@@ -57,11 +57,11 @@ source("validate/get_W_functions.r")  # get neighbor distance decay functions
 quadList <- c("Q1","Q2","Q3","Q4","Q5","Q6" )  # no shrub
 removeSpp <- NULL
 trtEffects <- FALSE  # TRUE means use a model that includes removal treatment effects
-doGroup=1
 for(iQuad in quadList){
   qName=iQuad
   doGroup=1
-  source("validate/ibm_validate_removal.r")
+  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal_1step.r")
 }
 
 # do no grass plots
@@ -71,9 +71,11 @@ for(iQuad in quadList){
   qName=iQuad
   doGroup=1
   trtEffects <- FALSE  
-  source("validate/ibm_validate_removal.r")
+  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal_1step.r")
   trtEffects <- TRUE  
-  source("validate/ibm_validate_removal.r")
+  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal_1step.r")
 }
 
 # do no shrub plots
@@ -83,11 +85,13 @@ for(iQuad in quadList){
   qName=iQuad
   doGroup=1
   trtEffects <- FALSE  
-  source("validate/ibm_validate_removal.r")
+  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal_1step.r")
   trtEffects <- TRUE  
-  source("validate/ibm_validate_removal.r")
+  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal_1step.r")
 }
 
 # make figure for simulation results
-source("summarize_validate_sims.r")
+source("validate/summarize_validate_sims1step.r")
 
