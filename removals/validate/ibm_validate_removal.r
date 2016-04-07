@@ -68,10 +68,8 @@ obsN[is.na(obsN)] <- 0
 # FORMAT PARAMETERS ------------------------------------------------
 Nspp=length(sppList)
 
-# use model from Adler et al. 2010
 curDir <- getwd()
 Nyrs <- 22
-setwd("H:/idahochart/ipm/multispp_glm_v3/")
 # set up survival parameters and function
 source("survival/import2ibm.r")
 # set up growth parameters and function
@@ -97,30 +95,40 @@ library(boot)
 library(mvtnorm)
 library(msm)
 
-# crowding function, assumes toroidal landscape
 getCrowding=function(plants,alpha,L,expand){
- # plants is a matrix: sizes in column 1; x,y coords in columns 2 and 3
+ # plants is a matrix: species ID in column 1, sizes in column 2; x,y coords in columns 3 and 4
  # d is the distance weighting parameter
  # functions returns a vector of length = rows in plants
- if(dim(plants)[1]>1){
+ 
+  if(dim(plants)[1]>1){
+   
+   # pairwise distances
    xdiff=abs(outer(plants[,3],plants[,3],FUN="-"))
-   #tmp=which(xdiff>((L*expand)/2))
-   #xdiff[tmp]=(L*expand)-xdiff[tmp]
    ydiff=abs(outer(plants[,4],plants[,4],FUN="-"))
-   #tmp=which(ydiff>((L*expand)/2))
-   #ydiff[tmp]=(L*expand)-ydiff[tmp]
    distMat=sqrt(xdiff^2+ydiff^2) 
    distMat[distMat==0]=NA
-   #distMat[distMat<1]=1  # CLUDGE TO PREVENT GROWTH EXPLOSIONS
-   distMat=exp(-1*alpha[plants[,1]]*distMat^2)
+   
+   # apply distance weights
+   for(spp.index in 1:4){
+     doRows <- which(plants[,1]==spp.index)
+     if(length(doRows)==1){
+       distMat[doRows,]  <- Wfuns[[spp.index]](distMat[doRows,])
+     }else{
+       distMat[doRows,] <- t(apply(distMat[doRows,],MARGIN=1,FUN=Wfuns[[spp.index]])) 
+     }
+   }
+   
+   # weight by size
    sizeMat=matrix(plants[,2],dim(plants)[1],dim(plants)[1])
    out=aggregate(distMat*sizeMat,by=list("spp"=plants[,1]),FUN=sum,na.rm=T)
+   
    # put in missing zeros
    tmp=data.frame("spp"=c(1:length(sppList)))
    out=merge(out,tmp,all.y=T)
    out[is.na(out)]=0
    out=out[order(out$spp),]
    out=as.matrix(out[,c(2:NCOL(out))])  # drop spp column
+   
  }else{
    out=rep(0,Nspp)
  }
