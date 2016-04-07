@@ -56,6 +56,8 @@ source("validate/get_W_functions.r")  # get neighbor distance decay functions
 # do control plots
 quadList <- c("Q1","Q2","Q3","Q4","Q5","Q6" )  # no shrub
 removeSpp <- NULL
+trtEffects <- FALSE  # TRUE means use a model that includes removal treatment effects
+doGroup=1
 for(iQuad in quadList){
   qName=iQuad
   doGroup=1
@@ -68,6 +70,9 @@ removeSpp <- c("HECO","POSE","PSSP")
 for(iQuad in quadList){
   qName=iQuad
   doGroup=1
+  trtEffects <- FALSE  
+  source("validate/ibm_validate_removal.r")
+  trtEffects <- TRUE  
   source("validate/ibm_validate_removal.r")
 }
 
@@ -77,8 +82,12 @@ removeSpp <- c("ARTR")
 for(iQuad in quadList){
   qName=iQuad
   doGroup=1
+  trtEffects <- FALSE  
+  source("validate/ibm_validate_removal.r")
+  trtEffects <- TRUE  
   source("validate/ibm_validate_removal.r")
 }
 
-
+# make figure for simulation results
+source("summarize_validate_sims.r")
 

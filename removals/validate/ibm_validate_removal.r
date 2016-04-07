@@ -12,7 +12,6 @@ Nyrs=22
 Ngroups=6
 startYr=2011
 # doGroup=1  # E1 exclosure
-restartYrs=c(2,15,17,20)
 L=100 # dimension of square quadrat (cm)
 expand=1  # 1 = 1x1 m^2, 2 = 2x2m^2, etc
 #sppList=c("ARTR","HECO","POSE","PSSP")
@@ -20,8 +19,13 @@ myCol=c("black","gold1","blue","red")
 minSize=0.25
 maxSize=c(8000,500,500,500)
 
-outfile1=paste(qName,"_validation_cov_removals.csv",sep="")
-outfile2=paste(qName,"_validation_den_removals.csv",sep="")
+if(trtEffects==F){
+ outfile1=paste("simulations/",qName,"_validation_cov_removals_noTrt.csv",sep="")
+ outfile2=paste("simulations/",qName,"_validation_den_removals_noTrt.csv",sep="")
+}else{
+ outfile1=paste("simulations/",qName,"_validation_cov_removals_Trt.csv",sep="")
+ outfile2=paste("simulations/",qName,"_validation_den_removals_Trt.csv",sep="") 
+}
 
 
 #GET OBSERVED DATA AND INITIAL CONDITIONS -------------------------------------------
@@ -69,13 +73,13 @@ obsN[is.na(obsN)] <- 0
 Nspp=length(sppList)
 
 curDir <- getwd()
-Nyrs <- 22
+Nyrs <- 30
 # set up survival parameters and function
 source("survival/import2ibm.r")
 # set up growth parameters and function
-source("H:/idahochart/ipm/multispp_glm_v3/growth/import2ibm.r")
+source("growth/import2ibm.r")
 # set up recruitment parameters and function
-source("H:/idahochart/ipm/multispp_glm_v3/recruitment/import2ibm.r")
+source("recruitment/import2ibm.r")
 setwd(curDir)
 
 # model spatial group variation (or not)
@@ -84,11 +88,6 @@ if(!is.na(doGroup)){
   Gpars$intcpt=Gpars$intcpt+Gpars$intcpt.gr[doGroup,]
   Rpars$intcpt.yr=Rpars$intcpt.yr+matrix(Rpars$intcpt.gr[doGroup,],Nyrs,Nspp,byrow=T)
 }
-
-# zero out random year effects
-Gpars$intcpt.yr[]=0; Gpars$slope.yr[]=0; Gpars$nb.yr[]=0
-Spars$intcpt.yr[]=0; Spars$slope.yr[]=0 ; Spars$nb.yr[] = 0
-Rpars$intcpt.yr=matrix(Rpars$intcpt.mu,Nyrs,Nspp,byrow=T)
 
 # FUNCTIONS---------------------------------------------------------
 library(boot)
@@ -136,7 +135,8 @@ getCrowding=function(plants,alpha,L,expand){
 }
 
 # MAIN LOOP -------------------------------------------------------
-doYrList=2011:2014
+calYrList=2011:2014
+doYrList=which(is.element(Spars$yrList,calYrList))
 simYrs=length(doYrList)
 bigA=array(NA,dim=c((simYrs+1),Nspp,totSims))
 bigN=array(NA,dim=c((simYrs+1),Nspp,totSims))
@@ -159,26 +159,26 @@ for(iSim in 1:totSims){
   for(tt in 1:simYrs){
      
     # draw year effects
-     doYr=1  # no year effects
+     doYr=doYrList[tt]  # no year effects
      
      nextplants=plants
      
      # recruitment
-     newplants=recruit(Rpars,sizes=plants[,2],spp=plants[,1],doYear=doYr,lastID=lastID,L,expand)
+     newplants=recruit(Rpars,sizes=plants[,2],spp=plants[,1],doGroup=doGroup,doYear=doYr,lastID=lastID,L,expand)
      
      for(ss in 1:Nspp){
       if(N[tt,ss]>0){ # make sure spp ss is not extinct
   
         # growth
         W=getCrowding(plants,Gpars$alpha[ss,],L,expand)
-        newsizes=grow(Gpars,doSpp=ss,doYear=doYr,sizes=plants[,2],crowding=W)
+        newsizes=grow(Gpars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
   
         if(sum(newsizes==Inf)>0) browser()
         if(is.na(sum(newsizes))) browser()
         
         # survival
         # uses same W as growth            
-        live=survive(Spars,doSpp=ss,doYear=doYr,sizes=plants[,2],crowding=W)
+        live=survive(Spars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
   
         # put it all together
         tmp=which(plants[,1]==ss)  # only alter plants of focal spp        
@@ -220,7 +220,7 @@ for(iSim in 1:totSims){
 predA=apply(bigA,MARGIN=c(1,2),FUN=mean,na.rm=T)
 predN=apply(bigN,MARGIN=c(1,2),FUN=mean)
 
-year=c(doYrList[1],1+doYrList)
+year=c(calYrList[1],1+calYrList)
 
 predA=data.frame(cbind(year,predA))
 names(predA)[2:dim(predA)[2]]=paste(sppList,"pred",sep="")
