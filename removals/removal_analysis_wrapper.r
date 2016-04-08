@@ -54,7 +54,7 @@ sppList <-  c("ARTR","HECO","POSE","PSSP")
 source("validate/get_W_functions.r")  # get neighbor distance decay functions
 
 # do control plots
-quadList <- c("Q1","Q2","Q3","Q4","Q5","Q6" )  # no shrub
+quadList <- paste0("Q",c(1:6,19:26))
 removeSpp <- NULL
 trtEffects <- FALSE  # TRUE means use a model that includes removal treatment effects
 for(iQuad in quadList){

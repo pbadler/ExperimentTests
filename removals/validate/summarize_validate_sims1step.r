@@ -25,32 +25,32 @@ getPopGrowth<-function(qList,trtEffects){
 }
 
 # control plots
-qList <- c("Q1","Q2","Q3","Q4","Q5","Q6" ) 
-quadD <- getPopGrowth(qList,trtEffects==F)
+qList <- paste0("Q",c(1:6,19:26)) #c("Q1","Q2","Q3","Q4","Q5","Q6" ) 
+quadD <- getPopGrowth(qList,trtEffects=F)
 control.mean=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=mean,na.rm=T)
 control.sd=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=sd,na.rm=T)
 
 # no shrub plots, no treatment effects
 qList <- c("Q47","Q50","Q52","Q53","Q54","Q56","Q59","Q61")
-quadD <- getPopGrowth(qList,trtEffects==F)
+quadD <- getPopGrowth(qList,trtEffects=F)
 noshrub.mean=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=mean,na.rm=T)
 noshrub.sd=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=sd,na.rm=T)
 
 # no shrub plots, WITH treatment effects
 qList <- c("Q47","Q50","Q52","Q53","Q54","Q56","Q59","Q61")
-quadD <- getPopGrowth(qList,trtEffects==T)
+quadD <- getPopGrowth(qList,trtEffects=T)
 noshrubTRT.mean=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=mean,na.rm=T)
 noshrubTRT.sd=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=sd,na.rm=T)
 
 # no grass plots, no treatment effects
 qList <- c("Q48","Q49","Q51","Q55","Q57","Q58","Q60","Q62")  # no grass
-quadD <- getPopGrowth(qList,trtEffects==F)
+quadD <- getPopGrowth(qList,trtEffects=F)
 nograss.mean=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=mean,na.rm=T)
 nograss.sd=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=sd,na.rm=T)
 
 # no grass plots, no treatment effects
 qList <- c("Q48","Q49","Q51","Q55","Q57","Q58","Q60","Q62")  # no grass
-quadD <- getPopGrowth(qList,trtEffects==T)
+quadD <- getPopGrowth(qList,trtEffects=T)
 nograssTRT.mean=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=mean,na.rm=T)
 nograssTRT.sd=aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=sd,na.rm=T)
 
@@ -62,14 +62,14 @@ plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mytitle){
                   mydata2[,1+doSpp],mydata2[,5+doSpp], # removal obs and pred (no TRT effect)
                   mydata3[,5+doSpp])                               # removal pred (with TRT effect)
   names(newD)=c("year","control.obs","control.pred","remove.obs","remove.pred","remove.predTRT")
-  matplot(newD$year,newD[,2:6]/100,type="o",xlab="",ylab="",
+  matplot(newD$year,newD[,2:6],type="o",xlab="",ylab="",
     col=c(rep("black",2),rep("blue",3)),
     pch=c(16,1,16,1,2),
     lty=c("solid","blank","solid","blank","blank"))
   title(main=mytitle,adj=0,font.main=1)  
 }
 
-
+# chronologically
 png("obsVSpred1step.png",units="in",height=3.5,width=8.5,res=600)
   
   par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
@@ -80,9 +80,21 @@ png("obsVSpred1step.png",units="in",height=3.5,width=8.5,res=600)
   plotObsPred(4,control.mean,noshrub.mean,noshrubTRT.mean,"PSSP")
   
   mtext(side=1,"Year",line=0.5, outer=T)
-  mtext(side=2,"Mean cover (%)",line=0.5, outer=T)
+  mtext(side=2,"log Cover change",line=0.5, outer=T)
 
 dev.off()
+
+mylims=c(-0.25,0.25)
+plot(control.mean$ARTR,control.mean$ARTRpred,pch=16,xlim=mylims,ylim=mylims,xlab="Observed",ylab="Predicted")
+points(nograss.mean$ARTR,nograss.mean$ARTRpred,pch=1,col="blue")
+points(nograssTRT.mean$ARTR,nograssTRT.mean$ARTRpred,pch=2,col="blue")
+abline(0,1)
+
+mylims=c(-0.6,0.9)
+plot(control.mean$PSSP,control.mean$PSSPpred,pch=16,xlim=mylims,ylim=mylims,xlab="Observed",ylab="Predicted")
+points(noshrub.mean$PSSP,noshrub.mean$PSSPpred,pch=1,col="blue")
+points(noshrubTRT.mean$PSSP,noshrubTRT.mean$PSSPpred,pch=2,col="blue")
+abline(0,1)
 
 setwd("..")
  
