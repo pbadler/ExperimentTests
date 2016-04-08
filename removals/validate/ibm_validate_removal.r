@@ -7,8 +7,7 @@
 # PBA  8-28-09
 
 # qName = "Q1"
-totSims=50
-Nyrs=22
+totSims=1
 Ngroups=6
 startYr=2011
 # doGroup=1  # E1 exclosure
@@ -75,11 +74,11 @@ Nspp=length(sppList)
 curDir <- getwd()
 Nyrs <- 30
 # set up survival parameters and function
-source("survival/import2ibm.r")
+source("survival/import2ibm_deterministic.r")
 # set up growth parameters and function
-source("growth/import2ibm.r")
+source("growth/import2ibm_deterministic.r")
 # set up recruitment parameters and function
-source("recruitment/import2ibm.r")
+source("recruitment/import2ibm_deterministic.r")
 setwd(curDir)
 
 # model spatial group variation (or not)
@@ -159,7 +158,7 @@ for(iSim in 1:totSims){
   for(tt in 1:simYrs){
      
     # draw year effects
-     doYr=doYrList[tt]  # no year effects
+     doYr=doYrList[tt]  
      
      nextplants=plants
      

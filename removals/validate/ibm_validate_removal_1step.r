@@ -7,7 +7,6 @@
 # PBA  8-28-09
 
 # qName = "Q1"
-Nyrs=22
 Ngroups=6
 startYr=2011
 # doGroup=1  # E1 exclosure
@@ -26,13 +25,12 @@ if(trtEffects==F){
  outfile2=paste("simulations1step/",qName,"_validation_den_removals_Trt.csv",sep="") 
 }
 
-
 #GET OBSERVED DATA AND INITIAL CONDITIONS -------------------------------------------
 Nspp=length(sppList)
 obsA=data.frame(year=startYr:2015)
 obsN=data.frame(year=startYr:2015)
 init.plants=list(NULL,NULL,NULL,NULL) 
-lastID=0
+lastID=rep(0,4) # different for each init year
 for(i in 1:length(sppList)){
   infile=paste("c:\\repos\\driversdata\\data\\idaho_modern\\speciesData\\",sppList[i],"\\",sppList[i],"_genet_xy.csv",sep="")
   tmpD=read.csv(infile)
@@ -48,11 +46,11 @@ for(i in 1:length(sppList)){
         tmpD2=subset(tmpD,year==c(2011:2014)[iYr])
         if(dim(tmpD2)[1]>0 & !is.element(sppList[i],removeSpp)){  # don't include removal spp in inits
             spp=rep(i,dim(tmpD2)[1])
-            id=(lastID+1:length(spp))
+            id=(lastID[iYr]+1:length(spp))
             tmpD2=data.frame(cbind(spp,tmpD2[,c("area","x","y")],id))
             names(tmpD2)=c("spp","size","x","y","id")
             init.plants[[iYr]]=rbind(init.plants[[iYr]],tmpD2)
-            lastID=max(init.plants[[iYr]][,5])
+            lastID[iYr]=max(init.plants[[iYr]][,5])
         }  
       }
     }

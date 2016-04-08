@@ -8,7 +8,7 @@ sppNames=c("A. tripartita","H. comata","Poa secunda","P. spicata")
 myCol=c("black","forestgreen","blue","red")
 
 # control plots
-qList <- c("Q1","Q2","Q3","Q4","Q5","Q6" ) 
+qList <- paste0("Q",c(1:6,19:26))  #c("Q1","Q2","Q3","Q4","Q5","Q6" ) 
 covD=NULL
 for(i in 1:length(qList)){
    infile=paste("simulations1step/",qList[i],"_validation_cov_removals_noTrt.csv",sep="")
@@ -79,7 +79,7 @@ plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mytitle){
   title(main=mytitle,adj=0,font.main=1)  
 }
 
-png("obsVSpred.png",units="in",height=3.5,width=8.5,res=600)
+png("obsVSpred_project1step.png",units="in",height=3.5,width=8.5,res=600)
   
   par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
   

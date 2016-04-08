@@ -60,7 +60,7 @@ trtEffects <- FALSE  # TRUE means use a model that includes removal treatment ef
 for(iQuad in quadList){
   qName=iQuad
   doGroup=1
-  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal.r")
   source("validate/ibm_validate_removal_1step.r")
 }
 
@@ -71,10 +71,10 @@ for(iQuad in quadList){
   qName=iQuad
   doGroup=1
   trtEffects <- FALSE  
-  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal.r")
   source("validate/ibm_validate_removal_1step.r")
   trtEffects <- TRUE  
-  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal.r")
   source("validate/ibm_validate_removal_1step.r")
 }
 
@@ -85,10 +85,10 @@ for(iQuad in quadList){
   qName=iQuad
   doGroup=1
   trtEffects <- FALSE  
-  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal.r")
   source("validate/ibm_validate_removal_1step.r")
   trtEffects <- TRUE  
-  #source("validate/ibm_validate_removal.r")
+  source("validate/ibm_validate_removal.r")
   source("validate/ibm_validate_removal_1step.r")
 }
 
