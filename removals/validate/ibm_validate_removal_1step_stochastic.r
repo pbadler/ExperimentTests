@@ -7,6 +7,7 @@
 # PBA  8-28-09
 
 # qName = "Q1"
+totSims=2
 Nyrs=22
 Ngroups=6
 startYr=2011
@@ -95,7 +96,7 @@ library(boot)
 library(mvtnorm)
 library(msm)
 
-getCrowding=function(plants,L,expand){
+getCrowding=function(plants,alpha,L,expand){
  # plants is a matrix: species ID in column 1, sizes in column 2; x,y coords in columns 3 and 4
  # d is the distance weighting parameter
  # functions returns a vector of length = rows in plants
@@ -139,89 +140,98 @@ getCrowding=function(plants,L,expand){
 calYrList=2011:2014
 doYrList=which(is.element(Spars$yrList,calYrList))
 simYrs=length(doYrList)
-
-# arrays to store results
-N=matrix(0,(simYrs+1),Nspp)
-N[1,1:4]=as.numeric(obsN[1,2:5])
-A=matrix(0,(simYrs+1),Nspp)
-A[1,1:4]=as.numeric(obsA[1,2:5])
-
-for(tt in 1:simYrs){
+bigA=array(NA,dim=c((simYrs+1),Nspp,totSims))
+bigN=array(NA,dim=c((simYrs+1),Nspp,totSims))
+for(iSim in 1:totSims){
   
-  if(is.null(init.plants[[tt]])){ # are there any plants?
-    
-    A[tt+1,] <- 0
-    N[tt+1,] <- 0
-    
-  }else{
-    
-    # initialize with N.init plants of size.init for each species
-    plants=init.plants[[tt]]
-    lastID=max(plants[,5])
-    
-    # draw year effects
-    doYr=doYrList[tt]  # no year effects
-    
-    nextplants=plants
-    
-    # recruitment
-    newplants=recruit(Rpars,sizes=plants[,2],spp=plants[,1],doGroup=doGroup,doYear=doYr,lastID=lastID,L,expand)
-    
-    W=getCrowding(plants,L,expand)
-    
-    for(ss in 1:Nspp){
-      if(N[tt,ss]>0){ # make sure spp ss is not extinct
-        
-        # growth
-        newsizes=grow(Gpars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
-        if(sum(newsizes==Inf)>0) browser()
-        if(is.na(sum(newsizes))) browser()
-        
-        # survival, uses same W as growth            
-        live=survive(Spars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
-        
-        # put it all together
-        tmp=which(plants[,1]==ss)  # only alter plants of focal spp        
-        nextplants[tmp,2]=newsizes[tmp]*live[tmp]   #update with G and S
-        
-      } # end if no plants
-    } # next ss  
-    
-    nextplants=nextplants[nextplants[,2]>0,]    # remove dead plants 
-    nextplants=rbind(nextplants,newplants)     # add recruits
-    
-    if(dim(nextplants)[1]==0) break()  # end simulation
-    
-    # output cover and density
-    tmp=aggregate(nextplants[,2],by=list(nextplants[,1]),FUN=sum)
-    A[tt+1,tmp[,1]]=tmp[,2]
-    tmp=aggregate(rep(1,dim(nextplants)[1]),by=list(nextplants[,1]),FUN=sum)
-    N[tt+1,tmp[,1]]=tmp[,2]
-    
-    # since we are re-initializing every year, no need for this
-    #      plants=nextplants
-    #      lastID=max(plants[,5])  
-    
-  } # end is.null(plants) loop
+  # arrays to store results
+  N=matrix(0,(simYrs+1),Nspp)
+  N[1,1:4]=as.numeric(obsN[1,2:5])
+  A=matrix(0,(simYrs+1),Nspp)
+  A[1,1:4]=as.numeric(obsA[1,2:5])
   
-  print(tt);flush.console() 
+  for(tt in 1:simYrs){
+    
+      if(is.null(init.plants[[tt]])){ # are there any plants?
   
-} # next tt 
+        A[tt+1,] <- 0
+        N[tt+1,] <- 0
+  
+      }else{
+       
+      # initialize with N.init plants of size.init for each species
+      plants=init.plants[[tt]]
+      lastID=max(plants[,5])
+       
+      # draw year effects
+      doYr=doYrList[tt]  # no year effects
+       
+      nextplants=plants
+       
+      # recruitment
+      newplants=recruit(Rpars,sizes=plants[,2],spp=plants[,1],doGroup=doGroup,doYear=doYr,lastID=lastID,L,expand)
+       
+      for(ss in 1:Nspp){
+        if(N[tt,ss]>0){ # make sure spp ss is not extinct
+    
+          # growth
+          W=getCrowding(plants,Gpars$alpha[ss,],L,expand)
+          newsizes=grow(Gpars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
+    
+          if(sum(newsizes==Inf)>0) browser()
+          if(is.na(sum(newsizes))) browser()
+          
+          # survival
+          # uses same W as growth            
+          live=survive(Spars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
+    
+          # put it all together
+          tmp=which(plants[,1]==ss)  # only alter plants of focal spp        
+          nextplants[tmp,2]=newsizes[tmp]*live[tmp]   #update with G and S
+  
+         } # end if no plants
+      } # next ss  
+       
+      nextplants=nextplants[nextplants[,2]>0,]    # remove dead plants 
+      nextplants=rbind(nextplants,newplants)     # add recruits
+       
+      if(dim(nextplants)[1]==0) break()  # end simulation
+  
+      # output cover and density
+      tmp=aggregate(nextplants[,2],by=list(nextplants[,1]),FUN=sum)
+      A[tt+1,tmp[,1]]=tmp[,2]
+      tmp=aggregate(rep(1,dim(nextplants)[1]),by=list(nextplants[,1]),FUN=sum)
+      N[tt+1,tmp[,1]]=tmp[,2]
+       
+       # since we are re-initializing every year, no need for this
+  #      plants=nextplants
+  #      lastID=max(plants[,5])  
+       
+    } # end is.null(plants) loop
 
-print(paste(qName," complete",sep=""))
-flush.console()
+    print(tt);flush.console() 
+    
+  } # next tt 
+  
+  bigN[,,iSim]=N ; bigA[,,iSim]=A
+  print(paste("Sim ",iSim," complete",sep=""))
+  flush.console()
+  
+} # next iSim
 
-# format output
+# average across simulations
+predA=apply(bigA,MARGIN=c(1,2),FUN=mean,na.rm=T)
+predN=apply(bigN,MARGIN=c(1,2),FUN=mean)
 
 year=c(calYrList[1],1+calYrList)
 
-A=data.frame(cbind(year,A))
-names(A)[2:dim(A)[2]]=paste(sppList,"pred",sep="")
-output1=merge(obsA,A,all.x=T)
+predA=data.frame(cbind(year,predA))
+names(predA)[2:dim(predA)[2]]=paste(sppList,"pred",sep="")
+output1=merge(obsA,predA,all.x=T)
 
-N=data.frame(cbind(year,N))
-names(N)[2:dim(N)[2]]=paste(sppList,"pred",sep="")
-output2=merge(obsN,N,all.x=T)
+predN=data.frame(cbind(year,predN))
+names(predN)[2:dim(predN)[2]]=paste(sppList,"pred",sep="")
+output2=merge(obsN,predN,all.x=T)
 
 par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0))
 matplot(output1[,1],output1[,2:NCOL(output1)],type="o",

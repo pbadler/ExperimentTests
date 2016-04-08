@@ -11,7 +11,7 @@ myCol=c("black","forestgreen","blue","red")
 qList <- c("Q1","Q2","Q3","Q4","Q5","Q6" ) 
 covD=NULL
 for(i in 1:length(qList)){
-   infile=paste("simulations1step/",qList[i],"_validation_cov_removals_noTrt.csv",sep="")
+   infile=paste("simulations/",qList[i],"_validation_cov_removals_noTrt.csv",sep="")
    tmpD=read.csv(infile)
    covD=rbind(covD,tmpD)
 }
@@ -22,7 +22,7 @@ control.sd=aggregate(covD[,2:NCOL(covD)],by=list(year=covD$year),FUN=sd,na.rm=T)
 qList <- c("Q47","Q50","Q52","Q53","Q54","Q56","Q59","Q61")
 covD=NULL
 for(i in 1:length(qList)){
-   infile=paste("simulations1step/",qList[i],"_validation_cov_removals_noTrt.csv",sep="")
+   infile=paste("simulations/",qList[i],"_validation_cov_removals_noTrt.csv",sep="")
    tmpD=read.csv(infile)
    covD=rbind(covD,tmpD)
 }
@@ -34,7 +34,7 @@ noshrub.sd=aggregate(covD[,2:NCOL(covD)],by=list(year=covD$year),FUN=sd,na.rm=T)
 qList <- c("Q47","Q50","Q52","Q53","Q54","Q56","Q59","Q61")
 covD=NULL
 for(i in 1:length(qList)){
-   infile=paste("simulations1step/",qList[i],"_validation_cov_removals_Trt.csv",sep="")
+   infile=paste("simulations/",qList[i],"_validation_cov_removals_Trt.csv",sep="")
    tmpD=read.csv(infile)
    covD=rbind(covD,tmpD)
 }
@@ -46,7 +46,7 @@ noshrubTRT.sd=aggregate(covD[,2:NCOL(covD)],by=list(year=covD$year),FUN=sd,na.rm
 qList <- c("Q48","Q49","Q51","Q55","Q57","Q58","Q60","Q62")  # no grass
 covD=NULL
 for(i in 1:length(qList)){
-   infile=paste("simulations1step/",qList[i],"_validation_cov_removals_noTrt.csv",sep="")
+   infile=paste("simulations/",qList[i],"_validation_cov_removals_noTrt.csv",sep="")
    tmpD=read.csv(infile)
    covD=rbind(covD,tmpD)
 }
@@ -57,7 +57,7 @@ nograss.sd=aggregate(covD[,2:NCOL(covD)],by=list(year=covD$year),FUN=sd,na.rm=T)
 qList <- c("Q48","Q49","Q51","Q55","Q57","Q58","Q60","Q62")  # no grass
 covD=NULL
 for(i in 1:length(qList)){
-   infile=paste("simulations1step/",qList[i],"_validation_cov_removals_Trt.csv",sep="")
+   infile=paste("simulations/",qList[i],"_validation_cov_removals_Trt.csv",sep="")
    tmpD=read.csv(infile)
    covD=rbind(covD,tmpD)
 }
@@ -80,7 +80,7 @@ plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mytitle){
 }
 
 
-png("obsVSpred1step.png",units="in",height=3.5,width=8.5,res=600)
+png("obsVSpred.png",units="in",height=3.5,width=8.5,res=600)
   
   par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
   
