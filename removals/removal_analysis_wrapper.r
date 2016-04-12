@@ -12,14 +12,24 @@ source("treatment_trends_removals.r")
 
 # 2. fit vital rate regressions ###########################
 
+# table to store Treatment effects
+trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
+
 # fit growth models
-library(lme4)
+library(INLA)
 setwd("growth")
 source("write_params.r") # get function to format and output parameters
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"growth.r"))
+  # write parameters
   formatGrowthPars(m0,paste0(iSpp,"_growth_noTrt.csv"))
-  formatGrowthPars(m1,paste0(iSpp,"_growth_Trt.csv"))       
+  formatGrowthPars(m1,paste0(iSpp,"_growth_Trt.csv"))    
+  # save treatment test
+  irow <- dim(trtTests)[1]
+  trtTests[irow+1,] <- NA
+  trtTests[irow+1,1:2] <- c(iSpp,"growth")
+  tmp <- grep("Treatment",row.names(m1$summary.fixed))
+  trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
 }
 setwd("..")
 
@@ -29,8 +39,15 @@ setwd("survival")
 source("write_params.r") # get function to format and output parameters
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"survival.r"))
+  # write parameters
   formatSurvPars(m0,paste0(iSpp,"_surv_noTrt.csv"))
-  formatSurvPars(m1,paste0(iSpp,"_surv_Trt.csv"))       
+  formatSurvPars(m1,paste0(iSpp,"_surv_Trt.csv"))   
+  # save treatment test
+  irow <- dim(trtTests)[1]
+  trtTests[irow+1,] <- NA
+  trtTests[irow+1,1:2] <- c(iSpp,"survival")
+  tmp <- grep("Treatment",row.names(m1$summary.fixed))
+  trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
 }
 setwd("..")
 
@@ -40,6 +57,21 @@ library(R2WinBUGS)
 setwd("recruitment")
 source("call_recruit_m0.r")
 source("call_recruit_m1.r")
+
+#save treatment test data for ARTR
+irow <- dim(trtTests)[1]
+trtTests[irow+1,] <- NA
+trtTests[irow+1,1:2] <- c("ARTR","recruitment")
+tmp <- grep("intcpt.trt",row.names(out$summary))
+trtTests[irow+1,3:5] <- out$summary[tmp[5],c("mean","2.5%","97.5%")]
+
+#save treatment test data for the three grasses
+irow <- dim(trtTests)[1]
+trtTests[(irow+1):(irow+3),] <- NA
+trtTests[(irow+1):(irow+3),1:2] <- cbind(c("HECO","POSE","PSSP"),rep("recruitment",3))
+tmp <- grep("intcpt.trt",row.names(out$summary))
+trtTests[(irow+1):(irow+3),3:5] <- out$summary[tmp[2:4],c("mean","2.5%","97.5%")]
+
 setwd("..")
 
 # 3. explore neighborhood composition ###################################

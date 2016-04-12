@@ -75,12 +75,35 @@ allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
 
 allD$year <- as.factor(allD$year)
 
-# no treatment effect
-m0 <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
-             (1|Group)+(logarea.t0|year),data=allD) 
+# use lmer
+# #library(lme4)
+# # no treatment effect
+# m0 <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
+#              (1|Group)+(logarea.t0|year),data=allD) 
+# # treatment effect
+# m1 <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
+#              (1|Group)+(logarea.t0|year),data=allD) 
+# 
 
-# treatment effect
-m1 <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
-             (1|Group)+(logarea.t0|year),data=allD) 
+# use INLA
+# Set up ID variables for INLA random effects
+allD$GroupID <- as.numeric(allD$Group)
+allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
 
+# baseline model
+m0 <- inla(logarea.t1 ~ logarea.t0+ W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
+# Treatment effect
+m1 <- inla(logarea.t1 ~ logarea.t0 + Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))

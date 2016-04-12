@@ -118,7 +118,6 @@ inits[[2]]=list(intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.mu=rep(0,Nspp),intcpt.tau=r
 params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.trt",
   "intcpt.gr","g.tau","dd","theta","u","lambda") 
 
-
 out=bugs(data,inits,params,
   model.file="bugs-m1.txt",
   n.chains=2,

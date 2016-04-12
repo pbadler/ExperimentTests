@@ -80,22 +80,46 @@ allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
 
 allD$year <- as.factor(allD$year)
 
-# simplest model
-m0 <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
 
-# put indicators on intercept only
-m1 <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
+# library(lme4)
+# # simplest model
+# m0 <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+#              (logarea.t0|year),data=allD) 
+# 
+# # put indicators on intercept only
+# m1 <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+#              (logarea.t0|year),data=allD) 
+# 
+# # add individual level removal info to best model
+# m1.new <- update(m1a,~ . + inARTR)
+# summary(m1.new)
+# 
+# # does effect diminish with time?
+# allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
+#                        as.numeric(as.character(allD$year))-2010,0))
+# m.time <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+#              (logarea.t0|year),data=allD) 
+# summary(m.time)
 
-# add individual level removal info to best model
-m1.new <- update(m1a,~ . + inARTR)
-summary(m1.new)
+# use INLA
+# Set up ID variables for INLA random effects
+allD$GroupID <- as.numeric(allD$Group)
+allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
 
-# does effect diminish with time?
-allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
-                       as.numeric(as.character(allD$year))-2010,0))
-m.time <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-summary(m.time)
+# baseline model
+m0 <- inla(logarea.t1 ~ logarea.t0+ W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+#  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
+# Treatment effect
+m1 <- inla(logarea.t1 ~ logarea.t0 + Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+#  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))

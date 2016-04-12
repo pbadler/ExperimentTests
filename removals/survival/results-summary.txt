@@ -1,4 +1,0 @@
-ARTR: no effects of period or treatment
-HECO: best models include no shrubs effect, but CI's overlap zero
-POSE: best models include modern effect (worse), but CI's overlap zero
-PSSP: modern is worse

@@ -4,29 +4,29 @@
 formatGrowthPars <-function(model,outfile){
   
   # fit variance
-  x=model$summary.fitted.values$mean
-  y=(x-allD$logarea.t1)^2  # residuals
-  #plot(x,y)
+  x=fitted(model)
+  y=resid(model)^2
+  plot(x,y)
   outVar=nls(y~a*exp(b*x),start=list(a=1,b=0))
   
   #year effects
-  Intercept.yr=model$summary.random$yearID$mean
-  year=model$summary.random$year$ID
-  logarea.yr=model$summary.random$year$mean
-  params=data.frame(year,Intercept.yr,logarea.yr)
+  params=as.data.frame(ranef(model)$year)
+  names(params)=paste(names(params),".yr",sep="")
+  year=as.numeric(row.names(params))
+  params=cbind(year,params)
   #group effects
-  tmp=as.data.frame(model$summary.random$GroupID[,1:2])
+  tmp=as.data.frame(ranef(model)$Group)
   if(dim(tmp)[1]>0){
-    names(tmp)=c("GroupID","Group")
+    names(tmp)="Group"
+    tmp$GrpName=row.names(tmp)
     tmp[(nrow(tmp)+1):dim(params)[1],]=NA
     params=cbind(params,tmp)
   }
   #fixed effects
-  tmp=matrix(NA,dim(params)[1],length(model$names.fixed))
-  colnames(tmp)=model$names.fixed
-  tmp[1,]=model$summary.fixed$mean
+  tmp=matrix(NA,dim(params)[1],length(fixef(model)))
+  colnames(tmp)=names(fixef(model))
+  tmp[1,]=fixef(model)
   params=cbind(params,tmp)
-  
   #variance 
   params$sigma.a=NA; params$sigma.a[1]=coef(outVar)[1] 
   params$sigma.b=NA; params$sigma.b[1]=coef(outVar)[2]
