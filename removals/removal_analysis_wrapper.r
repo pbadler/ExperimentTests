@@ -7,15 +7,20 @@ graphics.off();
 root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
 setwd(paste(root,"/ExperimentTests/removals/",sep="")); # modify as needed 
 
-# 1. get treatment trends #################################
+###
+### 1. get treatment trends #################################
+###
+
 source("treatment_trends_removals.r")
 
-# 2. fit vital rate regressions ###########################
+###
+### 2. fit vital rate regressions ###########################
+###
 
 # table to store Treatment effects
 trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
 
-# fit growth models
+# fit growth models (takes < 5 mins)
 library(INLA)
 setwd("growth")
 source("write_params.r") # get function to format and output parameters
@@ -33,7 +38,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
 }
 setwd("..")
 
-# fit survival models
+# fit survival models (takes ~ 10 minutes)
 library(INLA)
 setwd("survival")
 source("write_params.r") # get function to format and output parameters
@@ -51,7 +56,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
 }
 setwd("..")
 
-# fit recruitment model
+# fit recruitment models (this can take hours)
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
@@ -59,27 +64,35 @@ source("call_recruit_m0.r")
 source("call_recruit_m1.r")
 
 #save treatment test data for ARTR
+pars.summary <- read.csv("bugs_summary_m0.csv")
 irow <- dim(trtTests)[1]
 trtTests[irow+1,] <- NA
 trtTests[irow+1,1:2] <- c("ARTR","recruitment")
-tmp <- grep("intcpt.trt",row.names(out$summary))
-trtTests[irow+1,3:5] <- out$summary[tmp[5],c("mean","2.5%","97.5%")]
+tmp <- grep("intcpt.trt",row.names(pars.summary))
+trtTests[irow+1,3:5] <- pars.summary[tmp[5],c("mean","X2.5.","X97.5.")]
 
 #save treatment test data for the three grasses
 irow <- dim(trtTests)[1]
 trtTests[(irow+1):(irow+3),] <- NA
 trtTests[(irow+1):(irow+3),1:2] <- cbind(c("HECO","POSE","PSSP"),rep("recruitment",3))
-tmp <- grep("intcpt.trt",row.names(out$summary))
-trtTests[(irow+1):(irow+3),3:5] <- out$summary[tmp[2:4],c("mean","2.5%","97.5%")]
+trtTests[(irow+1):(irow+3),3:5] <- pars.summary[tmp[2:4],c("mean","X2.5.","X97.5.")]
 
 setwd("..")
 
-# 3. explore neighborhood composition ###################################
+# write trtTests to file
+write.csv(trtTest,"treatment_test_results.csv",row.names=F)
+
+###
+### 3. explore neighborhood composition ###################################
+###
+
 setwd("Wdistrib")
 source("exploreSurvivalWs.R")
 setwd("..")
 
-# 4. get IBM predictions for quadrat cover ###############################
+###
+### 4. get IBM predictions for quadrat cover ###############################
+###
 
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 

@@ -2,7 +2,8 @@
 # call from removal_analysis_wrapper.r
 
 sppList=c("ARTR","HECO","POSE","PSSP")
-outfile="recruit_params_m1.csv"
+outfile1="recruit_params_m1.csv"
+outfile2="bugs_summary_m1.csv"
 dataDir1 <- paste(root,"/driversdata/data/idaho/speciesData/",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")
 #--------------------------------------------------------
@@ -121,11 +122,11 @@ params=c("intcpt.yr","intcpt.mu","intcpt.tau","intcpt.trt",
 out=bugs(data,inits,params,
   model.file="bugs-m1.txt",
   n.chains=2,
-  n.iter=20, #000,
-  n.burnin=10, #000,
+  n.iter=20000,
+  n.burnin=10000,
   #n.iter=40000,
   #n.burnin=20000,
-  n.thin=1, 
+  n.thin=10, 
   debug=F,DIC=T,bugs.directory="c:/WinBUGS14/")  
    
 tmp=grep("lambda",row.names(out$summary))
@@ -144,6 +145,6 @@ for(i in 1:Nspp){
   plot(parents1[,i],lambda[,i],xlab="Obs",ylab="Pred",main=sppList[i])
 }
 
-write.table(out$summary,outfile,row.names=T,sep=",")
+write.table(out$summary,outfile2,row.names=T,sep=",")
 tmp=paste("DIC",out$DIC,sep=",")
-write.table(tmp,outfile,col.names=F,row.names=F,append=T)
+write.table(tmp,outfile1,col.names=F,row.names=F,append=T)
