@@ -145,3 +145,18 @@ for(iQuad in quadList){
 # make figure for simulation results
 source("validate/summarize_validate_sims1step.r")
 
+
+###
+### 5. get equilibrium cover from an IPM ###############################
+###
+
+source("validate/get_W_functions.r")  # get neighbor distance decay functions
+
+#no treatment effects, all species present
+tlimit <- 100
+burn.in <- 50
+trtEffects=F
+source("ipm/IPM-setup.r")
+Spars$alpha <- read.csv("ipm/Gaussian-alphas.csv",row.names=1) #import alphas
+source("ipm/IPM-getEquilibrium.r")
+
