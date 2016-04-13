@@ -56,22 +56,22 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
 }
 setwd("..")
 
-# fit recruitment models (this can take hours)
+# fit recruitment models (this can take a few hours)
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
 source("call_recruit_m0.r")
 source("call_recruit_m1.r")
 
-#save treatment test data for ARTR
-pars.summary <- read.csv("bugs_summary_m0.csv")
+# add treatment test data for ARTR 
+pars.summary <- read.csv("recruit_params_m1.csv")
 irow <- dim(trtTests)[1]
 trtTests[irow+1,] <- NA
 trtTests[irow+1,1:2] <- c("ARTR","recruitment")
 tmp <- grep("intcpt.trt",row.names(pars.summary))
 trtTests[irow+1,3:5] <- pars.summary[tmp[5],c("mean","X2.5.","X97.5.")]
 
-#save treatment test data for the three grasses
+# add treatment test data for the three grasses
 irow <- dim(trtTests)[1]
 trtTests[(irow+1):(irow+3),] <- NA
 trtTests[(irow+1):(irow+3),1:2] <- cbind(c("HECO","POSE","PSSP"),rep("recruitment",3))
@@ -80,7 +80,11 @@ trtTests[(irow+1):(irow+3),3:5] <- pars.summary[tmp[2:4],c("mean","X2.5.","X97.5
 setwd("..")
 
 # write trtTests to file
-write.csv(trtTest,"treatment_test_results.csv",row.names=F)
+trtTests <- trtTests[-1,] # throw away first line junk
+write.csv(trtTests,"treatment_test_results.csv",row.names=F)
+
+# make treatment effect figure
+source("treatment_test_figure.r")
 
 ###
 ### 3. explore neighborhood composition ###################################
@@ -98,15 +102,16 @@ sppList <-  c("ARTR","HECO","POSE","PSSP")
 
 source("validate/get_W_functions.r")  # get neighbor distance decay functions
 
-# do control plots
-quadList <- paste0("Q",c(1:6,19:26))
+# do contemporary control plots
+quadList <- paste0("Q",c(1:6,19:26))  
+groupList <- c(rep(1,6),rep(6,4),rep(3,4))
 removeSpp <- NULL
 trtEffects <- FALSE  # TRUE means use a model that includes removal treatment effects
-for(iQuad in quadList){
-  qName=iQuad
-  doGroup=1
-  source("validate/ibm_validate_removal.r")
-  source("validate/ibm_validate_removal_1step.r")
+for(iQuad in 1:length(quadList)){
+  qName=quadList[iQuad]
+  doGroup=groupList[iQuad]
+  source("validate/ibm_validate_removal.r")   # project forward from 2011
+  source("validate/ibm_validate_removal_1step.r")  # just predict one time step ahead for each year
 }
 
 # do no grass plots

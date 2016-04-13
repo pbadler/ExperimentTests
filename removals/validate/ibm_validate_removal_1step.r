@@ -221,13 +221,13 @@ N=data.frame(cbind(year,N))
 names(N)[2:dim(N)[2]]=paste(sppList,"pred",sep="")
 output2=merge(obsN,N,all.x=T)
 
-par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0))
-matplot(output1[,1],output1[,2:NCOL(output1)],type="o",
-  col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
-  pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Cover")
-matplot(output2[,1],output2[,2:NCOL(output2)],type="o",
-  col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
-  pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Density")
+# par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0))
+# matplot(output1[,1],output1[,2:NCOL(output1)],type="o",
+#   col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
+#   pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Cover")
+# matplot(output2[,1],output2[,2:NCOL(output2)],type="o",
+#   col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
+#   pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Density")
 
 write.table(output1,paste0("validate/",outfile1),row.names=F,sep=",")
 write.table(output2,paste0("validate/",outfile2),row.names=F,sep=",")

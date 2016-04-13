@@ -20,10 +20,10 @@ for(i in 1:Nspp){
   # group effects
   tmp=which(names(Gdata)=="Group")
   if(length(tmp)>0) Gpars$intcpt.gr[,i]=Gdata$Group[!is.na(Gdata$Group)] 
-  Gpars$intcpt.yr[,i]=Gdata$X.Intercept..yr
+  Gpars$intcpt.yr[,i]=Gdata$Intercept.yr
   Gpars$slope[i]=Gdata$logarea.t0[1]
   # random effects on slope
-  tmp=which(names(Gdata)=="logarea.t0.yr")
+  tmp=which(names(Gdata)=="logarea.yr")
   if(length(tmp)>0) Gpars$slope.yr[,i]=Gdata[,tmp]
   # get competition coefficients
   tmp=paste("W",sppList,sep=".")

@@ -2,8 +2,7 @@
 # call from removal_analysis_wrapper.r
 
 sppList=c("ARTR","HECO","POSE","PSSP")
-outfile1="recruit_params_m0.csv"
-outfile2="bugs_summary_m0.csv"
+outfile="recruit_params_m0.csv"
 dataDir1 <- paste(root,"/driversdata/data/idaho/speciesData/",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")
 #--------------------------------------------------------
@@ -139,6 +138,4 @@ for(i in 1:Nspp){
   plot(parents1[,i],lambda[,i],xlab="Obs",ylab="Pred",main=sppList[i])
 }
 
-write.table(out$summary,outfile2,row.names=T,sep=",")
-tmp=paste("DIC",out$DIC,sep=",")
-write.table(tmp,outfile1,col.names=F,row.names=F,append=T)
+write.table(out$summary,outfile,row.names=T,sep=",")

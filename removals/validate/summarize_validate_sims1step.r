@@ -42,7 +42,8 @@ getPopGrowth<-function(qList,trtEffects){
 }
 
 # control plots
-qList <- paste0("Q",c(1:6,19:26)) #c("Q1","Q2","Q3","Q4","Q5","Q6" ) 
+qList <- paste0("Q",c(1:6,19:26))  # all contemporary control plots#
+#qList <- c("Q1","Q2","Q3","Q4","Q5","Q6" ) # just Group 1 
 quadD <- getSims(qList,trtEffects=F)
 control.cov <- aggregate(quadD[,2:NCOL(quadD)],by=list(year=quadD$year),FUN=mean,na.rm=T)
 quadD <- getPopGrowth(qList,trtEffects=F)

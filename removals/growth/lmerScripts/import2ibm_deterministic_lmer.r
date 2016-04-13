@@ -14,18 +14,16 @@ for(i in 1:Nspp){
   Gdata=read.csv(infile)
   # main intercept
   Gpars$intcpt[i]=Gdata$X.Intercept.[1]
-  # random year effects on intercept
-  Gpars$intcpt.yr[,i]=Gdata$Intercept.yr
   # Treatment effect
   tmp=grep("Treatment",names(Gdata))
   if(length(tmp)>0) Gpars$intcpt.trt[i]=Gdata[1,tmp]
   # group effects
   tmp=which(names(Gdata)=="Group")
   if(length(tmp)>0) Gpars$intcpt.gr[,i]=Gdata$Group[!is.na(Gdata$Group)] 
-  # size slope
+  Gpars$intcpt.yr[,i]=Gdata$X.Intercept..yr
   Gpars$slope[i]=Gdata$logarea.t0[1]
   # random effects on slope
-  tmp=which(names(Gdata)=="logarea.yr")
+  tmp=which(names(Gdata)=="logarea.t0.yr")
   if(length(tmp)>0) Gpars$slope.yr[,i]=Gdata[,tmp]
   # get competition coefficients
   tmp=paste("W",sppList,sep=".")
@@ -43,13 +41,13 @@ grow=function(Gpars,doSpp,doGroup,doYear,sizes,crowding){
   logsizes=log(sizes)
   mu=Gpars$intcpt[doSpp]+Gpars$intcpt.yr[doYear,doSpp]+Gpars$intcpt.gr[doGroup,doSpp]+Gpars$intcpt.trt[doSpp]+
     (Gpars$slope[doSpp]+Gpars$slope.yr[doYear,doSpp])*logsizes+ Gpars$nb[doSpp,]%*%crowding
-  tmp=which(mu<log(minSize)*1.5)  # we will kill vanishingly small plants to avoid numerical overflow...below
+  tmp=which(mu<log(minSize)*1.5)  # we will kill vanishingly small plants...below
   mu[tmp]=log(minSize) # truncate tiny sizes (they cause problems in sigma2)
   sigma2=Gpars$sigma2.a[doSpp]*exp(Gpars$sigma2.b[doSpp]*mu)
   #out=exp(rnorm(length(sizes),mu,sqrt(sigma2)))
   out=exp(mu)
   if(sum(is.na(out))>0) browser()
   out[tmp]=0   # here's the killing
-  #out[out>maxSize[doSpp]]=maxSize[doSpp] #truncate big plants
+  out[out>maxSize[doSpp]]=maxSize[doSpp] #truncate big plants
   out
 }
