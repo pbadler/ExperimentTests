@@ -152,11 +152,28 @@ source("validate/summarize_validate_sims1step.r")
 
 source("validate/get_W_functions.r")  # get neighbor distance decay functions
 
-#no treatment effects, all species present
-tlimit <- 100
-burn.in <- 50
+#no treatment effects, all species
+init.species <- c(1:4)
+tlimit <- 1500
+burn.in <- 500
 trtEffects=F
 source("ipm/IPM-setup.r")
-Spars$alpha <- read.csv("ipm/Gaussian-alphas.csv",row.names=1) #import alphas
+Spars$alpha <- as.matrix(read.csv("ipm/Gaussian-alphas.csv",row.names=1))
 source("ipm/IPM-getEquilibrium.r")
+meanCover1 <- meanCover
+
+#no treatment effects, ARTR removal
+init.species <- c(2:4)
+source("ipm/IPM-getEquilibrium.r")
+meanCover2 <- meanCover
+
+# removal treatment effects, ARTR removal
+init.species <- c(2:4)
+trtEffects=T
+source("ipm/IPM-setup.r")
+Spars$alpha <- as.matrix(read.csv("ipm/Gaussian-alphas.csv",row.names=1))
+source("ipm/IPM-getEquilibrium.r")
+meanCover3 <- meanCover
+
+print(rbind(meanCover1,meanCover2,meanCover3))
 

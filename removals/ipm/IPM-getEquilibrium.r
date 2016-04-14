@@ -8,7 +8,8 @@
 
 ## initial population density vector
 nt=v
-for(i in 1:Nspp) nt[[i]][]=0.1
+for(i in 1:Nspp) nt[[i]][]=0  # make sure all species = 0
+for(i in init.species) nt[[i]][]=0.1  # give init.species density > 0
 new.nt=nt
 
 # set up matrix to record cover
@@ -92,9 +93,10 @@ for(i in 1:Nspp){
 matplot((burn.in+1):tlimit,100*covSave[(burn.in+1):tlimit,],type="l",col=myCol,
   xlab="Time",ylab="Cover (%)")
 
-# plot changes in size distribution
-X11()
-par(mfrow=c(2,2),tcl=-0.2)
-for(i in 1:Nspp) {image(sizeSave[[i]][],x=v[[i]],y=1:tlimit,
-  xlab="size",ylab="time",main=sppList[i]) }
+# # plot changes in size distribution
+# X11()
+# par(mfrow=c(2,2),tcl=-0.2)
+# for(i in 1:Nspp) {image(sizeSave[[i]][],x=v[[i]],y=1:tlimit,
+#   xlab="size",ylab="time",main=sppList[i]) }
 
+meanCover <- colMeans(covSave[(burn.in+1):tlimit,])*100
