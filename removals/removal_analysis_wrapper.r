@@ -174,5 +174,15 @@ Spars$alpha <- as.matrix(read.csv("ipm/Gaussian-alphas.csv",row.names=1))
 source("ipm/IPM-getEquilibrium.r")
 meanCover3 <- meanCover
 
-print(rbind(meanCover1,meanCover2,meanCover3))
+simResults <- rbind(meanCover1,meanCover2,meanCover3)
+
+# plot simulation results
+png("IPMsims.png",height=3,width=4.5,units="in",res=400)
+  par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
+  myCol <- c("black","gray","white")
+  tmp <- barplot(simResults,beside=T,col=myCol,ylab="Cover (%)")
+  axis(side=1,at=tmp[2,],sppList,cex.axis=0.9)
+  legend("topright",c("Baseline","Baseline, no ARTR","Removal, no ARTR"),
+         fill=myCol,bty="n",cex=0.9)
+dev.off()
 
