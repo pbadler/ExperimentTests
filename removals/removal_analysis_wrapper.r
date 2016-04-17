@@ -158,7 +158,6 @@ tlimit <- 1500
 burn.in <- 500
 trtEffects=F
 source("ipm/IPM-setup.r")
-Spars$alpha <- as.matrix(read.csv("ipm/Gaussian-alphas.csv",row.names=1))
 source("ipm/IPM-getEquilibrium.r")
 meanCover1 <- meanCover
 

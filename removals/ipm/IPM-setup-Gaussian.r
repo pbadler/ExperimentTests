@@ -98,10 +98,12 @@ expandW=function(v,u,W){
 }
 
 # Function to calculate size-dependent crowding, assuming no overlap
-wrii=function(r,i) {
-return(2*pi*integrate(function(z) z*Wfuns[[i]](z)*Cr[[i]](z-r), r, zc[i])$value)
+wrij=function(r,i,j) {
+   return(2*pi*integrate(function(z) z*exp(-alpha[i,j]*(z^2))*Cr[[j]](z-r), r, r + r.U[j])$value
+     + pi*Ctot[j]*exp(-alpha[i,j]*((r+r.U[j])^2))/alpha[i,j]); 	
 }
-Wrii=Vectorize(wrii,vectorize.args="r")
+Wrij=Vectorize(wrij,vectorize.args="r")
+
 
 # Function to sum total cover of each species
 sumCover=function(v,nt,h,A){

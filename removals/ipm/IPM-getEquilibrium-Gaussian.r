@@ -39,21 +39,23 @@ for (i in 2:(tlimit)){
   rpa=get.rpa(Rpars,cover,doYear)
   
   #calculate size-specific crowding
+  alpha=Spars$alpha 
   for(ii in 1:Nspp){ 
     
     # first do all overlap W's
     Xbar=cover*A/N       # multiply by A to get cover back in cm^2
     varX=varN(v,nt,h,Xbar,N) 
-    muW = Xbar*N*W.constant/A # divide by A to get units in m^2 per m^2, not cm^2
+    muW = pi*Xbar*N/(A*alpha[ii,])
     muW[is.na(muW)]=0
     Wmat[[ii]]=matrix(muW,nrow=length(v[[ii]]),ncol=Nspp,byrow=T)
     
     #now do conspecific no overlap W
     Ctot[ii]=h[ii]*sum(expv[[ii]]*nt[[ii]]) 
     Cr[[ii]]=splinefun(b.r[[ii]],h[ii]*c(0,cumsum(expv[[ii]]*nt[[ii]])),method="natural")
-    Wmat[[ii]][,ii]=Wrii(v.r[[ii]],ii)/A
+    Wmat[[ii]][,ii]=Wrij(v.r[[ii]],ii,ii)/A
     
   }
+ 
   for(doSpp in 1:Nspp){  
     if(cover[doSpp]>0){    
       # make kernels and project
