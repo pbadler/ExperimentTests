@@ -1,12 +1,13 @@
 
 # call from removal_analysis_wrapper.r
 
-if(exists("trtTests")==F)  read.csv("treatment_test_results.csv")
+if(exists("trtTests")==F)  trtTests <- read.csv("treatment_test_results.csv")
 
 # plotting function
 plotEffects <- function(doStage){
   ii<-which(trtTests$stage==doStage)
   myLims <- c(min(trtTests$CI.02.5[ii],na.rm=T),max(trtTests$CI.97.5[ii],na.rm=T))
+  if(doStage=="recruitment") myLims <- c(-5,0.6)
   plot(c(1:4),trtTests$effect[ii],ylim=myLims,xlab="",ylab="",xaxt="n",pch=16)
   axis(1,at=c(1:4),labels=c("ARTR","HECO","POSE","PSSP"),las=2)
   abline(h=0,col="gray")
@@ -24,8 +25,6 @@ png("treatment_tests.png",height=3,width=7,res=400,units="in")
   plotEffects(doStage="growth")
   mtext("(B) Growth",side=3,line=1,adj=0,cex=0.9)
   
-  #remove ARTR from recruitment plot--error bars too big
-  trtTests[which(trtTests$species=="ARTR" & trtTests$stage=="recruitment"),3:5] <- NA
   plotEffects(doStage="recruitment")
   mtext("(C) Recruitment",side=3,line=1,adj=0,cex=0.9)
   
