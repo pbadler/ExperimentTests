@@ -85,12 +85,15 @@ m0 <- lmer(logarea.t1~logarea.t0+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
              (1|Group)+(logarea.t0|year),data=allD) 
 
 # plot residuals vs W.ARTR
-plot(allD$W.ARTR[allD$Treatment=="Control"],residuals(m0)[allD$Treatment=="Control"],
-     xlab="W.ARTR",ylab="Residuals")
-abline(lm(residuals(m0)[allD$Treatment=="Control"]~allD$W.ARTR[allD$Treatment=="Control"]),lwd=2)
-abline(h=0,lty="dashed",col="grey")
-points(allD$W.ARTR[allD$Treatment=="No_shrub"],residuals(m0)[allD$Treatment=="No_shrub"],col="red")
-points(0,mean(residuals(m0)[allD$Treatment=="No_shrub"]),pch=16,col="blue")
+png("PSSP_resids.png",height=3.5,width=5,units="in",res=400)
+  par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
+  plot(allD$W.ARTR[allD$Treatment=="Control"],residuals(m0)[allD$Treatment=="Control"],
+       xlab="W.ARTR",ylab="Residuals",col="darkgrey")
+  abline(lm(residuals(m0)[allD$Treatment=="Control"]~allD$W.ARTR[allD$Treatment=="Control"]),col="black",lwd=2)
+  abline(h=0,lty="dashed",col="black")
+  points(allD$W.ARTR[allD$Treatment=="No_shrub"],residuals(m0)[allD$Treatment=="No_shrub"],col="red")
+  points(0,mean(residuals(m0)[allD$Treatment=="No_shrub"]),pch=16,col="blue")
+dev.off()
 
 #boxplots of residuals by treatment at W.ARTR=0
 allD$resids <- residuals(m0)
