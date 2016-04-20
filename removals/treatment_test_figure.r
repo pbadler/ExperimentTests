@@ -11,6 +11,7 @@ plotEffects <- function(doStage){
   plot(c(1:4),trtTests$effect[ii],ylim=myLims,xlab="",ylab="",xaxt="n",pch=16)
   axis(1,at=c(1:4),labels=c("ARTR","HECO","POSE","PSSP"),las=2)
   abline(h=0,col="gray")
+  points(x=c(1:4),y=trtTests$effect[ii],pch=16,cex=2) # add some larger points
   arrows(x0=c(1:4),y0=trtTests$CI.02.5[ii],x1=c(1:4),y1=trtTests$CI.97.5[ii],
          code=3,angle=90,length=0.05) 
 }

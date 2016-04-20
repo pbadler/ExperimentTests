@@ -96,25 +96,32 @@ summary(mPSSP)  # significant
 # figures ########################################################################
 
 trtLabels<-substr(x=names(spp.mean)[3:5],start=7,stop=nchar(names(spp.mean)[3:5]))
-myCols<-c("black","blue3","green")
+myCols<-c("black","dodgerblue3","red3")
 
-#1. Average cover and log change by treatment and year
-pdf("treatment_trends.pdf",height=5.5,width=8)
+#1. Average cover treatment and year
+png("treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
   
-par(mfrow=c(2,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2,lwd=1)
+  par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2,lwd=1)
 
   # mean cover
   for(doSpp in sppList){
     tmp.mean<-subset(spp.mean,species==doSpp)
     matplot(tmp.mean$year,tmp.mean[,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-            col=myCols,main=doSpp)
+            col=myCols,main=doSpp,font.main=4)
     if(doSpp==sppList[1]) {
-      legend("topright",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
+      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
       mtext("Mean cover (%)",side=2,line=2,outer=F)
     }
   }
+  mtext("Year",side=1,line=1,outer=T)
   
+dev.off()
+
+#2. Log cover change by treatment and year 
+png("treatment_trends_logChange.png",height=3.5,width=8,units="in",res=400)
   
+  par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2,lwd=1)
+
   # log change
   myLims <- c(-1,1)
   for(doSpp in sppList){

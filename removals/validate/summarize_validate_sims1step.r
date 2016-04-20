@@ -137,11 +137,11 @@ plot1to1 <- function(doSpp,controlD,removalD,removalTRTD,mytitle,doLegend=F){
   abline(0,1)
   abline(h=0,lty="dotted",col="grey")
   abline(v=0,lty="dotted",col="grey")
-  points(removalD[,1+doSpp],removalD[,5+doSpp],pch=22,bg=color2,cex=1.1)
-  points(removalTRTD[,1+doSpp],removalTRTD[,5+doSpp],pch=24,bg=color2,cex=1.1)
-  points(controlD[,1+doSpp],controlD[,5+doSpp],pch=21,bg=color1)
+  points(removalD[,1+doSpp],removalD[,5+doSpp],pch=22,bg=color2,cex=1.5)
+  points(removalTRTD[,1+doSpp],removalTRTD[,5+doSpp],pch=24,bg=color2,cex=1.5)
+  points(controlD[,1+doSpp],controlD[,5+doSpp],pch=21,bg=color1,cex=1.5)
   if(doLegend==T){
-    legend("topleft",c("Control","Removal","Removal effects"),pch=c(21,22,24),
+    legend("topleft",c("Control plots","Removal plots","Removal plots + effects"),pch=c(21,22,24),pt.cex=1.5,
         pt.bg=c(color1,color2,color2),bty="n")
   }
   title(main=mytitle,adj=0,font.main=1) 

@@ -150,6 +150,8 @@ source("validate/summarize_validate_sims1step.r")
 ### 5. get equilibrium cover from an IPM ###############################
 ###
 
+sppList <-  c("ARTR","HECO","POSE","PSSP")
+
 source("validate/get_W_functions.r")  # get neighbor distance decay functions
 
 #no treatment effects, all species
@@ -170,17 +172,19 @@ meanCover2 <- meanCover
 init.species <- c(2:4)
 trtEffects=T
 source("ipm/IPM-setup.r")
-Spars$alpha <- as.matrix(read.csv("ipm/Gaussian-alphas.csv",row.names=1))
 source("ipm/IPM-getEquilibrium.r")
 meanCover3 <- meanCover
 
 simResults <- rbind(meanCover1,meanCover2,meanCover3)
+colnames(simResults) <- sppList
+write.csv(simResults,"ipm/simResults.csv",row.names=F)
 
 # plot simulation results
-png("IPMsims.png",height=3,width=4.5,units="in",res=400)
+if(!exists("simResults")) simResults <- read.csv("ipm/simResults.csv")
+png("ipm/IPMsims.png",height=3,width=4.5,units="in",res=400)
   par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
-  myCol <- c("black","gray","white")
-  tmp <- barplot(simResults,beside=T,col=myCol,ylab="Cover (%)")
+  myCol <- c("black","dodgerblue3","red3")
+  tmp <- barplot(as.matrix(simResults),beside=T,names.arg=rep("",4),col=myCol,ylab="Cover (%)")
   axis(side=1,at=tmp[2,],sppList,cex.axis=0.9)
   legend("topright",c("Baseline","Baseline, no ARTR","Removal, no ARTR"),
          fill=myCol,bty="n",cex=0.9)
