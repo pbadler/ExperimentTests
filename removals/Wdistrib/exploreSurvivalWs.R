@@ -69,10 +69,21 @@ groupI <- which(cD$Group=="E1") # keep track of this for later
 Wdat = cD[,4:ncol(cD)]
 Wnonzero = Wdat > 0
 
+#scatter plots
+pairs(Wdat)
+
 # grab data from no shrub plots
 trtD <- subset(allD[[doSpp]],Treatment=="No_shrub" & year==2011)  
 Wdat.trt = trtD[,4:ncol(trtD)]
 Wnonzero.trt = Wdat.trt > 0
+pairs(Wdat.trt)
+
+myCol <- c(rep("black",dim(Wdat)[1]),rep("red",dim(Wdat.trt)[1]))
+allWdat <-rbind(Wdat,Wdat.trt)
+X11()
+pairs(allWdat,col=myCol)
+
+
 
 # Brief analysis -- are there correlations among whether there is a zero or not
 cor(Wnonzero) # All pretty tiny. 

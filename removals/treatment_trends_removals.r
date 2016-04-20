@@ -96,18 +96,44 @@ summary(mPSSP)  # significant
 # figures ########################################################################
 
 trtLabels<-substr(x=names(spp.mean)[3:5],start=7,stop=nchar(names(spp.mean)[3:5]))
-myCols<-c("black","dodgerblue3","red3")
+myCols<-c("black","darkgoldenrod","darkgreen")
 
 #1. Average cover treatment and year
 png("treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
   
-  par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2,lwd=1)
+  par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2)
 
   # mean cover
   for(doSpp in sppList){
     tmp.mean<-subset(spp.mean,species==doSpp)
-    matplot(tmp.mean$year,tmp.mean[,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-            col=myCols,main=doSpp,font.main=4)
+    my.y <-c(0,max(tmp.mean[,3:5]))
+    matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
+            col=myCols,main=doSpp,font.main=4,lwd=2)
+    if(doSpp==sppList[1]) {
+      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
+      mtext("Mean cover (%)",side=2,line=2,outer=F)
+    }
+  }
+  mtext("Year",side=1,line=1,outer=T)
+  
+dev.off()
+
+#1. Average cover treatment and year (this version drops the data for the removal species)
+png("treatment_trends_cover_simple.png",height=2.75,width=8,units="in",res=400)
+  
+  par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2)
+
+  # mean cover
+  for(doSpp in sppList){
+    tmp.mean<-subset(spp.mean,species==doSpp)
+    my.y <-c(0,max(tmp.mean[,3:5]))
+    if(doSpp=="Artemisia tripartita"){
+      tmp.mean$cover.No_shrub <- NA 
+    }else{
+      tmp.mean$cover.No_grass <- NA
+    }
+    matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
+            col=myCols,main=doSpp,font.main=4,lwd=2)
     if(doSpp==sppList[1]) {
       legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
       mtext("Mean cover (%)",side=2,line=2,outer=F)

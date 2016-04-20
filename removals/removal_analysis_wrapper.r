@@ -156,16 +156,18 @@ source("validate/get_W_functions.r")  # get neighbor distance decay functions
 
 #no treatment effects, all species
 init.species <- c(1:4)
-tlimit <- 1500
-burn.in <- 500
+tlimit <- 100
+burn.in <- 50
 trtEffects=F
 source("ipm/IPM-setup.r")
 source("ipm/IPM-getEquilibrium.r")
+write.csv(covSave[(burn.in+1):tlimit,],"ipm/baselineCover.csv",row.names=F)
 meanCover1 <- meanCover
 
 #no treatment effects, ARTR removal
 init.species <- c(2:4)
 source("ipm/IPM-getEquilibrium.r")
+write.csv(covSave[(burn.in+1):tlimit,],"ipm/baselineCover-noARTR.csv",row.names=F)
 meanCover2 <- meanCover
 
 # removal treatment effects, ARTR removal
@@ -173,20 +175,12 @@ init.species <- c(2:4)
 trtEffects=T
 source("ipm/IPM-setup.r")
 source("ipm/IPM-getEquilibrium.r")
+write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTR.csv",row.names=F)
 meanCover3 <- meanCover
 
 simResults <- rbind(meanCover1,meanCover2,meanCover3)
 colnames(simResults) <- sppList
-write.csv(simResults,"ipm/simResults.csv",row.names=F)
+write.csv(simResults,"ipm/simResults-meanCover.csv",row.names=F)
 
-# plot simulation results
-if(!exists("simResults")) simResults <- read.csv("ipm/simResults.csv")
-png("ipm/IPMsims.png",height=3,width=4.5,units="in",res=400)
-  par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
-  myCol <- c("black","dodgerblue3","red3")
-  tmp <- barplot(as.matrix(simResults),beside=T,names.arg=rep("",4),col=myCol,ylab="Cover (%)")
-  axis(side=1,at=tmp[2,],sppList,cex.axis=0.9)
-  legend("topright",c("Baseline","Baseline, no ARTR","Removal, no ARTR"),
-         fill=myCol,bty="n",cex=0.9)
-dev.off()
+source("ipm/IPM-figures.r")
 
