@@ -89,7 +89,7 @@ source("treatment_test_figure.r")
 ###
 ### 3. explore neighborhood composition ###################################
 ###
-
+library("TeachingDemos") # for inset plots
 setwd("Wdistrib")
 source("exploreSurvivalWs.R")
 setwd("..")
