@@ -156,7 +156,7 @@ source("validate/get_W_functions.r")  # get neighbor distance decay functions
 
 #no treatment effects, all species
 init.species <- c(1:4)
-tlimit <- 2000
+tlimit <- 2500
 burn.in <- 500
 trtEffects=F
 source("ipm/IPM-setup.r")
