@@ -7,17 +7,19 @@ Spars=list(intcpt=rep(NA,Nspp),intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.gr=matrix(0,
   nb=matrix(0,Nspp,Nspp))
 
 for(i in 1:Nspp){
-  if(trtEffects==T){
-    infile=paste0("survival/",sppList[i],"_surv_Trt.csv")
-  }else{
-    infile=paste0("survival/",sppList[i],"_surv_noTrt.csv")
-  }
+#   if(trtEffects==T){
+     infile=paste0("survival/",sppList[i],"_surv_Trt.csv")
+#   }else{
+#     infile=paste0("survival/",sppList[i],"_surv_noTrt.csv")
+#   }
   Sdata=read.csv(infile)
   # main intercept
   Spars$intcpt[i]=Sdata$X.Intercept.[1]
   # Treatment effect
-  tmp=grep("Treatment",names(Sdata))
-  if(length(tmp)>0) Spars$intcpt.trt[i]=Sdata[1,tmp]
+  if(trtEffects==T){
+    tmp=grep("Treatment",names(Sdata))
+    if(length(tmp)>0) Spars$intcpt.trt[i]=Sdata[1,tmp]
+  }
   # Group effects
   tmp=which(names(Sdata)=="Group")
   if(length(tmp)>0) Spars$intcpt.gr[,i]=Sdata$Group[!is.na(Sdata$Group)] # get spatial average

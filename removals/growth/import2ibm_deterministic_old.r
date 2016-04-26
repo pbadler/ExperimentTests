@@ -1,24 +1,28 @@
 # Import and format growth parameters
 # then define growth function
 
+# this version imports separate files depending on trtEffects == T of F
+# new version will always use version with treatment, but will only add treatment effects
+# if trtEffects==T
+
 # growth parameters
 Gpars=list(intcpt=rep(NA,Nspp),intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.gr=matrix(0,6,Nspp),intcpt.trt=rep(0,Nspp),
   slope=rep(NA,Nspp),slope.yr=matrix(0,Nyrs,Nspp),
   nb=matrix(0,Nspp,Nspp),sigma2.a=rep(NA,Nspp),sigma2.b=rep(NA,Nspp))
 for(i in 1:Nspp){
-
-  infile=paste0("growth/",sppList[i],"_growth_Trt.csv")
-
+  if(trtEffects==T){
+    infile=paste0("growth/",sppList[i],"_growth_Trt.csv")
+  }else{
+    infile=paste0("growth/",sppList[i],"_growth_noTrt.csv")
+  }
   Gdata=read.csv(infile)
   # main intercept
   Gpars$intcpt[i]=Gdata$X.Intercept.[1]
   # random year effects on intercept
   Gpars$intcpt.yr[,i]=Gdata$Intercept.yr
   # Treatment effect
-  if(trtEffects==T){
-    tmp=grep("Treatment",names(Gdata))
-    if(length(tmp)>0) Gpars$intcpt.trt[i]=Gdata[1,tmp]
-  }
+  tmp=grep("Treatment",names(Gdata))
+  if(length(tmp)>0) Gpars$intcpt.trt[i]=Gdata[1,tmp]
   # group effects
   tmp=which(names(Gdata)=="Group")
   if(length(tmp)>0) Gpars$intcpt.gr[,i]=Gdata$Group[!is.na(Gdata$Group)] 

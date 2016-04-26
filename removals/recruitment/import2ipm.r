@@ -5,11 +5,11 @@ Rpars=list(intcpt.mu=rep(0,Nspp),intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.trt=matrix
   dd=matrix(NA,Nspp,Nspp),theta=rep(NA,Nspp),sizeMean=rep(NA,Nspp),sizeVar=rep(NA,Nspp),
   recSizes=list(1))
 
-  if(trtEffects==T){
-    infile=paste0("recruitment/recruit_params_m1.csv")
-  }else{
-    infile=paste0("recruitment/recruit_params_m0.csv")
-  }   
+#   if(trtEffects==T){
+  infile=paste0("recruitment/recruit_params_m1.csv")
+#   }else{
+#     infile=paste0("recruitment/recruit_params_m0.csv")
+#   }   
  Rdata=read.csv(infile)
  
  # subset out non-essential parameters
@@ -28,9 +28,14 @@ Rpars=list(intcpt.mu=rep(0,Nspp),intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.trt=matrix
    #Rpars$recSizes[[i]]=recSize$area
  }
 Rpars$dd=t(Rpars$dd) # c[i,j] = effect of j on i
+
 # reformat treatment effects
-Rpars$intcpt.trt <- c(Rpars$intcpt.trt[3,1], # ARTR in no_grass
+if(trtEffects==F){
+  Rpars$intcpt.trt <- rep(0,4)
+}else{
+  Rpars$intcpt.trt <- c(Rpars$intcpt.trt[3,1], # ARTR in no_grass
                       Rpars$intcpt.trt[2,2:4])   # grasses in no_shrub
+}
 
 rm(Rdata)
 
