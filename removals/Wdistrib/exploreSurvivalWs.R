@@ -1,11 +1,5 @@
 # PBA March 2016
 
-rm(list=ls(all=TRUE))
-graphics.off();
-
-root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
-setwd(paste(root,"/ExperimentTests/removals/Wdistrib",sep="")); # modify as needed 
-
 #########################################
 #  1. Import data and calculate W's
 #########################################
@@ -76,9 +70,9 @@ dev.off()
 
 # store results of regressions
 nonzero.rsq <- matrix(NA,4,6)
-row.names(nonzero.rsq) <- sppList
+row.names(nonzero.rsq) <- sppList[1:4]
 zero.dev <-matrix(NA,4,6)
-row.names(zero.dev) <- sppList
+row.names(zero.dev) <- sppList[1:4]
 
 for(doSpp in 1:4){
   

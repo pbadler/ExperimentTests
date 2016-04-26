@@ -144,4 +144,4 @@ for(i in 1:Nspp){
   plot(parents1[,i],lambda[,i],xlab="Obs",ylab="Pred",main=sppList[i])
 }
 
-write.table(out$summary,outfile2,row.names=T,sep=",")
+write.table(out$summary,outfile,row.names=T,sep=",")

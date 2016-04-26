@@ -1,7 +1,7 @@
 
 # call from removal_analysis_wrapper.r
 
-distWts <- read.csv(paste0(root,"/driversdata/data/idaho/speciesdata/IdahoDistanceWeights.csv"))
+distWts <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights.csv"))
 
 Wfuns <- list(4) # store approximate spline functions
 zc <- numeric(4) # store distance at which spline function goes to zero
