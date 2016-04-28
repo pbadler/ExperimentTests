@@ -57,7 +57,7 @@ recruit=function(Rpars,sizes,spp,doGroup,doYear,lastID,L,expand){
     lambda=rep(NA,Nspp) # seed production
     for(i in 1:Nspp){
        lambda[i]=totArea[i]*exp(Rpars$intcpt.yr[doYear,i]+Rpars$intcpt.gr[doGroup,i]+
-                    Rpars$intcpt.trt[i]+totArea%*%Rpars$dd[i,])
+                    Rpars$intcpt.trt[i]+sqrt(totArea)%*%Rpars$dd[i,])
     }
     # number of draws from distribution depends on size of landscape
     #NN=rnbinom(length(lambda)*expand^2,mu=lambda,size=Rpars$theta)  

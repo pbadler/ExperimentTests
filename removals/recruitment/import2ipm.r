@@ -50,7 +50,7 @@ get.rpa=function(Rpars,cover,doYear){
     Nspp=length(cover)
     mu=rep(NA,Nspp)
     for(i in 1:Nspp){
-      mu[i]=cover2[i]*exp(Rpars$intcpt.yr[doYear,i]+Rpars$intcpt.trt[i]+cover2%*%Rpars$dd[i,]) 
+      mu[i]=cover2[i]*exp(Rpars$intcpt.yr[doYear,i]+Rpars$intcpt.trt[i]+sqrt(cover2)%*%Rpars$dd[i,]) 
     }
     if(sum(is.na(mu))>0) browser() # stop for errors
     rpa=mu/(cover*A)  # convert from number recruits to recruits per cm^2

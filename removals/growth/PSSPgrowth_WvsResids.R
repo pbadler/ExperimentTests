@@ -80,6 +80,19 @@ allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
 
 allD$year <- as.factor(allD$year)
 
+# look at biggest residuals
+m1 <- lmer(logarea.t1~logarea.t0+ Treatment+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD)
+keep <- which(allD$Treatment=="No_shrub")
+check<-allD[keep,]
+check$resid <- resid(m1)[keep]
+check<-check[order(check$resid,decreasing=TRUE),]
+
+# fit again without PSSP --> Poa mistake
+bad <- which(allD$quad=="Q54" & allD$year==2012 & allD$trackID==9)
+m1 <- lmer(logarea.t1~logarea.t0+ Treatment+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD[-bad,])
+
 # fit model without W.ARTR
 m0 <- lmer(logarea.t1~logarea.t0+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
              (1|Group)+(logarea.t0|year),data=allD) 

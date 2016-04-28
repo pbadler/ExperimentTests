@@ -27,7 +27,6 @@ source("write_params.r") # get function to format and output parameters
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"growth.r"))
   # write parameters
-  formatGrowthPars(m0,paste0(iSpp,"_growth_noTrt.csv"))
   formatGrowthPars(m1,paste0(iSpp,"_growth_Trt.csv"))    
   # save treatment test
   irow <- dim(trtTests)[1]
@@ -45,7 +44,6 @@ source("write_params.r") # get function to format and output parameters
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"survival.r"))
   # write parameters
-  formatSurvPars(m0,paste0(iSpp,"_surv_noTrt.csv"))
   formatSurvPars(m1,paste0(iSpp,"_surv_Trt.csv"))   
   # save treatment test
   irow <- dim(trtTests)[1]
@@ -60,7 +58,6 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-source("call_recruit_m0.r")
 source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 

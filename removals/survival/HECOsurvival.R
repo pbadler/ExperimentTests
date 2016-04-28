@@ -76,14 +76,14 @@ allD$GroupID <- as.numeric(allD$Group)
 allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
 
 # baseline model
-m0 <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-  logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("binomial"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
+# m0 <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+#   logarea:W.ARTR +logarea:W.HECO + logarea:W.POSE + logarea:W.PSSP+logarea:W.allcov + logarea:W.allpts +
+#   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+#   f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+#   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+#   family=c("binomial"), verbose=FALSE,
+#   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+#   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
 # Treatment effects
 m1 <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
