@@ -50,14 +50,17 @@ setwd("survival")
 source("write_params.r") # get function to format and output parameters
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"survival.r"))
-  # write parameters
-  formatSurvPars(m1,paste0(iSpp,"_surv_Trt.csv"))   
+  
   # save treatment test
   irow <- dim(trtTests)[1]
   trtTests[irow+1,] <- NA
   trtTests[irow+1,1:2] <- c(iSpp,"survival")
   tmp <- grep("Treatment",row.names(m1$summary.fixed))
   trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
+  
+  # write parameters
+  formatSurvPars(m.best,paste0(iSpp,"_surv.csv")) 
+  
 }
 setwd("..")
 

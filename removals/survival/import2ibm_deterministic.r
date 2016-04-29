@@ -7,11 +7,9 @@ Spars=list(intcpt=rep(NA,Nspp),intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.gr=matrix(0,
   nb=matrix(0,Nspp,Nspp))
 
 for(i in 1:Nspp){
-#   if(trtEffects==T){
-     infile=paste0("survival/",sppList[i],"_surv_Trt.csv")
-#   }else{
-#     infile=paste0("survival/",sppList[i],"_surv_noTrt.csv")
-#   }
+
+  infile=paste0("survival/",sppList[i],"_surv.csv")
+
   Sdata=read.csv(infile)
   # main intercept
   Spars$intcpt[i]=Sdata$X.Intercept.[1]

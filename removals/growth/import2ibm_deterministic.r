@@ -27,10 +27,12 @@ for(i in 1:Nspp){
   tmp=which(is.element(names(Gdata),tmp))
   if(length(tmp)>0) Gpars$nb[i,]=as.numeric(Gdata[1,tmp])
   # Treatment effects
-  tmp=grep("Treatment",names(Gdata))
-  if(length(tmp)>0) Gpars$intcpt[i]=Gpars$intcpt[i] + Gdata[1,tmp[1]] # add treatment intercept
-  if(length(tmp)>1) Gpars$nb[i,i]=Gpars$nb[i,i] + Gdata[1,tmp[2]] # add treatment density dependence
-  if(length(tmp)>2) stop("too many treatment effects")
+  if(trtEffects==T){
+    tmp=grep("Treatment",names(Gdata))
+    if(length(tmp)>0) Gpars$intcpt[i]=Gpars$intcpt[i] + Gdata[1,tmp[1]] # add treatment intercept
+    if(length(tmp)>1) Gpars$nb[i,i]=Gpars$nb[i,i] + Gdata[1,tmp[2]] # add treatment density dependence
+    if(length(tmp)>2) stop("too many treatment effects")
+  }
   # variance parameters
   Gpars$sigma2.a[i]=Gdata$sigma.a[1]
   Gpars$sigma2.b[i]=Gdata$sigma.b[1]
