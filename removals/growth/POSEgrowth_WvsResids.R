@@ -80,12 +80,40 @@ allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
 
 allD$year <- as.factor(allD$year)
 
-# fit model without W.ARTR
-m0 <- lmer(logarea.t1~logarea.t0+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
+# explore treatment effects
+m0 <- lmer(logarea.t1~logarea.t0 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
              (1|Group)+(logarea.t0|year),data=allD) 
 
-# plot residuals vs W.ARTR
-png("POSE_resids.png",height=3.5,width=5,units="in",res=400)
+m1 <- lmer(logarea.t1~logarea.t0+ Treatment + W.HECO + W.POSE + W.PSSP+ W.ARTR + W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD) 
+
+m2 <- lmer(logarea.t1~logarea.t0+ Treatment + W.HECO + W.POSE + W.PSSP+ W.ARTR + W.allcov + W.allpts+
+           W.POSE:Treatment+  
+             (1|Group)+(logarea.t0|year),data=allD) 
+
+m3 <- lmer(logarea.t1~logarea.t0+ Treatment + W.HECO + W.POSE + W.PSSP+ W.ARTR + W.allcov + W.allpts+
+           W.POSE:Treatment+ W.HECO:Treatment+W.PSSP:Treatment+ 
+             (1|Group)+(logarea.t0|year),data=allD) 
+print(c(AIC(m0),AIC(m1),AIC(m2),AIC(m3)))
+
+
+# look at residuals vs marginal POSE effects
+m0 <- lmer(logarea.t1~logarea.t0+ W.ARTR+ W.HECO + W.PSSP + W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD) 
+png("POSE_marginalWPOSE.png",height=3.5,width=5,units="in",res=400)
+  par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
+  plot(allD$W.PSSP[allD$Treatment=="Control"],residuals(m0)[allD$Treatment=="Control"],
+        xlab="W.POSE",ylab="Residuals",col="darkgrey")
+  abline(lm(residuals(m0)[allD$Treatment=="Control"]~allD$W.POSE[allD$Treatment=="Control"]),col="darkgrey",lwd=2)
+  abline(h=0,lty="dashed",col="black")
+  points(allD$W.PSSP[allD$Treatment=="No_shrub"],residuals(m0)[allD$Treatment=="No_shrub"],col="red")
+  abline(lm(residuals(m0)[allD$Treatment=="No_shrub"]~allD$W.POSE[allD$Treatment=="No_shrub"]),col="red",lwd=2)
+dev.off()
+
+# look as residuals vs marginal W.ARTR effects
+m0 <- lmer(logarea.t1~logarea.t0+ W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD)
+png("POSE_marginalWARTR.png",height=3.5,width=5,units="in",res=400)
   par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
   plot(allD$W.ARTR[allD$Treatment=="Control"],residuals(m0)[allD$Treatment=="Control"],
        xlab="W.ARTR",ylab="Residuals",col="darkgrey")

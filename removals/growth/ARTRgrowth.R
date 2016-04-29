@@ -90,17 +90,27 @@ allD$year <- as.factor(allD$year)
 allD$GroupID <- as.numeric(allD$Group)
 allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
 
-# baseline model
-# m0 <- inla(logarea.t1 ~ logarea.t0+ W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
-#   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-#   f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-#   f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-#   family=c("gaussian"), verbose=FALSE,
-#   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-#   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
-
-# Treatment effect
+# Basic treatment effect (intercept) model
 m1 <- inla(logarea.t1 ~ logarea.t0 + Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
+
+# compare to other models using lmer
+m0.lmer <- lmer(logarea.t1~logarea.t0 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD) 
+m1.lmer <- lmer(logarea.t1~logarea.t0+ Treatment + W.HECO + W.POSE + W.PSSP+ W.ARTR + W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD) 
+m2.lmer <- lmer(logarea.t1~logarea.t0+ Treatment + W.HECO + W.POSE + W.PSSP+ W.ARTR + W.allcov + W.allpts+
+           W.ARTR:Treatment+  
+             (1|Group)+(logarea.t0|year),data=allD) 
+print(c(AIC(m0.lmer),AIC(m1.lmer),AIC(m2.lmer))) # simplest model (no treatment effects) is best
+
+# fit better model
+m.best <- inla(logarea.t1 ~ logarea.t0 + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
   f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,

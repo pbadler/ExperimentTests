@@ -21,21 +21,28 @@ source("treatment_trends_removals.r")
 trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
 
 # fit growth models (takes < 5 mins)
+library(lme4)
 library(INLA)
 setwd("growth")
 source("write_params.r") # get function to format and output parameters
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"growth.r"))
-  # write parameters
-  formatGrowthPars(m1,paste0(iSpp,"_growth_Trt.csv"))    
+   
   # save treatment test
   irow <- dim(trtTests)[1]
   trtTests[irow+1,] <- NA
   trtTests[irow+1,1:2] <- c(iSpp,"growth")
   tmp <- grep("Treatment",row.names(m1$summary.fixed))
   trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
+  
+  # write parameters for best model
+  formatGrowthPars(m.best,paste0(iSpp,"_growth.csv")) 
+  
 }
 setwd("..")
+
+# Note: the warning messages come from the lmer models for HECO,
+# not the more important INLA models.
 
 # fit survival models (takes ~ 10 minutes)
 library(INLA)
