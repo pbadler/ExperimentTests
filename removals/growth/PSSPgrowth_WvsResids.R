@@ -14,7 +14,7 @@ nonCompLength.s=5 #Number of columns in SppData that are not measures of competi
 
 # set up distance weights------------------------------------------------
 
-dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights.csv",sep=""));
+#dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights_noExptl.csv",sep=""));
 dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
 dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
 
@@ -90,11 +90,8 @@ check<-check[order(check$resid,decreasing=TRUE),]
 
 # fit again without PSSP --> Poa mistake
 bad <- which(allD$quad=="Q54" & allD$year==2012 & allD$trackID==9)
-m1 <- lmer(logarea.t1~logarea.t0+ Treatment+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
-             (1|Group)+(logarea.t0|year),data=allD)
-
-m1 <- lmer(logarea.t1~logarea.t0+ Treatment+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+W.PSSP:Treatment+
-             (1|Group)+(logarea.t0|year),data=allD)
+m1.noOutlier <- lmer(logarea.t1~logarea.t0+ Treatment+ W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD[-bad,])
 
 # explore treatment effects
 m0 <- lmer(logarea.t1~logarea.t0 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
@@ -125,7 +122,7 @@ png("PSSP_marginalWPSSP.png",height=3.5,width=5,units="in",res=400)
   abline(lm(residuals(m0)[allD$Treatment=="No_shrub"]~allD$W.PSSP[allD$Treatment=="No_shrub"]),col="red",lwd=2)
 dev.off()
 
-# look as residuals vs marginal W.ARTR effects
+# look at residuals vs marginal W.ARTR effects
 m0 <- lmer(logarea.t1~logarea.t0+ W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts+
              (1|Group)+(logarea.t0|year),data=allD)
 png("PSSP_marginalWARTR.png",height=3.5,width=5,units="in",res=400)

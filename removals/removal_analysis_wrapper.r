@@ -25,6 +25,8 @@ library(lme4)
 library(INLA)
 setwd("growth")
 source("write_params.r") # get function to format and output parameters
+# read in distance weights
+dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"growth.r"))
    
@@ -48,6 +50,8 @@ setwd("..")
 library(INLA)
 setwd("survival")
 source("write_params.r") # get function to format and output parameters
+# read in distance weights
+dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"survival.r"))
   
@@ -68,7 +72,7 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-source("call_recruit_m1.r")
+#source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 
 pars.summary <- read.csv("recruit_params_m1.csv")
@@ -117,8 +121,8 @@ trtEffects <- FALSE  # TRUE means use a model that includes removal treatment ef
 for(iQuad in 1:length(quadList)){
   qName=quadList[iQuad]
   doGroup=groupList[iQuad]
-  source("validate/ibm_validate_removal.r")   # project forward from 2011
-  source("validate/ibm_validate_removal_1step.r")  # just predict one time step ahead for each year
+  source("ibm/ibm_validate_removal.r")   # project forward from 2011
+  source("ibm/ibm_validate_removal_1step.r")  # just predict one time step ahead for each year
 }
 
 # do no grass plots
@@ -128,11 +132,11 @@ for(iQuad in quadList){
   qName=iQuad
   doGroup=1
   trtEffects <- FALSE  
-  source("validate/ibm_validate_removal.r")
-  source("validate/ibm_validate_removal_1step.r")
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
   trtEffects <- TRUE  
-  source("validate/ibm_validate_removal.r")
-  source("validate/ibm_validate_removal_1step.r")
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
 }
 
 # do no shrub plots
@@ -142,15 +146,15 @@ for(iQuad in quadList){
   qName=iQuad
   doGroup=1
   trtEffects <- FALSE  
-  source("validate/ibm_validate_removal.r")
-  source("validate/ibm_validate_removal_1step.r")
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
   trtEffects <- TRUE  
-  source("validate/ibm_validate_removal.r")
-  source("validate/ibm_validate_removal_1step.r")
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
 }
 
 # make figure for simulation results
-source("validate/summarize_validate_sims1step.r")
+source("ibm/summarize_validate_sims1step.r")
 
 
 ###
@@ -159,7 +163,7 @@ source("validate/summarize_validate_sims1step.r")
 
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
-source("validate/get_W_functions.r")  # get neighbor distance decay functions
+source("ibm/get_W_functions.r")  # get neighbor distance decay functions
 
 #no treatment effects, all species
 init.species <- c(1:4)
@@ -185,7 +189,15 @@ source("ipm/IPM-getEquilibrium.r")
 write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTR.csv",row.names=F)
 meanCover3 <- meanCover
 
-simResults <- rbind(meanCover1,meanCover2,meanCover3)
+# removal treatment effects, ARTR removal, no PSSP
+init.species <- c(2:3)
+trtEffects=T
+source("ipm/IPM-setup.r")
+source("ipm/IPM-getEquilibrium.r")
+write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTRnoPSSP.csv",row.names=F)
+meanCover4 <- meanCover
+
+simResults <- rbind(meanCover1,meanCover2,meanCover3,meanCover4)
 colnames(simResults) <- sppList
 write.csv(simResults,"ipm/simResults-meanCover.csv",row.names=F)
 

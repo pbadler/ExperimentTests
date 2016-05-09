@@ -14,7 +14,7 @@ nonCompLength.s=5 #Number of columns in SppData that are not measures of competi
 
 # set up distance weights------------------------------------------------
 
-dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights.csv",sep=""));
+#dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights_noExptl.csv",sep=""));
 dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
 dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
 
