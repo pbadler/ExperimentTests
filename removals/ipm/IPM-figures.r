@@ -3,6 +3,9 @@
 
 # plot means
 if(!exists("simResults")) simResults <- read.csv("ipm/simResults-meanCover.csv")
+
+if(nrow(simResults)>3) simResults <- simResults[1:3,]
+
 png("ipm/IPMsims.png",height=3,width=4.5,units="in",res=400)
   par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
   myCol <- c("black","dodgerblue3","red3")

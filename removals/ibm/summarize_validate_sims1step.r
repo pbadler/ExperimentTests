@@ -167,7 +167,7 @@ dev.off()
 ### plot growth rates chronologically 
 ###
 
-plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mysd1,mysd2,mytitle,doLegend=F){
+plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mytitle,doLegend=F){
   
   # format data
   newD=data.frame(mydata1$year,mydata1[,1+doSpp],mydata1[,5+doSpp],  # control obs and pred
@@ -180,7 +180,7 @@ plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mysd1,mysd2,mytitle,doLegend
   my.y <- c(-1.2,0.9) # hard wire ylims
   matplot(newD$year,newD[,2:6],type="o",xlab="",ylab="",ylim=my.y,
     col=c(rep(color1,2),rep(color2,3)),xaxt="n",
-    pch=c(16,1,16,1,2),
+    pch=c(16,21,16,21,24),bg="white",
     lty=c("solid","dotted","solid","dotted","dotted"))
   axis(1,at=c(2011:2014))
   abline(h=0,lty="solid",col="darkgray")
@@ -192,7 +192,7 @@ plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mysd1,mysd2,mytitle,doLegend
   title(main=mytitle,adj=0,font.main=1)  
   if(doLegend==T){
     legend("bottomleft",c("Control","Baseline model","Removal","Baseline model","Removal model"),
-    col=c(rep(color1,2),rep(color2,3)), pch=c(16,1,16,1,2),
+    col=c(rep(color1,2),rep(color2,3)), pch=c(16,21,16,21,24),pt.bg = "white",
     lty=c("solid","dotted","solid","dotted","dotted"),bty="n")
   }
 }
@@ -201,13 +201,13 @@ png("cover_change_chrono.png",units="in",height=3,width=8.5,res=600)
   
   par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
   
-  plotObsPred(1,control.pgr,nograss.pgr,nograssTRT.pgr,control.sd,nograss.sd,"ARTR",doLegend=T)
-  plotObsPred(2,control.pgr,noshrub.pgr,noshrubTRT.pgr,control.sd,noshrub.sd,"HECO")
-  plotObsPred(3,control.pgr,noshrub.pgr,noshrubTRT.pgr,control.sd,noshrub.sd,"POSE")
-  plotObsPred(4,control.pgr,noshrub.pgr,noshrubTRT.pgr,control.sd,noshrub.sd,"PSSP")
+  plotObsPred(1,control.pgr,nograss.pgr,nograssTRT.pgr,"ARTR",doLegend=T)
+  plotObsPred(2,control.pgr,noshrub.pgr,noshrubTRT.pgr,"HECO")
+  plotObsPred(3,control.pgr,noshrub.pgr,noshrubTRT.pgr,"POSE")
+  plotObsPred(4,control.pgr,noshrub.pgr,noshrubTRT.pgr,"PSSP")
   
   mtext(side=1,"Year",line=0.5, outer=T)
-  mtext(side=2,"log Cover change",line=0.5, outer=T)
+  mtext(side=2,expression(paste("Mean ",log(Cover[t+1]/Cover[t]))),line=0, outer=T)
 
 dev.off()
 

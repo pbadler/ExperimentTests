@@ -84,11 +84,11 @@ m1 <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+W.a
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-# treatment effect not significant, fit simpler model
-m.best <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("binomial"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
+# # treatment effect not significant, fit simpler model
+# m.best <- inla(survives ~ logarea+ W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts +
+#   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+#   #f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+#   f(year, logarea, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+#   family=c("binomial"), verbose=FALSE,
+#   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+#   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))

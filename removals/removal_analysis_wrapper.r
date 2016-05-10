@@ -38,7 +38,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
   
   # write parameters for best model
-  formatGrowthPars(m.best,paste0(iSpp,"_growth.csv")) 
+  formatGrowthPars(m1,paste0(iSpp,"_growth.csv")) 
   
 }
 setwd("..")
@@ -63,7 +63,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
   
   # write parameters
-  formatSurvPars(m.best,paste0(iSpp,"_surv.csv")) 
+  formatSurvPars(m1,paste0(iSpp,"_surv.csv")) 
   
 }
 setwd("..")
@@ -111,7 +111,7 @@ setwd("..")
 
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
-source("validate/get_W_functions.r")  # get neighbor distance decay functions
+source("ibm/get_W_functions.r")  # get neighbor distance decay functions
 
 # do contemporary control plots
 quadList <- paste0("Q",c(1:6,19:26))  
