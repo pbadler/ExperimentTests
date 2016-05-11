@@ -106,7 +106,11 @@ png("treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
   # mean cover
   for(doSpp in sppList){
     tmp.mean<-subset(spp.mean,species==doSpp)
-    my.y <-c(0,max(tmp.mean[,3:5]))
+    if(doSpp==sppList[1]){
+      my.y <- c(0,max(tmp.mean[,3:5]))
+    }else{
+      my.y<- c(0,2.75)
+    }
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
             col=myCols,main=doSpp,font.main=4,lwd=2)
     if(doSpp==sppList[1]) {
