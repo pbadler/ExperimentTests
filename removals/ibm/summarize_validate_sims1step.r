@@ -189,7 +189,7 @@ plotObsPred<-function(doSpp,mydata1,mydata2,mydata3,mytitle,doLegend=F){
 #          x1=mysd1$year,y1=c(mydata1[,1+doSpp]+mysd1[,1+doSpp]/sqrt(14)),length=0.05,angle=90,code=3,col=color1)  
 #   arrows(x0=mysd2$year,y0=c(mydata2[,1+doSpp]-mysd2[,1+doSpp]/sqrt(8)), # 8 = number of control plots
 #          x1=mysd2$year,y1=c(mydata2[,1+doSpp]+mysd2[,1+doSpp]/sqrt(8)),length=0.05,angle=90,code=3,col=color2)  
-  title(main=mytitle,adj=0,font.main=1)  
+  title(main=mytitle,adj=0,font.main=4)  
   if(doLegend==T){
     legend("bottomleft",c("Control","Baseline model","Removal","Baseline model","Removal model"),
     col=c(rep(color1,2),rep(color2,3)), pch=c(16,21,16,21,24),pt.bg = "white",
@@ -201,10 +201,10 @@ png("cover_change_chrono.png",units="in",height=3,width=8.5,res=600)
   
   par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
   
-  plotObsPred(1,control.pgr,nograss.pgr,nograssTRT.pgr,"ARTR",doLegend=T)
-  plotObsPred(2,control.pgr,noshrub.pgr,noshrubTRT.pgr,"HECO")
-  plotObsPred(3,control.pgr,noshrub.pgr,noshrubTRT.pgr,"POSE")
-  plotObsPred(4,control.pgr,noshrub.pgr,noshrubTRT.pgr,"PSSP")
+  plotObsPred(1,control.pgr,nograss.pgr,nograssTRT.pgr,sppNames[1],doLegend=T)
+  plotObsPred(2,control.pgr,noshrub.pgr,noshrubTRT.pgr,sppNames[2])
+  plotObsPred(3,control.pgr,noshrub.pgr,noshrubTRT.pgr,sppNames[3])
+  plotObsPred(4,control.pgr,noshrub.pgr,noshrubTRT.pgr,sppNames[4])
   
   mtext(side=1,"Year",line=0.5, outer=T)
   mtext(side=2,expression(paste("Mean ",log(Cover[t+1]/Cover[t]))),line=0, outer=T)

@@ -1,0 +1,108 @@
+ARTR log cover change
+Linear mixed model fit by REML ['lmerMod']
+Formula: pcgr ~ Treatment + (1 | quad) + (1 | year)
+   Data: dARTR
+
+REML criterion at convergence: 13.2
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.45545 -0.58081  0.03512  0.60471  1.51619 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ quad     (Intercept) 0.07653  0.2766  
+ year     (Intercept) 0.01045  0.1022  
+ Residual             0.03932  0.1983  
+Number of obs: 54, groups:  quad, 12; year, 8
+
+Fixed effects:
+                  Estimate Std. Error t value
+(Intercept)       -0.02627    0.15297  -0.172
+TreatmentNo_grass -0.08610    0.18369  -0.469
+
+Correlation of Fixed Effects:
+            (Intr)
+TrtmntN_grs -0.782
+
+HECO log cover change
+Linear mixed model fit by REML ['lmerMod']
+Formula: pcgr ~ Treatment + (1 | quad) + (1 | year)
+   Data: dHECO
+
+REML criterion at convergence: 49.6
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0266 -0.6167 -0.1166  0.7731  1.9110 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ year     (Intercept) 0.003686 0.06071 
+ quad     (Intercept) 0.000000 0.00000 
+ Residual             0.318856 0.56467 
+Number of obs: 28, groups:  year, 8; quad, 5
+
+Fixed effects:
+                  Estimate Std. Error t value
+(Intercept)       -0.04349    0.14279  -0.305
+TreatmentNo_shrub  0.44121    0.21668   2.036
+
+Correlation of Fixed Effects:
+            (Intr)
+TrtmntN_shr -0.644
+
+POSE log cover change
+Linear mixed model fit by REML ['lmerMod']
+Formula: pcgr ~ Treatment + (1 | quad) + (1 | year)
+   Data: dPOSE
+
+REML criterion at convergence: 152.1
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2338 -0.2341  0.0896  0.5127  2.7160 
+
+Random effects:
+ Groups   Name        Variance  Std.Dev. 
+ quad     (Intercept) 7.528e-18 2.744e-09
+ year     (Intercept) 1.028e-01 3.206e-01
+ Residual             4.034e-01 6.351e-01
+Number of obs: 73, groups:  quad, 14; year, 8
+
+Fixed effects:
+                  Estimate Std. Error t value
+(Intercept)       -0.01954    0.14578  -0.134
+TreatmentNo_shrub -0.06229    0.17289  -0.360
+
+Correlation of Fixed Effects:
+            (Intr)
+TrtmntN_shr -0.333
+
+PSSP log cover change
+Linear mixed model fit by REML ['lmerMod']
+Formula: pcgr ~ Treatment + (1 | quad) + (1 | year)
+   Data: dPSSP
+
+REML criterion at convergence: 107.5
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.5744 -0.5216  0.1467  0.5854  2.5414 
+
+Random effects:
+ Groups   Name        Variance  Std.Dev. 
+ quad     (Intercept) 1.347e-17 3.670e-09
+ year     (Intercept) 9.077e-02 3.013e-01
+ Residual             1.916e-01 4.377e-01
+Number of obs: 77, groups:  quad, 14; year, 8
+
+Fixed effects:
+                  Estimate Std. Error t value
+(Intercept)       -0.09208    0.12385  -0.744
+TreatmentNo_shrub  0.26930    0.11646   2.312
+
+Correlation of Fixed Effects:
+            (Intr)
+TrtmntN_shr -0.277
+

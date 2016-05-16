@@ -75,22 +75,34 @@ library(lme4)
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub")
 dARTR$year <- as.factor(dARTR$year)
 mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
-summary(mARTR)
+cat("ARTR log cover change",file=statsOutput,sep="\n",append=FALSE)
+out<-capture.output(summary(mARTR))
+cat(out,file=statsOutput,sep="\n",append=TRUE)
+cat("",file=statsOutput,sep="\n",append=TRUE)
 
 dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass")
 dHECO$year <- as.factor(dHECO$year)
 mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
-summary(mHECO)  # significant
+cat("HECO log cover change",file=statsOutput,sep="\n",append=TRUE)
+out<-capture.output(summary(mHECO))
+cat(out,file=statsOutput,sep="\n",append=TRUE)
+cat("",file=statsOutput,sep="\n",append=TRUE)
 
 dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass")
 dPOSE$year <- as.factor(dPOSE$year)
 mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
-summary(mPOSE)
+cat("POSE log cover change",file=statsOutput,sep="\n",append=TRUE)
+out<-capture.output(summary(mPOSE))
+cat(out,file=statsOutput,sep="\n",append=TRUE)
+cat("",file=statsOutput,sep="\n",append=TRUE)
 
 dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass")
 dPSSP$year <- as.factor(dPSSP$year)
 mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
-summary(mPSSP)  # significant
+cat("PSSP log cover change",file=statsOutput,sep="\n",append=TRUE)
+out<-capture.output(summary(mPSSP))
+cat(out,file=statsOutput,sep="\n",append=TRUE)
+cat("",file=statsOutput,sep="\n",append=TRUE)
 
 
 # figures ########################################################################
@@ -109,7 +121,7 @@ png("treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
     if(doSpp==sppList[1]){
       my.y <- c(0,max(tmp.mean[,3:5]))
     }else{
-      my.y<- c(0,2.75)
+      my.y<- c(0,2.9)
     }
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
             col=myCols,main=doSpp,font.main=4,lwd=2)
@@ -148,7 +160,7 @@ png("treatment_trends_cover_simple.png",height=2.75,width=8,units="in",res=400)
 dev.off()
 
 #2. Log cover change by treatment and year 
-png("treatment_trends_logChange.png",height=3.5,width=8,units="in",res=400)
+png("treatment_trends_logChange.png",height=3,width=8.5,units="in",res=400)
   
   par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2,lwd=1)
 
@@ -164,12 +176,16 @@ png("treatment_trends_logChange.png",height=3.5,width=8,units="in",res=400)
       tmp.mean$pcgr.No_grass <- NA
     }
     matplot(tmp.mean$year,tmp.mean[,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-            col=myCols,ylim=myLims)
+            col=myCols,ylim=myLims,main=doSpp, font.main=4)
     abline(h=0,col="gray")
-    if(doSpp==sppList[1]) mtext("Mean log change",side=2,line=2,outer=F)
+    
+    if(doSpp==sppList[1]) {
+      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
+      mtext("Mean log change",side=2,line=2,outer=F)
+    }
+    
   }
-  mtext("Year",side=1,line=1,outer=T)
-  
+  mtext("Year",side=1,line=0.25,outer=T)
 
 dev.off()
 

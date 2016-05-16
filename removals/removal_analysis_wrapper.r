@@ -11,6 +11,7 @@ setwd(paste(root,"/ExperimentTests/removals/",sep="")); # modify as needed
 ### 1. get treatment trends #################################
 ###
 
+statsOutput <- "stats_tables.txt"
 source("treatment_trends_removals.r")
 
 ###
@@ -28,7 +29,14 @@ source("write_params.r") # get function to format and output parameters
 # read in distance weights
 dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
+  
   source(paste0(iSpp,"growth.r"))
+  
+  # save output to file
+#   cat(paste0(iSpp," growth model"),file=paste0("\\..\\",statsOutput),sep="\n",append=TRUE)
+#   out<-capture.output(m1$summary.fixed)
+#   cat(out,file=statsOutput,sep="\n",append=TRUE)
+#   cat("",file=statsOutput,sep="\n",append=TRUE)
    
   # save treatment test
   irow <- dim(trtTests)[1]
