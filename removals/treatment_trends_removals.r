@@ -70,39 +70,27 @@ spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
 
 
 # statistical tests ####################################################
-library(lme4)
+
+#library(lme4)
 
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub")
 dARTR$year <- as.factor(dARTR$year)
 mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
-cat("ARTR log cover change",file=statsOutput,sep="\n",append=FALSE)
-out<-capture.output(summary(mARTR))
-cat(out,file=statsOutput,sep="\n",append=TRUE)
-cat("",file=statsOutput,sep="\n",append=TRUE)
 
 dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass")
 dHECO$year <- as.factor(dHECO$year)
 mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
-cat("HECO log cover change",file=statsOutput,sep="\n",append=TRUE)
-out<-capture.output(summary(mHECO))
-cat(out,file=statsOutput,sep="\n",append=TRUE)
-cat("",file=statsOutput,sep="\n",append=TRUE)
 
 dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass")
 dPOSE$year <- as.factor(dPOSE$year)
 mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
-cat("POSE log cover change",file=statsOutput,sep="\n",append=TRUE)
-out<-capture.output(summary(mPOSE))
-cat(out,file=statsOutput,sep="\n",append=TRUE)
-cat("",file=statsOutput,sep="\n",append=TRUE)
 
 dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass")
 dPSSP$year <- as.factor(dPSSP$year)
 mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
-cat("PSSP log cover change",file=statsOutput,sep="\n",append=TRUE)
-out<-capture.output(summary(mPSSP))
-cat(out,file=statsOutput,sep="\n",append=TRUE)
-cat("",file=statsOutput,sep="\n",append=TRUE)
+
+texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
+      caption.above=TRUE,file=statsOutput)
 
 
 # figures ########################################################################

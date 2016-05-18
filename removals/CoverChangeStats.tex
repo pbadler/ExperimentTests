@@ -1,0 +1,30 @@
+
+\begin{table}
+\caption{Cover change models}
+\begin{center}
+\begin{tabular}{l c c c c }
+\hline
+ & Model 1 & Model 2 & Model 3 & Model 4 \\
+\hline
+(Intercept)           & $-0.03$          & $-0.04$          & $-0.02$          & $-0.09$          \\
+                      & $[-0.33;\ 0.27]$ & $[-0.32;\ 0.24]$ & $[-0.31;\ 0.27]$ & $[-0.33;\ 0.15]$ \\
+TreatmentNo\_grass    & $-0.09$          &                  &                  &                  \\
+                      & $[-0.45;\ 0.27]$ &                  &                  &                  \\
+TreatmentNo\_shrub    &                  & $0.44^{*}$       & $-0.06$          & $0.27^{*}$       \\
+                      &                  & $[0.02;\ 0.87]$  & $[-0.40;\ 0.28]$ & $[0.04;\ 0.50]$  \\
+\hline
+AIC                   & 23.20            & 59.58            & 162.06           & 117.50           \\
+BIC                   & 33.15            & 66.24            & 173.51           & 129.22           \\
+Log Likelihood        & -6.60            & -24.79           & -76.03           & -53.75           \\
+Num. obs.             & 54               & 28               & 73               & 77               \\
+Num. groups: quad     & 12               & 5                & 14               & 14               \\
+Num. groups: year     & 8                & 8                & 8                & 8                \\
+Var: quad (Intercept) & 0.08             & 0.00             & 0.00             & 0.00             \\
+Var: year (Intercept) & 0.01             & 0.00             & 0.10             & 0.09             \\
+Var: Residual         & 0.04             & 0.32             & 0.40             & 0.19             \\
+\hline
+\multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:coefficients}
+\end{center}
+\end{table}

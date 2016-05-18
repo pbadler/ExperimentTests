@@ -11,7 +11,9 @@ setwd(paste(root,"/ExperimentTests/removals/",sep="")); # modify as needed
 ### 1. get treatment trends #################################
 ###
 
-statsOutput <- "stats_tables.txt"
+library(texreg) # to save output
+library(lme4)
+statsOutput <- paste0(getwd(),"/stats_tables.tex")
 source("treatment_trends_removals.r")
 
 ###
@@ -22,6 +24,7 @@ source("treatment_trends_removals.r")
 trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
 
 # fit growth models (takes < 5 mins)
+library(xtable)
 library(lme4)
 library(INLA)
 setwd("growth")
@@ -32,12 +35,12 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   
   source(paste0(iSpp,"growth.r"))
   
-  # save output to file
-#   cat(paste0(iSpp," growth model"),file=paste0("\\..\\",statsOutput),sep="\n",append=TRUE)
-#   out<-capture.output(m1$summary.fixed)
-#   cat(out,file=statsOutput,sep="\n",append=TRUE)
-#   cat("",file=statsOutput,sep="\n",append=TRUE)
-   
+  # save fixed effects summary to file
+  cat("",file=statsOutput,sep="\n",append=T)
+  output<-capture.output(xtable(m1$summary.fixed,digits=4,
+              caption=paste(iSpp,"growth model"),caption.placement="top",label=paste0(iSpp,"growth")))
+  cat(output,file=statsOutput,sep="\n",append=T)
+  
   # save treatment test
   irow <- dim(trtTests)[1]
   trtTests[irow+1,] <- NA
@@ -62,6 +65,12 @@ source("write_params.r") # get function to format and output parameters
 dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   source(paste0(iSpp,"survival.r"))
+  
+  # save fixed effects summary to file
+  cat("",file=statsOutput,sep="\n",append=T)
+  output<-capture.output(xtable(m1$summary.fixed,digits=4,
+              caption=paste(iSpp,"survival model"),caption.placement="top",label=paste0(iSpp,"survival")))
+  cat(output,file=statsOutput,sep="\n",append=T)
   
   # save treatment test
   irow <- dim(trtTests)[1]
