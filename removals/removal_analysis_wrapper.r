@@ -13,6 +13,7 @@ setwd(paste(root,"/ExperimentTests/removals/",sep="")); # modify as needed
 
 library(texreg) # to save output
 library(lme4)
+
 statsOutput <- paste0(getwd(),"/stats_tables.tex")
 source("treatment_trends_removals.r")
 
@@ -20,57 +21,28 @@ source("treatment_trends_removals.r")
 ### 2. fit vital rate regressions ###########################
 ###
 
-# table to store Treatment effects
-trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
-
-# fit growth models (takes < 5 mins)
+library(texreg) # to save output
 library(xtable)
 library(lme4)
 library(INLA)
-setwd("growth")
-source("write_params.r") # get function to format and output parameters
+
+# table to store Treatment effects
+trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
+
 # read in distance weights
 dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
-for(iSpp in c("ARTR","HECO","POSE","PSSP")){
-  
-  source(paste0(iSpp,"growth.r"))
-  
-  # save fixed effects summary to file
-  cat("",file=statsOutput,sep="\n",append=T)
-  output<-capture.output(xtable(m1$summary.fixed,digits=4,
-              caption=paste(iSpp,"growth model"),caption.placement="top",label=paste0(iSpp,"growth")))
-  cat(output,file=statsOutput,sep="\n",append=T)
-  
-  # save treatment test
-  irow <- dim(trtTests)[1]
-  trtTests[irow+1,] <- NA
-  trtTests[irow+1,1:2] <- c(iSpp,"growth")
-  tmp <- grep("Treatment",row.names(m1$summary.fixed))
-  trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
-  
-  # write parameters for best model
-  formatGrowthPars(m1,paste0(iSpp,"_growth.csv")) 
-  
-}
-setwd("..")
-
-# Note: the warning messages come from the lmer models for HECO,
-# not the more important INLA models.
 
 # fit survival models (takes ~ 10 minutes)
-library(INLA)
 setwd("survival")
 source("write_params.r") # get function to format and output parameters
-# read in distance weights
-dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
+  
   source(paste0(iSpp,"survival.r"))
   
   # save fixed effects summary to file
   cat("",file=statsOutput,sep="\n",append=T)
-  output<-capture.output(xtable(m1$summary.fixed,digits=4,
-              caption=paste(iSpp,"survival model"),caption.placement="top",label=paste0(iSpp,"survival")))
-  cat(output,file=statsOutput,sep="\n",append=T)
+  print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"survival model"),
+        label=paste0(iSpp,"survival")),file=statsOutput,caption.placement="top",append=T)
   
   # save treatment test
   irow <- dim(trtTests)[1]
@@ -81,6 +53,32 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   
   # write parameters
   formatSurvPars(m1,paste0(iSpp,"_surv.csv")) 
+  
+}
+setwd("..")
+
+# fit growth models (takes < 5 mins)
+setwd("growth")
+source("write_params.r") # get function to format and output parameters
+
+for(iSpp in c("ARTR","HECO","POSE","PSSP")){
+  
+  source(paste0(iSpp,"growth.r"))
+  
+  # save fixed effects summary to file
+  cat("",file=statsOutput,sep="\n",append=T)
+  print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"growth model"),
+        label=paste0(iSpp,"growth")),file=statsOutput,caption.placement="top",append=T)
+  
+  # save treatment test
+  irow <- dim(trtTests)[1]
+  trtTests[irow+1,] <- NA
+  trtTests[irow+1,1:2] <- c(iSpp,"growth")
+  tmp <- grep("Treatment",row.names(m1$summary.fixed))
+  trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
+  
+  # write parameters for best model
+  formatGrowthPars(m1,paste0(iSpp,"_growth.csv")) 
   
 }
 setwd("..")
@@ -118,9 +116,9 @@ source("treatment_test_figure.r")
 ### 3. explore neighborhood composition ###################################
 ###
 library("TeachingDemos") # for inset plots
-setwd("Wdistrib")
+
 source("exploreSurvivalWs.R")
-setwd("..")
+
 
 ###
 ### 4. get IBM predictions for quadrat cover ###############################

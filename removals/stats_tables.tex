@@ -1,38 +1,10 @@
 
-\begin{table}
-\caption{Cover change models}
-\begin{center}
-\begin{tabular}{l c c c c }
-\hline
- & Model 1 & Model 2 & Model 3 & Model 4 \\
-\hline
-(Intercept)           & $-0.03$          & $-0.04$          & $-0.02$          & $-0.09$          \\
-                      & $[-0.33;\ 0.27]$ & $[-0.32;\ 0.24]$ & $[-0.31;\ 0.27]$ & $[-0.33;\ 0.15]$ \\
-TreatmentNo\_grass    & $-0.09$          &                  &                  &                  \\
-                      & $[-0.45;\ 0.27]$ &                  &                  &                  \\
-TreatmentNo\_shrub    &                  & $0.44^{*}$       & $-0.06$          & $0.27^{*}$       \\
-                      &                  & $[0.02;\ 0.87]$  & $[-0.40;\ 0.28]$ & $[0.04;\ 0.50]$  \\
-\hline
-AIC                   & 23.20            & 59.58            & 162.06           & 117.50           \\
-BIC                   & 33.15            & 66.24            & 173.51           & 129.22           \\
-Log Likelihood        & -6.60            & -24.79           & -76.03           & -53.75           \\
-Num. obs.             & 54               & 28               & 73               & 77               \\
-Num. groups: quad     & 12               & 5                & 14               & 14               \\
-Num. groups: year     & 8                & 8                & 8                & 8                \\
-Var: quad (Intercept) & 0.08             & 0.00             & 0.00             & 0.00             \\
-Var: year (Intercept) & 0.01             & 0.00             & 0.10             & 0.09             \\
-Var: Residual         & 0.04             & 0.32             & 0.40             & 0.19             \\
-\hline
-\multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
-\label{table:coefficients}
-\end{center}
-\end{table}
-
 % latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:37:37 2016
+% Thu May 19 09:51:32 2016
 \begin{table}[ht]
 \centering
+\caption{Summary of fixed effects for the ARTR growth model} 
+\label{ARTRgrowth}
 \begin{tabular}{rrrrrrrr}
   \hline
  & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
@@ -48,14 +20,14 @@ Var: Residual         & 0.04             & 0.32             & 0.40             &
   W.allpts & 0.0043 & 0.0503 & -0.0944 & 0.0043 & 0.1030 & 0.0043 & 0.0000 \\ 
    \hline
 \end{tabular}
-\caption{ARTR growth model} 
-\label{ARTRgrowth}
 \end{table}
 
 % latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:38:00 2016
+% Thu May 19 09:51:55 2016
 \begin{table}[ht]
 \centering
+\caption{Summary of fixed effects for the HECO growth model} 
+\label{HECOgrowth}
 \begin{tabular}{rrrrrrrr}
   \hline
  & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
@@ -71,14 +43,108 @@ Var: Residual         & 0.04             & 0.32             & 0.40             &
   W.allpts & -0.0544 & 0.0374 & -0.1279 & -0.0544 & 0.0190 & -0.0545 & 0.0000 \\ 
    \hline
 \end{tabular}
-\caption{HECO growth model} 
-\label{HECOgrowth}
 \end{table}
 
+\begin{table}
+\caption{Poa secunda growth with Artemisia canopy effect}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.50^{*}$        \\
+                                 & $[0.36;\ 0.63]$   \\
+logarea.t0                       & $0.68^{*}$        \\
+                                 & $[0.63;\ 0.73]$   \\
+TreatmentNo\_shrub               & $0.21^{*}$        \\
+                                 & $[0.06;\ 0.37]$   \\
+W.ARTR                           & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.HECO                           & $0.00$            \\
+                                 & $[-0.01;\ 0.02]$  \\
+W.POSE                           & $-0.27^{*}$       \\
+                                 & $[-0.34;\ -0.19]$ \\
+W.PSSP                           & $-0.01$           \\
+                                 & $[-0.02;\ 0.00]$  \\
+W.allcov                         & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.allpts                         & $-0.03$           \\
+                                 & $[-0.07;\ 0.02]$  \\
+inARTR                           & $-0.09$           \\
+                                 & $[-0.33;\ 0.14]$  \\
+\hline
+AIC                              & 15070.92          \\
+BIC                              & 15162.94          \\
+Log Likelihood                   & -7521.46          \\
+Num. obs.                        & 5286              \\
+Num. groups: year                & 30                \\
+Var: year (Intercept)            & 0.11              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.02             \\
+Var: Residual                    & 0.97              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:POSEgrowth-inARTR}
+\end{center}
+\end{table}
+
+
+\begin{table}
+\caption{Poa secunda growth with year-by-treatment interaction}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.50^{*}$        \\
+                                 & $[0.36;\ 0.63]$   \\
+trtYears1                        & $0.05$            \\
+                                 & $[-0.18;\ 0.28]$  \\
+trtYears2                        & $0.25^{*}$        \\
+                                 & $[0.01;\ 0.50]$   \\
+trtYears3                        & $0.19$            \\
+                                 & $[-0.09;\ 0.47]$  \\
+trtYears4                        & $0.29$            \\
+                                 & $[-0.02;\ 0.60]$  \\
+logarea.t0                       & $0.68^{*}$        \\
+                                 & $[0.63;\ 0.73]$   \\
+W.ARTR                           & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.HECO                           & $0.00$            \\
+                                 & $[-0.01;\ 0.02]$  \\
+W.POSE                           & $-0.27^{*}$       \\
+                                 & $[-0.34;\ -0.19]$ \\
+W.PSSP                           & $-0.01$           \\
+                                 & $[-0.02;\ 0.00]$  \\
+W.allcov                         & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.allpts                         & $-0.03$           \\
+                                 & $[-0.07;\ 0.02]$  \\
+\hline
+AIC                              & 15076.15          \\
+BIC                              & 15181.32          \\
+Log Likelihood                   & -7522.08          \\
+Num. obs.                        & 5286              \\
+Num. groups: year                & 30                \\
+Var: year (Intercept)            & 0.11              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.02             \\
+Var: Residual                    & 0.97              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:POSEgrowth-byYr}
+\end{center}
+\end{table}
+
+
 % latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:38:30 2016
+% Thu May 19 09:52:23 2016
 \begin{table}[ht]
 \centering
+\caption{Summary of fixed effects for the POSE growth model} 
+\label{POSEgrowth}
 \begin{tabular}{rrrrrrrr}
   \hline
  & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
@@ -94,14 +160,108 @@ Var: Residual         & 0.04             & 0.32             & 0.40             &
   W.allpts & -0.0289 & 0.0229 & -0.0739 & -0.0289 & 0.0161 & -0.0289 & 0.0000 \\ 
    \hline
 \end{tabular}
-\caption{POSE growth model} 
-\label{POSEgrowth}
 \end{table}
 
+\begin{table}
+\caption{P. spicata growth with Artemisia canopy effect}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.41^{*}$        \\
+                                 & $[0.27;\ 0.54]$   \\
+logarea.t0                       & $0.83^{*}$        \\
+                                 & $[0.79;\ 0.87]$   \\
+TreatmentNo\_shrub               & $0.35^{*}$        \\
+                                 & $[0.18;\ 0.52]$   \\
+W.ARTR                           & $-0.00^{*}$       \\
+                                 & $[-0.00;\ -0.00]$ \\
+W.HECO                           & $-0.01$           \\
+                                 & $[-0.03;\ 0.00]$  \\
+W.POSE                           & $-0.01$           \\
+                                 & $[-0.04;\ 0.01]$  \\
+W.PSSP                           & $-0.14^{*}$       \\
+                                 & $[-0.16;\ -0.11]$ \\
+W.allcov                         & $-0.00^{*}$       \\
+                                 & $[-0.01;\ -0.00]$ \\
+W.allpts                         & $-0.06^{*}$       \\
+                                 & $[-0.10;\ -0.01]$ \\
+inARTR                           & $-0.21$           \\
+                                 & $[-0.45;\ 0.03]$  \\
+\hline
+AIC                              & 14834.74          \\
+BIC                              & 14928.30          \\
+Log Likelihood                   & -7403.37          \\
+Num. obs.                        & 5904              \\
+Num. groups: year                & 30                \\
+Var: year (Intercept)            & 0.12              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.03             \\
+Var: Residual                    & 0.70              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:PSSPgrowth-inARTR}
+\end{center}
+\end{table}
+
+
+\begin{table}
+\caption{P. spicata growth with year-by-treatment interaction}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.41^{*}$        \\
+                                 & $[0.27;\ 0.54]$   \\
+trtYears1                        & $0.25$            \\
+                                 & $[-0.02;\ 0.52]$  \\
+trtYears2                        & $-0.06$           \\
+                                 & $[-0.33;\ 0.21]$  \\
+trtYears3                        & $0.44^{*}$        \\
+                                 & $[0.15;\ 0.73]$   \\
+trtYears4                        & $0.53^{*}$        \\
+                                 & $[0.23;\ 0.84]$   \\
+logarea.t0                       & $0.83^{*}$        \\
+                                 & $[0.79;\ 0.87]$   \\
+W.ARTR                           & $-0.00^{*}$       \\
+                                 & $[-0.00;\ -0.00]$ \\
+W.HECO                           & $-0.01$           \\
+                                 & $[-0.03;\ 0.00]$  \\
+W.POSE                           & $-0.01$           \\
+                                 & $[-0.04;\ 0.01]$  \\
+W.PSSP                           & $-0.14^{*}$       \\
+                                 & $[-0.16;\ -0.11]$ \\
+W.allcov                         & $-0.00^{*}$       \\
+                                 & $[-0.01;\ -0.00]$ \\
+W.allpts                         & $-0.06^{*}$       \\
+                                 & $[-0.10;\ -0.01]$ \\
+\hline
+AIC                              & 14834.13          \\
+BIC                              & 14941.06          \\
+Log Likelihood                   & -7401.06          \\
+Num. obs.                        & 5904              \\
+Num. groups: year                & 30                \\
+Var: year (Intercept)            & 0.12              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.02             \\
+Var: Residual                    & 0.69              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:PSSPgrowth-byYr}
+\end{center}
+\end{table}
+
+
 % latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:39:17 2016
+% Thu May 19 09:53:11 2016
 \begin{table}[ht]
 \centering
+\caption{Summary of fixed effects for the PSSP growth model} 
+\label{PSSPgrowth}
 \begin{tabular}{rrrrrrrr}
   \hline
  & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
@@ -117,110 +277,4 @@ Var: Residual         & 0.04             & 0.32             & 0.40             &
   W.allpts & -0.0498 & 0.0228 & -0.0946 & -0.0498 & -0.0051 & -0.0498 & 0.0000 \\ 
    \hline
 \end{tabular}
-\caption{PSSP growth model} 
-\label{PSSPgrowth}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:39:30 2016
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & -0.0705 & 0.2256 & -0.5109 & -0.0723 & 0.3799 & -0.0757 & 0.0000 \\ 
-  logarea & 0.7137 & 0.0605 & 0.5980 & 0.7124 & 0.8370 & 0.7098 & 0.0000 \\ 
-  TreatmentNo\_grass & -0.2581 & 0.8998 & -1.9434 & -0.2884 & 1.5959 & -0.3511 & 0.0000 \\ 
-  W.ARTR & -1.4362 & 0.2154 & -1.8709 & -1.4322 & -1.0242 & -1.4240 & 0.0000 \\ 
-  W.HECO & -0.0818 & 0.0430 & -0.1630 & -0.0830 & 0.0062 & -0.0855 & 0.0000 \\ 
-  W.POSE & -0.1159 & 0.0859 & -0.2851 & -0.1158 & 0.0523 & -0.1155 & 0.0000 \\ 
-  W.PSSP & 0.0292 & 0.0276 & -0.0225 & 0.0283 & 0.0863 & 0.0263 & 0.0000 \\ 
-  W.allcov & -0.0081 & 0.0093 & -0.0265 & -0.0081 & 0.0099 & -0.0080 & 0.0000 \\ 
-  W.allpts & 0.1296 & 0.1579 & -0.1787 & 0.1290 & 0.4409 & 0.1278 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\caption{ARTR survival model} 
-\label{ARTRsurvival}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:40:20 2016
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 1.4652 & 0.2285 & 1.0126 & 1.4652 & 1.9170 & 1.4650 & 0.0000 \\ 
-  logarea & 1.3190 & 0.1036 & 1.1266 & 1.3149 & 1.5346 & 1.3068 & 0.0000 \\ 
-  TreatmentNo\_shrub & 0.7313 & 0.4426 & -0.1292 & 0.7284 & 1.6074 & 0.7226 & 0.0000 \\ 
-  W.ARTR & -0.0049 & 0.0037 & -0.0119 & -0.0050 & 0.0027 & -0.0052 & 0.0000 \\ 
-  W.HECO & -0.6707 & 0.0725 & -0.8206 & -0.6680 & -0.5354 & -0.6627 & 0.0000 \\ 
-  W.POSE & 0.0965 & 0.0690 & -0.0272 & 0.0921 & 0.2440 & 0.0830 & 0.0000 \\ 
-  W.PSSP & -0.0015 & 0.0197 & -0.0386 & -0.0020 & 0.0390 & -0.0032 & 0.0000 \\ 
-  W.allcov & -0.0032 & 0.0058 & -0.0140 & -0.0034 & 0.0087 & -0.0038 & 0.0000 \\ 
-  W.allpts & -0.2630 & 0.1184 & -0.4889 & -0.2654 & -0.0236 & -0.2701 & 0.0000 \\ 
-  logarea:W.ARTR & -0.0005 & 0.0028 & -0.0057 & -0.0006 & 0.0052 & -0.0008 & 0.0000 \\ 
-  logarea:W.HECO & 0.2751 & 0.0600 & 0.1522 & 0.2770 & 0.3879 & 0.2809 & 0.0000 \\ 
-  logarea:W.POSE & 0.0067 & 0.0513 & -0.0833 & 0.0026 & 0.1182 & -0.0060 & 0.0000 \\ 
-  logarea:W.PSSP & -0.0273 & 0.0147 & -0.0543 & -0.0280 & 0.0036 & -0.0294 & 0.0000 \\ 
-  logarea:W.allcov & -0.0043 & 0.0041 & -0.0118 & -0.0045 & 0.0044 & -0.0050 & 0.0000 \\ 
-  logarea:W.allpts & -0.1474 & 0.0903 & -0.3187 & -0.1496 & 0.0364 & -0.1541 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\caption{HECO survival model} 
-\label{HECOsurvival}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:41:35 2016
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 1.3190 & 0.2047 & 0.9110 & 1.3199 & 1.7215 & 1.3213 & 0.0000 \\ 
-  logarea & 1.0711 & 0.0694 & 0.9387 & 1.0693 & 1.2137 & 1.0657 & 0.0000 \\ 
-  TreatmentNo\_shrub & -0.0442 & 0.1832 & -0.4030 & -0.0445 & 0.3158 & -0.0451 & 0.0000 \\ 
-  W.ARTR & 0.0001 & 0.0019 & -0.0036 & 0.0001 & 0.0038 & 0.0001 & 0.0000 \\ 
-  W.HECO & -0.0075 & 0.0142 & -0.0353 & -0.0076 & 0.0204 & -0.0077 & 0.0000 \\ 
-  W.POSE & -1.2650 & 0.0825 & -1.4296 & -1.2641 & -1.1053 & -1.2624 & 0.0000 \\ 
-  W.PSSP & 0.0244 & 0.0123 & 0.0005 & 0.0243 & 0.0486 & 0.0242 & 0.0000 \\ 
-  W.allcov & -0.0031 & 0.0027 & -0.0083 & -0.0031 & 0.0022 & -0.0031 & 0.0000 \\ 
-  W.allpts & 0.0145 & 0.0527 & -0.0889 & 0.0144 & 0.1181 & 0.0143 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\caption{POSE survival model} 
-\label{POSEsurvival}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Tue May 17 11:43:01 2016
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 1.2208 & 0.1772 & 0.8756 & 1.2191 & 1.5757 & 1.2158 & 0.0000 \\ 
-  logarea & 1.5691 & 0.1099 & 1.3570 & 1.5674 & 1.7908 & 1.5641 & 0.0000 \\ 
-  TreatmentNo\_shrub & -0.2570 & 0.2348 & -0.7203 & -0.2563 & 0.2016 & -0.2548 & 0.0000 \\ 
-  W.ARTR & 0.0094 & 0.0026 & 0.0044 & 0.0094 & 0.0147 & 0.0093 & 0.0000 \\ 
-  W.HECO & -0.0005 & 0.0192 & -0.0370 & -0.0009 & 0.0386 & -0.0018 & 0.0000 \\ 
-  W.POSE & 0.0183 & 0.0467 & -0.0675 & 0.0162 & 0.1162 & 0.0116 & 0.0000 \\ 
-  W.PSSP & -0.4486 & 0.0312 & -0.5112 & -0.4481 & -0.3885 & -0.4472 & 0.0000 \\ 
-  W.allcov & 0.0074 & 0.0035 & 0.0007 & 0.0073 & 0.0146 & 0.0072 & 0.0000 \\ 
-  W.allpts & 0.0792 & 0.0797 & -0.0726 & 0.0776 & 0.2405 & 0.0742 & 0.0000 \\ 
-  logarea:W.ARTR & -0.0014 & 0.0021 & -0.0053 & -0.0014 & 0.0029 & -0.0015 & 0.0000 \\ 
-  logarea:W.HECO & -0.0174 & 0.0158 & -0.0466 & -0.0182 & 0.0156 & -0.0196 & 0.0000 \\ 
-  logarea:W.POSE & 0.0147 & 0.0386 & -0.0540 & 0.0120 & 0.0978 & 0.0065 & 0.0000 \\ 
-  logarea:W.PSSP & 0.0127 & 0.0239 & -0.0334 & 0.0124 & 0.0605 & 0.0119 & 0.0000 \\ 
-  logarea:W.allcov & -0.0027 & 0.0027 & -0.0078 & -0.0028 & 0.0029 & -0.0029 & 0.0000 \\ 
-  logarea:W.allpts & -0.0255 & 0.0647 & -0.1483 & -0.0270 & 0.1063 & -0.0302 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\caption{PSSP survival model} 
-\label{PSSPsurvival}
 \end{table}

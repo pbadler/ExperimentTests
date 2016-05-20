@@ -4,15 +4,6 @@
 distWts <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 #distWts <- read.csv(paste0(root,"/driversdata/data/idaho/speciesdata/IdahoDistanceWeights.csv"))
 
-# kernel figure
-png("CompKernels.png",height=3,width=4.5,units="in",res=400)
-par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
-matplot(distWts$midRings[1:12],distWts[1:12,1:4],xlab="Distance (cm)",ylab="Weight",
-    type="l",lty=1,lwd=1.5,col=c("black","darkgray","dodgerblue3","red3"))
-legend("topright",c("ARTR","HECO","POSE","PSSP"),lwd=1.5,col=c("black","darkgray","dodgerblue3","red3"),
-       bty="n")
-dev.off()
-
 # make distWts constant over first annulus (0 to 2 cm)
 distWts <- rbind(distWts,c(1,1,1,1,0))
 distWts <- distWts[order(distWts$midRings),]

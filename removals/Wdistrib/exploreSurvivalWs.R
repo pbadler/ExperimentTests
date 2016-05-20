@@ -4,6 +4,8 @@
 #  1. Import data and calculate W's
 #########################################
 
+setwd("Wdistrib")
+
 sppList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
 dataDir1 <- paste(root,"/driversdata/data/idaho",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
@@ -12,6 +14,15 @@ dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
 dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights_noExptl.csv",sep=""));
 dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
 dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
+
+# kernel figure
+png("CompKernels.png",height=3,width=4.5,units="in",res=400)
+par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
+matplot(dists$midRings[1:12],dists[1:12,1:4],xlab="Distance (cm)",ylab="Weight",
+    type="l",lty=1,lwd=1.5,col=c("black","darkgray","dodgerblue3","red3"))
+legend("topright",c("ARTR","HECO","POSE","PSSP"),lwd=1.5,col=c("black","darkgray","dodgerblue3","red3"),
+       bty="n")
+dev.off()
 
 # import old data
 setwd("..")
@@ -88,18 +99,18 @@ for(doSpp in 1:4){
   Wnonzero.trt = Wdat.trt > 0
   
   # scatter plots
-  filename <- paste0(sppList[doSpp],"_W_scatters.pdf")
+  filename <- paste0(sppList[doSpp],"_W_scatters.png")
   tmp <- rgb(0,100,255,alpha=125,maxColorValue = 255)
   myCol <- c(rep(tmp,dim(Wdat)[1]),rep("red3",dim(Wdat.trt)[1]))
-  pdf(filename,height=8,width=8)
+  png(filename,height=8,width=8,res=400,units="in")
     par(tcl=-0.2,mgp=c(2,0.5,0))
     allWdat <-rbind(Wdat,Wdat.trt)
     pairs(allWdat,col=myCol)
   dev.off()
   
   # compare distributions of control and treatment plot W's
-  filename <- paste0(sppList[doSpp],"_W_byTrt.pdf")
-  pdf(filename,height=5,width=8.5)
+  filename <- paste0(sppList[doSpp],"_W_byTrt.png")
+  png(filename,height=5,width=8.5,res=400,units="in")
     par(mfrow=c(2,3),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
     for(i in 1:6){
       
@@ -204,6 +215,8 @@ print(nonzero.rsq)
 print(max(nonzero.rsq))
 print(zero.dev)
 print(max(zero.dev))
+
+setwd("..")
 
 #####################
 #  3. Visualize W's
