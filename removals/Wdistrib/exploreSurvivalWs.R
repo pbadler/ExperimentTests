@@ -208,7 +208,7 @@ for(doSpp in 1:4){
 
   nonzero.rsq[doSpp,] <-Rsq
   zero.dev[doSpp,] <- ave.dev
-
+  
 } # next doSpp
 
 print(nonzero.rsq)

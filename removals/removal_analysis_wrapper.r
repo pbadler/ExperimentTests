@@ -41,8 +41,8 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   
   # save fixed effects summary to file
   cat("",file=statsOutput,sep="\n",append=T)
-  print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"survival model"),
-        label=paste0(iSpp,"survival")),file=statsOutput,caption.placement="top",append=T)
+  cat(capture.output(print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"survival model"),
+        label=paste0(iSpp,"survival")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
   
   # save treatment test
   irow <- dim(trtTests)[1]
@@ -67,8 +67,8 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   
   # save fixed effects summary to file
   cat("",file=statsOutput,sep="\n",append=T)
-  print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"growth model"),
-        label=paste0(iSpp,"growth")),file=statsOutput,caption.placement="top",append=T)
+  cat(capture.output(print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"growth model"),
+        label=paste0(iSpp,"growth")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
   
   # save treatment test
   irow <- dim(trtTests)[1]
@@ -87,7 +87,7 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-#source("call_recruit_m1.r")
+source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 
 pars.summary <- read.csv("recruit_params_m1.csv")
@@ -103,6 +103,18 @@ trtTests[(irow+1):(irow+3),] <- NA
 trtTests[(irow+1):(irow+3),1:2] <- cbind(c("HECO","POSE","PSSP"),rep("recruitment",3))
 trtTests[(irow+1):(irow+3),3:5] <- pars.summary[tmp[2:4],c("mean","X2.5.","X97.5.")]
 
+# create summary stats table
+fixeffs <- c("intcpt.mu","intcpt.trt","dd","theta","u")
+keep <- NULL
+for(i in fixeffs){
+  keep <- c(keep,grep(i,row.names(pars.summary),fixed=TRUE))
+}
+keep <- keep[-c(5,10:12,33:44)]  # some editing
+output <- pars.summary[keep,c(1:3,7:9)]
+cat("",file=statsOutput,sep="\n",append=T)
+cat(capture.output(print(xtable(output,digits=4,caption=paste("Summary of fixed effects for the recruitment model"),
+        label="table:recruitment"),caption.placement="top")),file=statsOutput,sep="\n",append=T)
+  
 setwd("..")
 
 # write trtTests to file
