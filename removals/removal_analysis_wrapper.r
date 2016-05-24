@@ -138,6 +138,9 @@ source("exploreSurvivalWs.R")
 
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
+# read in distance weights
+dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+
 source("ibm/get_W_functions.r")  # get neighbor distance decay functions
 
 # do contemporary control plots

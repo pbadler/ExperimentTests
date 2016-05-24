@@ -25,56 +25,13 @@ if(trtEffects==F){
  outfile2=paste("simulations1step/",qName,"_validation_den_removals_Trt.csv",sep="") 
 }
 
-#GET OBSERVED DATA AND INITIAL CONDITIONS -------------------------------------------
-Nspp=length(sppList)
-obsA=data.frame(year=startYr:2015)
-obsN=data.frame(year=startYr:2015)
-init.plants=list(NULL,NULL,NULL,NULL) 
-lastID=rep(0,4) # different for each init year
-for(i in 1:length(sppList)){
-  infile=paste("c:\\repos\\driversdata\\data\\idaho_modern\\speciesData\\",sppList[i],"\\",sppList[i],"_genet_xy.csv",sep="")
-  tmpD=read.csv(infile)
-  tmpD=subset(tmpD,quad==qName & tmpD$year>=startYr)
-    if(dim(tmpD)[1]>0){
-      obsCov=aggregate(tmpD$area,by=list(tmpD$year),FUN=sum)
-      names(obsCov)=c("year",sppList[i])
-      obsA=merge(obsA,obsCov,all.x=T)
-      obsDen=aggregate(rep(1,dim(tmpD)[1]),by=list(tmpD$year),FUN=sum)
-      names(obsDen)=c("year",sppList[i])
-      obsN=merge(obsN,obsDen,all.x=T)
-      for(iYr in 1:4){
-        tmpD2=subset(tmpD,year==c(2011:2014)[iYr])
-        if(dim(tmpD2)[1]>0 & !is.element(sppList[i],removeSpp)){  # don't include removal spp in inits
-            spp=rep(i,dim(tmpD2)[1])
-            id=(lastID[iYr]+1:length(spp))
-            tmpD2=data.frame(cbind(spp,tmpD2[,c("area","x","y")],id))
-            names(tmpD2)=c("spp","size","x","y","id")
-            init.plants[[iYr]]=rbind(init.plants[[iYr]],tmpD2)
-            lastID[iYr]=max(init.plants[[iYr]][,5])
-        }  
-      }
-    }
-}
-rm(tmpD)
-
-# add in missing species, set NAs to zero (since no missing yrs, should be no "false" zeros)
-tmp=which(!is.element(sppList,names(obsA)))
-tmp.df=matrix(0,dim(obsA)[1],length(tmp))
-colnames(tmp.df)=sppList[tmp]
-obsA <- cbind(obsA,tmp.df)
-obsA <- obsA[,c("year",sppList)]
-obsA[is.na(obsA)] <- 0
-obsN <- cbind(obsN,tmp.df)
-obsN <- obsN[,c("year",sppList)]
-obsN[is.na(obsN)] <- 0
-
 # FORMAT PARAMETERS ------------------------------------------------
 Nspp=length(sppList)
 
 curDir <- getwd()
 Nyrs <- 30
 # set up survival parameters and function
-source("survival/import2ibm_deterministic.r")
+source("survival/import2ibm_1step.r")
 # set up growth parameters and function
 source("growth/import2ibm_deterministic.r")
 # set up recruitment parameters and function
@@ -92,51 +49,74 @@ if(!is.na(doGroup)){
 library(boot)
 library(mvtnorm)
 library(msm)
+source("survival/fetchSurvData.r")
 
-getCrowding=function(plants,L,expand){
- # plants is a matrix: species ID in column 1, sizes in column 2; x,y coords in columns 3 and 4
- # d is the distance weighting parameter
- # functions returns a vector of length = rows in plants
- 
-  if(dim(plants)[1]>1){
-   
-   # pairwise distances
-   xdiff=abs(outer(plants[,3],plants[,3],FUN="-"))
-   ydiff=abs(outer(plants[,4],plants[,4],FUN="-"))
-   distMat=sqrt(xdiff^2+ydiff^2) 
-   distMat[distMat==0]=NA
-   
-   # apply distance weights
-   for(spp.index in 1:4){
-     doRows <- which(plants[,1]==spp.index)
-     if(length(doRows)==1){
-       distMat[doRows,]  <- Wfuns[[spp.index]](distMat[doRows,])
-     }else{
-       distMat[doRows,] <- t(apply(distMat[doRows,],MARGIN=1,FUN=Wfuns[[spp.index]])) 
-     }
-   }
-   
-   # weight by size
-   sizeMat=matrix(plants[,2],dim(plants)[1],dim(plants)[1])
-   out=aggregate(distMat*sizeMat,by=list("spp"=plants[,1]),FUN=sum,na.rm=T)
-   
-   # put in missing zeros
-   tmp=data.frame("spp"=c(1:length(sppList)))
-   out=merge(out,tmp,all.y=T)
-   out[is.na(out)]=0
-   out=out[order(out$spp),]
-   out=as.matrix(out[,c(2:NCOL(out))])  # drop spp column
-   
- }else{
-   out=rep(0,Nspp)
- }
- out
+# GET OBSERVED DATA  -------------------------------------------
+Nspp=length(sppList)
+plants=NULL
+neighborList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
+dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
+dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
+dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
+
+for(i in 1:length(sppList)){
+  
+  doSpp <- sppList[i]
+  D2 <- fetchSdat(doSpp=doSpp,speciesList=neighborList,datadir=dataDir2,distWts=dists)
+
+  # merge in treatment data
+  tmp <- read.csv(paste(dataDir2,"/quad_info.csv",sep=""))
+  tmp <- tmp[,c("quad","Treatment")]
+  D2 <- merge(D2,tmp, all.x=T)
+
+  # account for removal in baseline years
+  if(doSpp!="ARTR"){
+    ii <- which(D2$year>=2011 & D2$Treatment=="No_shrub")
+    D2$W.ARTR[ii] <- 0
+  }else{
+    ii <- which(D2$year>=2011 & D2$Treatment=="No_grass")
+     D2$W.HECO[ii] <- 0 ; D2$W.POSE[ii] <- 0 ; D2$W.PSSP[ii] <- 0
+  }
+  
+  # clean up dataset 
+  if(doSpp=="ARTR"){
+    keep <- which(is.element(D2$Treatment,c("Control","No_grass")))
+  }else{
+    keep <- which(is.element(D2$Treatment,c("Control","No_shrub")))
+  }
+  D2 <- D2[keep,]
+  D2 <- subset(D2, year>2010) # start with 2011
+
+  D2$area <- exp(D2$logarea)
+  D2$doSpp <- doSpp
+  
+  plants <- rbind(plants,D2)
+  
 }
 
-# MAIN LOOP -------------------------------------------------------
-calYrList=2011:2014
-doYrList=which(is.element(Spars$yrList,calYrList))
-simYrs=length(doYrList)
+# aggregate to quadrat and year
+cov.obs <- aggregate(plants$area,by=list(species=plants$doSpp,quad=plants$quad,year=plants$year),FUN=sum)
+names(cov.obs)[4] <- "cover"
+cov.obs$cover <- cov.obs$cover/100 # convert to % cover
+cov.obs <- reshape(cov.obs,idvar=c("quad","year"),direction="wide",timevar="species")
+cov.obs[is.na(cov.obs)] <- 0
+cov.obs <- cov.obs[,c(1,2,6,3,4,5)] # reorder columns
+
+
+
+# GET PREDICTIONS -------------------------------------------------------
+
+# survival and growth
+plants$surv.prob <- NA; plants$logarea.pred <- NA
+W.index <- grep("W.",names(plants))[1:4]  # TODO: import allcov and allpts coefficients
+
+for(k in 1:dim(plants)[1]){
+  
+  doYr <- which(Spars$yrList==plants$year[k])
+  doSpp <- which(sppList==plants$species[k])
+  plants$surv.prob[k]=survive(Spars,doSpp=plants$species[k],doGroup=plants$Group[k],
+      doYear=doYr,sizes=plants$logarea[k],crowding=matrix(plants[k,W.index],1,4))
+}
 
 # arrays to store results
 N=matrix(0,(simYrs+1),Nspp)
