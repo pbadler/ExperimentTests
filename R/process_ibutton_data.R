@@ -1,36 +1,42 @@
 rm(list = ls())
 
-convert_time <- function(x) { strptime(x = x$Date.Time, format = '%m/%d/%y %I:%M:%S %p') } 
-
-change_time <- function(x) { 
-  x$date <- convert_time( x )
-  return(x)
-}
+q_info <- read.csv('data/quad_info.csv') 
 
 folders <- dir('data/iButton_data', recursive = FALSE , full.names = TRUE) 
 
-for( i in 1:length(folders)){ 
+data_list <- list(NA)
+
+for( i in 1:length(folders)){  # process each folder 
   
-  record_file <- dir( folders[i] , pattern = 'record', full.names = TRUE, recursive = TRUE)
+  record_file <- dir( folders[i] , pattern = 'record', full.names = TRUE, recursive = TRUE) 
 
   record <- read.csv(record_file)
 
-  datafiles <- dir(folders[i], pattern = '[2|3].*21\\.csv', full.names = TRUE)
+  datafiles <- dir(folders[i], pattern = '[2|3].*21\\.csv', full.names = TRUE) # list all data files in the folder 
 
-  d <- lapply( datafiles, read.csv, skip = 14)
+  d <- lapply( datafiles, read.csv, skip = 14)  
 
   names(d) <- gsub(pattern = '.csv', replacement = '', basename(datafiles))
 
-  d <- lapply(d, change_time)
-
   df <- do.call(rbind, d)
 
+  df$date <- strptime(df$Date.Time, format = '%m/%d/%y %I:%M:%S %p' )
+  
+  df$date <- as.POSIXct(df$date)
+  
   df$id <- gsub( row.names(df), pattern = '\\.[0-9]+', replacement = '')
 
   df <- merge( df, record , by.x  = 'id', by.y  = 'ibutton')
   
-  saveRDS(df, file = file.path(folders[i], 'processed.RDS') )
+  data_list[[i]] <- df 
 }
 
 
+df <- do.call( rbind, data_list )  # bind the data lists from each folder 
+
+q_info$plot <- gsub( q_info$QuadName, pattern = 'X', replacement = '')
+
+df <- merge( df, q_info, by = 'plot') 
+
+saveRDS(df, 'data/temp_data/ibutton_data.RDS')
 
