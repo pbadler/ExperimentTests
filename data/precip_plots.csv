@@ -19,7 +19,7 @@ plot_id,experiment,block,treatment,12-T,UTM,logger,P1,P2,P3,P4,P5
 18,precipitation,9,irrigation,406042,4899234,,,,,,
 19,precipitation,10,irrigation,406046,4899276,,,,,,
 20,precipitation,10,shelter,406046,4899276,,,,,,
-1_2_control,precipitation,1,control ,406075,4899294,EL5739,air_temp,m5,m5,m25,m25
-15_16_control,precipitation,8,control ,406020,4899160,EM20067,air_temp,m5,m5,m25,m25
-7_8_control,precipitation,4,control ,,,EM20085,air_temp,m5,m5,m25,NA
-11_12_control,precipitation,6,control ,,,EM20070,air_temp,m5,m5,NA,m25
+1_2_C,precipitation,1,control ,406075,4899294,EL5739,air_temp,m5,m5,m25,m25
+15_16_C,precipitation,8,control ,406020,4899160,EM20067,air_temp,m5,m5,m25,m25
+7_8_C,precipitation,4,control ,,,EM20085,air_temp,m5,m5,m25,NA
+11_12_C,precipitation,6,control ,,,EM20070,air_temp,m5,m5,NA,m25
