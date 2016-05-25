@@ -16,22 +16,25 @@ tmp<-expand.grid(species=sppList,year=sort(unique(covD$year)))
 allquadyrs<-merge(allquadyrs,tmp,all=T)
 allquadyrs<-merge(allquadyrs,trts[,c("Group","quad","Treatment")])
 
-# focus on exclosures
-allquadyrs <- subset(allquadyrs,Group=="E1")
-
 # only do removal treatments
 keep <- which(is.element(allquadyrs$Treatment,c("Control","No_shrub","No_grass")))
 allquadyrs <- allquadyrs[keep,]
 
-# calculate treatment means by year
+# aggregate to quadrat level
 keep<-which(is.element(covD$species,sppList))
 sppD<-covD[keep,]
 sppD<-merge(sppD,allquadyrs,all.y=T)
 sppD$area[is.na(sppD$area)]<-0
 sppD$area<-sppD$area*100
-sppD.q<-aggregate(sppD$area,by=list(species=sppD$species,Treatment=sppD$Treatment,
+sppD.q<-aggregate(sppD$area,by=list(species=sppD$species,Group=sppD$Group,Treatment=sppD$Treatment,
                   quad=sppD$quad,year=sppD$year),FUN=sum)
 names(sppD.q)[NCOL(sppD.q)]<-"cover"
+write.csv(sppD.q,"QuadYearCover.csv",row.names = FALSE)  # save these 
+
+# focus on all control plots or just those in the big exclosure?
+sppD.q <- subset(sppD.q,Group=="E1")
+
+#calculate treatment means by year
 spp.mean <- aggregate(sppD.q$cover,by=list(species=sppD.q$species,Treatment=sppD.q$Treatment,
                   year=sppD.q$year),FUN=mean)
 names(spp.mean)[NCOL(spp.mean)] <- "cover"

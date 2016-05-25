@@ -32,9 +32,7 @@ trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5
 # read in distance weights
 dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
-###
-### fit survival models (takes ~ 10 minutes)
-###
+# fit survival models (takes ~ 10 minutes)
 setwd("survival")
 source("write_params.r") # get function to format and output parameters
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
@@ -59,9 +57,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
 }
 setwd("..")
 
-###
-### fit growth models (takes < 5 mins)
-###
+# fit growth models (takes < 5 mins)
 setwd("growth")
 source("write_params.r") # get function to format and output parameters
 
@@ -87,10 +83,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
 }
 setwd("..")
 
-###
-### fit recruitment models (this can take a few hours)
-###
-
+# fit recruitment models (this can take a few hours)
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
@@ -124,10 +117,7 @@ cat(capture.output(print(xtable(output,digits=4,caption=paste("Summary of fixed 
   
 setwd("..")
 
-###
-### write results to file
-###
-
+# write trtTests to file
 trtTests <- trtTests[-1,] # throw away first line junk
 write.csv(trtTests,"treatment_test_results.csv",row.names=F)
 
@@ -137,7 +127,6 @@ source("treatment_test_figure.r")
 ###
 ### 3. explore neighborhood composition ###################################
 ###
-
 library("TeachingDemos") # for inset plots
 
 source("exploreSurvivalWs.R")
@@ -152,8 +141,53 @@ sppList <-  c("ARTR","HECO","POSE","PSSP")
 # read in distance weights
 dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
-source("ibm/ibm_removal_1step.r")
-source("ibm/summarize_sims1step.r")
+
+
+
+source("ibm/get_W_functions.r")  # get neighbor distance decay functions
+
+# do contemporary control plots
+quadList <- paste0("Q",c(1:6,19:26))  
+groupList <- c(rep(1,6),rep(6,4),rep(3,4))
+removeSpp <- NULL
+trtEffects <- FALSE  # TRUE means use a model that includes removal treatment effects
+for(iQuad in 1:length(quadList)){
+  qName=quadList[iQuad]
+  doGroup=groupList[iQuad]
+  source("ibm/ibm_validate_removal.r")   # project forward from 2011
+  source("ibm/ibm_validate_removal_1step.r")  # just predict one time step ahead for each year
+}
+
+# do no grass plots
+quadList <- c("Q48","Q49","Q51","Q55","Q57","Q58","Q60","Q62")  # no grass
+removeSpp <- c("HECO","POSE","PSSP")
+for(iQuad in quadList){
+  qName=iQuad
+  doGroup=1
+  trtEffects <- FALSE  
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
+  trtEffects <- TRUE  
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
+}
+
+# do no shrub plots
+quadList <- c("Q47","Q50","Q52","Q53","Q54","Q56","Q59","Q61")  # no shrub
+removeSpp <- c("ARTR")
+for(iQuad in quadList){
+  qName=iQuad
+  doGroup=1
+  trtEffects <- FALSE  
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
+  trtEffects <- TRUE  
+  source("ibm/ibm_validate_removal.r")
+  source("ibm/ibm_validate_removal_1step.r")
+}
+
+# make figure for simulation results
+source("ibm/summarize_validate_sims1step.r")
 
 
 ###
