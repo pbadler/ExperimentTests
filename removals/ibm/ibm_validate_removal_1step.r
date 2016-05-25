@@ -19,10 +19,8 @@ maxSize=c(8000,500,500,500)
 
 if(trtEffects==F){
  outfile1=paste("simulations1step/",qName,"_validation_cov_removals_noTrt.csv",sep="")
- outfile2=paste("simulations1step/",qName,"_validation_den_removals_noTrt.csv",sep="")
 }else{
  outfile1=paste("simulations1step/",qName,"_validation_cov_removals_Trt.csv",sep="")
- outfile2=paste("simulations1step/",qName,"_validation_den_removals_Trt.csv",sep="") 
 }
 
 # FORMAT PARAMETERS ------------------------------------------------
@@ -33,7 +31,7 @@ Nyrs <- 30
 # set up survival parameters and function
 source("survival/import2ibm_1step.r")
 # set up growth parameters and function
-source("growth/import2ibm_deterministic.r")
+source("growth/import2ibm_1step.r")
 # set up recruitment parameters and function
 source("recruitment/import2ibm_deterministic.r")
 setwd(curDir)
@@ -85,7 +83,6 @@ for(i in 1:length(sppList)){
     keep <- which(is.element(D2$Treatment,c("Control","No_shrub")))
   }
   D2 <- D2[keep,]
-  D2 <- subset(D2, year>2010) # start with 2011
 
   D2$area <- exp(D2$logarea)
   D2$doSpp <- doSpp
@@ -94,100 +91,85 @@ for(i in 1:length(sppList)){
   
 }
 
+# make quad.info data frame
+
+# subset to > 2010
+
 # aggregate to quadrat and year
 cov.obs <- aggregate(plants$area,by=list(species=plants$doSpp,quad=plants$quad,year=plants$year),FUN=sum)
-names(cov.obs)[4] <- "cover"
-cov.obs$cover <- cov.obs$cover/100 # convert to % cover
+names(cov.obs)[4] <- "obs"
+cov.obs$obs <- cov.obs$obs/100 # convert to % cover
 cov.obs <- reshape(cov.obs,idvar=c("quad","year"),direction="wide",timevar="species")
 cov.obs[is.na(cov.obs)] <- 0
 cov.obs <- cov.obs[,c(1,2,6,3,4,5)] # reorder columns
 
+# get 2015 quadrat cover totals (these are not in the survival data file)
 
 
 # GET PREDICTIONS -------------------------------------------------------
 
-# survival and growth
-plants$surv.prob <- NA; plants$logarea.pred <- NA
-W.index <- grep("W.",names(plants))[1:4]  # TODO: import allcov and allpts coefficients
+# SURVIVAL AND GROWTH
+plants$surv.prob <- plants$surv.prob.trt <- NA
+plants$logarea.pred <- plants$logarea.pred.trt <- NA
+W.index <- grep("W.",names(plants))
 
 for(k in 1:dim(plants)[1]){
   
   doYr <- which(Spars$yrList==plants$year[k])
   doSpp <- which(sppList==plants$species[k])
-  plants$surv.prob[k]=survive(Spars,doSpp=plants$species[k],doGroup=plants$Group[k],
-      doYear=doYr,sizes=plants$logarea[k],crowding=matrix(plants[k,W.index],1,4))
+  
+  #ignore treatment effects
+  plants$surv.prob[k]=survive(Spars,doSpp=doSpp,doGroup=plants$Group[k],
+      doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment="Control")
+  plants$logarea.pred[k] <- grow(Gpars,doSpp=doSpp,doGroup=plants$Group[k],
+      doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment="Control")
+  
+  #use treatment effects when appropriate
+  plants$surv.prob.trt[k]=survive(Spars,doSpp=doSpp,doGroup=plants$Group[k],
+      doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment=plants$Treatment[k])
+  plants$logarea.pred.trt[k] <- grow(Gpars,doSpp=doSpp,doGroup=plants$Group[k],
+      doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment=plants$Treatment[k])
+  
 }
 
-# arrays to store results
-N=matrix(0,(simYrs+1),Nspp)
-N[1,1:4]=as.numeric(obsN[1,2:5])
-A=matrix(0,(simYrs+1),Nspp)
-A[1,1:4]=as.numeric(obsA[1,2:5])
+# multiply predicted size by survival probability to get expected area
+plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred)
+plants$area.pred.trt <- plants$surv.prob.trt*exp(plants$logarea.pred.trt)
 
-for(tt in 1:simYrs){
-  
-  if(is.null(init.plants[[tt]])){ # are there any plants?
-    
-    A[tt+1,] <- 0
-    N[tt+1,] <- 0
-    
-  }else{
-    
-    # initialize with N.init plants of size.init for each species
-    plants=init.plants[[tt]]
-    lastID=max(plants[,5])
-    
-    # draw year effects
-    doYr=doYrList[tt]  # no year effects
-    
-    nextplants=plants
-    
-    # recruitment
-    newplants=recruit(Rpars,sizes=plants[,2],spp=plants[,1],doGroup=doGroup,doYear=doYr,lastID=lastID,L,expand)
-    
-    W=getCrowding(plants,L,expand)
-    
-    for(ss in 1:Nspp){
-      if(N[tt,ss]>0){ # make sure spp ss is not extinct
-        
-        # growth
-        newsizes=grow(Gpars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
-        if(sum(newsizes==Inf)>0) browser()
-        if(is.na(sum(newsizes))) browser()
-        
-        # survival, uses same W as growth            
-        live=survive(Spars,doSpp=ss,doGroup=doGroup,doYear=doYr,sizes=plants[,2],crowding=W)
-        
-        # put it all together
-        tmp=which(plants[,1]==ss)  # only alter plants of focal spp        
-        nextplants[tmp,2]=newsizes[tmp]*live[tmp]   #update with G and S
-        
-      } # end if no plants
-    } # next ss  
-    
-    nextplants=nextplants[nextplants[,2]>0,]    # remove dead plants 
-    nextplants=rbind(nextplants,newplants)     # add recruits
-    
-    if(dim(nextplants)[1]==0) break()  # end simulation
-    
-    # output cover and density
-    tmp=aggregate(nextplants[,2],by=list(nextplants[,1]),FUN=sum)
-    A[tt+1,tmp[,1]]=tmp[,2]
-    tmp=aggregate(rep(1,dim(nextplants)[1]),by=list(nextplants[,1]),FUN=sum)
-    N[tt+1,tmp[,1]]=tmp[,2]
-    
-    # since we are re-initializing every year, no need for this
-    #      plants=nextplants
-    #      lastID=max(plants[,5])  
-    
-  } # end is.null(plants) loop
-  
-  print(tt);flush.console() 
-  
-} # next tt 
+# aggregate predicted area to quadrat level
+cov.pred <- aggregate(plants[,c("area.pred","area.pred.trt")],by=list(species=plants$doSpp,quad=plants$quad,year=plants$year),FUN=sum)
+names(cov.pred)[4:5] <- c("pred","pred.trt")
+cov.pred[,4:5] <- cov.pred[,4:5]/100 # convert to % cover
+cov.pred <- reshape(cov.pred,idvar=c("quad","year"),direction="wide",timevar="species")
+cov.pred[is.na(cov.pred)] <- 0
 
-print(paste(qName," complete",sep=""))
-flush.console()
+# RECRUITMENT
+
+# get quadrat group and treatment
+quad.info <- unique(plants[,c("quad","Group","Treatment")],MARGIN=2)
+
+# loop through observed cover matrix
+out.recruit <- out.recruit.trt <- data.frame(quad=cov.obs$quad,year=as.numeric(cov.obs$year),matrix(NA,dim(cov.obs)[1],4))
+names(out.recruit)[3:6] <- sppList
+names(out.recruit.trt)[3:6] <- sppList
+for(k in 1:dim(cov.obs)[1]){
+    
+    doYr<- which(Spars$yrList==cov.obs$year[k])
+    qI <- which(quad.info$quad==cov.obs$quad[k])
+    doGroup <- quad.info$Group[qI]
+    Trt <- quad.info$Treatment[qI]
+    
+    # no treatment effects
+    out.recruit[k,3:6]=recruit(Rpars,totArea=as.numeric(cov.obs[k,3:6]),
+          doGroup=doGroup,doYear=doYr,Treatment="Control")
+    
+    # with trtEffects as appropriate
+    out.recruit.trt[k,3:6]=recruit(Rpars,totArea=as.numeric(cov.obs[k,3:6]),
+          doGroup=doGroup,doYear=doYr,Treatment=Trt)
+    
+} # next k
+
+# add recruitment to survival*growth
 
 # format output
 
@@ -197,18 +179,6 @@ A=data.frame(cbind(year,A))
 names(A)[2:dim(A)[2]]=paste(sppList,"pred",sep="")
 output1=merge(obsA,A,all.x=T)
 
-N=data.frame(cbind(year,N))
-names(N)[2:dim(N)[2]]=paste(sppList,"pred",sep="")
-output2=merge(obsN,N,all.x=T)
-
-# par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0))
-# matplot(output1[,1],output1[,2:NCOL(output1)],type="o",
-#   col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
-#   pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Cover")
-# matplot(output2[,1],output2[,2:NCOL(output2)],type="o",
-#   col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
-#   pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Density")
-
 write.table(output1,paste0("ibm/",outfile1),row.names=F,sep=",")
-write.table(output2,paste0("ibm/",outfile2),row.names=F,sep=",")
 
+rm(plants)

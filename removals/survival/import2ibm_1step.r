@@ -14,10 +14,8 @@ for(i in 1:Nspp){
   # main intercept
   Spars$intcpt[i]=Sdata$X.Intercept.[1]
   # Treatment effect
-  if(trtEffects==T){
-    tmp=grep("Treatment",names(Sdata))
-    if(length(tmp)>0) Spars$intcpt.trt[i]=Sdata[1,tmp]
-  }
+  tmp=grep("Treatment",names(Sdata))
+  if(length(tmp)>0) Spars$intcpt.trt[i]=Sdata[1,tmp]
   # Group effects
   tmp=which(names(Sdata)=="Group")
   if(length(tmp)>0) Spars$intcpt.gr[,i]=Sdata$Group[!is.na(Sdata$Group)] # get spatial average
@@ -35,10 +33,11 @@ Spars$yrList=Sdata$year
 rm(Sdata)
 
 # survival function
-survive=function(Spars,doSpp,doGroup,doYear,sizes,crowding){
-   logsizes=log(sizes)
-   mu=Spars$intcpt[doSpp]+Spars$intcpt.gr[doGroup,doSpp]+Spars$intcpt.yr[doYear,doSpp]+Spars$intcpt.trt[doSpp]+
-    Spars$slope[doSpp]*logsizes+Spars$nb[doSpp,]*crowding
+survive=function(Spars,doSpp,doGroup,doYear,sizes,crowding,Treatment){
+  trt.Effect=Spars$intcpt.trt[doSpp]
+  if(Treatment=="Control") trt.Effect=0
+   mu=Spars$intcpt[doSpp]+Spars$intcpt.gr[doGroup,doSpp]+Spars$intcpt.yr[doYear,doSpp]+trt.Effect+
+    Spars$slope[doSpp]*sizes+sum(Spars$nb[doSpp,]*crowding)
    out=inv.logit(mu)
    #out=rbinom(length(sizes),1,out)
    out
