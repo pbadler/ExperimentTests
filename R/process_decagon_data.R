@@ -4,13 +4,14 @@ library(stringr)
 library(dplyr)
 library(tidyr)
 
-get_col_names <- function( x ) { 
+make_col_names <- function( x ) { 
   
   port <- str_extract_all(x[1, ], pattern = '(Time)|(Port\\s[0-9])') 
   probe_type <- str_extract( x[1, ] , pattern = '(ECT)|(EC\\-5)|(5TM)')
   measure <- str_extract( x [ 1, ] , pattern = '(VWC$)|((C$|C\\sTemp$))')
   
   new_names <- paste( port, measure , sep = '_')
+  new_names <-  str_replace(string = new_names, pattern = '\\sTemp$', replacement = '')
   str_replace_all(string = new_names, pattern = c('_NA'), replacement = c('')) 
   
 }
@@ -18,7 +19,7 @@ get_col_names <- function( x ) {
 
 rename_cols <- function(x ) { 
   
-  names(x) <- get_col_names( x ) 
+  names(x) <- make_col_names( x ) 
   
   return(   x[-1, ] ) 
 }
@@ -36,7 +37,7 @@ convert_time <- function(x) {
 }
 
 
-change_time <- function(x) { 
+make_date <- function(x) { 
   
   x$date <- convert_time( x )
   
@@ -58,7 +59,7 @@ folders <- dir('data/soil_moist_data', pattern = '20[0-9]{2}_((Fall$)|(Spring$))
 data_list <- list(NA)
 
 for (i in 1:length(folders)) {
-  i = 1
+
   record_file <- dir(folders[i] , pattern = 'logger_info.csv', full.names = TRUE) 
 
   record <- read.csv(record_file)
@@ -77,7 +78,7 @@ for (i in 1:length(folders)) {
 
   d <- lapply(d, assign_NAs)
 
-  d <- lapply(d, change_time) 
+  d <- lapply(d, make_date) 
 
   d <- lapply( d, gather_ports ) 
 
@@ -93,11 +94,19 @@ for (i in 1:length(folders)) {
   
 } 
 
-
 df <- do.call( rbind, data_list )  # bind the data lists from each folder 
 
 q_info$plot <- gsub( q_info$QuadName, pattern = 'X', replacement = '')
 
+unique( df$plot ) 
+
 df <- merge( df, q_info, by = 'plot') 
 
+port_depth <- data.frame(port = paste('Port', 1:5), depth = c('air', '5','5','25','25'))
+
+df <- merge( df, port_depth ) 
+
+df <- unique(df)
+
 saveRDS(df, 'data/temp_data/decagon_data.RDS')
+
