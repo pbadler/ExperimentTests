@@ -17,6 +17,10 @@ library(lme4)
 statsOutput <- paste0(getwd(),"/stats_tables.tex")
 source("treatment_trends_removals.r")
 
+# clean up
+tmp=ls() ; tmp=tmp[tmp!="root"]
+rm(list=tmp)
+
 ###
 ### 2. fit vital rate regressions ###########################
 ###
@@ -62,6 +66,7 @@ setwd("..")
 ###
 ### fit growth models (takes < 5 mins)
 ###
+
 setwd("growth")
 source("write_params.r") # get function to format and output parameters
 
@@ -124,6 +129,7 @@ cat(capture.output(print(xtable(output,digits=4,caption=paste("Summary of fixed 
   
 setwd("..")
 
+
 ###
 ### write results to file
 ###
@@ -134,14 +140,21 @@ write.csv(trtTests,"treatment_test_results.csv",row.names=F)
 # make treatment effect figure
 source("treatment_test_figure.r")
 
+# clean up
+tmp=ls() ; tmp=tmp[tmp!="root"]
+rm(list=tmp)
+
 ###
 ### 3. explore neighborhood composition ###################################
 ###
 
 library("TeachingDemos") # for inset plots
 
-source("exploreSurvivalWs.R")
+source("Wdistrib/exploreSurvivalWs.R")
 
+# clean up
+tmp=ls() ; tmp=tmp[tmp!="root"]
+rm(list=tmp)
 
 ###
 ### 4. get IBM predictions for quadrat cover ###############################
@@ -155,6 +168,9 @@ dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoM
 source("ibm/ibm_removal_1step.r")
 source("ibm/summarize_sims1step.r")
 
+# clean up
+tmp=ls() ; tmp=tmp[tmp!="root"]
+rm(list=tmp)
 
 ###
 ### 5. get equilibrium cover from an IPM ###############################
