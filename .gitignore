@@ -46,3 +46,6 @@ figures/*
 data/temp_data/*
 plans_and_materials/*
 
+# temp 
+*~
+
