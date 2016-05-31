@@ -48,5 +48,5 @@ plans_and_materials/*
 
 # temp 
 *~
-*.DS_store
-*._.DS_store
+.DS_Store
+._.DS_Store
