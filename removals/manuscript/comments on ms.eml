@@ -1,0 +1,268 @@
+Received: from CO1PR07MB346.namprd07.prod.outlook.com (10.141.51.12) by
+ BN1PR07MB344.namprd07.prod.outlook.com (10.141.61.23) with Microsoft SMTP
+ Server (TLS) id 15.1.506.9 via Mailbox Transport; Thu, 9 Jun 2016 04:57:00
+ +0000
+Received: from SN1PR07CA0025.namprd07.prod.outlook.com (10.162.170.163) by
+ CO1PR07MB346.namprd07.prod.outlook.com (10.141.51.12) with Microsoft SMTP
+ Server (TLS) id 15.1.506.9; Thu, 9 Jun 2016 04:56:57 +0000
+Received: from BL2FFO11FD010.protection.gbl (2a01:111:f400:7c09::175) by
+ SN1PR07CA0025.outlook.office365.com (2a01:111:e400:3000::35) with Microsoft
+ SMTP Server (TLS) id 15.1.497.12 via Frontend Transport; Thu, 9 Jun 2016
+ 04:56:57 +0000
+Authentication-Results: spf=softfail (sender IP is 129.123.1.26)
+ smtp.mailfrom=case.edu; aggies.usu.edu; dkim=none (message not signed)
+ header.d=none;aggies.usu.edu; dmarc=none action=none header.from=case.edu;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ case.edu discourages use of 129.123.1.26 as permitted sender)
+Received: from ironport1.usu.edu (129.123.1.26) by
+ BL2FFO11FD010.mail.protection.outlook.com (10.173.161.16) with Microsoft SMTP
+ Server (TLS) id 15.1.497.8 via Frontend Transport; Thu, 9 Jun 2016 04:56:56
+ +0000
+X-SBRS: 2.6
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0C8AwD49VhXfsJnFoFUBgMOhAZ+BaZEB?=
+ =?us-ascii?q?oNZAYkggkuGeSKHMEMQAQEBAQEBARIBAQkNCQkhL4ReEWQLDSIVAhgMEgEFARY?=
+ =?us-ascii?q?MNYgNDo9ojTuCB4ExPjGLO41WAYNHJQULhU+JLmYIgUtvglkFiAeQPggBAY4mg?=
+ =?us-ascii?q?WmHfoU4jiMSHoEPNYNSV4paAQEB?=
+X-IPAS-Result: =?us-ascii?q?A0C8AwD49VhXfsJnFoFUBgMOhAZ+BaZEBoNZAYkggkuGeSK?=
+ =?us-ascii?q?HMEMQAQEBAQEBARIBAQkNCQkhL4ReEWQLDSIVAhgMEgEFARYMNYgNDo9ojTuCB?=
+ =?us-ascii?q?4ExPjGLO41WAYNHJQULhU+JLmYIgUtvglkFiAeQPggBAY4mgWmHfoU4jiMSHoE?=
+ =?us-ascii?q?PNYNSV4paAQEB?=
+X-IronPort-AV: E=Sophos;i="5.26,442,1459836000"; 
+   d="scan'208,217";a="392911383"
+Received: from mpv3-2015.cwru.edu (HELO mpv3-2015.case.edu) ([129.22.103.194])
+  by ironport1.usu.edu with ESMTP; 08 Jun 2016 22:56:55 -0600
+Received: from mpv6-2015.CWRU.Edu (EHLO mpv6-2015.case.edu) ([129.22.103.202])
+	by mpv3-2015.case.edu (MOS 4.4.7-GA FastPath queued)
+	with ESMTP id AEW87775;
+	Thu, 09 Jun 2016 00:56:50 -0400 (EDT)
+Received: from mail-vk0-f69.google.com (EHLO mail-vk0-f69.google.com) ([209.85.213.69])
+	by mpv6-2015.case.edu (MOS 4.4.7-GA FastPath queued)
+	with ESMTP id ANC48586;
+	Thu, 09 Jun 2016 00:56:51 -0400 (EDT)
+Received: by mail-vk0-f69.google.com with SMTP id x7so64030526vkf.0
+        for <peter.adler@usu.edu>; Wed, 08 Jun 2016 21:56:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=4Rp00dfFDREHrmh2kOKwqJ9e5KO+u3B3KOFVsM6O+Qg=;
+        b=PKqwyBgodVHo2Bim2yE9iCLahyvwxqwaPPmRierWE+nVRnZLOACqFSekMYd2Qdkxg4
+         gjy4awx9yE0eUrmR2EVCamVeCK6wUAIPL2jos6VDXiRtLfjGDW6I2fzvLO+/yVYSf9Xk
+         9NuAMrkihpbuRzQMqbj5kox40oHPDFeUNQD3O0C4+2LTJ+LCuL4BRzvdx9Amdht3S67E
+         0AqIvIf0iYHc2eK/j8zFrKEDE7F/J0Fi/s/GF6IzkZHby3J7CNnIGmdSjmtjKVmk5y/Q
+         ik0yH5vFvRXBUwFQB9JWNyosQp/3H4M4AVd9JtTUG0XFDGoRFA7NfqSRLOg3G7B5CIM1
+         mLwA==
+X-Gm-Message-State: ALyK8tIHf2iNPFvWQPIqjXA0Trd2n9GZV9nUWMZdEyg5oKxe6hP5/LDl0fH7IbIuaiXiQrnQsDEWJ7y4ZaVklYAQ4Tk6SGiA8/56hJnQRvzIhh6ogiUroe/J4J14/vj+T+KGvT4Y3VCYjpeZ7x9ZB0Xjrg==
+X-Received: by 10.31.82.67 with SMTP id g64mr3905057vkb.78.1465448212392;
+        Wed, 08 Jun 2016 21:56:52 -0700 (PDT)
+X-Received: by 10.31.82.67 with SMTP id g64mr3905052vkb.78.1465448212142; Wed,
+ 08 Jun 2016 21:56:52 -0700 (PDT)
+Received: by 10.159.38.79 with HTTP; Wed, 8 Jun 2016 21:56:32 -0700 (PDT)
+From: Robin Snyder <res29@case.edu>
+Date: Thu, 9 Jun 2016 00:56:32 -0400
+Message-ID: <CABDtm2invuXnpBbQ6kP5giy2SPWWx9oOx+m+-NTL-FJYsTCdBw@mail.gmail.com>
+Subject: comments on ms
+To: Peter Adler <peter.adler@usu.edu>
+Content-Type: multipart/alternative; boundary="001a114e572a1f303a0534d14008"
+X-Junkmail-Whitelist: YES (by domain whitelist at mpv3-2015.case.edu)
+X-Mirapoint-Virus-RAPID-Raw: score=unknown(0),
+	refid=str=0001.0A020206.5758F716.007B,ss=1,re=0.000,fgs=0,
+	ip=0.0.0.0,
+	so=2015-08-12 04:07:17,
+	dmn=2011-05-27 18:58:46
+X-Mirapoint-Loop-Id: bc19c5872bd668dfb096efff010629f7
+Return-Path: res29@case.edu
+X-MS-Exchange-Organization-Network-Message-Id: 7ffa7fef-4056-4593-011c-08d390227bd3
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: ac352f9b-eb63-4ca2-9cf9-f4c40047ceff:0
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-Forefront-Antispam-Report: CIP:129.123.1.26;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(2980300002)(199003)(189002)(61726006)(8896002)(88552002)(19617315012)(55446002)(9686002)(512874002)(90282001)(86362001)(15975445007)(106466001)(63266004)(93516999)(3480700004)(63696999)(54356999)(89122001)(92566002)(19580395003)(75432002)(229853001)(105596002)(586003)(107886002)(42186005)(246002)(110136002)(8576002)(50986999)(11100500001)(61266001)(2171001)(8676002)(189998001)(6806005)(5008740100001)(84326002)(450100001)(1096003)(59536001)(9896002)(42262002)(55456009);DIR:INB;SFP:;SCL:1;SRVR:CO1PR07MB346;H:ironport1.usu.edu;FPR:;SPF:SoftFail;PTR:ironport1.usu.edu;A:1;MX:1;LANG:en;
+X-Microsoft-Exchange-Diagnostics: 1;BL2FFO11FD010;1:7dLG4cTmwijk3rEeFcWseFtZMsoKhGmxYukWBv1D3cWFztrvSA5e9tko5BGxrEk7Yh0l7pHP0okzGXgSo4shCHTF6G/nm2LQLC1GUYBF6kI5gzOzSnpcFHmXuYDC6QR2dH+fVta5+hkoPb3CPu5byIYEOFSe+ChSQO0tLMvoK6dVyybtCNuqmGwmRVGE4umb1aKt5V4KtrvsrF8T+m+mEZDw1G/N3Xgbp1F0ryBUYE3HvtDWcY1VXSa/753UkxQdR9jC2ihgh90fZF4iiR8VDuXnV3iIcYLI5HEc1k+gdq5YJuXjvAUF3HNTxge/vTEm6I+RcQLuy254IrrOYUCHfa9jjCdTyHLjKc11iVgGAJE577pIB/4IDPDKq+CWlawar8b3oCXzRY13UQ+m3do4/xJPhdJ0wyM11OuGh2AW6G/zJ+1s7wrUmDUfZTXfTMFkNItLEXH84raEoS1ZBqiATNUJPtkLgM54WxyWMMwO9UEjpGLCBpiTWZRXTE7AkvgrL2AuXQHLRonO7S6qplF6GIABwc81ccU+q2DoH077v98=
+X-MS-Office365-Filtering-Correlation-Id: 7ffa7fef-4056-4593-011c-08d390227bd3
+X-Microsoft-Exchange-Diagnostics: 1;CO1PR07MB346;2:/zjU9F+c/cGEEJVEYutaP1EZBo63aDjZxqzfUrUp3pbTlEp60EOU9vDup/5OSrzCGvZwqDNkKQp+LqGJfXHshDGZOd3G4vvOWYWITLOLl9wbgYpaj9YapZhu4JT9vehL3Cdj7z65HFDwmC0QK2R0bD0eoB8kYqmsHpUNiWhf0bPKzv8XJ31CVXyW6r5LEzA9;3:0eDjUSwW11MliGZ+5ySsGIzK/g850/DOhTZjF7wjaIFu9ye1KEO8TDFepHWpV06bP6+5aKYCaUBXzfEn5zvPOGDhNVyKQv/u6hVxrPAGu8GPbAyhmLVjsVJUNPcQEOb/AeiY08iKxrIOxrc6iFf7roFAqJwQFMwkxzxj5M4c5qw18ziOlyBXpw8bTPXawBfAUfNYmV5qC9eXM90L7aR/hpTXVDpQjaiy4VghWh483VvO9t8sQHa6KprLCMV3vijiJuG2jD7NJmaTG43Ocs3Hlw==
+X-Microsoft-Antispam: UriScan:;BCL:0;PCL:0;RULEID:(71701004)(71702002);SRVR:CO1PR07MB346;
+X-Microsoft-Exchange-Diagnostics: =?us-ascii?Q?1;CO1PR07MB346;25:ke+E3hdid12fTLq680UiTOKMvyCuEt7HI5cfHKwApT?=
+ =?us-ascii?Q?Kqii4h2T1gy609Hy6jf1o8gwYUby/p8pM6GEvZqIN6JUu2lHnXSZ1gU3Kum2?=
+ =?us-ascii?Q?Dr2ZnMGHnJ2hFwhP5cgaqNzdHbrp1fyPymiiJkfZiSn460Dl+A5sDRRZaVlq?=
+ =?us-ascii?Q?WSTrll33uvUdT8iJl/kx2CuqLU494JaOPMEX2zyg7Xyey8CyvIumpjZdc0dg?=
+ =?us-ascii?Q?bqiYzNysoHyrrE9oWJAKohhdX+XTCX7VVsixOiDhGqZddoIWylk7p96dsuGn?=
+ =?us-ascii?Q?TSVunGDkAVDxRZWPn0KCWzC52Mu8Kd150Pu2u82r4FgNorG+vdZ/ft0Dx6lV?=
+ =?us-ascii?Q?0w1t2Ku0B+yiN0qDCsZ3XtHevHNQJoH4MkqoYV3013x0QOr4Fmdz5LT+qTmu?=
+ =?us-ascii?Q?x987EgIeK9UBthT5R8A7Rhiwv6wnwXU1Mzne3ahVE4UwPuZSOfwerF1rDfno?=
+ =?us-ascii?Q?qJ6X8juiOurwgoIaIQVXUKVRsahezQ9ST0yRnnF4wlQ2hmx586co8YJ/TOSO?=
+ =?us-ascii?Q?x7lLriEIvzVzYrqkrW5KbLEPz26Dap/ZDrT8DGOARAjieUv+K/ok1Kyh0H9q?=
+ =?us-ascii?Q?5uHeJowDz9J/gC+amLPjQ7YM7TRn5c0w0w4gQ2k+rDV96iZMAfE842Y+4J4v?=
+ =?us-ascii?Q?2h/EHBzyLAvY+RCh18plgkd/9FEIDSOnOqWIZdBdT2qT45X9jjbl5EQFdsUu?=
+ =?us-ascii?Q?nQUiYUsBVhD9aOiyUKxDkWhqeArwDC7YvOZr4aIumpLOGAQgF+HBsOd1Pf5l?=
+ =?us-ascii?Q?JN3oz16byBCqdTL6vIYDN28AoRhtwXW7JTIbHhJDQBLQqcrCsynjnqOPZQS/?=
+ =?us-ascii?Q?TqW2QjXplUBSXYlmwKzBU7yGVmjHdZMinZF3HPwPqwcEYsSXzaSkOrgKnoIX?=
+ =?us-ascii?Q?0m6tL6SFgi8zW4GQeWO16JAiSVLGKvYgZOe5Ko92Zsf1henuaHcgwez90O1g?=
+ =?us-ascii?Q?q0RspoyyFMVgR4cRV7lmiEHw+A0ZvHTGONBDdoDQ=3D=3D?=
+X-MS-Exchange-Organization-AVStamp-Service: 1.0
+X-Exchange-Antispam-Report-Test: UriScan:;
+X-Exchange-Antispam-Report-CFA-Test: BCL:0;PCL:0;RULEID:(9101531078)(601004)(2401047)(8121501046)(13016025)(13018025)(10201501046)(3002001);SRVR:CO1PR07MB346;BCL:0;PCL:0;RULEID:;SRVR:CO1PR07MB346;
+X-Microsoft-Exchange-Diagnostics: 1;CO1PR07MB346;4:aRoJjkLd6xd7XyMt+piG9K3dqcDXooNwGNy/mZ7kZXqewCpW0azbYftKP3jMQJpSrIo2nl7W8uaOrsvKUZGlPLCrjYaZD6bH/t4K0+Z7X8xa8LycsxI9j9oZKyBCF2/OzxZ0ket4BUuOuzh/NVQhYmdXX87HOoFpH4KN63lJ5XPV19dTqe92weBcCopIcdIASeqX1BrGuS5s6vd6j9lr1qJPMl5lQ2JoNkxDa6froMN2yJaij49XLq9l0PP1gcAgq6RN1aktxOfofIH5XWJF3p/G1kf4QGqUojbMnDDxxlxYBAPKUOjfwLrNmJwhGcAE2AmEPm8Hm4ZweR2krc7roXe73NvOc/WUpZVxvWReAAYnNEIZFa86oqNOR66zIhMHd2LJ0q4SC59XphwZ5blGodWraI3U/XpQ4Uqfcsko9ro=
+X-MS-Exchange-Organization-SCL: 1
+X-Microsoft-Exchange-Diagnostics: =?us-ascii?Q?1;CO1PR07MB346;23:Lple0qzxaEAgZ5FxbZlqct7/LAzGExWxhYyawI+tDr?=
+ =?us-ascii?Q?q/sNZmg4v67U8hyatbbYR5TOa9ZsEhGVtmRyVaSCcIA92TGoBZECT5KQJ/jy?=
+ =?us-ascii?Q?g9jTSdGUYkh+r9vs0f9/xm+Zu53eyVmhNNXB/uCPOE5cmHp6tF6oaruil9iJ?=
+ =?us-ascii?Q?jSJHS9OLbmzVUf5P0o01arzXiKHyQWFgV9Z4Dx9tLustJ4PQV8MdS00aUr4t?=
+ =?us-ascii?Q?/dnF0lI4HVMNW6ZDZ3qdRUuV9ooKJAgy4TT8jmhCkv7w7ls55q1EEcplL9kb?=
+ =?us-ascii?Q?whErJtfbUrrnq4gruMjhCnY8HxBCDuqstdG8z7Ag/NRe8eJnH8BhJk4YN0ao?=
+ =?us-ascii?Q?OBqaPP7C0SIs2KbSpA0jUpaW3l5SC24Yktz9iuCSrVP4b4lIL56KP1Yv+i/W?=
+ =?us-ascii?Q?VEM3ddek6ocW7PSVCJm4BFKTw5rYWbdL9kuGuXiwcmYDPCL6PreNRTGpuMfz?=
+ =?us-ascii?Q?aVEMfme+fgPSQIh1XZGTYD98dQtU80YbSMxcrr8J3geP2M3UYeUvvnfiF++X?=
+ =?us-ascii?Q?EpNLb4wrkBg9Y5y6IluAbGO89OnBMIYzUqIo2w4TEmqDBSCL32dI/JPfn1TW?=
+ =?us-ascii?Q?cDoC3TtslfDJErb62hTVgF4zwmAuQb1wVFKm1gxh0PYSyoUX/ziK51zeOoSM?=
+ =?us-ascii?Q?XHzhs5+2zBhKrilWDXgVGZlipAXyddGi7kYaqYjrAKT5NRHXR3kOnuhUJTPv?=
+ =?us-ascii?Q?SNFoWmblu1SHqwMP7W1zsyMcGP0vkI7sGjwPOxZl1cX96Z6sjFBo1znk1szQ?=
+ =?us-ascii?Q?2RSFpIxXm3ElwBNjs7hnK9dvxfEORx3Pq5uk3tCT2VD2RoNXJo1xrs6c7oLE?=
+ =?us-ascii?Q?4I2W5qbq0JwANNnda3o0DORRp9Fs0OXHsM5Fm1x8oGQorajJ/ghxL0Y9VE6B?=
+ =?us-ascii?Q?mbdgDCJkaptrvwxWB7Y5JVD3Buu0rzBEKvcN4wGvj3vGNL4jd6TYftJce0Ox?=
+ =?us-ascii?Q?SgcsduiGAcZMcXQ1Mc5uELnQjgub6zntQPA0BARU9YVOUfmaq3uiGGNG87Ir?=
+ =?us-ascii?Q?zuBPObk332RIkUIWJy4soL6ub0USTgI3CiisVWM/OZCauPqtmaPItjqZZuJo?=
+ =?us-ascii?Q?StGTNU3Tlx5aglV3rl4LkuiiL5Zd1WygNx2Y8bmYleaISerppPHbeHZUAAG+?=
+ =?us-ascii?Q?DLh166xRTkUaJ/oYB0cNDWWpINPodtZYfl1f3N3Icri+zPEsLL5A=3D=3D?=
+X-Microsoft-Exchange-Diagnostics: 1;CO1PR07MB346;5:Edu0Vt+ERszmU/a7BRZPON/xpi3Iqjmk+r/X91NLMaw1CNoeByth67Po/Jd0TZsQdo/Z67fSdQM+DxSaJRCEUL4aneayZY0yy1y1vgo9VpcqglcbQii7iXvWZH2b48QlpZ1JSoSdsAozp9chgQcLCw==;24:DROvLsf37wyrCW8C/S464tMrjnKMWjJl51hjT3K0DVwbrfKxvAGgZvTiWw0iXhDjR3l5avftuCREfAeiMyBGBkn3enaICkxsmR0Sm3kfyk8=;7:dYcWjNWcT52q5vUCSWUv4yiH6lhyWyLMJ6t+ebxB6v98L/LsQ08dCyDov8Jcn9ABcT03ZQk13xRe5D4QCmEDDBvf+VPAlbUYdNyFSahUw3wngFxLP32AW2zDcjVQKFUDW2EvgksTIQLv92XtwvS/VHkMyTn89IiaWyX3PFHjmD8WWDsx9q8tKNiVn+hobXqgn8nP2pEnnNjnDaYG10E2aR+YYGU2pXox2uGDePRe1pc=
+SpamDiagnosticOutput: 1:99
+SpamDiagnosticMetadata: NSPM
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2016 04:56:56.8213
+ (UTC)
+X-MS-Exchange-CrossTenant-Id: ac352f9b-eb63-4ca2-9cf9-f4c40047ceff
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR07MB346
+X-MS-Exchange-Organization-AuthSource: BL2FFO11FD010.protection.gbl
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:03.9444512
+X-Microsoft-Exchange-Diagnostics:
+	1;BN1PR07MB344;9:NVDlcDxV7aNzDDDoCvqLX00kyP4GBAKWbXP+pPaicqv3+VbYxXobDMC3jLqXsCn0Qr8PFd+8e4u48wLi9z93ai/qpV2OWT8QvHb8tPhZoXoqHgeo5TBVAyFV2VpNKTgQRVW+nv8PH9DPxXiGr1Zld2az6E8UJ/ekA3p1TnmGn0s3ioaGObS+RHbAEG/j7bCc
+MIME-Version: 1.0
+
+--001a114e572a1f303a0534d14008
+Content-Type: text/plain; charset="UTF-8"
+X-Microsoft-Exchange-Diagnostics:
+	1;BN1PR07MB344;9:NVDlcDxV7aNzDDDoCvqLX00kyP4GBAKWbXP+pPaicqv3+VbYxXobDMC3jLqXsCn0Qr8PFd+8e4u48wLi9z93ai/qpV2OWT8QvHb8tPhZoXoqHgeo5TBVAyFV2VpNKTgQRVW+nv8PH9DPxXiGr1Zld2az6E8UJ/ekA3p1TnmGn0s3ioaGObS+RHbAEG/j7bCc
+
+* l. 166: If it's the competitor's identity that matters and not the focal
+plant, why isn't it F_mm instead of F_jj?
+
+* What is chi about?  And why are we considering removal simulations with
+and without chi?
+Is chi some summary of effects of removal that don't have to do directly
+with a reduction in cover?  I think so, but this isn't coming through
+clearly.
+
+** By comparing the output of this simulation with the previous scenario we
+can quantify the long-term consequences of differences between our baseline
+model and a model that includes additional removal treatment effects.*
+
+I'm inclined to think you want to compare with Adler et al. 2010 but
+technically, the previous scenario is scenario 2, the removal of Artemisia.
+
+* l. 274 ff: how can grass removal cause an increase in P. spicata?  Isn't
+P. spicata a grass?  Ditto for H. comata.
+
+
+
+
+
+** Our vital rate models take into account the effects of local species
+composition and should therefore284 be able to predict the effect of
+removals on survival, growth and recruitment without any additional285
+parameters. If the removal treatment effects that we added to these models
+are statistically signif-286 icant, it would indicate an effect of removals
+that goes above and beyond the response predicted287 by a model based on
+data from the control plots.*
+
+OK, now I get it.  This needs to come earlier.  When I read the intro. I
+thought, OK, you aren't sure how much to trust your earlier statistical
+approach so you're going back to a traditional removal experiment with the
+same species, doing what others have done.  If they disagree, what have you
+learned?
+
+
+
+
+** A. tripartita325 crowding and crowding by all subdominant shrub and
+grass species appeared greater than in the326 controls, whereas crowding by
+H. comata was lower in removal plots than controls, though it was327 absent
+from most P. spicata neighborhood in both treatments*
+
+Does this help explain what you observed or run counter to it?  I'm feeling
+lazy.
+
+* Nice discussion section.  I like the broader musings that you close with.
+
+
+-- 
+---------------------------------------------------
+
+Robin Snyder
+Millis 510                                       Case Western Reserve
+University
+office: (216) 368-8838                 Department of Biology
+lab: (216) 368-8842                      10900 Euclid Ave.
+FAX: (216) 368-4672                    Cleveland, OH  44106-7080
+web: http://www.cwru.edu/artsci/biol/snyder/
+
+"Vocate mathematicos" (Call in the mathematicians!)  --Ludus Danielis,
+a 13th C liturgical play
+
+"They'd cursed and, worse, used logarithms." --Going Postal, Terry Pratchett
+
+--001a114e572a1f303a0534d14008
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Microsoft-Exchange-Diagnostics:
+	1;BN1PR07MB344;9:NVDlcDxV7aNzDDDoCvqLX00kyP4GBAKWbXP+pPaicqv3+VbYxXobDMC3jLqXsCn0Qr8PFd+8e4u48wLi9z93ai/qpV2OWT8QvHb8tPhZoXoqHgeo5TBVAyFV2VpNKTgQRVW+nv8PH9DPxXiGr1Zld2az6E8UJ/ekA3p1TnmGn0s3ioaGObS+RHbAEG/j7bCc
+
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"><d=
+iv dir=3D"ltr"><div><div>* l. 166: If it's the competitor's identity that m=
+atters and not the focal plant, why isn't it F_mm instead of F_jj?<br><br><=
+/div>* What is chi about?&nbsp; And why are we considering removal simulati=
+ons with and without chi?<br>Is chi some summary of effects of removal that=
+ don't have to do directly with a reduction in cover?&nbsp; I think so, but=
+ this isn't coming through clearly.&nbsp; <br><br><i>* By comparing the out=
+put of this simulation with <b>the previous scenario</b> we can quantify th=
+e long-term consequences of differences between our baseline model and a mo=
+del that includes additional removal treatment effects.</i><br><br></div><d=
+iv>I'm inclined to think you want to compare with Adler et al. 2010 but tec=
+hnically, the previous scenario is scenario 2, the removal of Artemisia.<br=
+></div><div><div><div><br></div><div>* l. 274 ff: how can grass removal cau=
+se an increase in P. spicata?&nbsp; Isn't P. spicata a grass?&nbsp; Ditto f=
+or H. comata.<br><br><i>* Our vital rate models take into account the effec=
+ts of local species composition and should therefore<br>284 be able to pred=
+ict the effect of removals on survival, growth and recruitment without any =
+additional<br>285 parameters. If the removal treatment effects that we adde=
+d to these models are statistically signif-<br>286 icant, it would indicate=
+ an effect of removals that goes above and beyond the response predicted<br=
+>287 by a model based on data from the control plots.</i><br><br></div><div=
+>OK, now I get it.&nbsp; This needs to come earlier.&nbsp; When I read the =
+intro. I thought, OK, you aren't sure how much to trust your earlier statis=
+tical approach so you're going back to a traditional removal experiment wit=
+h the same species, doing what others have done.&nbsp; If they disagree, wh=
+at have you learned?&nbsp; <br><br><i>* A. tripartita<br>325 crowding and c=
+rowding by all subdominant shrub and grass species appeared greater than in=
+ the<br>326 controls, whereas crowding by H. comata was lower in removal pl=
+ots than controls, though it was<br>327 absent from most P. spicata neighbo=
+rhood in both treatments</i><br><br></div><div>Does this help explain what =
+you observed or run counter to it?&nbsp; I'm feeling lazy.<br><br></div><di=
+v>* Nice discussion section.&nbsp; I like the broader musings that you clos=
+e with.<br></div><div><br><br></div><div>-- <br><div class=3D"gmail_signatu=
+re" data-smartmail=3D"gmail_signature">------------------------------------=
+---------------<br><br>Robin Snyder<br>Millis 510&nbsp; &nbsp; &nbsp; &nbsp=
+; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; Case Western Reserve University<br>of=
+fice: (216) 368-8838&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;=
+&nbsp; Department of Biology<br>lab: (216) 368-8842&nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 10900 Euclid Ave.<br>F=
+AX: (216) 368-4672&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &=
+nbsp; &nbsp; Cleveland, OH&nbsp; 44106-7080<br>web: <a href=3D"http://www.c=
+wru.edu/artsci/biol/snyder/" target=3D"_blank">http://www.cwru.edu/artsci/b=
+iol/snyder/</a><br><br>&quot;Vocate mathematicos&quot; (Call in the mathema=
+ticians!)&nbsp; --Ludus Danielis,<br>a 13th C liturgical play<br><br>&quot;=
+They'd cursed and, worse, used logarithms.&quot; --Going Postal, Terry Prat=
+chett<br></div>
+</div></div></div></div>
+
+--001a114e572a1f303a0534d14008--

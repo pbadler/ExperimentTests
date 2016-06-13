@@ -1,0 +1,354 @@
+Received: from DM2PR07MB351.namprd07.prod.outlook.com (10.141.101.148) by
+ BN1PR07MB344.namprd07.prod.outlook.com (10.141.61.23) with Microsoft SMTP
+ Server (TLS) id 15.1.506.9 via Mailbox Transport; Tue, 7 Jun 2016 15:53:42
+ +0000
+Received: from CO2PR07CA0014.namprd07.prod.outlook.com (10.141.194.152) by
+ DM2PR07MB351.namprd07.prod.outlook.com (10.141.101.148) with Microsoft SMTP
+ Server (TLS) id 15.1.511.8; Tue, 7 Jun 2016 15:53:41 +0000
+Received: from BL2FFO11OLC004.protection.gbl (2a01:111:f400:7c09::161) by
+ CO2PR07CA0014.outlook.office365.com (2a01:111:e400:1414::24) with Microsoft
+ SMTP Server (TLS) id 15.1.511.8 via Frontend Transport; Tue, 7 Jun 2016
+ 15:53:41 +0000
+Authentication-Results: spf=softfail (sender IP is 129.123.1.26)
+ smtp.mailfrom=gmail.com; aggies.usu.edu; dkim=pass (signature was verified)
+ header.d=gmail.com;aggies.usu.edu; dmarc=pass action=none
+ header.from=gmail.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ gmail.com discourages use of 129.123.1.26 as permitted sender)
+Received: from ironport1.usu.edu (129.123.1.26) by
+ BL2FFO11OLC004.mail.protection.outlook.com (10.173.161.188) with Microsoft
+ SMTP Server (TLS) id 15.1.497.8 via Frontend Transport; Tue, 7 Jun 2016
+ 15:53:41 +0000
+X-SBRS: 2.5
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0A/AwD47FZXfTbVVdFaAw6DTTh9BrVmh?=
+ =?us-ascii?q?ncihXECgTcHPBABAQEBAQEBEgEBCQsLCSEvhEYBAQMBEhEdARsYBgMBCwYDAgs?=
+ =?us-ascii?q?3AgIhAQERAQUBHAYTIodyAQMPCA6OB49CgTE+MYs7gWqCWAWICAoZJw1Sgy8BA?=
+ =?us-ascii?q?QEBAQEEAQEBAQEBAQEXAgYQimSCQ4FoNgwagjqCWQWYFzSGBIYpgXqBak6EBIM?=
+ =?us-ascii?q?shB6BGodzhi0SHoEPNYIZDRyBEFcgMgGITIFCAQEB?=
+X-IPAS-Result: =?us-ascii?q?A0A/AwD47FZXfTbVVdFaAw6DTTh9BrVmhncihXECgTcHPBA?=
+ =?us-ascii?q?BAQEBAQEBEgEBCQsLCSEvhEYBAQMBEhEdARsYBgMBCwYDAgs3AgIhAQERAQUBH?=
+ =?us-ascii?q?AYTIodyAQMPCA6OB49CgTE+MYs7gWqCWAWICAoZJw1Sgy8BAQEBAQEEAQEBAQE?=
+ =?us-ascii?q?BAQEXAgYQimSCQ4FoNgwagjqCWQWYFzSGBIYpgXqBak6EBIMshB6BGodzhi0SH?=
+ =?us-ascii?q?oEPNYIZDRyBEFcgMgGITIFCAQEB?=
+X-IronPort-AV: E=Sophos;i="5.26,433,1459836000"; 
+   d="scan'208,217";a="392436492"
+Received: from mail-vk0-f54.google.com ([209.85.213.54])
+  by ironport1.usu.edu with ESMTP; 07 Jun 2016 09:53:30 -0600
+Received: by mail-vk0-f54.google.com with SMTP id c66so95041084vkb.3
+        for <peter.adler@usu.edu>; Tue, 07 Jun 2016 08:53:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
+        bh=aUFuUWdQxoQOcYBqTe0pkHEacQL2+sQRJAKwsuSypgk=;
+        b=WcI06tZ64Mpo0vbYaBH6wF9lQtc4Wpi1khV6AmJYNedovotnmfXxhrbSMsL/pOJPZE
+         IrkKEfz+FGNymNJ9271ol/IMmPxSrWnLO7+bBE9UI1T7v7umpJiOoHn6B3qjVnXjPKDl
+         sSw5fIpPeMORnrQEvcfWsKn6KsJAxBppBRHf/W9Xjoj6+9o6rqyq7/JfJGHaOy8qQW7p
+         L5X0xoA1VBNAhXpWpJvZ/gvVWRjxdUEAXolN3/2PysSWkJsFIbwa+9Lge3K4oRiYLo38
+         KTwZQgNr30SXCPe2URQhl30beV00yyfKXCQUO3+E3J4EkUmBLDDc3NA5ir5VmoiAlh0P
+         NFwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to;
+        bh=aUFuUWdQxoQOcYBqTe0pkHEacQL2+sQRJAKwsuSypgk=;
+        b=XqioLTI2hQJAuhq/wgi5Z0DVZ5JxYUfv42JAahALOwFr+vZPrbio5DaHMmAHm20567
+         LHk9pjcXLMqACtV6Uza3DBHXZoXiRhX1vc/lTFeupvz9qz7EiLOoKUFyId5koWrxF1Qj
+         egkGfaQZ7x3XIOe33neejvLvXixAho0ewz6LkbvF4qezdgzKZxeU8kEBrSE/hlH2DAW6
+         9WxS5iqWXF8NzXZn+r7+MnCZoRxB7FDQrzg5VI2P5O1gwJU3EwhJa5lwOf0Im/0Y6x90
+         vfVLB10TuB20H7WV5ooH3m6oeKOQTPQ0xuAetdw2wg6BfqE6qpfwy+GF1iWrtEZ1Wo6L
+         bMFA==
+X-Gm-Message-State: ALyK8tL38RGdPqE/cBd1odQ2lAjJ95iQKPfZiTvAcDHyBI9PdIQTGfTM7eg4TN6PVgH/NelQF4bfdOEO7rBacA==
+X-Received: by 10.176.4.68 with SMTP id 62mr72948uav.94.1465314810056; Tue, 07
+ Jun 2016 08:53:30 -0700 (PDT)
+Received: by 10.31.74.4 with HTTP; Tue, 7 Jun 2016 08:53:10 -0700 (PDT)
+In-Reply-To: <c5df37e8-465e-f1e0-1399-964d42c8be59@usu.edu>
+References: <c5df37e8-465e-f1e0-1399-964d42c8be59@usu.edu>
+From: Brittany Teller <brittany.j.teller@gmail.com>
+Date: Tue, 7 Jun 2016 11:53:10 -0400
+Message-ID: <CADOF5T_yefXjOVR6eZz1U7zBjqugP1GQPUpAJu=3i-qhdyAY0g@mail.gmail.com>
+Subject: Re: Removal experiment first draft!
+To: Peter Adler <peter.adler@usu.edu>
+Content-Type: multipart/alternative; boundary="94eb2c000e18bcd6390534b230b5"
+Return-Path: brittany.j.teller@gmail.com
+X-MS-Exchange-Organization-Network-Message-Id: b10e57c7-8f57-4733-624c-08d38eebe5c3
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: ac352f9b-eb63-4ca2-9cf9-f4c40047ceff:0
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-Forefront-Antispam-Report: CIP:129.123.1.26;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(2980300002)(53754006)(189002)(377454003)(24454002)(199003)(57704003)(8896002)(1096003)(42186005)(82202001)(63696999)(956001)(586003)(2950100001)(5890100001)(11100500001)(9896002)(3480700004)(19580405001)(55446002)(86362001)(98316002)(5008740100001)(189998001)(83322999)(19580395003)(107886002)(6806005)(512874002)(226693001)(450100001)(93516999)(84326002)(105596002)(76176999)(2171001)(15975445007)(92566002)(76482005)(50986999)(81442002)(59536001)(73972006)(54356999)(106466001)(8576002)(73392002)(246002)(8676002)(61266001)(110136002)(19617315012)(87572001);DIR:INB;SFP:;SCL:1;SRVR:DM2PR07MB351;H:ironport1.usu.edu;FPR:;SPF:SoftFail;PTR:ironport1.usu.edu;MX:1;A:1;LANG:en;
+X-Microsoft-Exchange-Diagnostics: 1;BL2FFO11OLC004;1:i8HoTai7F8RuPzSqEyAb6EnPNaYsw3WrAFN9U5KaEPudWwc4J6fBbWCIM2zD+JscXF2j7mFUlovYzRdWnOTLvbt/aqvbdmRv0x651CE/zoVlYCNtzzlxXBMHPZRJsEyqxcrN9tvCbKw1vGAhV/Wo0buvY/9g/k8V8VaYgjfD4kHUaGvh/ZBHyOXT2msSuzuo0ahRyecruMRzrGbjC/Z7cWuvar8aTUpf1UGyUvRhDY6bf2ZJitqgolljvHss5A/NVQkfm1vl1sNc9OMencNJo4B+lJQ2usqtX3kir5SAJnRX8jtGBOHu07hmHfie2rjmchFY7b5qCA8wPBT5aiHFGeRiMcb1tIix3ZIJo1FojQ0negEMI6U0okd4EfoyV4ZLHTFJ4gK1zUFPiB3pZ4WLmu6MiCzD89MAY4DTk2q7X4pLsW6JdToQPK6NhN056fwoY/brQmvJiCTQWghXIGqEoIBoQh2GW0ZcXnPlhrVsYB4BDh2N7x4isXvBzlWedTmPTLpl8eSl1+CythGBrjMvtyvJ+SfiZy6SJgfH1I+BJA1jfzwgODcWQ6fgnb6syoLkEl59qp1tQrwIpx6BQ/zUuw==
+X-MS-Office365-Filtering-Correlation-Id: b10e57c7-8f57-4733-624c-08d38eebe5c3
+X-Microsoft-Exchange-Diagnostics:
+	1;DM2PR07MB351;2:hBjUpxvduBNVTTvK+nipZFryM5OWfZ3c4EYtrbk0kh3SFkNLLRZFW99GswLeITLYmt1HNWoxR74xfhpfqsxTFLP4z3swNzKLiojCtrol5pHhdsP5VlQwVS0XJgDkaPOpbhU39IXGlyCFrtFn7Xuk0odRvqvlbODepgMU+b2VIZsINqBUqosLbw3c/qPdxRy7;3:2RHc19lnPVr6/u72AftkQtlj+mI4sO98D7BCrzgsO+T/JASVcGXQg9maSP7b0jp39UFq5m4DdcFi4zdMV+GspFCQr14oUwDJhWR7TgBhMiChIqXxsXVjpyEgAff9x480VD/hcVKL2OETul3UVOF0AaWEuwBJY9VkkNw1Ic1dhi7hf1t5c9CS/SK5uyjkofxmWB3iLxB4RccjHGcFtoMnbPmYToKohdtGyqf2gjoRbOkdpbsO5d/59fxWknLgnitoF/baPvVF5ICmvuaIuHgwgo4XR+fERcHmId9qv3N0cXXTq4dS1S8hImcIjtCXhtdxch/Jjlqg1HQ6qOjdB14aTw==;25:XWNaNCcGKV/cMufSPiRONNhQaMAILEg4MFyryWtdnPGf+BbypN3xRAcioHqpPiwnjEGueNaoOkIEsLNkOMHnNi7zo5hhMzMvyl23AfD+NG10u1vvU2Ul84eOYp0t/7BqJeCWK07hrWZroVySnUq8Wg+fioHgpr+2YrHCb5eQHPRERy/Vp/GNGDVgtouUTK+Wu5QNgR42Qhg1NNHYAQbF2cdHwl6998JsrDu5dz29mQB5bn5W5u+P5tjGvmX+tXYzWXON9xAfAnyZrH1JQNOUsmnnsNyuW/67sGIWBSodMo2/43qKfUK7BazQVkGNHnB9gnijAa/b382tvt+/BytPJPVy4jhDGgshjGU6lyxRgwR1/axhPuxi4Hh4GOKoYvwWW/1PKTZAum6enAgMEmYaxKdV0xFxKNSDOdaDXNB6VLo=
+X-DkimResult-Test: Passed
+X-Microsoft-Antispam: UriScan:;BCL:0;PCL:0;RULEID:(8251501002)(3001016)(71701004)(71702002);SRVR:DM2PR07MB351;
+X-MS-Exchange-Organization-AVStamp-Service: 1.0
+X-Exchange-Antispam-Report-Test: UriScan:(166708455590820);
+X-Exchange-Antispam-Report-CFA-Test: BCL:0;PCL:0;RULEID:(9101531078)(601004)(2401047)(8121501046)(13016025)(13018025)(3002001)(10201501046);SRVR:DM2PR07MB351;BCL:0;PCL:0;RULEID:;SRVR:DM2PR07MB351;
+X-Microsoft-Exchange-Diagnostics: 1;DM2PR07MB351;4:xQvr9D++2EXvtX+h6xuo6Q5px+JFHVRvfQIGnDSn2DPSbcsRUmyoZQ0jHzsxzRDSnRpRVsVenKAKp+2LXmvYGHYJpZH80iUv5Sqp4SELt++Flod9tm9dRBLeZGGyglpFG5P5ahAK7QD/ClY2LWuDpwWwu8dP9MErHeyYR1PEGC0EA/+2uu3n3FJ15mJ+i+SCxExxZ/HDCf9sqh0IAcYiVsY7/ExN+JEAPw1hb3fXg5em//6LxdGfkiQNm5AeV+/zTcVAxy5oRcVuq00VUh/zsHufOIjHlnIEcN9TwoDFPbj+eT9u48CSGtmRrTz/Zvsc7PeNC+DETBtloJyhENQ9jeW7FxONr4ibym0TdlDdikWRFXzlXtW+Nk2BXlrh9Nn9l6adg1TgpROtoxDQpuBVAN9y6WKLBhOEmpHhxso5LYb4BSuMf1PlDdkUkwjMxfrDpOYSGq/4psHlI+dDybAU1w==
+X-MS-Exchange-Organization-SCL: 1
+X-Microsoft-Exchange-Diagnostics: =?us-ascii?Q?1;DM2PR07MB351;23:cB8fuirY8ttrQBiijDqfcb1Awh3JP3V46QdRn2Vxau?=
+ =?us-ascii?Q?/9R7jEz9vAy3DhuTv220eF/wHD88OHpZ/QraU46VxqtRpZGwcLOMvdPxpH2Y?=
+ =?us-ascii?Q?HlTzXuHfh0haBRlJtFsIK0X6zmNSsw8lb6QAdLUAbm7WxKsbzsBjaOLweE20?=
+ =?us-ascii?Q?F3wtYc16+deVUQqXLXnDAiGxEchy10inQIA9A12fnU/sh1o9AzXBuCVmd33E?=
+ =?us-ascii?Q?RS4BbpDawSDM7MswWD3Z6jy3uNsr21TYgeLnmEEm5kRp/RctysXoFj2G0IXw?=
+ =?us-ascii?Q?6yYRdntzRxY6hgr/5YUD/dZYQ5NN4ja6wkWZFqA9DruhoUhBqwvenGocjnns?=
+ =?us-ascii?Q?1CJsUD/10l4hA+XUVIFZig0tRG/LVqQgubrvwDcZkazbRZXfn2nfYv/0Tor6?=
+ =?us-ascii?Q?8+uenQsYauT1n1si1zqs6hSAThdNBINAxnNLH3OTApaHL0BeanY4RvoA3BoH?=
+ =?us-ascii?Q?LvuwbIJ0QU/xznD3g7NjgSsQr+pceCyEiTqvU6e9pa9wRP04VK244hNbJJi3?=
+ =?us-ascii?Q?ikC+ndlwQIBNh+Qu4qVi2NG/2yECPZHKBFpOty3Kwq7QhGg2sxjKo9S/BY0m?=
+ =?us-ascii?Q?pSfxphDIHuWYcHbHrhZ2CAPPKlI45VaDDPpkyX9iPoXj0559V9lRpHiP5+w0?=
+ =?us-ascii?Q?+EtRBWSfFtZWfL0ifIijsoh/24dE7DHKqBwva1Ai8K0CkUamDbVEPPX3JW4n?=
+ =?us-ascii?Q?jS2vMGhdNSX2X8yWKQzrC0X8WzteRXpqK6j4G9mJLQ2ievGTZnJOfVt82K3B?=
+ =?us-ascii?Q?XnB6z3UZ4Yf6prADWq2eDEK9KbH3UxGi48lKbT4MhuwQle9Nz1fGl7D2ic7X?=
+ =?us-ascii?Q?yte43EBK1UvDReKnZQrkLfiOW/5t9z1tQTRwuW0lvkJh70fRQrrazZd3CzfW?=
+ =?us-ascii?Q?2fimrLaCJEy8/sfiG3/IkgQUjUclTSFmuRPNOAjQaJHT8UNRDK0LQjpL8jXR?=
+ =?us-ascii?Q?8g8ETcU59tEfd79n8n4y4j8reBVYBXEy/Q5PZVj/3K8yk0kQuOYoZ885KiyM?=
+ =?us-ascii?Q?X8SG2YshlSfzbZAAJwqoEvqnCBYLK+bZoyFhxEkAGNZGzfGRsIKeIyLjsxF6?=
+ =?us-ascii?Q?hspFkFa8LRi2o0/dHsO2POs0b9COQloekVUlb5IRhjctyEviRVN+D/sa7xa3?=
+ =?us-ascii?Q?aMzvwtZJk6dpx8eWUBoJ5eVYrbxaU0uS+KXVOwO9pi1Y30fxl6x4pyacGWlB?=
+ =?us-ascii?Q?SQqC/qRmZ04t/6ky9kVbaTgulVzOfNhT0sofnvRZwTCZ/4c8A4Wa0E4XTNcy?=
+ =?us-ascii?Q?a06wHG5C+uIG/LAfamLCgy2qRfiPbqw61Ky9yL8VADYeIgmpwM+gxvDimd9H?=
+ =?us-ascii?Q?1uDPp65kbwM3UZD3W0bHL6Jv/7ytySCLFANtdKCMe+2V27I5Y1SO3n2pusW4?=
+ =?us-ascii?Q?ckwA=3D=3D?=
+X-Microsoft-Exchange-Diagnostics: 1;DM2PR07MB351;5:cp60cJhEGiz0KZ7SnS83NWMklsNzQ7B46G4UIZqbXIaQFtL+Xl5Y76IBliTHTjVOS1McGrk4hnklYnbIvpvsrLAz/n1wMQ/Mo/WFxUcMIG76ADWes0rzUTrV4aA0nLeOOgoc2GU01KjH4MQLzWKEzg==;24:QG298zjDdKaOv4jdwuYvC1BlhW+CEMcz6ixZS92pen+TmTIe70J8XEifnJ7GPEnFdwBn8vv48PnlPgmdfNi9fCdPER1mMSLIFEPF1Tv3AO8=;7:P+fjLcggmRPY+2b+lMQeAweu4yocKO8Lz57vpWCj3f3nOQr7I8Hzrr9bUUPDNxSLlwPvFfVfjKIv9KbIl+LgfBGuoRh2D5m+dhtF6CeQJo0ZJhSosc3sL3DSRfcy9ks0z5tU0ksYipNneohztDLPUthqmzJEDng8edeYeIGjJESpUkADJvwDr6UNvqqipOsDQOJZSvJvEch2fjWcKJoQkTGNa6cPYMcNFZPD/VPBk74=
+SpamDiagnosticOutput: 1:99
+SpamDiagnosticMetadata: NSPM
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2016 15:53:41.0589
+ (UTC)
+X-MS-Exchange-CrossTenant-Id: ac352f9b-eb63-4ca2-9cf9-f4c40047ceff
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM2PR07MB351
+X-MS-Exchange-Organization-AuthSource: BL2FFO11OLC004.protection.gbl
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:01.9804173
+X-Microsoft-Exchange-Diagnostics:
+	1;BN1PR07MB344;9:BbyRtO17QjYY8mg2nlCsPTXmOE1L3a9Qf2F8Yp2MVJedSlq7Cp26RbWK04HvDGuxaToFhHQbxcdV2oZdjcsiJqW+85XrBjO/zNEuCmfaGBq87dwA9FaicAfkFu5i3U3JhFuzAzetiJf+q6zkIKpdV3CFk/Kfbbpv98uwYyz9jKZZ42En1+IjmxWvuW/fKnQ7
+MIME-Version: 1.0
+
+--94eb2c000e18bcd6390534b230b5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Microsoft-Exchange-Diagnostics:
+	1;BN1PR07MB344;9:BbyRtO17QjYY8mg2nlCsPTXmOE1L3a9Qf2F8Yp2MVJedSlq7Cp26RbWK04HvDGuxaToFhHQbxcdV2oZdjcsiJqW+85XrBjO/zNEuCmfaGBq87dwA9FaicAfkFu5i3U3JhFuzAzetiJf+q6zkIKpdV3CFk/Kfbbpv98uwYyz9jKZZ42En1+IjmxWvuW/fKnQ7
+
+Hey Peter,
+
+Here are a few comments that I noticed after spending some time with it (I
+didn't read it straight through, and I probably missed some things bouncing
+around). I can give it another solid read through at the next stage.
+
+Comments follow
+
+B
+
+5th point in the abstract; it might be nice to have a quantitative measure
+of a =E2=80=98little=E2=80=99 effect means versus a =E2=80=98strong=E2=80=
+=99 effect. Maybe a parenthetical
+that says (growth rates changed less than X %) and (growth rates increased
+Y%).
+
+
+I like what you=E2=80=99ve done with the introduction.
+
+
+Line 94- =E2=80=98relocated=E2=80=99 seems to say you moved the original pl=
+ots.
+
+
+Line 116 can reference Figure 1.
+
+
+The section 106-116 doesn=E2=80=99t directly address why all of the grasses=
+ were
+removed instead of species-by-species, it would probably be good to note
+that somewhere nearby.
+
+
+Line 275, =E2=80=9C=E2=80=A6but <shrub removal> did=E2=80=A6=E2=80=9D to di=
+stinguish it from grass-removal
+earlier in the sentence. Same issue pops up in line 277, and it reads as if
+grass removal had no effect on Poa etc. The alternative is just calling
+them =E2=80=9Cremoval plots,=E2=80=9D instead of specifying.
+
+
+Overall use of =E2=80=98Poa=E2=80=99 instead of =E2=80=98P. secunda=E2=80=
+=99 (Fig 1 versus 2)
+
+
+Reiterating old comment: Maybe I am missing something, but the results for
+the grass removals get lost by the end of the results, in part because
+there isn=E2=80=99t an IPM for ARTR in grass removal plots. I think it woul=
+d be
+good to address why there is no Figure 4-style plot for ARTR in grass
+removal plots.
+
+
+In the intro and results, the treatments are called grass and shrub
+removal, and in the discussion, you talk about Artemesia removal. It might
+get difficult to follow.
+
+Brittany J. Teller
+Brittany.J.Teller@gmail.com
+217-502-2695
+
+On Mon, May 23, 2016 at 3:51 PM, Peter Adler <peter.adler@usu.edu> wrote:
+
+> Hi everyone,
+>
+> I finally got all the main pieces together for the removal manuscript (pd=
+f
+> attached). References still in progress. Right now I'm interested in fair=
+ly
+> big picture feedback, the kind you don't need to make line edits to give.
+> Does the story make sense? Do I need new analyses? Should I change/remove
+> existing analyses? I'm not in a big rush on this. If I haven't heard from
+> you in 2-3 weeks I will start to pester you.
+> If you do want to edit the manuscript file, go to the \manuscript
+> directory of the repository:
+> https://github.com/pbadler/ExperimentTests/tree/master/removals
+> You all should have access to this, let me know if you have trouble
+> getting in.
+>
+> Some individual assignments as well:
+> -Steve, please (1) take a look at the notation in the Methods. I'm sure I
+> made lots of mistakes despite mostly copying from previous papers. Should
+> we switch our IPM u's to v's? (2) Please check my description of the spli=
+ne
+> based W's (lines 145-167 in the pdf) and also add to the Supplementary
+> Methods (second paragraph of the supplement).
+> -Giles, please take a look at the first paragraph of the Supplementary
+> Info where I tried to summarize what we did.
+> -Robin: If you are interested in the topic and willing to help improve th=
+e
+> presentation, please don't hesitate to sign on.
+>
+> Thanks,
+>
+> Peter
+>
+> --
+> Peter Adler
+> Dept. Wildland Resources and the Ecology Center
+> Utah State Universityhttps://qcnr.usu.edu/labs/adler_lab/index
+>
+>
+
+--94eb2c000e18bcd6390534b230b5
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Microsoft-Exchange-Diagnostics:
+	1;BN1PR07MB344;9:BbyRtO17QjYY8mg2nlCsPTXmOE1L3a9Qf2F8Yp2MVJedSlq7Cp26RbWK04HvDGuxaToFhHQbxcdV2oZdjcsiJqW+85XrBjO/zNEuCmfaGBq87dwA9FaicAfkFu5i3U3JhFuzAzetiJf+q6zkIKpdV3CFk/Kfbbpv98uwYyz9jKZZ42En1+IjmxWvuW/fKnQ7
+
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"><d=
+iv dir=3D"ltr">Hey Peter,<div><br></div><div>Here are a few comments that I=
+ noticed after spending some time with it (I didn't read it straight throug=
+h, and I probably missed some things bouncing around). I can give it anothe=
+r solid read through at the next stage.</div><div><br></div><div>Comments f=
+ollow</div><div><br></div><div>B</div><div><br></div><div><p class=3D"MsoNo=
+rmal">5<sup>th</sup> point in the abstract; it might be nice to
+have a quantitative measure of a =E2=80=98little=E2=80=99 effect means vers=
+us a =E2=80=98strong=E2=80=99 effect.
+Maybe a parenthetical that says (growth rates changed less than X %) and
+(growth rates increased Y%).</p><p class=3D"MsoNormal"><br></p>
+
+<p class=3D"MsoNormal">I like what you=E2=80=99ve done with the introductio=
+n.</p><p class=3D"MsoNormal"><br></p>
+
+<p class=3D"MsoNormal">Line 94- =E2=80=98relocated=E2=80=99 seems to say yo=
+u moved the original
+plots.</p><p class=3D"MsoNormal"><br></p>
+
+<p class=3D"MsoNormal">Line 116 can reference Figure 1.</p><p class=3D"MsoN=
+ormal"><br></p>
+
+<p class=3D"MsoNormal">The section 106-116 doesn=E2=80=99t directly address=
+ why all of the
+grasses were removed instead of species-by-species, it would probably be go=
+od
+to note that somewhere nearby. </p><p class=3D"MsoNormal"><br></p>
+
+<p class=3D"MsoNormal">Line 275, =E2=80=9C=E2=80=A6but &lt;shrub removal&gt=
+; did=E2=80=A6=E2=80=9D to distinguish
+it from grass-removal earlier in the sentence. Same issue pops up in line 2=
+77,
+and it reads as if grass removal had no effect on Poa etc. The alternative =
+is
+just calling them =E2=80=9Cremoval plots,=E2=80=9D instead of specifying.</=
+p><p class=3D"MsoNormal"><br></p>
+
+<p class=3D"MsoNormal">Overall use of =E2=80=98Poa=E2=80=99 instead of =E2=
+=80=98P. secunda=E2=80=99 (Fig 1 versus
+2)</p><p class=3D"MsoNormal"><br></p>
+
+<p class=3D"MsoNormal">Reiterating old comment: Maybe I am missing somethin=
+g, but the
+results for the grass removals get lost by the end of the results, in part
+because there isn=E2=80=99t an IPM for ARTR in grass removal plots. I think=
+ it would be
+good to address why there is no Figure 4-style plot for ARTR in grass remov=
+al
+plots.</p><p class=3D"MsoNormal"><br></p>
+
+<p class=3D"MsoNormal">In the intro and results, the treatments are called =
+grass
+and shrub removal, and in the discussion, you talk about Artemesia removal.=
+ It
+might get difficult to follow.</p></div></div><div class=3D"gmail_extra"><b=
+r clear=3D"all"><div><div class=3D"gmail_signature" data-smartmail=3D"gmail=
+_signature"><div dir=3D"ltr"><div>Brittany J. Teller<br></div><div><a href=
+=3D"mailto:Brittany.J.Teller@gmail.com" target=3D"_blank">Brittany.J.Teller=
+@gmail.com</a><br></div>217-502-2695<br></div></div></div>
+<br><div class=3D"gmail_quote">On Mon, May 23, 2016 at 3:51 PM, Peter Adler=
+ <span dir=3D"ltr">&lt;<a href=3D"mailto:peter.adler@usu.edu" target=3D"_bl=
+ank">peter.adler@usu.edu</a>&gt;</span> wrote:<br><blockquote class=3D"gmai=
+l_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left=
+:1ex">
+ =20
+
+   =20
+ =20
+  <div bgcolor=3D"#FFFFFF" text=3D"#000000">
+    <p>Hi everyone,</p>
+    <p>I finally got all the main pieces together for the removal
+      manuscript (pdf attached). References still in progress. Right now
+      I'm interested in fairly big picture feedback, the kind you don't
+      need to make line edits to give. Does the story make sense? Do I
+      need new analyses? Should I change/remove existing analyses? I'm
+      not in a big rush on this. If I haven't heard from you in 2-3
+      weeks I will start to pester you.<br>
+    </p>
+    If you do want to edit the manuscript file, go to the \manuscript
+    directory of the repository:<br>
+    <a href=3D"https://github.com/pbadler/ExperimentTests/tree/master/remov=
+als" target=3D"_blank">https://github.com/pbadler/ExperimentTests/tree/mast=
+er/removals</a><br>
+    You all should have access to this, let me know if you have trouble
+    getting in.<br>
+    <br>
+    Some individual assignments as well:<br>
+    -Steve, please (1) take a look at the notation in the Methods. I'm
+    sure I made lots of mistakes despite mostly copying from previous
+    papers. Should we switch our IPM u's to v's? (2) Please check my
+    description of the spline based W's (lines 145-167 in the pdf) and
+    also add to the Supplementary Methods (second paragraph of the
+    supplement). <br>
+    -Giles, please take a look at the first paragraph of the
+    Supplementary Info where I tried to summarize what we did.<br>
+    -Robin: If you are interested in the topic and willing to help
+    improve the presentation, please don't hesitate to sign on.<br>
+    <br>
+    Thanks,<br>
+    <br>
+    Peter<span class=3D"HOEnZb"><font color=3D"#888888"><br>
+    <pre cols=3D"72">--=20
+Peter Adler
+Dept. Wildland Resources and the Ecology Center
+Utah State University
+<a href=3D"https://qcnr.usu.edu/labs/adler_lab/index" target=3D"_blank">htt=
+ps://qcnr.usu.edu/labs/adler_lab/index</a></pre>
+  </font></span></div>
+
+</blockquote></div><br></div>
+
+--94eb2c000e18bcd6390534b230b5--
