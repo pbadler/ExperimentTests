@@ -33,7 +33,8 @@ assign_NAs <- function( x ) {
 
 convert_time <- function(x) { 
   
-  strptime(x = x$Time, format = '%m/%d/%y %I:%M %p') 
+  strptime(x = x$Time, format = '%m/%d/%y %I:%M %p', tz = 'MST')
+  
 }
 
 
@@ -57,7 +58,7 @@ q_info <- read.csv('data/quad_info.csv')
 folders <- dir('data/soil_moist_data', pattern = '20[0-9]{2}_((Fall$)|(Spring$))', full.names = TRUE)
 
 data_list <- list(NA)
-
+i = 3
 for (i in 1:length(folders)) {
 
   record_file <- dir(folders[i] , pattern = 'logger_info.csv', full.names = TRUE) 
@@ -66,13 +67,33 @@ for (i in 1:length(folders)) {
   
   f <- dir(folders[i], pattern = '^E[ML][0-9]+.*txt$', full.names = TRUE)
   
+  f_raw <- dir(folders[i], pattern = '^E[ML][0-9]+.*csv$', full.names = TRUE, recursive = TRUE)
+  
   f2 <- dir(folders[i], pattern = '^[0-9]+(_[0-9]+_C)?.*txt$', full.names = TRUE)
   
-  f <- c(f, f2)
+  f2_raw <- dir(folders[i], pattern = '^[0-9]+(_[0-9]+_C)?.*csv$', full.names = TRUE, recursive = TRUE)
   
-  d <- lapply(f, read.table, sep = '\t', colClasses = 'character')  
+  f <- c(f, f_raw, f2_raw, f2)
   
-  names(d) <- str_extract(basename(f), pattern = '(^E[ML][0-9]+)|(^[0-9]+(_[0-9]+_C)?)')
+  m_date <- file.mtime(f)
+  
+  attributes(m_date)$tzone <- 'MST' 
+  
+  logger <- str_extract(basename(f), pattern = '(^E[ML][0-9]+)|(^[0-9]+(_[0-9]+_C)?)')
+  
+  file_df <-  data.frame( f, m_date, logger  )
+  
+  file_df$type <- str_extract( file_df$f, pattern = '.txt|.csv')
+  
+  file_df <- file_df %>% 
+    group_by( logger ) %>% 
+    mutate( modified_date = min(m_date )) %>% 
+    filter( type == '.txt') %>% 
+    select( - m_date )
+  
+  d <- lapply(as.character(file_df$f), read.table, sep = '\t', colClasses = 'character')  
+  
+  names(d) <- file_df$logger
 
   d <- lapply(d, rename_cols) 
 
@@ -88,6 +109,8 @@ for (i in 1:length(folders)) {
 
   df <- merge(df, record, by.x = 'id', by.y = 'logger' )
   
+  df <- merge(df, file_df, by.x = 'id', by.y = 'logger')
+  
   df$value <- as.numeric(df$value)
     
   data_list[[i]] <- df 
@@ -97,8 +120,6 @@ for (i in 1:length(folders)) {
 df <- do.call( rbind, data_list )  # bind the data lists from each folder 
 
 q_info$plot <- gsub( q_info$QuadName, pattern = 'X', replacement = '')
-
-unique( df$plot ) 
 
 df <- merge( df, q_info, by = 'plot') 
 
