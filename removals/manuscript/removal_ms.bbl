@@ -1,10 +1,24 @@
-\begin{thebibliography}{2}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 
-\bibitem[{Adler et~al.(2010)Adler, Ellner, and Levine}]{Adler:2010fu}
-Adler, P.~B., S.~P. Ellner, and J.~M. Levine. 2010.
+\bibitem[{Adler et~al.(2010{\natexlab{{\em a\/}}})Adler, Ellner, and
+  Levine}]{Adler:2010fu}
+Adler, P.~B., S.~P. Ellner, and J.~M. Levine. 2010{\natexlab{{\em a\/}}}.
 \newblock {C}oexistence of perennial plants: an embarrassment of niches.
 \newblock Ecology Letters, {\bf 13}:1019--1029.
+
+\bibitem[{Adler et~al.(2010{\natexlab{{\em b\/}}})Adler, Ellner, and
+  Levine}]{adler-etal-2010}
+Adler, P.~B., S.~P. Ellner, and J.~M. Levine. 2010{\natexlab{{\em b\/}}}.
+\newblock {C}oexistence of perennial plants: an embarrassment of niches.
+\newblock Ecology Letters, {\bf 13}:1019--1029.
+
+\bibitem[{Ellner et~al.(2016)Ellner, Childs, and Rees}]{ipmbook-2016}
+Ellner, S.~P., D.~Z. Childs, and M.~Rees. 2016.
+\newblock Data-driven Modelling of Structured Populations: a Practical Guide to
+  the Integral Projection Model.
+\newblock Lecture Notes on Mathematical Modeling in the Life Sciences,
+  Springer, Switzerland.
 
 \bibitem[{Zachmann et~al.(2010)Zachmann, Moffet, and
   Adler}]{zachmann-etal-2010}
