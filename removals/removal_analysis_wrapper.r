@@ -18,7 +18,7 @@ statsOutput <- paste0(getwd(),"/stats_tables.tex")
 source("treatment_trends_removals.r")
 
 # clean up
-tmp=ls() ; tmp=tmp[tmp!="root"]
+tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)
 
 ###
@@ -141,7 +141,7 @@ write.csv(trtTests,"treatment_test_results.csv",row.names=F)
 source("treatment_test_figure.r")
 
 # clean up
-tmp=ls() ; tmp=tmp[tmp!="root"]
+tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)
 
 ###
@@ -153,7 +153,7 @@ library("TeachingDemos") # for inset plots
 source("Wdistrib/exploreSurvivalWs.R")
 
 # clean up
-tmp=ls() ; tmp=tmp[tmp!="root"]
+tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)
 
 ###
@@ -169,8 +169,9 @@ source("ibm/ibm_removal_1step.r")
 source("ibm/summarize_sims1step.r")
 
 # clean up
-tmp=ls() ; tmp=tmp[tmp!="root"]
+tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)
+
 
 ###
 ### 5. get equilibrium cover from an IPM ###############################

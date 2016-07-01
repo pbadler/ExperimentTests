@@ -1,5 +1,5 @@
 
-# function to format and output parameters of growth models
+# function to format and output parameters of survival models
 
 formatSurvPars <-function(model,outfile){
 
@@ -20,6 +20,13 @@ formatSurvPars <-function(model,outfile){
   colnames(tmp)=model$names.fixed
   tmp[1,]=model$summary.fixed$mean
   params=cbind(params,tmp)
+  
+  # record the edge of the 95% CI furthest from zero
+  j <- grep("Treatment",row.names(model$summary.fixed))
+  tmp <- model$summary.fixed[j,c("0.025quant","0.975quant")]
+  k <- which(abs(tmp)==max(abs(tmp)))
+  params$TreatMaxCI <- NA
+  params$TreatMaxCI[1] <- as.numeric(tmp[k])
 
   write.table(params,outfile,row.names=F,sep=",")
     
