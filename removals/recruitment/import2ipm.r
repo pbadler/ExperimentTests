@@ -29,6 +29,17 @@ Rpars=list(intcpt.mu=rep(0,Nspp),intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.trt=matrix
  }
 Rpars$dd=t(Rpars$dd) # c[i,j] = effect of j on i
 
+# get edge of confidence interval for treatment effects
+if(max.CI==T){
+  keep <- grep("intcpt.trt",row.names(Rdata))
+  tmp <- Rdata[keep,c("X2.5.","X97.5.")]
+  tmp$max <- ifelse(abs(tmp$X2.5.)>abs(tmp$X97.5.),tmp$X2.5.,tmp$X97.5.)
+  Rpars$intcpt.trt[2,2] <- tmp$max[which(row.names(tmp)=="intcpt.trt[2,2]")]
+  Rpars$intcpt.trt[2,3] <- tmp$max[which(row.names(tmp)=="intcpt.trt[2,3]")]
+  Rpars$intcpt.trt[2,4] <- tmp$max[which(row.names(tmp)=="intcpt.trt[2,4]")]
+  Rpars$intcpt.trt[3,1] <- tmp$max[which(row.names(tmp)=="intcpt.trt[3,1]")]
+}
+
 # reformat treatment effects
 if(trtEffects==F){
   Rpars$intcpt.trt <- rep(0,4)

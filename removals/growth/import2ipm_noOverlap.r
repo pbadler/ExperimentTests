@@ -29,9 +29,11 @@ for(i in 1:Nspp){
   # Treatment effects
   if(trtEffects==T){
     tmp=grep("Treatment",names(Gdata))
-    if(length(tmp)>0) Gpars$intcpt[i]=Gpars$intcpt[i] + Gdata[1,tmp[1]] # add treatment intercept
-    if(length(tmp)>1) Gpars$nb[i,i]=Gpars$nb[i,i] + Gdata[1,tmp[2]] # add treatment density dependence
-    if(length(tmp)>2) stop("too many treatment effects")
+    if(max.CI==T) {
+      Gpars$intcpt[i]=Gpars$intcpt[i] + Gdata$TreatMaxCI[1] # add max treatment intercept
+    }else{
+      Gpars$intcpt[i]=Gpars$intcpt[i] + Gdata[1,tmp[1]] # add treatment intercept
+    }
   }
   # variance parameters
   Gpars$sigma2.a[i]=Gdata$sigma.a[1]

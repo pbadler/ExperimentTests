@@ -177,6 +177,8 @@ rm(list=tmp)
 ### 5. get equilibrium cover from an IPM ###############################
 ###
 
+max.CI <- F  # TRUE means use maximum removal effect
+
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
 source("ibm/get_W_functions.r")  # get neighbor distance decay functions
@@ -200,6 +202,7 @@ meanCover2 <- meanCover
 # removal treatment effects, ARTR removal
 init.species <- c(2:4)
 trtEffects=T
+max.CI=T
 source("ipm/IPM-setup.r")
 source("ipm/IPM-getEquilibrium.r")
 write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTR.csv",row.names=F)
