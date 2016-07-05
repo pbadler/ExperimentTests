@@ -202,23 +202,38 @@ meanCover2 <- meanCover
 # removal treatment effects, ARTR removal
 init.species <- c(2:4)
 trtEffects=T
-max.CI=T
+max.CI=F
 source("ipm/IPM-setup.r")
 source("ipm/IPM-getEquilibrium.r")
 write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTR.csv",row.names=F)
 meanCover3 <- meanCover
 
-# removal treatment effects, ARTR removal, no PSSP
-init.species <- c(2:3)
+# removal treatment effects, ARTR removal, max treat effect
+init.species <- c(2:4)
 trtEffects=T
+max.CI=T
 source("ipm/IPM-setup.r")
 source("ipm/IPM-getEquilibrium.r")
-write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTRnoPSSP.csv",row.names=F)
+write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTR-maxCI.csv",row.names=F)
 meanCover4 <- meanCover
 
-simResults <- rbind(meanCover1,meanCover2,meanCover3,meanCover4)
+# # removal treatment effects, ARTR removal, no PSSP
+# init.species <- c(2:3)
+# trtEffects=T
+# max.CI=F
+# source("ipm/IPM-setup.r")
+# source("ipm/IPM-getEquilibrium.r")
+# write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTRnoPSSP.csv",row.names=F)
+
+simResults <- rbind(meanCover1,meanCover2,meanCover3) 
 colnames(simResults) <- sppList
 write.csv(simResults,"ipm/simResults-meanCover.csv",row.names=F)
+
+simResults <- rbind(meanCover1,meanCover2,meanCover4) 
+colnames(simResults) <- sppList
+write.csv(simResults,"ipm/simResults-meanCover-maxCI.csv",row.names=F)
+
+simFile <- "ipm/simResults-meanCover.csv"
 
 source("ipm/IPM-figures.r")
 
