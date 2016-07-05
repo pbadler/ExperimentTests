@@ -13,9 +13,14 @@ for(i in 1:Nspp){
   Gdata=read.csv(infile)
   # main intercept
   Gpars$intcpt[i]=Gdata$X.Intercept.[1]
-  # Treatment effect
+  # Treatment effects
   tmp=grep("Treatment",names(Gdata))
-  if(length(tmp)>0) Gpars$intcpt.trt[i]=Gdata[1,tmp]
+  if(max.CI==T) {
+    Gpars$intcpt.trt[i] <- Gdata$TreatMaxCI[1] # add max treatment intercept
+  }else{
+    Gpars$intcpt.trt[i] <-  Gdata[1,tmp[1]] # add treatment intercept
+  }
+  
   # random year effects on intercept
   Gpars$intcpt.yr[,i]=Gdata$Intercept.yr
   # group effects

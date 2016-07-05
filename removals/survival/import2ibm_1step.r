@@ -15,7 +15,11 @@ for(i in 1:Nspp){
   Spars$intcpt[i]=Sdata$X.Intercept.[1]
   # Treatment effect
   tmp=grep("Treatment",names(Sdata))
-  if(length(tmp)>0) Spars$intcpt.trt[i]=Sdata[1,tmp]
+  if(max.CI!=T){
+    Spars$intcpt.trt[i] <- Sdata[1,tmp[1]]
+  }else{
+    Spars$intcpt.trt[i] <- Sdata$TreatMaxCI[1] # add max treatment intercept
+  }
   # Group effects
   tmp=which(names(Sdata)=="Group")
   if(length(tmp)>0) Spars$intcpt.gr[,i]=Sdata$Group[!is.na(Sdata$Group)] # get spatial average
