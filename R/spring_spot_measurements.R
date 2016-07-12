@@ -101,7 +101,6 @@ spot_m_2016 <- lmer(data = subset(df, date > '2016-01-01'), VWC ~ (1|plot) + Tre
 summary(spot_m)
 summary(spot_m_2016)
 
-
 # print figures --------------------------------------------------------------------------------------------------------
 
 pdf( 'figures/spot_measurements.pdf', height = 8 , width = 10 ) 
@@ -111,3 +110,7 @@ print( plot_by_date )
 print( plot_by_treat ) 
 
 dev.off()
+
+# Save spot measurements -----------------------------------------------------------------------------------------------
+
+saveRDS( df, 'data/temp_data/spring_spot_measurements.RDS')

@@ -70,6 +70,7 @@ df <- df %>% left_join( station_dat, by = 'date')
 saveRDS(df, 'data/temp_data/decagon_data_with_rainfall_data.RDS' ) 
 
 # summarize treatment differences:  -----------------------------------------------------------------------------------
+
 plot_vals <- df %>% 
   filter( !is.na(v), bad_values == 0 ) %>% 
   group_by(Treatment_label, season_label, depth_label, measure ) %>% 
