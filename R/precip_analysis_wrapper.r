@@ -70,6 +70,8 @@ dists <- read.csv(file.path(root, 'driversdata/data/idaho_modern/speciesData/Ida
 
 setwd("R/growth")
 source("write_params.r") # get function to format and output parameters
+iSpp = 'ARTR'
+source(paste0(iSpp, 'growth.R'))
 
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   
@@ -96,40 +98,40 @@ setwd("..")
 ###
 ### fit recruitment models (this can take a few hours)
 ###
-
-library(boot)
-library(R2WinBUGS)
-setwd("recruitment")
-#source("call_recruit_m1.r")
-
-# add treatment test data for ARTR 
-pars.summary <- read.csv("recruit_params_m1.csv")
-irow <- dim(trtTests)[1]
-trtTests[irow+1,] <- NA
-trtTests[irow+1,1:2] <- c("ARTR","recruitment")
-tmp <- grep("intcpt.trt",row.names(pars.summary))
-trtTests[irow+1,3:5] <- pars.summary[tmp[5],c("mean","X2.5.","X97.5.")]
-
-# add treatment test data for the three grasses
-irow <- dim(trtTests)[1]
-trtTests[(irow+1):(irow+3),] <- NA
-trtTests[(irow+1):(irow+3),1:2] <- cbind(c("HECO","POSE","PSSP"),rep("recruitment",3))
-trtTests[(irow+1):(irow+3),3:5] <- pars.summary[tmp[2:4],c("mean","X2.5.","X97.5.")]
-
-# create summary stats table
-fixeffs <- c("intcpt.mu","intcpt.trt","dd","theta","u")
-keep <- NULL
-for(i in fixeffs){
-  keep <- c(keep,grep(i,row.names(pars.summary),fixed=TRUE))
-}
-keep <- keep[-c(5,10:12,33:44)]  # some editing
-output <- pars.summary[keep,c(1:3,7:9)]
-cat("",file=statsOutput,sep="\n",append=T)
-cat(capture.output(print(xtable(output,digits=4,caption=paste("Summary of fixed effects for the recruitment model"),
-        label="table:recruitment"),caption.placement="top")),file=statsOutput,sep="\n",append=T)
-  
-setwd("..")
-
+# 
+# library(boot)
+# library(R2WinBUGS)
+# setwd("recruitment")
+# #source("call_recruit_m1.r")
+# 
+# # add treatment test data for ARTR 
+# pars.summary <- read.csv("recruit_params_m1.csv")
+# irow <- dim(trtTests)[1]
+# trtTests[irow+1,] <- NA
+# trtTests[irow+1,1:2] <- c("ARTR","recruitment")
+# tmp <- grep("intcpt.trt",row.names(pars.summary))
+# trtTests[irow+1,3:5] <- pars.summary[tmp[5],c("mean","X2.5.","X97.5.")]
+# 
+# # add treatment test data for the three grasses
+# irow <- dim(trtTests)[1]
+# trtTests[(irow+1):(irow+3),] <- NA
+# trtTests[(irow+1):(irow+3),1:2] <- cbind(c("HECO","POSE","PSSP"),rep("recruitment",3))
+# trtTests[(irow+1):(irow+3),3:5] <- pars.summary[tmp[2:4],c("mean","X2.5.","X97.5.")]
+# 
+# # create summary stats table
+# fixeffs <- c("intcpt.mu","intcpt.trt","dd","theta","u")
+# keep <- NULL
+# for(i in fixeffs){
+#   keep <- c(keep,grep(i,row.names(pars.summary),fixed=TRUE))
+# }
+# keep <- keep[-c(5,10:12,33:44)]  # some editing
+# output <- pars.summary[keep,c(1:3,7:9)]
+# cat("",file=statsOutput,sep="\n",append=T)
+# cat(capture.output(print(xtable(output,digits=4,caption=paste("Summary of fixed effects for the recruitment model"),
+#         label="table:recruitment"),caption.placement="top")),file=statsOutput,sep="\n",append=T)
+#   
+# setwd("..")
+# 
 
 ###
 ### write results to file
