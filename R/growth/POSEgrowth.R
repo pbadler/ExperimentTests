@@ -1,5 +1,5 @@
 # PBA March 2016
-
+# modfied by ARK July 2016
 # call from removal_analysis_wrapper.r
 
 #########################################
@@ -57,9 +57,9 @@ allD$inARTR[is.na(allD$inARTR)] <- 0
 allD$year[allD$year<2000] <- allD$year[allD$year<2000] + 1900
 
 if(doSpp=="ARTR"){
-  keep <- which(is.element(allD$Treatment,c("Control","No_grass")))
+  keep <- which(is.element(allD$Treatment,c("Control","No_grass", "Irrigation", "Drought")))
 }else{
-  keep <- which(is.element(allD$Treatment,c("Control","No_shrub")))
+  keep <- which(is.element(allD$Treatment,c("Control","No_shrub", "Irrigation", "Drought")))
 }
 allD <- allD[keep,]
 
@@ -117,11 +117,14 @@ output<-capture.output(texreg(m1.time, ci.force=TRUE,label="table:POSEgrowth-byY
 cat(output,file=statsOutput,sep="\n",append=T)
 cat("",file=statsOutput,sep="\n",append=T)
 
-# does result change if we filter out low ARTR control quadrats?
-# first identify control quads with low ARTR cover
-source("../filter_lowARTR_quads.r")
-keep <- which(!is.element(allD$quad,exclude.quads))
-# put indicators on intercept only
-m1.lowARTR <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts+
-             (1|Group)+(logarea.t0|year),data=allD,subset=keep) 
-summary(m1.lowARTR) # very little change in parameters
+# todo -- "quad inventory files are missing in drivers data!" 
+
+# # does result change if we filter out low ARTR control quadrats?
+# # does result change if we filter out low ARTR control quadrats?
+# # first identify control quads with low ARTR cover
+# source("../filter_lowARTR_quads.r") 
+# keep <- which(!is.element(allD$quad,exclude.quads))
+# # put indicators on intercept only
+# m1.lowARTR <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts+
+#              (1|Group)+(logarea.t0|year),data=allD,subset=keep) 
+# summary(m1.lowARTR) # very little change in parameters
