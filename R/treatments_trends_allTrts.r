@@ -3,7 +3,7 @@ rm(list=ls(all=TRUE))
 graphics.off();
 
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
-dataDir <- file.path("~/drivers_data/data/idaho_modern/" )
+dataDir <- file.path("~/driversdata/data/idaho_modern/" )
 covD<-read.csv(file.path( dataDir,"allrecords_cover.csv"))
 
 trts<-read.csv(file.path(dataDir,"quad_info.csv"))
