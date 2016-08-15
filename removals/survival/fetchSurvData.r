@@ -15,7 +15,7 @@ fetchSdat <- function(doSpp,speciesList,datadir,distWts){
   ringD$year<-ringD$year
   
   # merge D with ringD (D contains fewer rows)
-  D1<-merge(D1,ringD,by.x=c("quad","year","trackID"),by.y=c("quad","year","genetID"))
+  D1<-merge(D1,ringD,all.x=T,by.x=c("quad","year","trackID"),by.y=c("quad","year","genetID"))
   D1=D1[order(D1$X),]
   rm(ringD)
   row.names(D1) <- NULL  

@@ -165,7 +165,7 @@ sppList <-  c("ARTR","HECO","POSE","PSSP")
 # read in distance weights
 dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
-max.CI <- T  # TRUE means use maximum removal effect
+max.CI <- F  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
 source("ibm/summarize_sims1step.r")
 
