@@ -35,7 +35,7 @@ for(i in 1:length(sppList)){
   
   doSpp <- sppList[i]
   D2 <- fetchSdat(doSpp=doSpp,speciesList=neighborList,datadir=dataDir2,distWts=dists)
-
+  
   # merge in treatment data
   tmp <- read.csv(paste(dataDir2,"/quad_info.csv",sep=""))
   tmp <- tmp[,c("quad","Treatment")]

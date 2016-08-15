@@ -11,6 +11,13 @@ simD <- read.csv("simulations1step/ObsPred_1step.csv")
 
 quad.info <- unique(simD[,c("quad","Treatment","Group")],MARGIN=2)
 
+### calculate mean cover by treatment
+
+covMeans <- aggregate(simD[,3:14],by=list(Treatment=simD$Treatment,year=simD$year),
+    na.rm=T,FUN=mean)
+covMeans[1:3,7:14] <- covMeans[1:3,3:6] # copy initial values across
+covMeans <- covMeans[order(covMeans$Treatment),]
+
 ### calculate per capita growth rates
 
 get.pgr <- function(myname){
@@ -26,7 +33,6 @@ get.pgr <- function(myname){
 obs.pgr <- get.pgr("obs.")
 pred.pgr <- get.pgr("pred.")
 pred.trt.pgr <- get.pgr("pred.trt.")
-
 
 # aggregate by treatment
 
@@ -47,7 +53,37 @@ obs.pgr.mean <- get.trt.means(obs.pgr)
 pred.pgr.mean <- get.trt.means(pred.pgr)
 pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 
+###
+### plot observed and predicted cover chronologically
+###
 
+png("cover_projections_1step.png",res=400,width=8.5,height=3,units="in")
+
+par(mfrow=c(1,4),tcl=0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+
+for(i in 1:4){
+  if(i==1){
+    doRows <- which(covMeans$Treatment=="No_grass")
+  }else{
+    doRows <- which(covMeans$Treatment=="No_shrub")
+  }  
+  matplot(covMeans$year[1:5],cbind(covMeans[1:5,2+i],covMeans[1:5,6+i], # control plots
+          covMeans[doRows,2+i],covMeans[doRows,6+i],covMeans[doRows,10+i]),
+          xlab="",ylab="",type="l",
+          lty=c("solid","dashed","solid","dashed","dotted"),
+          col=c(rep("blue3",2),rep("red3",3)))   # removal plots
+  title(main=sppNames[i],adj=0,font.main=4) 
+  if(i==3){
+    legend("bottomleft",c("Obs. control","Baseline","Obs. removal","Baseline","Removal"),
+    col=c(rep("blue3",2),rep("red3",3)), 
+    lty=c("solid","dashed","solid","dashed","dotted"),bty="n")
+  }
+}
+
+mtext("Year",side=1,line=0.5,outer=T,cex=1)
+mtext("Cover (%)",side=2,line=0.5,outer=T,cex=1)
+
+dev.off()
 
 ###
 ### plot growth rates chronologically 
