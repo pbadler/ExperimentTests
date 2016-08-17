@@ -92,11 +92,53 @@ quick_plot_check <- function( x = df, file_name = 'data/soil_moist_data/2015_Fal
 
 quick_plot_check(file_name = 'data/soil_moist_data/2015_Fall/EL5739 4Nov15-1838.txt')
 
-#df <- left_join( df, check[ , c('f', 'date', 'reading', 'change', 'time_diff', 'hours_skipped')], by = c('f', 'date', 'reading'))
+test <- df 
 
-df <- df %>% arrange( f, reading )
+test <- left_join(test, check , by =c( 'f', 'date', 'reading' ))
 
-df$time_adj <- 0 
+test <- test %>% ungroup () %>% group_by(f ) %>% arrange( reading ) %>% mutate( hours_skipped = ifelse( row_number() == 1, 0, hours_skipped ))
+
+test1 <- test %>% filter( f == 'data/soil_moist_data/2016_Spring/EM20085 10May16-1440.txt', port == 'Port 1' )
+
+View ( test1 %>% filter( hours_skipped != 0 ) %>% distinct( date, reading ) ) 
+
+fill_in_hours_skipped <- function( x ) { 
+  
+  hs = 0 
+  
+  for( i in 1:nrow(x)) {
+    
+    if (is.na( x$change[i] )) {
+      
+      x$hours_skipped[i] <- hs
+      
+      }else if(x$change[i] == 1 ){
+        
+        print(paste('old hs', hs ))
+        
+        hs <- x$hours_skipped[i] <- x$hours_skipped[i] + hs
+        
+        print(paste('new hs', hs))
+        
+        }else if(x$change[i] == 0 ){
+          
+          hs <- x$hours_skipped[i] <- 0 } 
+  }
+  
+  return( x )
+}
+
+test1_out <- fill_in_hours_skipped(test1 )
+
+test1_out %>% filter( hours_skipped == 0 )
+test1_out %>% filter( hours_skipped != 0 )
+
+test1_out <- test1_out %>% mutate( new_date = as.POSIXct(date - 60*60*hours_skipped, origin = '1970-01-01 00:00:00', tz = 'MST')) 
+
+test2_out <- test1_out %>% mutate( date = new_date, hour = as.numeric(strftime( date, '%H')))
+
+quick_plot_check(test1_out, file_name = 'data/soil_moist_data/2016_Spring/EM20085 10May16-1440.txt')
+quick_plot_check(test2_out, file_name = 'data/soil_moist_data/2016_Spring/EM20085 10May16-1440.txt')
 
 
 
