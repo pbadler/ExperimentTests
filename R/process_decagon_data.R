@@ -32,9 +32,9 @@ assign_NAs <- function( x ) {
 }
 
 convert_time <- function(x) { 
-  
-  strptime(x = x$Time, format = '%m/%d/%y %I:%M %p', tz = 'MST')
-  
+
+  return( strptime(x = x$Time, format = '%m/%d/%y %I:%M %p', tz = 'MST') ) 
+
 }
 
 
@@ -42,10 +42,20 @@ make_date <- function(x) {
   
   x$date <- convert_time( x )
   
-  x$date <- as.POSIXct(x$date )
+  x$date <- as.POSIXct(x$date, format = '%Y-%m-%d %H:%m:%s' )
   
   return(x)
 }
+
+make_readings <- function( x ) { 
+  
+  m <- regexpr(row.names(x), pattern = '([0-9]+$)')
+  
+  x$reading <- as.numeric(regmatches(row.names(x), m))
+  
+  return( x ) 
+}
+
 
 gather_ports <- function ( test ) { 
   test %>% 
@@ -58,7 +68,7 @@ q_info <- read.csv('data/quad_info.csv')
 folders <- dir('data/soil_moist_data', pattern = '20[0-9]{2}_((Fall$)|(Spring$))', full.names = TRUE)
 
 data_list <- list(NA)
-i = 3
+
 for (i in 1:length(folders)) {
 
   record_file <- dir(folders[i] , pattern = 'logger_info.csv', full.names = TRUE) 
@@ -66,7 +76,7 @@ for (i in 1:length(folders)) {
   record <- read.csv(record_file)
   
   f <- dir(folders[i], pattern = '^E[ML][0-9]+.*txt$', full.names = TRUE)
-  
+
   f_raw <- dir(folders[i], pattern = '^E[ML][0-9]+.*csv$', full.names = TRUE, recursive = TRUE)
   
   f2 <- dir(folders[i], pattern = '^[0-9]+(_[0-9]+_C)?.*txt$', full.names = TRUE)
@@ -100,13 +110,15 @@ for (i in 1:length(folders)) {
   d <- lapply(d, assign_NAs)
 
   d <- lapply(d, make_date) 
+  
+  d <- lapply(d, make_readings )
 
   d <- lapply( d, gather_ports ) 
 
   df <- do.call(rbind, d)
 
   df$id <- gsub( pattern = '\\.[0-9]+$', replacement = '', x = row.names(df))
-
+  
   df <- merge(df, record, by.x = 'id', by.y = 'logger' )
   
   df <- merge(df, file_df, by.x = 'id', by.y = 'logger')
@@ -119,6 +131,8 @@ for (i in 1:length(folders)) {
 
 df <- do.call( rbind, data_list )  # bind the data lists from each folder 
 
+df  <- df %>% group_by(plot , port , measure, reading , date, value) %>% arrange(desc( period ) ) %>% filter( row_number() == 1  ) # when there are duplicate records get data from only the most recent file 
+
 q_info$plot <- gsub( q_info$QuadName, pattern = 'X', replacement = '')
 
 df <- merge( df, q_info, by = 'plot') 
@@ -127,7 +141,5 @@ port_depth <- data.frame(port = paste('Port', 1:5), depth = c('air', '5','5','25
 
 df <- merge( df, port_depth ) 
 
-df <- unique(df)
-
-saveRDS(df, 'data/temp_data/decagon_data.RDS')
+saveRDS(df , 'data/temp_data/decagon_data.RDS')
 
