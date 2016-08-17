@@ -109,6 +109,7 @@ midRings=c(seq(1,19,2),seq(22.5,47.5,5),seq(55,145,10))
 
 # loop through species again and analyze no overlap radius
 fits<-list(0)
+fits.rqss <-list(0)
 png("NoOverlap.png",height=11,width=8.5,res=400,units="in")
 par(mfrow=c(4,4),mgp=c(2,1,0),mar=c(4,4,2,1),cex.axis=1.2,cex.lab=1.2)
 for(iSpp in 1:4){
@@ -143,6 +144,11 @@ for(iSpp in 1:4){
     abline(0,1,col="blue"); 
     fit = rq(firstRing~radius-1,data=data,tau=0.05); 
     abline(fit); fits[[jSpp+4*(iSpp-1)]]=fit; 
+    
+    # try nonparametric fit
+    firstRing[is.na(firstRing)] <- 150
+    fit2 = rqss(firstRing~qss(radius-1,lambda=1),data=data,tau=0.05); 
+    fits.rqss[[jSpp+4*(iSpp-1)]] <- fit2
     
     fac = round(coef(fit)[1], digits=2); 
     legend("topright",legend=as.character(fac),bty="n",cex=1.2,inset=0.1); 
