@@ -7,12 +7,39 @@ library(zoo)
 
 df <- readRDS(file = 'data/temp_data/decagon_data.RDS')
 
-# Filter out redundant and bad dates ------------------------------------------------------------------------------ 
+# correct bad dates  ------------------------------------------------------------------------------ 
 
 find_mode <- function(x) {
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
 }
+
+fill_in_hours_skipped <- function( x ) { 
+  
+  hs = 0 
+  
+  for( i in 1:nrow(x)) {
+    
+    if (is.na( x$change[i] )) {
+      
+      x$hours_skipped[i] <- hs
+      
+    }else if(x$change[i] == 1 ){
+      
+      print(paste('old hs', hs ))
+      
+      hs <- x$hours_skipped[i] <- x$hours_skipped[i] + hs
+      
+      print(paste('new hs', hs))
+      
+    }else if(x$change[i] == 0 ){
+      
+      hs <- x$hours_skipped[i] <- 0 } 
+  }
+  
+  return( x )
+}
+
 
 df <- df %>% mutate( hour = strftime( date , '%H'))
 
@@ -34,6 +61,8 @@ df <- df %>%
   mutate( lag_mod_date = ifelse(is.na(lag_mod_date), as.POSIXct(date_started), lag_mod_date)) %>% 
   mutate( lag_mod_date = as.POSIXct(lag_mod_date, origin = '1970-01-01', tz = 'MST'))
 
+df <- df %>% filter( f != 'data/soil_moist_data/2015_Spring/EM20068_2015-04-30-0957.txt')
+
 reading_list <- df %>% ungroup () %>% select( f, plot, id , period, date, reading ) %>% mutate( f = factor(f)) %>% distinct()
 
 table( reading_list$f, reading_list$period ) # one file per period 
@@ -49,9 +78,8 @@ jumps <- reading_list %>%
   mutate( jump = ifelse( reading_diff == 1 & (hours_skipped != 0 ), 1, 0 )) %>% 
   mutate( lead_jump = lead( jump, 1 )) 
 
-
-jumps %>% group_by ( f ) %>% summarise( n_jumps =  sum(jump, na.rm = T)) %>% filter ( n_jumps > 0  )
-  
+jumps %>% group_by ( f ) %>% summarise( n_jumps =  sum(jump, na.rm = T)) %>% filter ( n_jumps > 0  ) 
+   
 check <- 
   jumps %>% 
   filter ( f != 'data/soil_moist_data/2014_Fall/15_15Sep14-1802.txt' ) %>% 
@@ -64,6 +92,7 @@ check <-
   filter( !( abs(hours_skipped) < 10000 & f == 'data/soil_moist_data/2015_Fall/EL5743 4Nov15-1828.txt')) %>% 
   filter( f != 'data/soil_moist_data/2013_Spring/EM20070.txt') %>% 
   filter( f != 'data/soil_moist_data/2013_Spring/EM20085.txt') %>% 
+  filter( f != 'data/soil_moist_data/2015_Spring/EM20068_2015-04-30-0957.txt') %>% 
   arrange( date, f  ) 
 
 # determined for each jump whether it should be corrected or remain in place 
@@ -73,13 +102,24 @@ change <-
    0, 0, 0, 0, 0, 0, 0, 0, 
    1, 1, 
    0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0, 
-   1, 1, 
+   1, 
    0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0 ,0, 0, 
    1, 1)
 
 check$change  <- change 
 
-write.csv(check, '~/Downloads/check_dates.csv', row.names = FALSE)
+# need to mark the initial row of this file as a change manually ------------------------
+date1 <- df %>%  filter( f == 'data/soil_moist_data/2014_Fall/11_15Sep14-1708.txt', row_number() == 1 ) %>% ungroup() %>% select(date) %>% distinct( date)
+old_date <- date1$date
+new_date <- strptime( "04/13/14 12:00 PM", format = "%m/%d/%y %I:%M %p" , tz = 'MST') 
+add_time_diff <- as.numeric( diff.POSIXt(c(new_date, old_date)), units = 'secs')
+add_row <- df %>% filter( f == 'data/soil_moist_data/2014_Fall/11_15Sep14-1708.txt') %>% ungroup() %>% filter( row_number() == 1 ) %>% select(f, date, reading)  
+add_row <- add_row %>% mutate( time_diff = add_time_diff,  hours_skipped = time_diff/(60*60) , reading_diff = 1, jump = 1, change = 1)
+check <- rbind( check, add_row )
+
+#-----------------------------------------------------------------------------------------
+write.csv(check, 'data/temp_data/check_dates.csv', row.names = FALSE) # write list of changes 
+# ------------------------------------------------------------------------------------------- 
 
 quick_plot_check <- function( x = df, file_name = 'data/soil_moist_data/2015_Fall/EL5739 4Nov15-1838.txt' ) { 
   
@@ -92,86 +132,34 @@ quick_plot_check <- function( x = df, file_name = 'data/soil_moist_data/2015_Fal
 
 quick_plot_check(file_name = 'data/soil_moist_data/2015_Fall/EL5739 4Nov15-1838.txt')
 
-test <- df 
-
-test <- left_join(test, check , by =c( 'f', 'date', 'reading' ))
-
-test <- test %>% ungroup () %>% group_by(f ) %>% arrange( reading ) %>% mutate( hours_skipped = ifelse( row_number() == 1, 0, hours_skipped ))
-
-test1 <- test %>% filter( f == 'data/soil_moist_data/2016_Spring/EM20085 10May16-1440.txt', port == 'Port 1' )
-
-View ( test1 %>% filter( hours_skipped != 0 ) %>% distinct( date, reading ) ) 
-
-fill_in_hours_skipped <- function( x ) { 
-  
-  hs = 0 
-  
-  for( i in 1:nrow(x)) {
-    
-    if (is.na( x$change[i] )) {
-      
-      x$hours_skipped[i] <- hs
-      
-      }else if(x$change[i] == 1 ){
-        
-        print(paste('old hs', hs ))
-        
-        hs <- x$hours_skipped[i] <- x$hours_skipped[i] + hs
-        
-        print(paste('new hs', hs))
-        
-        }else if(x$change[i] == 0 ){
-          
-          hs <- x$hours_skipped[i] <- 0 } 
-  }
-  
-  return( x )
-}
-
-test1_out <- fill_in_hours_skipped(test1 )
-
-test1_out %>% filter( hours_skipped == 0 )
-test1_out %>% filter( hours_skipped != 0 )
-
-test1_out <- test1_out %>% mutate( new_date = as.POSIXct(date - 60*60*hours_skipped, origin = '1970-01-01 00:00:00', tz = 'MST')) 
-
-test2_out <- test1_out %>% mutate( date = new_date, hour = as.numeric(strftime( date, '%H')))
-
-quick_plot_check(test1_out, file_name = 'data/soil_moist_data/2016_Spring/EM20085 10May16-1440.txt')
-quick_plot_check(test2_out, file_name = 'data/soil_moist_data/2016_Spring/EM20085 10May16-1440.txt')
-
-
-
-check %>% arrange ( f, reading )
-
-for( i in 1:nrow( check)  ){ 
-  
-  file = check$f[i]  
-  rd = check$reading[i]
-  adj = check$hours_skipped[i]
-  df <- df %>% ungroup() %>% mutate( time_adj = ifelse (as.character( f )== as.character(file ) & reading >= rd , adj, time_adj ))
-  
-  df <- df %>% ungroup( ) %>% mutate( time_adj = ifelse ( as.character( f)  == as.character( file) & reading >= rd , adj, time_adj  ))
-} 
-
-df %>% mutate( adjusted )
-
-
-df %>% 
-  group_by( f ) %>% 
-  arrange( f, desc( reading ) ) %>%
-  
-  mutate( change = ifelse ( row_number() == 1, 0, change ) ) %>%
-  mutate( change = cumsum(change)) %>%  
-  mutate( change = ifelse ( is.na(change), lag(change, 1), change ) ) %>% 
-  dplyr::select( change )
-
-
-
-
-df %>% arrange( f, desc(reading ) ) 
+# --------------------------------------------------------------------------------- 
+df <- left_join(df, check , by =c( 'f', 'date', 'reading' )) # join changes to main df 
 
 df <- df %>% 
+  ungroup () %>% 
+  group_by(f, plot, port, measure ) %>% 
+  arrange( reading ) %>% 
+  mutate( hours_skipped = ifelse( row_number() == 1 & is.na(change), 0, hours_skipped ))
+
+out <- df %>% do ( fill_in_hours_skipped(. ) ) # apply fill in hours function to all measurement groups 
+
+out <- out %>% 
+  mutate( new_date = as.POSIXct(date - 60*60*hours_skipped, origin = '1970-01-01 00:00:00', tz = 'MST')) %>% 
+  mutate( new_hour = as.numeric(strftime( date, '%H')) )
+
+out <- out %>% 
   mutate ( good_date = ifelse ( date >= lag_mod_date - 60*60*12 & date <= modified_date + 60*60*12 , 1, 0))
 
-saveRDS( df , 'data/temp_data/decagon_data_corrected_dates.RDS')
+# check that each day doesn't have too many samples ------------------------------------
+n_samples <- out %>% mutate( simple_date = as.Date( new_date) )  %>% group_by( period, plot, port, measure, simple_date ) %>% mutate( n = n()) %>% select( f, period, plot, port, measure, simple_date, value , n ) %>% distinct() 
+
+n_samples <- n_samples %>% ungroup() %>% filter( n > 12 ) %>% distinct( f, plot, period, n  )
+
+# check earliest and latest dates -----------------------------------------------------------------
+out %>% ungroup( ) %>% summarise ( max( new_date ), min( new_date ), which.min(new_date ), which.max(new_date ))
+
+# ---------------------------------------------------------------------------- 
+
+saveRDS( out , 'data/temp_data/decagon_data_corrected_dates.RDS')
+
+# ----------------------------------------------------------------------------
