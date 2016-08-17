@@ -149,6 +149,7 @@ rm(list=tmp)
 ###
 
 library("TeachingDemos") # for inset plots
+library("quantreg")
 
 source("Wdistrib/exploreSurvivalWs.R")
 

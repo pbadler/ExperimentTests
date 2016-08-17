@@ -56,7 +56,7 @@ for(iSpp in 1:4){
   #   Dall$W.HECO[ii] <- 0 ; Dall$W.POSE[ii] <- 0 ; Dall$W.PSSP[ii] <- 0
 
   allD[[iSpp]] <- Dall[,c("year","Treatment","Group","W.ARTR", "W.HECO","W.POSE","W.PSSP","W.allcov","W.allpts")]
-  rm(Dall,D1,D2,tmp)
+  rm(Dall, D1,D2,tmp)
 
 }
 
@@ -75,8 +75,83 @@ for(i in 1:4){
 }
 dev.off()
 
+
 #####################
-#  2. Model W's (with help from Giles Hooker)
+#  2. Calculate no overlap zone (with code from Steve Ellner)
+####################
+
+# import all rings data
+setwd("..")
+source("survival/fetchSurvData-rings.r")
+setwd("Wdistrib")
+
+ringD <-list()
+for(iSpp in 1:4){
+  doSpp <- sppList[iSpp]
+  # get old data
+  D1 <- fetchSdatRings(doSpp=doSpp,speciesList=sppList,datadir=dataDir1,distWts=dists)
+  D1$year <- D1$year+1900
+  # import modern data
+  D2 <- fetchSdatRings(doSpp=doSpp,speciesList=sppList,datadir=dataDir2,distWts=dists)
+  D2 <- D2[,-c(13,15)]
+  # combine old and modern
+  Dall <- rbind(D1,D2)
+  # merge in treatment data
+  tmp <- read.csv(paste(dataDir2,"/quad_info.csv",sep=""))
+  tmp <- tmp[,c("quad","Treatment","Group")]
+  Dall <- merge(Dall,tmp, all.x=T)
+  Dall <-subset(Dall,Treatment=="Control") # onlu use control treatment data
+  ringD[[iSpp]] <- Dall
+}
+rm(Dall)
+
+midRings=c(seq(1,19,2),seq(22.5,47.5,5),seq(55,145,10))
+
+# loop through species again and analyze no overlap radius
+fits<-list(0)
+png("NoOverlap.png",height=11,width=8.5,res=400,units="in")
+par(mfrow=c(4,4),mgp=c(2,1,0),mar=c(4,4,2,1),cex.axis=1.2,cex.lab=1.2)
+for(iSpp in 1:4){
+  
+  doSpp <- sppList[iSpp]
+  data <- ringD[[iSpp]]
+  data$radius = sqrt(data$area/pi); 
+  
+  ## Drop individuals very likely to be seedlings 
+  likely.seedling = which((data$age==1)&(data$logarea<=log(0.25001)))  
+  if(length(likely.seedling)>0) data=data[-(likely.seedling), ]; 
+  
+  # loop through neighbor species 
+  for(jSpp in 1:4){
+    nbSpp <- sppList[jSpp]
+    dataCols = which(substr(names(data),1,4)==nbSpp); 
+    ringData = data[,dataCols]; 
+    
+    firstRing = numeric(nrow(data)); 
+    for(j in 1:nrow(data)) {
+        ringj = ringData[j,]
+        if(sum(ringj)>0) {
+            firstNonEmpty = min(which(ringj > 0))
+            firstRing[j] = midRings[firstNonEmpty]
+        } else {
+            firstRing[j] = NA 
+        }    
+    }    
+    data$firstRing=firstRing
+    
+    plot(data$radius, firstRing,main=paste0(doSpp,":",nbSpp),xlab="Genet radius (cm)",ylab="Mid-radius of 1st occupied ring (cm)");
+    abline(0,1,col="blue"); 
+    fit = rq(firstRing~radius-1,data=data,tau=0.05); 
+    abline(fit); fits[[jSpp+4*(iSpp-1)]]=fit; 
+    
+    fac = round(coef(fit)[1], digits=2); 
+    legend("topright",legend=as.character(fac),bty="n",cex=1.2,inset=0.1); 
+  }
+}
+dev.off()
+
+#####################
+#  3. Model W's (with help from Giles Hooker)
 ####################
 
 # store results of regressions
@@ -218,43 +293,4 @@ print(max(zero.dev))
 
 setwd("..")
 
-#####################
-#  3. Visualize W's
-####################
-
-# wind rose (four dimensions)
-# myRoot <- 3
-# Nspp <-length(sppList)
-# pdf("W-windrose.pdf",height=2.5,width=8.5)
-# par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,4,2))
-# 
-# for(i in 1:length(sppList)){
-#   
-#   # first format data for lines()
-#   xyDat <- matrix(0,NROW(allD[[i]]),2*Nspp + 2)
-#   xyDat[,2] <- allD[[i]][,Wcols[1]]
-#   xyDat[,3] <- allD[[i]][,Wcols[2]]
-#   xyDat[,6] <- allD[[i]][,Wcols[3]]
-#   xyDat[,7] <- allD[[i]][,Wcols[4]]
-#   xyDat[,10] <- allD[[i]][,Wcols[1]]
-#   xyDat <- xyDat^(1/myRoot)
-#   xyDat[,6] <- -1*xyDat[,6]; xyDat[,7] <- -1*xyDat[,7]
-#   xyLong <- matrix(as.vector(t(xyDat)),nrow=NROW(xyDat)*5,2,byrow=T)
-#   
-#   # plot on sqrt scale
-#   maxW <- max(abs(xyLong))*1.02
-#   myTics <- c(-round(maxW),-round(maxW/2),round(maxW),round(maxW/2))
-#   plot(x=0,y=0,xlim=c(-1*maxW,maxW),ylim=c(-1*maxW,maxW),type="n",main=sppList[i],axes=F,xlab="",ylab="")
-#   axis(1,pos=0,at=myTics); axis(2,pos=0,at=myTics);
-#   mtext("W.ARTR",side=3,at=0.5,cex=0.7)
-#   mtext("W.HECO",side=4,at=0.5,cex=0.7)
-#   mtext("W.POSE",side=1,at=0.5,cex=0.7)
-#   mtext("W.PSSP",side=2,at=0.5,cex=0.7)
-#   for(k in 1:NROW(allD[[i]])){
-#     lines(xyLong[(1+(k-1)*5):(5+(k-1)*5),],col="#0000FF07",lwd=1.5)
-#   }
-# 
-# } # next i spp
-# 
-# dev.off()
-# 
+ 
