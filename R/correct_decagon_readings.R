@@ -7,6 +7,8 @@ library(zoo)
 
 df <- readRDS(file = 'data/temp_data/decagon_data_corrected_dates.RDS')
 
+df <- df %>% ungroup() 
+
 # Filter out bad readings ------------------------------------------------------------------------
 
 port_stats <- df %>% 
@@ -24,7 +26,7 @@ vwc_stats <- port_stats %>%
 
 # loop through each period and visually inspect the VWC data 
 
-p <- ggplot( data = subset(df, plot == 1 & port == 'Port 2' & period == 1), aes( x = date, y = value)) +
+p <- ggplot( data = subset(df, plot == 1 & port == 'Port 2' & period == 1), aes( x = new_date, y = value)) +
   geom_point() +
   ylim ( -1, 1)
 
@@ -49,21 +51,32 @@ get_run_lengths <- function( x ) {
 #   only keep good windows of run lengths > 50 values in a row 
 
 df<- df %>% 
+  mutate( highv = 0 ) %>% 
+  mutate( bad_window = NA )%>% 
   group_by(plot, period, port, measure) %>% 
-  arrange(plot, port, measure, date ) %>% 
-  mutate( rllm = rollapply( value, 5, mean, na.rm = TRUE, fill = NA, align = 'center')) %>% 
+  arrange(plot, port, measure, new_date ) %>% 
+  mutate( rllm = rollapply( value, 8, mean, na.rm = TRUE, fill = NA, align = 'center')) %>% 
   mutate( dff = (value - rllm)^2) %>% 
-  mutate( rllsd = rollapply( dff, 5, mean, na.rm = TRUE, fill = NA, align = 'center')) %>%
+  mutate( rllsd = rollapply( dff, 8, mean, na.rm = TRUE, fill = NA, align = 'center')) %>%
   mutate( avg_rllsd = rollapply( rllsd, 12, mean, na.rm = TRUE, fill = NA, align = 'center')) %>% 
-  mutate( highv = ifelse( measure == 'VWC' & !is.na(avg_rllsd) & avg_rllsd > 0.0001, 1, 0)) %>% 
-  mutate( highv = ifelse( measure == 'C' & !is.na(avg_rllsd) & avg_rllsd > 20, 1, highv )) %>% 
+  mutate( highv = ifelse( measure == 'VWC' & !is.na(avg_rllsd) & avg_rllsd > 0.001, 1, 0)) %>% 
+  mutate( highv = ifelse( measure == 'C' & !is.na(avg_rllsd) & avg_rllsd > 400, 1, highv )) %>% 
   mutate( bad_window = rollapply( highv, 100 , sum, na.rm = TRUE, fill = NA)) %>% 
-  mutate( bad_window = ifelse( !is.na(bad_window) & bad_window > 40, 1, 0)) %>%
-  mutate( bad_window = ifelse( bad_window == 0 & measure == 'C' & (is.na(value) | value < -30 | value > 55 ) , 1, bad_window )) %>% 
+  mutate( bad_window = ifelse( !is.na(bad_window) & bad_window > 50, 1, 0)) %>%
+  mutate( bad_window = ifelse( bad_window == 0 & measure == 'C' & (is.na(value) | value < -30 | value > 65 ) , 1, bad_window )) %>% 
   mutate( bad_window = ifelse( bad_window == 0 & measure == 'VWC' & (is.na(value) | value < -0.2 | value > 0.75), 1, bad_window )) %>% 
+  mutate( bad_window = ifelse( bad_window == 0 | is.na(bad_window), 0, bad_window)) %>% 
   mutate( window_lengths = get_run_lengths( bad_window ) ) %>% 
   mutate( bad_window = ifelse( bad_window == 0 & window_lengths < 50, 1, bad_window)) %>% 
   gather( stat, v, value, rllm, rllsd, avg_rllsd) 
+
+# manually remove some values ---------------------------------------------------------------------------------------------------------- 
+# manually remove 7_8_C port 4 last few months 
+df$bad_window <- as.numeric(df$bad_window)
+
+df <- df %>% mutate(bad_window = ifelse( plot == '7_8_C' & port == 'Port 4' & measure == 'VWC' & new_date > strptime( '2015-07-01', format = '%Y-%m-%d'), 1, bad_window ) )
+
+# --------------------------------------------------------------------------------------------------------------------------------------
 
 df$stat <- factor(df$stat, label = c('avg rolling sd', 'rolling avg', 'rolling sd' , 'raw'))
 df$plot <- as.character(df$plot)
@@ -71,14 +84,14 @@ df$bad_values <- factor(df$bad_window)
 
 df <- df %>% 
   group_by(plot, port, period, measure ) %>% 
-  filter( good_date ==  1) %>% 
+  #filter( good_date ==  1) %>% 
   mutate( has_vals = sum(stat == 'raw' & !is.na(v) ) > 0 ) %>%
   filter( has_vals)
 
-p <- ggplot( df, aes ( x = date, y = v, color = stat))  + 
+p <- ggplot( df, aes ( x = new_date, y = v, color = stat))  + 
   geom_point() 
 
-p2 <- ggplot( df , aes ( x = date, y = v, color = bad_values, group = depth)) + 
+p2 <- ggplot( df , aes ( x = new_date, y = v, color = bad_values, group = depth)) + 
   geom_point()
 
 pp <- df %>% 
@@ -99,6 +112,8 @@ pdf( 'figures/check_bad_windows_continuous.pdf', height = 8, width = 10 )
 print( pp_all$pp ) 
 dev.off() 
 
+test <- df %>% filter( plot == '11_12_C' & port == 'Port 3' & measure == 'VWC' & new_date > strptime( '2013-12-01', format = '%Y-%m-%d') & new_date < strptime( '2014-02-01', format = '%Y-%m-%d') & bad_window == 1) 
+
 pdf( 'figures/check_bad_windows.pdf', height = 8, width = 10)
 print( pp2$pp ) 
 dev.off() 
@@ -107,7 +122,7 @@ dev.off()
 
 plot_ts <- function( x ) { 
   
-  ggplot ( data = x, aes( x = date, y = v , group = port, color = Treatment )) + 
+  ggplot ( data = x, aes( x = new_date, y = v , group = port, color = Treatment )) + 
     geom_point( alpha = 0.2, size = 0.2)   + 
     facet_wrap( ~ depth, ncol = 1 ) + 
     ylab( unique(x$measure)) + 
@@ -115,10 +130,8 @@ plot_ts <- function( x ) {
   
 }
 
-
-
 plot_ts_diff <- function( x ) { 
-  ggplot ( data = x, aes( x = date, y = v , color = Treatment )) + 
+  ggplot ( data = x, aes( x = new_date, y = v , color = Treatment )) + 
     geom_point( alpha = 0.2, size = 0.2)   + 
     facet_wrap( ~ depth, ncol = 1 ) + 
     ylab( paste( unique(x$measure), 'difference from control' )) + 
@@ -136,9 +149,9 @@ p <- df %>%
 
 p_diff <- df %>% 
   filter( stat == 'raw', bad_values == 0 ) %>% 
-  group_by( PrecipGroup, Treatment, measure, depth, date ) %>% 
+  group_by( PrecipGroup, Treatment, measure, depth, new_date ) %>% 
   summarise( mean_v = mean( v ) ) %>% 
-  select( PrecipGroup, Treatment, measure, depth, date, mean_v) %>% 
+  select( PrecipGroup, Treatment, measure, depth, new_date, mean_v) %>% 
   spread( Treatment, mean_v) %>% 
   mutate ( Drought = Drought - Control, Irrigation = Irrigation - Control ) %>% 
   gather( Treatment, v, Control, Drought, Irrigation) %>%  

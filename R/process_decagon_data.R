@@ -129,6 +129,7 @@ for (i in 1:length(folders)) {
   
 } 
 
+
 df <- do.call( rbind, data_list )  # bind the data lists from each folder 
 
 df  <- df %>% group_by(plot , port , measure, reading , date, value) %>% arrange(desc( period ) ) %>% filter( row_number() == 1  ) # when there are duplicate records get data from only the most recent file 

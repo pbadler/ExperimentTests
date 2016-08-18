@@ -41,8 +41,6 @@ fill_in_hours_skipped <- function( x ) {
 }
 
 
-df <- df %>% mutate( hour = strftime( date , '%H'))
-
 lag_period <- df %>% 
   ungroup (.) %>% 
   select ( PrecipGroup, plot, period, modified_date ) %>%
@@ -111,8 +109,10 @@ check$change  <- change
 # need to mark the initial row of this file as a change manually ------------------------
 date1 <- df %>%  filter( f == 'data/soil_moist_data/2014_Fall/11_15Sep14-1708.txt', row_number() == 1 ) %>% ungroup() %>% select(date) %>% distinct( date)
 old_date <- date1$date
-new_date <- strptime( "04/13/14 12:00 PM", format = "%m/%d/%y %I:%M %p" , tz = 'MST') 
-add_time_diff <- as.numeric( diff.POSIXt(c(new_date, old_date)), units = 'secs')
+new_date <- strptime( "04/13/14 12:00:00", format = "%m/%d/%y %H:%M:%S", tz = 'MST') 
+
+add_time_diff <- as.numeric( diff.POSIXt(c(new_date, old_date)), tz = 'MST' , units = 'secs')
+
 add_row <- df %>% filter( f == 'data/soil_moist_data/2014_Fall/11_15Sep14-1708.txt') %>% ungroup() %>% filter( row_number() == 1 ) %>% select(f, date, reading)  
 add_row <- add_row %>% mutate( time_diff = add_time_diff,  hours_skipped = time_diff/(60*60) , reading_diff = 1, jump = 1, change = 1)
 check <- rbind( check, add_row )
@@ -121,18 +121,6 @@ check <- rbind( check, add_row )
 write.csv(check, 'data/temp_data/check_dates.csv', row.names = FALSE) # write list of changes 
 # ------------------------------------------------------------------------------------------- 
 
-quick_plot_check <- function( x = df, file_name = 'data/soil_moist_data/2015_Fall/EL5739 4Nov15-1838.txt' ) { 
-  
-  plot_check <- x %>% ungroup ( ) %>% filter( f == file_name , depth == 'air')
-  par(mfrow = c(1,2))
-  plot( data= plot_check, value ~ date, ylab = 'air', main = 'temp by date')
-  plot( data= plot_check, value ~ hour, ylab = 'air', main = 'temp by hour')
-  par(mfrow = c(1,1))
-} 
-
-quick_plot_check(file_name = 'data/soil_moist_data/2015_Fall/EL5739 4Nov15-1838.txt')
-
-# --------------------------------------------------------------------------------- 
 df <- left_join(df, check , by =c( 'f', 'date', 'reading' )) # join changes to main df 
 
 df <- df %>% 
@@ -144,21 +132,34 @@ df <- df %>%
 out <- df %>% do ( fill_in_hours_skipped(. ) ) # apply fill in hours function to all measurement groups 
 
 out <- out %>% 
-  mutate( new_date = as.POSIXct(date - 60*60*hours_skipped, origin = '1970-01-01 00:00:00', tz = 'MST')) %>% 
-  mutate( new_hour = as.numeric(strftime( date, '%H')) )
+  mutate( new_date = as.POSIXct(date - 60*60*hours_skipped, origin = '1970-01-01 00:00:00', tz = 'MST'))
 
 out <- out %>% 
   mutate ( good_date = ifelse ( date >= lag_mod_date - 60*60*12 & date <= modified_date + 60*60*12 , 1, 0))
 
 # check that each day doesn't have too many samples ------------------------------------
-n_samples <- out %>% mutate( simple_date = as.Date( new_date) )  %>% group_by( period, plot, port, measure, simple_date ) %>% mutate( n = n()) %>% select( f, period, plot, port, measure, simple_date, value , n ) %>% distinct() 
+n_samples <- out %>% mutate( simple_date = as.Date( new_date) )  %>% group_by( plot, port, measure, simple_date ) %>% mutate( n = n()) %>% select( f, plot, port, measure, simple_date, value , n ) %>% distinct() 
 
-n_samples <- n_samples %>% ungroup() %>% filter( n > 12 ) %>% distinct( f, plot, period, n  )
+n_samples <- n_samples %>% ungroup() %>% filter( n > 12 ) %>% distinct(plot, n  )
+
+out <- out %>% filter( !is.na(value) ) %>% group_by (plot, port, depth, measure, new_date, value ) %>% arrange( f ) %>% filter( row_number() == 1 ) 
+
+n_samples <- out %>% mutate( simple_date = as.Date(new_date) ) %>% group_by( plot, port, measure, new_date )  %>% mutate( n = n() )
+
+n_samples <- n_samples %>% ungroup() %>% group_by( n, plot, port, measure, new_date ) %>% arrange( desc(n), simple_date )
+
+n_samples %>% group_by (f, n) %>% summarise( count = n() ) %>% filter( n == 2 )
 
 # check earliest and latest dates -----------------------------------------------------------------
 out %>% ungroup( ) %>% summarise ( max( new_date ), min( new_date ), which.min(new_date ), which.max(new_date ))
 
 # ---------------------------------------------------------------------------- 
+
+out <- out %>% 
+  mutate( simple_date = as.Date(new_date), 
+          hour = strftime( new_date, '%H', tz = 'MST'), 
+          year = strftime( new_date, '%Y', tz = 'MST'), 
+          month = strftime( new_date, '%m', tz = 'MST'))
 
 saveRDS( out , 'data/temp_data/decagon_data_corrected_dates.RDS')
 
