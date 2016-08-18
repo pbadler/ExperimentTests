@@ -11,32 +11,6 @@ df <- df %>% ungroup()
 
 # Filter out bad readings ------------------------------------------------------------------------
 
-port_stats <- df %>% 
-  group_by( plot, port, period, measure ) %>% 
-  summarise( mean = mean(value, na.rm = TRUE), 
-             sd  = sd( value, na.rm = TRUE ), 
-             mx = max(value, na.rm = TRUE), 
-             mn = min(value, na.rm = TRUE), 
-             range = mx - mn )
-
-vwc_stats <- port_stats %>%
-  ungroup( ) %>% 
-  filter( measure == 'VWC') %>%
-  arrange(  desc( range ), desc(sd) )  
-
-# loop through each period and visually inspect the VWC data 
-
-p <- ggplot( data = subset(df, plot == 1 & port == 'Port 2' & period == 1), aes( x = new_date, y = value)) +
-  geom_point() +
-  ylim ( -1, 1)
-
-pdf( 'figures/VWC_series_by_port_and_period.pdf', height = 8, width = 10)
-for ( i in 1:nrow( subset( vwc_stats, !is.na(sd)))) {
-  print( p %+% subset( df , measure == 'VWC' & plot == vwc_stats$plot[i] & port == vwc_stats$port[i] & period == vwc_stats$period[i])  )
-  }
-dev.off()
-
-
 get_run_lengths <- function( x ) { 
   unlist ( lapply( rle(x)$lengths, function(x) rep(x, x) ) ) 
 }
@@ -51,10 +25,10 @@ get_run_lengths <- function( x ) {
 #   only keep good windows of run lengths > 50 values in a row 
 
 df<- df %>% 
-  mutate( highv = 0 ) %>% 
-  mutate( bad_window = NA )%>% 
-  group_by(plot, period, port, measure) %>% 
+  group_by(plot, port, measure) %>% 
   arrange(plot, port, measure, new_date ) %>% 
+  mutate( frame_length = n() ) %>% 
+  filter( frame_length > 8 ) %>% 
   mutate( rllm = rollapply( value, 8, mean, na.rm = TRUE, fill = NA, align = 'center')) %>% 
   mutate( dff = (value - rllm)^2) %>% 
   mutate( rllsd = rollapply( dff, 8, mean, na.rm = TRUE, fill = NA, align = 'center')) %>%

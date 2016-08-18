@@ -109,7 +109,7 @@ check$change  <- change
 # need to mark the initial row of this file as a change manually ------------------------
 date1 <- df %>%  filter( f == 'data/soil_moist_data/2014_Fall/11_15Sep14-1708.txt', row_number() == 1 ) %>% ungroup() %>% select(date) %>% distinct( date)
 old_date <- date1$date
-new_date <- strptime( "04/13/14 12:00:00", format = "%m/%d/%y %H:%M:%S", tz = 'MST') 
+new_date <- strptime( "2014-04-13 12:00:00", format = "%Y-%m-%d %H:%M:%S", tz = 'MST') 
 
 add_time_diff <- as.numeric( diff.POSIXt(c(new_date, old_date)), tz = 'MST' , units = 'secs')
 
@@ -129,26 +129,19 @@ df <- df %>%
   arrange( reading ) %>% 
   mutate( hours_skipped = ifelse( row_number() == 1 & is.na(change), 0, hours_skipped ))
 
-out <- df %>% do ( fill_in_hours_skipped(. ) ) # apply fill in hours function to all measurement groups 
+out <- df %>%  do ( fill_in_hours_skipped(. ) ) # apply fill in hours function to all measurement groups 
+
+# actually make the date changes here ----------------------------------------------------------------------------------
 
 out <- out %>% 
   mutate( new_date = as.POSIXct(date - 60*60*hours_skipped, origin = '1970-01-01 00:00:00', tz = 'MST'))
 
+# ----------------------------------------------------------------------------------------------------------------------
 out <- out %>% 
   mutate ( good_date = ifelse ( date >= lag_mod_date - 60*60*12 & date <= modified_date + 60*60*12 , 1, 0))
 
-# check that each day doesn't have too many samples ------------------------------------
-n_samples <- out %>% mutate( simple_date = as.Date( new_date) )  %>% group_by( plot, port, measure, simple_date ) %>% mutate( n = n()) %>% select( f, plot, port, measure, simple_date, value , n ) %>% distinct() 
-
-n_samples <- n_samples %>% ungroup() %>% filter( n > 12 ) %>% distinct(plot, n  )
-
+# only take first record of duplicates  ------------------------------------
 out <- out %>% filter( !is.na(value) ) %>% group_by (plot, port, depth, measure, new_date, value ) %>% arrange( f ) %>% filter( row_number() == 1 ) 
-
-n_samples <- out %>% mutate( simple_date = as.Date(new_date) ) %>% group_by( plot, port, measure, new_date )  %>% mutate( n = n() )
-
-n_samples <- n_samples %>% ungroup() %>% group_by( n, plot, port, measure, new_date ) %>% arrange( desc(n), simple_date )
-
-n_samples %>% group_by (f, n) %>% summarise( count = n() ) %>% filter( n == 2 )
 
 # check earliest and latest dates -----------------------------------------------------------------
 out %>% ungroup( ) %>% summarise ( max( new_date ), min( new_date ), which.min(new_date ), which.max(new_date ))
@@ -156,7 +149,8 @@ out %>% ungroup( ) %>% summarise ( max( new_date ), min( new_date ), which.min(n
 # ---------------------------------------------------------------------------- 
 
 out <- out %>% 
-  mutate( simple_date = as.Date(new_date), 
+  ungroup() %>%
+  mutate( simple_date = as.Date(new_date, tz = 'MST'), 
           hour = strftime( new_date, '%H', tz = 'MST'), 
           year = strftime( new_date, '%Y', tz = 'MST'), 
           month = strftime( new_date, '%m', tz = 'MST'))
