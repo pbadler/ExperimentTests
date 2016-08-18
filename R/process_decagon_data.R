@@ -65,14 +65,14 @@ gather_ports <- function ( test ) {
 
 q_info <- read.csv('data/quad_info.csv') 
 
-folders <- dir('data/soil_moist_data', pattern = '20[0-9]{2}_((Fall$)|(Spring$))', full.names = TRUE)
+folders <- dir('data/soil_moist_data', pattern = '20[0-9]{2}_[1-2]$', full.names = TRUE)
 
 data_list <- list(NA)
 
 for (i in 1:length(folders)) {
-
+  
   record_file <- dir(folders[i] , pattern = 'logger_info.csv', full.names = TRUE) 
-
+  
   record <- read.csv(record_file)
   
   f <- dir(folders[i], pattern = '^E[ML][0-9]+.*txt$', full.names = TRUE)
@@ -124,7 +124,12 @@ for (i in 1:length(folders)) {
   df <- merge(df, file_df, by.x = 'id', by.y = 'logger')
   
   df$value <- as.numeric(df$value)
-    
+  
+  df <-  df %>% 
+    mutate( tail = ifelse ( is.na( tail ) , 2 , tail ), hours = ifelse(is.na(hours), 0, hours)) %>% 
+    filter( !reading < tail  ) %>% 
+    mutate( new_date = date - hours*60*60)
+  
   data_list[[i]] <- df 
   
 } 
@@ -132,7 +137,7 @@ for (i in 1:length(folders)) {
 
 df <- do.call( rbind, data_list )  # bind the data lists from each folder 
 
-df  <- df %>% group_by(plot , port , measure, reading , date, value) %>% arrange(desc( period ) ) %>% filter( row_number() == 1  ) # when there are duplicate records get data from only the most recent file 
+df  <- df %>% group_by(plot , port , measure, reading , date, value) %>% arrange(period ) %>% filter( row_number() == 1  ) # when there are duplicate records get data from only the first file 
 
 q_info$plot <- gsub( q_info$QuadName, pattern = 'X', replacement = '')
 
