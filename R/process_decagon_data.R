@@ -127,7 +127,7 @@ for (i in 1:length(folders)) {
   
   df <-  df %>% 
     mutate( tail = ifelse ( is.na( tail ) , 2 , tail ), hours = ifelse(is.na(hours), 0, hours)) %>% 
-    filter( !reading < tail  ) %>% 
+    filter( reading > tail ) %>% 
     mutate( new_date = date - hours*60*60)
   
   data_list[[i]] <- df 
