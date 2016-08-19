@@ -61,17 +61,17 @@ jumps <- reading_list %>%
   mutate( lead_jump = lead( jump, 1 )) 
 
 jumps %>% group_by ( f ) %>% summarise( n_jumps =  sum(jump, na.rm = T)) %>% filter ( n_jumps > 0  )  
-    
+
 check <- 
   jumps %>% 
-  filter ( f != 'data/soil_moist_data/2014_2/15_15Sep14-1802.txt' ) %>% 
-  select( f, new_date, reading , time_diff, hours_skipped, reading_diff, jump ) %>% 
-  filter( jump > 0 , (hours_skipped != 0 ) & reading_diff == 1 ) %>% 
+  select( f, new_date, reading, hours_skipped, reading_diff, jump ) %>% 
+  filter( jump > 0 , hours_skipped != 0 & reading_diff == 1 ) %>% 
   filter( f != 'data/soil_moist_data/2015_2/EL5739 4Nov15-1838.txt') %>% 
   filter( f != 'data/soil_moist_data/2015_2/EL5742 4Nov15-1820.txt') %>% 
   filter( !( abs(hours_skipped) < 10000 & f == 'data/soil_moist_data/2015_2/EL5743 4Nov15-1828.txt')) %>% 
   filter( f != 'data/soil_moist_data/2013_1/EM20070.txt') %>% 
   filter( f != 'data/soil_moist_data/2013_1/EM20085.txt') %>% 
+  filter( !(f== 'data/soil_moist_data/2014_2/15_reordered.txt' & hours_skipped < 4 )) %>% 
   arrange( new_date, f  ) 
 
 #-----------------------------------------------------------------------------------------
@@ -80,16 +80,11 @@ write.csv(check, 'data/temp_data/check_dates.csv', row.names = FALSE) # write li
 
 # determined for each jump whether it should be corrected or remain in place 
 # change = 1  indicates jumps that should be changed 
-change <- 
-  c( 1, 1, 1, 1, 1, 1, 
-   0, 0, 0, 
-   1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  
-   0, 0 ,0, 0 ,0, 0,
-   1, 
-   0, 0 ,0, 0 ,0, 0,  
-   1, 1)
+# make changes on the csv file above 
 
-check$change  <- change 
+check <- read.csv(file = 'data/temp_data/check_dates_modified.csv') 
+
+check$new_date <- as.POSIXct ( as.character( check$new_date ) , format = '%Y-%m-%d %H:%M:%S', tz = 'MST' ) 
 
 df <- left_join(df, check , by =c( 'f', 'new_date', 'reading' )) # join changes to main df 
 
@@ -108,17 +103,20 @@ out <- out %>%
 
 # ----------------------------------------------------------------------------------------------------------------------
 out <- out %>% 
-  mutate ( good_date = ifelse ( new_date >= date_started - 60*60*48 & new_date <= date_uploaded + 60*60*48*2 , 1, 0))
+  mutate ( good_date = ifelse ( new_date >= date_started - 60*60*48 & new_date <= date_uploaded + 60*60*48 , 1, 0))
 
-out %>% ungroup() %>% distinct( f, new_date) %>% group_by(good_date) %>% summarise( n() )
+#out %>% ungroup() %>% distinct( f, new_date) %>% group_by(good_date) %>% summarise( n() )
 
-View( out %>% filter( good_date == 0 ) %>% group_by( f ) %>% distinct( f ) ) 
-out %>% filter( good_date == 0 ) %>% group_by(f ) %>% distinct(f) %>% select( date_started, new_date, date_uploaded) %>% mutate( new_date > date_started  )
+#View( out %>% filter( good_date == 0 ) %>% group_by( f ) %>% distinct( f ) ) 
+
+#out %>% filter( good_date == 0 ) %>% group_by(f ) %>% distinct(f) %>% select( date_started, new_date, date_uploaded) %>% mutate( new_date > date_started & new_date < date_uploaded  )
 
 # check for readings from the same date, time and place # -------------------------------------------------------------- 
-out %>% group_by( plot, port, measure, new_date ) %>% mutate( n =  n() ) %>% filter( n > 1 ) 
+
+#out %>% group_by( plot, port, measure, new_date ) %>% mutate( n =  n() ) %>% filter( n > 1 ) 
 
 # check earliest and latest dates -----------------------------------------------------------------
+
 out %>% ungroup( ) %>% summarise ( max( new_date ), min( new_date ), which.min(new_date ), which.max(new_date ))
 
 # ---------------------------------------------------------------------------- 
@@ -133,3 +131,5 @@ out <- out %>%
 saveRDS( out , 'data/temp_data/decagon_data_corrected_dates.RDS')
 
 # ----------------------------------------------------------------------------
+
+

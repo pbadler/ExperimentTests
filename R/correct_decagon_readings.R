@@ -44,8 +44,7 @@ df<- df %>%
   mutate( bad_window = ifelse( bad_window == 0 & window_lengths < 50, 1, bad_window)) %>% 
   gather( stat, v, value, rllm, rllsd, avg_rllsd) 
 
-# manually remove some values ---------------------------------------------------------------------------------------------------------- 
-# manually remove 7_8_C port 4 last few months 
+# manually remove 7_8_C port 4 last few months ---------------------------------------------------------------------------------------- 
 df$bad_window <- as.numeric(df$bad_window)
 
 df <- df %>% mutate(bad_window = ifelse( plot == '7_8_C' & port == 'Port 4' & measure == 'VWC' & new_date > strptime( '2015-07-01', format = '%Y-%m-%d'), 1, bad_window ) )
@@ -86,11 +85,9 @@ pdf( 'figures/check_bad_windows_continuous.pdf', height = 8, width = 10 )
 print( pp_all$pp ) 
 dev.off() 
 
-test <- df %>% filter( plot == '11_12_C' & port == 'Port 3' & measure == 'VWC' & new_date > strptime( '2013-12-01', format = '%Y-%m-%d') & new_date < strptime( '2014-02-01', format = '%Y-%m-%d') & bad_window == 1) 
-
-pdf( 'figures/check_bad_windows.pdf', height = 8, width = 10)
-print( pp2$pp ) 
-dev.off() 
+#pdf( 'figures/check_bad_windows.pdf', height = 8, width = 10)
+#print( pp2$pp ) 
+#dev.off() 
 
 # plot all readings 
 
