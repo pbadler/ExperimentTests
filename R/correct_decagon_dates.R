@@ -83,8 +83,11 @@ write.csv(check, 'data/temp_data/check_dates.csv', row.names = FALSE) # write li
 # make changes on the csv file above 
 
 check <- read.csv(file = 'data/temp_data/check_dates_modified.csv') 
+check
 
 check$new_date <- as.POSIXct ( as.character( check$new_date ) , format = '%Y-%m-%d %H:%M:%S', tz = 'MST' ) 
+
+df %>% filter( reading == 76) %>% select( date, new_date, Time, plot )  %>% distinct()
 
 df <- left_join(df, check , by =c( 'f', 'new_date', 'reading' )) # join changes to main df 
 
@@ -127,6 +130,15 @@ out <- out %>%
           hour = strftime( new_date, '%H', tz = 'MST'), 
           year = strftime( new_date, '%Y', tz = 'MST'), 
           month = strftime( new_date, '%m', tz = 'MST'))
+
+season <- readRDS('data/temp_data/season.RDS')
+tod <- readRDS('data/temp_data/tod.RDS')
+
+out$month <- as.numeric( out$month)
+out$hour <- as.numeric( out$hour)
+
+out <- merge( out, season, by = 'month')
+out <- merge( out, tod, by = 'hour')
 
 saveRDS( out , 'data/temp_data/decagon_data_corrected_dates.RDS')
 

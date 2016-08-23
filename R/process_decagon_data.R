@@ -137,15 +137,24 @@ for (i in 1:length(folders)) {
 
 df <- do.call( rbind, data_list )  # bind the data lists from each folder 
 
-df  <- df %>% group_by(plot , port , measure, reading , date, value) %>% arrange(period ) %>% filter( row_number() == 1  ) # when there are duplicate records get data from only the first file 
+df  <- 
+  df %>% 
+  group_by(plot , port , measure, reading , date, value) %>% 
+  arrange(period ) %>% filter( row_number() == 1  ) # when there are duplicate records get data from only the first file 
 
 q_info$plot <- gsub( q_info$QuadName, pattern = 'X', replacement = '')
 
 df <- merge( df, q_info, by = 'plot') 
 
-port_depth <- data.frame(port = paste('Port', 1:5), depth = c('air', '5','5','25','25'))
+port_depth <- read.csv('data/sensor_positions.csv')
 
-df <- merge( df, port_depth ) 
+port_depth <- port_depth %>% gather( port, position, `Port.1`:`Port.5`)
+
+port_depth$depth <- str_extract( port_depth$position, pattern = '(air)|([0-9]+)')
+
+port_depth$port <- str_replace(port_depth$port, pattern = '\\.', replacement = ' ')
+
+df <- merge( df, port_depth, by = c('plot', 'period', 'port') ) 
 
 saveRDS(df , 'data/temp_data/decagon_data.RDS')
 
