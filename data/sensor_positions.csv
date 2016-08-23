@@ -63,8 +63,8 @@ plot,period,Port 1,Port 2,Port 3,Port 4,Port 5
 16,6,air,5E,5W,25E,25W
 16,7,air,5E,5W,25E,25W
 16,8,air,25E,25W,5E,5W
-1_2_C,1,air,5W,25W,5E,25E
-1_2_C,2,air,5W,25W,5E,25E
+1_2_C,1,air,5W,25E,5E,25W
+1_2_C,2,air,5W,25E,5E,25W
 1_2_C,3,air,5E,5W,25E,25W
 1_2_C,4,air,5E,5W,25E,25W
 1_2_C,5,air,5E,5W,25E,25W
