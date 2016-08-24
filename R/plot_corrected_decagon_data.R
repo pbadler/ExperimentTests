@@ -11,7 +11,7 @@ p <- ggplot( df, aes ( x = new_date, y = v, color = stat))  +
   geom_point() 
 
 p2 <- ggplot( df , aes ( x = new_date, y = v, color = bad_values, group = position)) + 
-  geom_point()
+  geom_point() 
 
 pp <- df %>% 
   group_by(plot, position, period, measure) %>% 
@@ -26,7 +26,7 @@ pdf( 'figures/check_bad_windows_continuous.pdf', height = 8, width = 10 )
 print( pp_all$pp ) 
 dev.off() 
 
-# plot all readings 
+# plot all readings ------------------------------------------------------------------------------------- 
 
 plot_ts <- function( x ) { 
   
@@ -39,10 +39,10 @@ plot_ts <- function( x ) {
 }
 
 plot_ts_diff <- function( x ) { 
-  ggplot ( data = x, aes( x = new_date, y = v , color = Treatment )) + 
+  ggplot ( data = x, aes( x = new_date, y = Irrigation_effect)) + 
     geom_point( alpha = 0.2, size = 0.2)   + 
     facet_wrap( ~ depth, ncol = 1 ) + 
-    ylab( paste( unique(x$measure), 'difference from control' )) + 
+    ylab( paste( unique(x$measure), 'Irrigation - Drought' )) + 
     ggtitle( paste( 'Plot Group:', unique(x$PrecipGroup)) )
 }
 
@@ -59,10 +59,8 @@ p_diff <- df %>%
   summarise( mean_v = mean( v ) ) %>% 
   select( PrecipGroup, Treatment, measure, depth, new_date, mean_v) %>% 
   spread( Treatment, mean_v) %>% 
-  mutate ( Drought = Drought - Control, Irrigation = Irrigation - Control ) %>% 
-  gather( Treatment, v, Control, Drought, Irrigation) %>%  
+  mutate ( Irrigation_effect = Irrigation - Drought ) %>% 
   group_by(PrecipGroup, measure) %>% 
-  filter( Treatment != 'Control') %>%
   do( p = plot_ts_diff(x = . )  )
 
 

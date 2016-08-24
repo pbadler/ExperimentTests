@@ -47,8 +47,7 @@ station_dat <-
 # clean-up decagon data -------------------
 df <- 
   df %>% 
-  filter( stat == 'raw', bad_values == 0 ) %>% 
-  mutate(v = ifelse(measure == 'VWC' , v*100, v))
+  filter( stat == 'raw', bad_values == 0 )
 
 df$depth_label <- factor( df$depth , levels = c('air temperature', '5 cm deep', '25 cm deep') , order = TRUE ) 
 df$Treatment_label <- factor(df$Treatment, levels = c('Drought', 'Control', 'Irrigation'), order = TRUE)

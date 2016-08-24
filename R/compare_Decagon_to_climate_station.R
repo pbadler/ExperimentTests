@@ -14,7 +14,7 @@ clean_df <-
 
 clean_df$PRCP[ clean_df$PRCP == 0 ] <- NA
 
-gg <- ggplot( clean_df, aes( x = simple_date, y = avg_VWC )) + 
+gg <- ggplot( clean_df, aes( x = simple_date, y = 100*avg_VWC )) + 
   geom_point() + 
   geom_bar(aes(y = PRCP), stat = 'identity', alpha = 0.6 ) + 
   facet_wrap (~ unique_position, ncol = 1 )  
@@ -22,10 +22,9 @@ gg <- ggplot( clean_df, aes( x = simple_date, y = avg_VWC )) +
 p <- clean_df %>% group_by( plot ) %>% do(p =  gg %+% . + ggtitle(unique( .$Plot)))
 
 pdf( 'figures/plot_soil_moisture_with_rainfall.pdf', height = 8, width = 11)
-p$p
+print( p$p ) 
 dev.off()
 
-ggplot( clean_df, aes( x = PRCP, y = avg_VWC)) + geom_point() + facet_grid (season  ~ depth ) 
 
 # compare temperature 
 
@@ -52,11 +51,11 @@ gg <- ggplot( clean_T_df, aes( x = TMEAN, y = avg_C)) +
   xlab( 'daily avg temperature observed at the USSES weather station') 
 
 pdf ( 'figures/compare_daily_tmean.pdf', height = 8, width = 8)
-gg
+print( gg ) 
 dev.off()
 
 gg <- clean_T_df %>% do( p =  gg %+% . + ggtitle( paste ( 'plot no.' , .$plot ))) 
 
 pdf( 'figures/compare_daily_tmean_per_plot.pdf', height = 8, width = 8)
-gg$p
+print( gg$p ) 
 dev.off()

@@ -131,8 +131,8 @@ out <- out %>%
           year = strftime( new_date, '%Y', tz = 'MST'), 
           month = strftime( new_date, '%m', tz = 'MST'))
 
-season <- readRDS('data/temp_data/season.RDS')
-tod <- readRDS('data/temp_data/tod.RDS')
+season <- read.csv('data/season_table.csv')
+tod <- read.csv('data/tod_table.csv')
 
 out$month <- as.numeric( out$month)
 out$hour <- as.numeric( out$hour)

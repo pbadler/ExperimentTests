@@ -3,84 +3,60 @@
 rm(list = ls () )
 library( dplyr ) 
 library( tidyr )
+library(ggplot2)
+library(stringr)
 
-soil <- readRDS('data/temp_data/decagon_data_corrected_values.RDS')
-
-soil %>% filter( Treatment == 'Control') %>% mutate( year = strftime( date, '%Y')) %>% group_by(plot, year ) %>% summarise( n())
+soil <- readRDS('data/temp_data/decagon_data_with_station_data.RDS')
 
 soil_export <- 
   soil %>% 
   filter( measure == 'VWC', 
           stat == 'raw', 
-          !is.na(v), 
           bad_values == 0, 
-          good_date == 1) %>% 
-  dplyr::select(port, plot, Time, date, modified_date, measure, quad, Treatment, PrecipGroup, depth, v)
+          Treatment == 'Control') %>% 
+  mutate( depth = str_extract( depth, pattern = '[0-9]+' )) %>% 
+  dplyr::select(Treatment, plot, port, position, depth, new_date, v)
 
-dups <- soil_export %>% 
-  ungroup() %>% 
-  select( plot, port, Time, date, v ) %>% 
-  distinct %>% 
-  group_by( plot, date, port ) %>% 
-  mutate( cnt  = n()) %>% 
-  filter ( cnt > 1 ) %>% 
-  select( plot, port, Time, date, cnt, v ) %>% 
-  arrange( plot, port , date ) %>% 
-  mutate(duplicate = TRUE)
+port_labels <- data.frame( position = rev( unique( soil_export$position) ), SMS_label = paste0('VWC_L', 1:4), `depth (cm)` = c(5,5, 25,25 ) )
 
-data.frame( dups ) 
+temp <- soil_export %>% left_join(port_labels, by = 'position') %>% ungroup() 
 
-soil_export %>% ungroup() %>% dplyr::select(plot, port, depth ) %>% distinct() %>% group_by(plot) %>% mutate( SMS_number = n() ) 
-
-port_labels <- data.frame( port = unique( soil_export$port), new_label = paste0('VWC_L', 1:4))
-
-temp <- soil_export %>% left_join(port_labels, by = 'port') %>% ungroup() 
-
-temp <- temp %>% distinct()
-
-temp <- temp %>% select( plot, Treatment, date, v, new_label ) %>% distinct()
+temp <- temp %>% select( plot, Treatment, new_date, v, SMS_label ) 
 
 temp_avg <- 
   temp %>% 
-  mutate( old_date = date) %>%
-  mutate( date = strftime( old_date, '%Y-%m-%d'), DOY  = strftime( old_date, '%j'), year = strftime( old_date , '%Y') ) %>% 
-  group_by( plot, date, Treatment, year, DOY, new_label) %>% 
-  summarise( VWC = mean(v), n = n()) %>% 
-  ungroup()
+  mutate( old_date = new_date) %>%
+  mutate( date = as.Date( old_date, '%Y-%m-%d', tz = 'MST'), DOY  = strftime( old_date, '%j'), year = strftime( old_date , '%Y') ) %>% 
+  group_by( plot, date, Treatment, year, DOY, SMS_label) %>% 
+  summarise( VWC = mean(v, na.rm = TRUE), n = n()) %>% 
+  ungroup() %>%
+  spread(  SMS_label, VWC) %>% 
+  rename( Date = date) 
 
-temp_avg <- temp_avg %>% 
-  group_by( plot, year, new_label) %>% 
-  mutate( scaled = scale(VWC)) %>% 
-  filter(! ( plot == '7_8_C' & VWC < -0.01 & new_label == 'VWC_L3')) # filter out bad values in plot 7_8_C
+all_dates <- data.frame( date = seq.POSIXt(strptime( '2012-01-01', '%Y-%m-%d', tz = 'MST'), strptime( '2016-12-31', '%Y-%m-%d', tz = 'MST'), by = 24*3600) )
 
-library(ggplot2)
+all_dates <- expand.grid( plot = unique( temp_avg$plot), Date = as.Date( all_dates$date, tz = 'MST'))
 
-ggplot( temp_avg %>% filter( Treatment == 'Control'), aes( x = DOY, y = VWC, color = new_label )) + 
-  geom_point() + facet_grid( new_label ~ plot )
+temp_avg <- left_join(all_dates, temp_avg , by = c('plot', 'Date')) %>% mutate( doy = as.numeric( strftime( Date, '%j', 'MST') ))
 
-ggplot( temp_avg %>% filter( Treatment == 'Control'), aes( x = date, y = VWC, color = new_label )) + 
-  geom_point() + facet_grid( plot  ~  new_label )
+out_list <- temp_avg %>% dplyr::select(plot, Date, doy, starts_with( 'VWC')) 
 
-ggplot( temp_avg %>% ungroup() %>% filter( Treatment == 'Control' & new_label %in% c('VWC_L1' , 'VWC_L2')), aes( x = date, y = scaled, group = plot))  + 
-  geom_line() + facet_wrap(~plot + new_label, ncol = 1)
+out_list <- split( out_list, out_list$plot )
 
-ggplot ( temp_avg %>% filter( Treatment == 'Control' & plot == '7_8_C'), aes( x = date, y = VWC, group = new_label, color = new_label)) + geom_line() + 
-  facet_wrap(~ new_label)
-
-control_data <- temp_avg %>% 
-  ungroup( ) %>%
-  select( - scaled , - n ) %>% 
-  spread(  new_label, VWC) %>% 
-  filter( Treatment == 'Control') %>%
-  rename( Date = date, doy = DOY) 
-
-out_list <- split( select( control_data, Date, doy, starts_with("VWC") ), control_data$plot )
+for( i in 1:length(out_list)) { 
+  print( ggplot ( out_list[[i]]  %>% gather( pos, v, VWC_L1:VWC_L4) %>% filter( v > -9999) , aes( x = Date, y = v, color = pos )) + 
+    geom_line() + 
+    ylim( -0.1, 0.50  ) + 
+    ggtitle(names(out_list)[i]) ) 
+}
 
 for( i in 1:length(out_list) ) { 
   fname <- paste0("USSES_", names(out_list)[i], '_SoilWater.csv')
   write.csv(out_list[[i]], file.path('data/temp_data/soil_files', fname), row.names = FALSE )
 }
 
+sms_labels <- data.frame(Label = c('USSES_11_12_C', 'USSES_1_2_C', 'USSES_15_16_C', 'USSES_7_8_C'), SCANInstallation_Number = 1 , SMS_Number = 2, SMS1 = NA, SMS2 = NA, SMS3 = NA, SMS4 = NA )
 
-write.table( control_data, 'data/temp_data/soil_moisture_controls.csv', sep = ',', row.names = F)
+write.csv( sms_labels, 'data/temp_data/soil_files/FieldSensors_MappedTo_SoilWatLayers.csv', row.names = FALSE)
+write.table( port_labels, 'data/temp_data/soil_files/port_info.csv', sep = ',', row.names = FALSE)
 
