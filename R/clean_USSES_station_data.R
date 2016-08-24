@@ -55,5 +55,4 @@ for ( i in 1:length( year_list) ) {
   
 }
 
-
 write.table(station_dat, 'data/temp_data/USSES_STATION_DAT_clean.csv', sep = '\n', row.names = F, col.names = F)

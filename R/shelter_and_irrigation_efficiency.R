@@ -6,28 +6,35 @@ library(dplyr)
 library(lme4)
 library(zoo)
 
-df <- readRDS('data/temp_data/decagon_data_with_rainfall_data.RDS')
+df <- readRDS('data/temp_data/decagon_data_with_station_data.RDS')
 
 # ----------------------------------------------------------------------------- 
 
-df <- df %>% select( Treatment_label, season_label, depth_label, Treatment, PrecipGroup, plot, depth, season, unique_port, prcp_event, prerain, month, measure, datetime, date, total_rain, v, prerain, PRCP) %>% 
-  filter( measure == 'VWC', month > 3, month < 11 , !is.na(prerain)) %>% 
-  arrange( unique_port , datetime ) 
+df <- df %>% mutate( v = ifelse(measure == 'VWC', v*100, v))
 
-postrain_VWC <- df %>% 
+df <- df %>% 
+  select( Treatment_label, season_label, depth_label, Treatment, PrecipGroup, plot, depth, season, unique_position, prcp_event, prerain, month, measure, new_date, total_rain, v, prerain, PRCP) %>% 
+  filter( measure == 'VWC', month > 3, month < 11 , !is.na(prerain)) %>% 
+  arrange( unique_position , new_date) 
+
+postrain_VWC <- 
+  df %>% 
+  filter( measure == 'VWC', !is.na(v)) %>% 
   group_by( prcp_event) %>% 
-  mutate( event_strt = min(date)) %>% 
+  mutate( event_strt = min(new_date)) %>% 
   filter( !prerain) %>% 
-  group_by(Treatment_label, season_label, depth_label, Treatment, PrecipGroup, plot, depth, season, unique_port, prcp_event, event_strt) %>% 
+  group_by(Treatment_label, Treatment, season_label, depth_label, depth, PrecipGroup, plot, season, unique_position, prcp_event, event_strt) %>% 
   summarise( cumul_rain = total_rain[which.max(v)], postrain_VWC = max(v) )
 
-prerain_VWC <- df %>% 
+prerain_VWC <- 
+  df %>% 
+  filter( measure == 'VWC', !is.na(v)) %>% 
   group_by( prcp_event) %>% 
   filter( prerain) %>% 
-  group_by( unique_port, prcp_event) %>% 
+  group_by( unique_position, prcp_event) %>% 
   summarise( prerain_VWC = max(v) )
 
-rain_effects <- left_join(postrain_VWC, prerain_VWC, by = c('unique_port', 'prcp_event'))
+rain_effects <- left_join(postrain_VWC, prerain_VWC, by = c('unique_position', 'prcp_event'))
 
 rain_effects <- rain_effects %>% ungroup ( ) %>% mutate( change_VWC = postrain_VWC - prerain_VWC ) 
 
@@ -44,7 +51,7 @@ rain_effect_plots <- rain_effects %>%
 
 print( rain_effect_plots$p ) 
 
-m1 <- lmer(data = subset( rain_effects, depth == '5 cm deep', season = 'spring'), change_VWC ~ prerain_VWC*cumul_rain + cumul_rain*Treatment + factor( PrecipGroup ) + (1|plot) + (1|prcp_event) )
+m1 <- lmer(data = subset( rain_effects, depth == '5 cm deep', season = 'summer'), change_VWC ~ prerain_VWC*cumul_rain + cumul_rain*Treatment + factor( PrecipGroup ) + (1|plot) + (1|prcp_event) + (1|unique_position))
 
 summary(m1)
 
@@ -55,8 +62,7 @@ pred_df <- expand.grid( prerain_VWC = mean(rain_effects$prerain_VWC, na.rm = TRU
                         Treatment = levels( factor(rain_effects$Treatment) ) , 
                         PrecipGroup = unique( rain_effects$PrecipGroup ), 
                         depth_label = '5 cm deep', 
-                        season_label = 'spring')
-
+                        season_label = 'summer')
 
 pred_df$change_VWC <- predict( m1, pred_df, re.form = NA)
 

@@ -35,7 +35,7 @@ q_info$plot <- gsub( q_info$QuadName, pattern = 'X', replacement = '')
 
 df <- merge (df, q_info , by = 'plot')
 
-df$date <- as.POSIXct(df$date)
+df$date <- as.POSIXct(df$date, tz = 'MST')
 df <- df %>% rename(VWC = PCT)
 
 soil_density <- read.csv('data/soil_moist_data/gravimetric_samples/exclosure_soil_samples.csv')

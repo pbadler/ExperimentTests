@@ -9,6 +9,8 @@ library(zoo)
 
 df <- readRDS('data/temp_data/decagon_data_with_station_data.RDS')
 
+df <- df %>% mutate( v = ifelse(measure == 'VWC', v*100, v)) # convert to percent 
+
 # summarize treatment differences:  -----------------------------------------------------------------------------------
 
 plot_vals <- df %>% 
@@ -100,25 +102,37 @@ df_soil_temp <-
   summarise( avg_T = mean(v), n = n() ) %>% 
   filter( n == 6 ) 
 
-air_T_form <- formula(avg_T ~ (1|simple_date) + factor( PrecipGroup )  + tod*Treatment*season )
-soil_T_form <- formula(avg_T ~ (1|unique_position) + (1|simple_date) + factor( PrecipGroup )  + tod*Treatment*season )
+air_T_form <- formula(avg_T ~ (1|simple_date) + factor( PrecipGroup ) + (1|plot) + tod*Treatment*season )
+air_T_null <- update( air_T_form, . ~ . - Treatment:tod:season - Treatment:season - Treatment:tod)
 
-VWC_form <- formula( avg_VWC ~ (1|unique_position) + (1|simple_date) + factor( PrecipGroup) + Treatment*rainfall ) 
+VWC_form <- formula( avg_VWC ~ (1|unique_position) + (1|simple_date) + factor( PrecipGroup) + (1|plot) +  Treatment*rainfall) 
 basic_form <- formula( avg_VWC ~ (1|unique_position) + (1|simple_date) + factor( PrecipGroup) + (1|plot) + Treatment*season*rainfall)
+basic_null <- update(basic_form, . ~ . - Treatment:season:rainfall - Treatment:season - Treatment:rainfall - Treatment ) 
 
 m_air <- lmer(data =  df_air_temp, formula = air_T_form)
-m_soil <- lmer(data = df_soil_temp, formula = soil_T_form)
 
-m_5cm <- lmer( data = df_5cm_soil, formula = basic_form)
-m_25cm <- lmer( data = df_25cm_soil, formula = basic_form) 
+m_5cm <- lmer( data = df_5cm_soil, formula = basic_form, weights = n)
+m_25cm <- lmer( data = df_25cm_soil, formula = basic_form, weights = n) 
 
-m_5cm_spring <- lmer( data = subset(df_5cm_soil, season == 'spring'), formula = VWC_form)
-m_5cm_summer <- lmer( data = subset(df_5cm_soil, season == 'summer'), formula = VWC_form ) 
-m_5cm_fall <- lmer( data = subset( df_5cm_soil, season == 'fall'), formula = VWC_form)
+m_5cm_spring <- lmer( data = subset(df_5cm_soil, season == 'spring'), formula = VWC_form, weights = n)
+m_5cm_summer <- lmer( data = subset(df_5cm_soil, season == 'summer'), formula = VWC_form, weights = n ) 
+m_5cm_fall <- lmer( data = subset( df_5cm_soil, season == 'fall'), formula = VWC_form, weights = n)
+m_5cm_winter <- lmer( data = subset( df_5cm_soil, season == 'winter'), formula = VWC_form, weights = n)
+
+m_25cm_spring <- lmer( data = subset(df_25cm_soil, season == 'spring'), formula = VWC_form, weights = n)
+m_25cm_summer <- lmer( data = subset(df_25cm_soil, season == 'summer'), formula = VWC_form, weights = n ) 
+m_25cm_fall <- lmer( data = subset( df_25cm_soil, season == 'fall'), formula = VWC_form, weights = n)
+m_25cm_winter <- lmer( data = subset( df_25cm_soil, season == 'winter'), formula = VWC_form, weights = n)
 
 summary(m_5cm_spring)
 summary(m_5cm_summer)
 summary(m_5cm_fall)
+summary(m_5cm_winter)
+
+summary(m_25cm_spring)
+summary(m_25cm_summer)
+summary(m_25cm_fall)
+summary(m_25cm_winter)
 
 summary(m_air)
 summary(m_soil)
@@ -126,14 +140,32 @@ summary(m_soil)
 summary(m_5cm) 
 summary(m_25cm)
 
+forms <- list( basic_form, basic_null)
+models_25cm <- lapply( forms, function(x )  lmer( data = df_25cm_soil, formula = x, weights = n ))
+models_5cm <- lapply( forms, function( x) lmer( data = df_5cm_soil, formula = x, weights = n))
+models_air <- lapply( list( air_T_form, air_T_null), function( x ) lmer( data = df_air_temp, formula = x))
+
+AICs_m25 <- lapply( models_25cm, AIC )
+AICs_m5 <- lapply( models_5cm, AIC )
+AICs_air <- lapply( models_air, AIC)
+
+unlist( forms ) 
+unlist(AICs_m5)
+unlist(AICs_m25)
+unlist(AICs_air)
+
+
 # ------------------------------------------------------------------------------------------------- 
 # make prediction df to view lmer effects 
 
-pred_df <- expand.grid( PrecipGroup = c(1,3,4,6), Treatment = unique( df$Treatment), season = levels(df$season), rainfall = levels( factor(df$rainfall)), tod = levels(df$tod ) ) 
+pred_df <- expand.grid( PrecipGroup = 1, Treatment = unique( df$Treatment), season = levels(df$season), rainfall = levels( factor(df$rainfall)), tod = levels(df$tod ) ) 
 pred_df$Treatment_label <- factor( pred_df$Treatment, levels = c('Drought', 'Control', 'Irrigation'), order = TRUE) 
 pred_df$season_label <- factor( pred_df$season, levels = c('spring', 'summer', 'fall', 'winter'), order = TRUE)
 
 pred_df$air_temp_pred <- predict(m_air, pred_df, re.form = NA)
+
+pred_df$air_temp_pred
+
 pred_df$VWC_5cm_pred <- predict( m_5cm, pred_df, re.form = NA )
 pred_df$VWC_25cm_pred <- predict( m_25cm, pred_df, re.form = NA)
 pred_df$VWC_5_cm_spring <- predict( m_5cm_spring, pred_df, re.form = NA)
@@ -173,6 +205,8 @@ pred_plot_VWC_25 <-
 
 pred_plot_VWC_25
 pred_plot_VWC_5
+
+pred_plot
 
 # print plots in one pdf ---------------------------------------------------------------------- 
 
