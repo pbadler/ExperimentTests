@@ -82,8 +82,7 @@ write.csv(check, 'data/temp_data/check_dates.csv', row.names = FALSE) # write li
 # change = 1  indicates jumps that should be changed 
 # make changes on the csv file above 
 
-check <- read.csv(file = 'data/temp_data/check_dates_modified.csv') 
-check
+check <- read.csv(file = 'data/check_dates_modified.csv') 
 
 check$new_date <- as.POSIXct ( as.character( check$new_date ) , format = '%Y-%m-%d %H:%M:%S', tz = 'MST' ) 
 
