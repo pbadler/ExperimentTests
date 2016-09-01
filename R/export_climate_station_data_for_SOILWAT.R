@@ -54,5 +54,3 @@ for ( i in 1:length( year_list) ) {
   write_with_header( x = temp_df, file = temp_fname, header = temp_header, f = write.table, sep = '\t', col.names = FALSE, row.names = FALSE)
   
 }
-
-write.table(station_dat, 'data/temp_data/USSES_STATION_DAT_clean.csv', sep = '\n', row.names = F, col.names = F)

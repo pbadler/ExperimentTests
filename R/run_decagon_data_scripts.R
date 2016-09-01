@@ -1,6 +1,10 @@
+###############################################################################
 # 
+# Run all scripts related to decagon data processing 
+# 
+###############################################################################
 
-source('R/process_decagon_data.R')
+source('R/import_and_format_decagon_data.R')
 
 source('R/correct_decagon_dates.R')
 

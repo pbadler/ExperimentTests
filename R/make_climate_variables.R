@@ -1,3 +1,9 @@
+#######################################################################################
+#
+# Setup seasonal climate variables for demographic rate models 
+#
+#######################################################################################
+
 rm(list = ls()) 
 
 library( ggplot2 ) 
@@ -8,7 +14,7 @@ library(zoo)
 
 station_dat <- read.csv('data/USSES_climate.csv')
 
-season <- readRDS('data/temp_data/season.RDS')
+season <- read.csv('data/season_table.csv')
 
 # ---------------------------------------------------------------------------------------
 station_dat$date <-  as.POSIXct( strptime( station_dat$DATE, '%Y%m%d', tz = 'MST')  ) 
@@ -52,26 +58,27 @@ monthly_precip <-
   group_by(year, water_year, precip_seasons, month) %>% 
   summarise(control = sum(PRCP, na.rm = TRUE)) %>% 
   mutate( drought    = ifelse( month %in% c(3:11), control*0.5, control) ) %>% 
-  mutate( irrigation = ifelse( month %in% c(4:10), control*1.5, control) ) %>%
-  gather( treatment, )
+  mutate( irrigation = ifelse( month %in% c(4:10), control*1.5, control) ) %>% 
+  gather(treatment, PRCP, control, drought, irrigation)
   
-  
-
-
 seasonal_precip <- 
   df %>% 
-  group_by(water_year, precip_seasons ) %>% 
-  summarise(l0 = sum(PRCP)) %>% 
+  group_by(year, water_year, precip_seasons, month) %>% 
+  summarise(Control = sum(PRCP, na.rm = TRUE)) %>% 
+  mutate( Drought    = ifelse( month %in% c(3:11), Control*0.5, Control) ) %>% 
+  mutate( Irrigation = ifelse( month %in% c(4:10), Control*1.5, Control) ) %>% 
+  gather(Treatment, PRCP, Control, Drought, Irrigation) %>%
+  group_by(water_year, precip_seasons , Treatment ) %>% 
+  summarise(l0  = sum(PRCP, na.rm = TRUE)) %>% 
   rename( year = water_year ) %>% 
-  group_by( precip_seasons ) %>% 
-  arrange( precip_seasons, year ) %>% 
+  group_by( Treatment, precip_seasons ) %>% 
+  arrange( year ) %>% 
   mutate( l1 = lag (l0, 1 ) , 
           l2 = lag (l0, 2 ) ) %>% 
   gather( lag, PRCP, l0:l2) %>% 
   ungroup() %>% 
   unite( stat , precip_seasons, lag , sep = '_PRCP_') %>% 
   spread( stat, PRCP )
-
 
 seasonal_clim <- left_join( seasonal_tmean, seasonal_precip, by = 'year') 
 

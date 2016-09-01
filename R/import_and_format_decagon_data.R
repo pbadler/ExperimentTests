@@ -1,3 +1,9 @@
+##############################################################################################################
+#
+# This script reads in and exports the decagon soil moisture and temperature data from the raw data files. 
+#
+##############################################################################################################
+
 rm(list = ls())
 
 library(stringr)
