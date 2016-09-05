@@ -4,10 +4,10 @@
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
 dataDir <- paste(root,"/driversdata/data/idaho_modern/",sep="")
 
-
 # import data and calculate treatment trends ######################################
 
 covD<-read.csv(paste(dataDir,"allrecords_cover.csv",sep=""))
+names(covD)[which(names(covD)=="Species")] <- "species"  # rename species field
 trts<-read.csv(paste(dataDir,"quad_info.csv",sep=""))
 
 # use this to make sure we don't miss zeros
@@ -180,39 +180,4 @@ png("treatment_trends_logChange.png",height=3,width=8.5,units="in",res=400)
 
 dev.off()
 
-# #2. Average cover deviation (w.r.t. pretreatment year)
-# pdf("cover_deviation.pdf",height=3,width=8)
-# par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
-# for(doSpp in sppList){
-#   tmp.mean<-subset(spp.mean.diff,species==doSpp)
-#   matplot(tmp.mean$year,tmp.mean[,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-#           col=myCols,main=doSpp)
-# 
-#   if(doSpp==sppList[1]) legend("right",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
-# }
-# mtext("Year",side=1,line=1,outer=T)
-# mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)
-# dev.off()
 
-
-#3. log change
-# hard wire ylims
-myLims <- c(-1,1)
-pdf("log_change.pdf",height=3,width=8)
-par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
-for(doSpp in sppList){
-  tmp.mean<-subset(mean.change,species==doSpp)
-  #remove irrelevant removal treatments
-  if(doSpp=="Artemisia tripartita"){
-    tmp.mean$pcgr.No_shrub <- NA
-  }else{
-    tmp.mean$pcgr.No_grass <- NA
-  }
-  matplot(tmp.mean$year[2:5],tmp.mean[2:5,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-          col=myCols,main=doSpp,ylim=myLims)
-  abline(h=0,col="gray")
-  if(doSpp==sppList[1]) legend("top",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
-}
-mtext("Year",side=1,line=1,outer=T)
-mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)
-dev.off()

@@ -99,7 +99,7 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-#source("call_recruit_m1.r")
+source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 
 pars.summary <- read.csv("recruit_params_m1.csv")

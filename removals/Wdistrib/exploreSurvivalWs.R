@@ -140,15 +140,16 @@ for(iSpp in 1:4){
     }    
     data$firstRing=firstRing
     
-    plot(data$radius, firstRing,main=paste0(doSpp,":",nbSpp),xlab="Genet radius (cm)",ylab="Mid-radius of 1st occupied ring (cm)");
+    plot(data$radius, firstRing,main=paste0(doSpp,":",nbSpp),ylim=c(0,20),xlab="Genet radius (cm)",ylab="Mid-radius of 1st occupied ring (cm)");
     abline(0,1,col="blue"); 
     fit = rq(firstRing~radius-1,data=data,tau=0.05); 
     abline(fit); fits[[jSpp+4*(iSpp-1)]]=fit; 
     
-    # try nonparametric fit
-    firstRing[is.na(firstRing)] <- 150
-    fit2 = rqss(firstRing~qss(radius-1,lambda=1),data=data,tau=0.05); 
-    fits.rqss[[jSpp+4*(iSpp-1)]] <- fit2
+#     # try nonparametric fit
+#     data$firstRing[is.na(data$firstRing)] <- 150
+#     fit2 = rqss(firstRing~qss(radius-1,lambda=0.01),data=data,tau=0.05); 
+#     fits.rqss[[jSpp+4*(iSpp-1)]] <- fit2
+#     #plot with predict
     
     fac = round(coef(fit)[1], digits=2); 
     legend("topright",legend=as.character(fac),bty="n",cex=1.2,inset=0.1); 

@@ -42,10 +42,10 @@ get.trt.means<-function(mydat){
                         FUN=mean,na.rm=T)
   out <- out[order(out$Treatment,out$year),]
   #consolidate removal treatments
-  out[5:8,4:6] <- out[9:12,4:6]
-  out <- out[-c(9:12),]
+  out[6:10,4:6] <- out[11:15,4:6]
+  out <- out[-c(11:15),]
   out$Treatment <- as.character(out$Treatment)
-  out$Treatment[5:8] <- "Removal"
+  out$Treatment[6:10] <- "Removal"
   out
 }
 
@@ -67,7 +67,7 @@ for(i in 1:4){
   }else{
     doRows <- which(covMeans$Treatment=="No_shrub")
   }  
-  matplot(covMeans$year[1:5],cbind(covMeans[1:5,2+i],covMeans[1:5,6+i], # control plots
+  matplot(covMeans$year[1:6],cbind(covMeans[1:6,2+i],covMeans[1:6,6+i], # control plots
           covMeans[doRows,2+i],covMeans[doRows,6+i],covMeans[doRows,10+i]),
           xlab="",ylab="",type="l",
           lty=c("solid","dashed","solid","dashed","dotted"),
@@ -92,7 +92,7 @@ dev.off()
 plotObsPred<-function(doSpp,mytitle,doLegend=F){
   
   # format data
-  newD=data.frame(year=2011:2014,obs.pgr.mean[obs.pgr.mean$Treatment=="Control",2 + doSpp],
+  newD=data.frame(year=2011:2015,obs.pgr.mean[obs.pgr.mean$Treatment=="Control",2 + doSpp],
                  pred.pgr.mean[pred.pgr.mean$Treatment=="Control",2+doSpp], 
                  obs.pgr.mean[obs.pgr.mean$Treatment=="Removal",2+doSpp],
                  pred.pgr.mean[pred.pgr.mean$Treatment=="Removal",2+doSpp],
@@ -106,7 +106,7 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
     col=c(rep(color1,2),rep(color2,3)),xaxt="n",
     pch=c(16,21,16,21,24),bg="white",
     lty=c("solid","dotted","solid","dotted","dotted"))
-  axis(1,at=c(2011:2014))
+  axis(1,at=c(2011:2015))
   abline(h=0,lty="solid",col="darkgray")
   # add standard error bars to observed means
 #   arrows(x0=mysd1$year,y0=c(mydata1[,1+doSpp]-mysd1[,1+doSpp]/sqrt(14)), # 14 = number of control plots
