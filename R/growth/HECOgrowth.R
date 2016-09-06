@@ -1,11 +1,12 @@
 # PBA March 2016
 # modified by ARK July 2016
 # call from removal_analysis_wrapper.r
-
+rm(list = ls())
 #########################################
 #  1. Import data and calculate W's
 #########################################
 
+root <- '~'
 doSpp <- "HECO"
 sppList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
 dataDir1 <- paste(root,"/driversdata/data/idaho",sep="")
@@ -13,13 +14,13 @@ dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
 nonCompLength.s=5 #Number of columns in SppData that are not measures of competitors 
 
 # set up distance weights------------------------------------------------
-#dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights_noExptl.csv",sep=""));
+dists <- read.csv(paste(dataDir2,"/speciesData/IdahoModDistanceWeights_noExptl.csv",sep=""));
 dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
 dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
 
 # import old data--------------------------------------------------------
 
-source("fetchGrowthData.r")
+source("R/growth/fetchGrowthData.r")
 
 D1 <- fetchGdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir1,distWts=dists)
 D1$Treatment <- "Control"
@@ -70,8 +71,47 @@ allD$Treatment2 <- allD$Treatment
 allD$Treatment2[allD$year>2000] <- "Modern"
 allD$Treatment3 <- allD$Treatment
 allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
+allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
+
+allD <- subset(allD, Treatment %in% c('Control', 'Drought', 'Irrigation') )
 
 allD$year <- as.factor(allD$year)
+
+# Treatment effect
+
+# use lmer
+library(lme4)
+# w/o treatment effect
+
+m0 <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
+             (1|Group)+(logarea.t0|year),data=subset(allD, as.numeric(levels(year)[year]) > 2006)) 
+
+# w/ treatment effect
+m1 <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
+             (1|Group)+(logarea.t0|year),data=subset(allD, as.numeric(levels(year)[year]) > 2006)) 
+# 
+anova(m1, m0) # no effect 
+
+lmer_results = list(m0, m1)
+
+saveRDS(lmer_results, file = 'output/HECO_growth_treatment_effects.lmer.RDS')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # library(lme4)
 # simplest model
@@ -83,17 +123,17 @@ allD$year <- as.factor(allD$year)
 
 # use INLA
 # Set up ID variables for INLA random effects
-allD$GroupID <- as.numeric(allD$Group)
-allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
+# allD$GroupID <- as.numeric(allD$Group)
+# allD$yearID <- 100+as.numeric(allD$year) # for random year offset on intercept
 
 # Treatment effect
-m1 <- inla(logarea.t1 ~ logarea.t0 + Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
-  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
-  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
-  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
-  family=c("gaussian"), verbose=FALSE,
-  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
-  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
+# m1 <- inla(logarea.t1 ~ logarea.t0 + Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+#   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+#   f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+#   f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+#   family=c("gaussian"), verbose=FALSE,
+#   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+#   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
 # # compare to other models using lmer
 # m0.lmer <- lmer(logarea.t1~logarea.t0 + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts+
