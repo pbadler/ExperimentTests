@@ -6,7 +6,7 @@
 rm(list = ls())
 
 #########################################
-#  1. Import data and calculate W's
+#  1. Import data, merge treatment effects and save out 
 #########################################
 
 doSpp <- "ARTR"
@@ -67,32 +67,17 @@ tmp=c(tmp,which(allD$quad=="Q12" & allD$year==1955 & allD$trackID==25))
 tmp=c(tmp,which(allD$quad=="Q26" & allD$year==1945 & allD$trackID==73))
 allD=allD[-tmp,]
 
-#########################################
-#  2. Fit models
-#########################################
 
-# set up indicator variables
+# set up indicator variables 
 allD$Treatment2 <- allD$Treatment
-allD$Treatment2[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
+allD$Treatment2[allD$year>2000] <- "Modern"
+allD$Treatment3 <- allD$Treatment
+allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
 allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
 
-allD <- subset(allD, Treatment %in% c('Control', 'Drought', 'Irrigation') )
+# ----------- use this data for prediction ------------------------------------------------------------------------------
 
-allD$year <- as.factor(allD$year)
+saveRDS(allD, 'data/temp_data/ARTR_growth.RDS') 
 
-# use lmer
-library(lme4)
-# w/o treatment effect
+# -----------------------------------------------------------------------------------------------------------------------
 
-m0 <- lmer(logarea.t1~logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
-              (1|Group)+(logarea.t0|year),data=subset(allD, as.numeric(levels(year)[year]) > 2006)) 
-
-# w/ treatment effect
-m1 <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
-              (1|Group)+(logarea.t0|year),data=subset(allD, as.numeric(levels(year)[year]) > 2006)) 
-# 
-anova(m1, m0) # no treatment effect 
-
-lmer_results = list(m0, m1)
-
-saveRDS(lmer_results, file = 'output/ARTR_growth_treatment_effects.lmer.RDS')

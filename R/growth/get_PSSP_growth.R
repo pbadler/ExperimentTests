@@ -64,18 +64,28 @@ allD <- allD[keep,]
 
 # remove outliers (large plants that obviously do not turn into tiny plants)
 
+
+
+
+# set up indicator variables 
+allD$Treatment2 <- allD$Treatment
+allD$Treatment2[allD$year>2000] <- "Modern"
+allD$Treatment3 <- allD$Treatment
+allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
+allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
+
+# ----------- use this data for prediction ------------------------------------------------------------------------------
+
+saveRDS(allD, 'data/temp_data/PSSP_growth.RDS') 
+
+# -----------------------------------------------------------------------------------------------------------------------
+
 #########################################
 #  2. Fit models
 #########################################
 
 library(lme4)
 library(INLA)
-# set up indicator variables
-allD$Treatment2 <- allD$Treatment
-allD$Treatment2[allD$year>2000] <- "Modern"
-allD$Treatment3 <- allD$Treatment
-allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
-allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
 
 allD <- subset(allD, Treatment %in% c('Control', 'Drought', 'Irrigation') )
 
