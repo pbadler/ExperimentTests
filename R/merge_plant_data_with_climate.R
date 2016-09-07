@@ -84,7 +84,7 @@ allD <- lapply(allD, function(x, ... ) { merge ( x, ...  ) }, y = allClim, by = 
 
 # ---- output ----------------------------------------------------------------------------# 
 
-saveRDS( allD, 'data/temp_data/all_growth.RDS')
+saveRDS( allD, 'data/temp_data/all_growth_combined.RDS')
 
 saveRDS(allClim, 'data/temp_data/all_clim_vars.RDS')
 
