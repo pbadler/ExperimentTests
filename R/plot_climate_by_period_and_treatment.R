@@ -16,7 +16,7 @@ climate <- readRDS('data/temp_data/seasonal_climate.RDS')
 
 #------------------------------------------------------------------------ 
 
-colors <- c('#fc8d62', 'gray', '#8da0cb')
+my_colors <- c('#fc8d62', 'gray', '#8da0cb')
 climate$period[ climate$year == 1925 ] <- 'not monitored'
 
 
@@ -47,8 +47,8 @@ annual_plots <-
 
 base_ts <- function( x ) { 
   g <- ggplot( x, aes( x = year, y = value, group = 1)) +
-  geom_ribbon( data = subset( x , period == 'historical'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = colors[3], alpha = 0.3, color = colors[3])  + 
-  geom_ribbon( data = subset( x , period == 'contemporary'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = colors[1], alpha = 0.3, color = colors[1]) + 
+  geom_ribbon( data = subset( x , period == 'historical'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = my_colors[3], alpha = 0.3, color = my_colors[3])  + 
+  geom_ribbon( data = subset( x , period == 'contemporary'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = my_colors[1], alpha = 0.3, color = my_colors[1]) + 
   geom_label(aes( x = as.numeric(label_x), y = label_y, label = period_label)) + 
   xlim( 1924, 2019) + 
   ylab(label =  parse( text = x$ylabel[1])) + 
@@ -89,7 +89,7 @@ rank_plots <- function( x ) {
       ylab(label =  parse( text = x$ylabel[1])) +
       xlab(label =  x$xlab[1]) + 
       scale_shape_manual(values = c('-', '+')) + 
-      scale_fill_manual(values = colors) +  
+      scale_fill_manual(values = my_colors) +  
       guides(fill = guide_legend('Period', override.aes = list(size = 0, color = NA)), colour = 'none', shape = guide_legend('treatment') )  + 
     ggtitle( label = x$season[1]) 
     

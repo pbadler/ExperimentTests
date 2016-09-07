@@ -11,7 +11,7 @@ library(tidyr)
 library(dplyr)
 library(lme4)
 library(zoo)
-
+library(stringr)
 
 dm <- c(4, 11 ) # drought months 
 im <- c(5, 10 ) # irrigation months
@@ -97,14 +97,16 @@ monthly_clim <-
 
 # ------------ aggregate monthly climate with treatment effects by quarter ---------------#
 
-quarterly_climate <-
+quarterly_clim <-
   monthly_clim %>% 
   gather( var, val ,  MMNT, MMXT, MNTM, TPCP ) %>% 
-  group_by( treatment, var, year, quarter ) %>% 
+  group_by(treatment, var, month) %>% 
+  mutate( val = ifelse( year > 1925 & is.na(val), mean(val, na.rm = TRUE), val)) %>% # !!!!!!! fill in missing monthly averages after 1925 with monthly average !!!!!!!! 
+  group_by( treatment, var, year, quarter ) %>%                                      # !!!!!!! note missing values for max, and mean temperature in Feb. 1945.  !!!!!!!!
   summarise( avg = mean(val), ttl = sum(val) ) %>% 
   group_by(var) %>% 
   gather( stat, val, avg, ttl ) %>% 
-  filter( !(var == 'TPCP' & stat == 'avg' )) %>% 
+  filter( (var == 'TPCP' & stat == 'ttl')| (str_detect(pattern = "^M", var) & stat == 'avg')) %>% 
   group_by( treatment, var, stat) %>% 
   arrange(year, quarter) %>%
   ungroup() %>% 
@@ -139,14 +141,22 @@ annual_clim <- left_join( annual_TPPT, annual_MAT)
 seasonal_clim <- left_join( annual_clim, seasonal_clim)
 
 # -------join periods -------------------------------------------------------------------------#
+
 seasonal_clim <- left_join( seasonal_clim, periods )
+monthly_clim <- left_join( df, periods ) 
+quarterly_clim <- left_join( quarterly_clim, periods ) 
+annual_clim <- left_join( annual_clim, periods ) 
 
 # ------ filter out treatments ----------------------------------------------------------------# 
 seasonal_clim <- seasonal_clim %>% 
   filter( !(year < 2012 & treatment != 'control')) # remove all drought and irrigation treatments prior to 2012 
 
+quarterly_clim <- quarterly_clim %>% 
+  filter( !(year < 2012 & treatment != 'control'))
+
 # -------- output -----------------------------------------------------------------------------#
 
 saveRDS( seasonal_clim, 'data/temp_data/seasonal_climate.RDS')
-saveRDS( df, 'data/temp_data/monthly_climate.RDS')
-saveRDS( quarterly_climate, 'data/temp_data/quarterly_climate.RDS')
+saveRDS( monthly_clim, 'data/temp_data/monthly_climate.RDS')
+saveRDS( quarterly_clim, 'data/temp_data/quarterly_climate.RDS')
+saveRDS( annual_clim, 'data/temp_data/annual_climate.RDS')
