@@ -67,37 +67,20 @@ model{
 }
 generated quantities {
   real int_t;
-  vector[npreds] climpred;
-  vector[npreds] crowdhat;
-  vector[npreds] sigmahat;
-  vector[npreds] muhat;
-  vector[npreds] log_lik_pred; // vector for computing log pointwise predictive density
-  
-  real int_t_in;
-  vector[N] climpred_in;
-  vector[N] crowdhat_in;
-  vector[N] sigmahat_in;
-  vector[N] muhat_in;
+  vector[N] climpred;
+  vector[N] crowdhat;
+  vector[N] sigmahat;
+  vector[N] muhat;
+
   vector[N] log_lik; // vector for computing log pointwise predictive density
   
-  // Section for prediction on held out data 
-  climpred = Chold*b2; 
-  crowdhat = Whold*w;
-  int_t = normal_rng(a_mu, sig_a); // draw random year effect
-  for(n in 1:npreds){
-    muhat[n] = int_t + gint[gid_out[n]] + b1_mu*Xhold[n] + crowdhat[n] + climpred[n];
-    sigmahat[n] = sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001))); 
-    log_lik_pred[n] = normal_log(y_holdout[n], muhat[n], sigmahat[n]);
-  }
-  
   // Section for calculating log_lik of fitted data 
-  climpred_in = C*b2;
-  crowdhat_in = W*w;
+  climpred = C*b2;
+  crowdhat = W*w;
   int_t = normal_rng(a_mu, sig_a); // draw random year effect
   for(n in 1:N){
-    muhat_in[n] = int_t + gint[gid[n]] + b1_mu*X[n] + crowdhat_in[n] + climpred_in[n];
-    sigmahat_in[n] = sqrt((fmax(tau*exp(tauSize*muhat_in[n]), 0.0000001))); 
-    log_lik[n] = normal_log(Y[n], muhat_in[n], sigmahat_in[n]);
+    muhat[n] = int_t + gint[gid[n]] + b1_mu*X[n] + crowdhat[n] + climpred[n];
+    sigmahat[n] = sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001))); 
+    log_lik[n] = normal_log(Y[n], muhat[n], sigmahat[n]);
   }
-  
 }

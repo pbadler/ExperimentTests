@@ -126,7 +126,7 @@ clim_covs <- data.frame(clim_covs)
 
 # ---- output ----------------------------------------------------------------------------# 
 
-saveRDS(clim_covs, 'data/temp_data/all_clim_vars.RDS')
+saveRDS(clim_covs, 'data/temp_data/all_clim_covs.RDS')
 
 
 
