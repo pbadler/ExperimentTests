@@ -13,14 +13,17 @@ library(lme4)
 library(zoo)
 library(stringr)
 
-dm <- c(4, 11 ) # drought months 
-im <- c(5, 10 ) # irrigation months
+dm <- c(4, 11 ) # Drought months 
+im <- c(5, 10 ) # Irrigation months
+
+p.treatments <- c(0.5, 1.5) # Drought and Irrigation adjustments to precip 
+t.treatments <- c(1, 1)     # Drought and Irrigation adjustments to temperature 
 
 # make time periods --------------------------------------------------------------------
 
-p1 <- data.frame( period = 'contemporary', year = 2007:2016)
-p2 <- data.frame( period = 'not monitored', year = 1956:2006)
-p3 <- data.frame( period = 'historical', year = 1926:1955)
+p1 <- data.frame( Period = 'Modern', year = 2007:2016)
+p2 <- data.frame( Period = 'not monitored', year = 1957:2006)
+p3 <- data.frame( Period = 'Historical', year = 1926:1956)
 periods <- data.frame( rbind( p1, p2, p3 )) 
 
 # ----- read in data --------------------------------------------------------------------#
@@ -59,7 +62,8 @@ annual_MAT <-
 
 # ---------- annual total precip --------------------------------------------------------#
 annual_TPPT <- 
-  df %>% group_by( year ) %>% 
+  df %>% 
+  group_by( year ) %>% 
   summarise( TPPT = mean(TPCP, na.rm = TRUE), n = n())
 
 # ---------- seasonal average Temperature -----------------------------------------------#
@@ -84,43 +88,43 @@ seasonal_tmean <-
 
 # ---------- monthly climate  -----------------------------------------------------------#
 # 
-# incorporate drought and irrigation effects only in specificied months 
+# incorporate Drought and Irrigation effects only in specificied months 
 # 
 
 monthly_clim <- 
   df %>% 
-  mutate(control = TPCP) %>% 
+  mutate(Control = TPCP) %>% 
   select(-TPCP) %>% 
-  mutate( drought    = ifelse( month %in% c(dm[1]:dm[2]), control*0.5, control) ) %>% 
-  mutate( irrigation = ifelse( month %in% c(im[1]:im[2]), control*1.5, control) ) %>% 
-  gather(treatment, TPCP, control, drought, irrigation)
+  mutate( Drought    = ifelse( year > 2011 & month %in% c(dm[1]:dm[2]), Control*p.treatments[1], Control) ) %>% 
+  mutate( Irrigation = ifelse( year > 2011 & month %in% c(im[1]:im[2]), Control*p.treatments[2], Control) ) %>% 
+  gather(Treatment, TPCP, Control, Drought, Irrigation)
 
-# ------------ aggregate monthly climate with treatment effects by quarter ---------------#
+# ------------ aggregate monthly climate with Treatment effects by quarter ---------------#
 
 quarterly_clim <-
   monthly_clim %>% 
   gather( var, val ,  MMNT, MMXT, MNTM, TPCP ) %>% 
-  group_by(treatment, var, month) %>% 
+  group_by(Treatment, var, month) %>% 
   mutate( val = ifelse( year > 1925 & is.na(val), mean(val, na.rm = TRUE), val)) %>% # !!!!!!! fill in missing monthly averages after 1925 with monthly average !!!!!!!! 
-  group_by( treatment, var, year, quarter ) %>%                                      # !!!!!!! note missing values for max, and mean temperature in Feb. 1945.  !!!!!!!!
+  group_by( Treatment, var, year, quarter ) %>%                                      # !!!!!!! note missing values for max, and mean temperature in Feb. 1945.  !!!!!!!!
   summarise( avg = mean(val), ttl = sum(val) ) %>% 
   group_by(var) %>% 
   gather( stat, val, avg, ttl ) %>% 
   filter( (var == 'TPCP' & stat == 'ttl')| (str_detect(pattern = "^M", var) & stat == 'avg')) %>% 
-  group_by( treatment, var, stat) %>% 
+  group_by( Treatment, var, stat) %>% 
   arrange(year, quarter) %>%
   ungroup() %>% 
   unite(var, c(var, stat) , sep = '_')
 
 # -------------------------------------------------------------------------------------------#
-# -------------- aggregate monthly climate with treatment effects by season -----------------#
+# -------------- aggregate monthly climate with Treatment effects by season -----------------#
 
 seasonal_precip <- 
   monthly_clim %>% 
   select ( -MMNT, -MMXT, -MNTM) %>%  
-  group_by( treatment, water_year, precip_seasons ) %>% 
+  group_by( Treatment, water_year, precip_seasons ) %>% 
   summarise( TPCP = sum(TPCP) ) %>% 
-  group_by( treatment, precip_seasons ) %>% 
+  group_by( Treatment, precip_seasons ) %>% 
   arrange( water_year, precip_seasons) %>%
   rename( year = water_year ) %>% 
   arrange( year ) %>% 
@@ -149,10 +153,10 @@ annual_clim <- left_join( annual_clim, periods )
 
 # ------ filter out treatments ----------------------------------------------------------------# 
 seasonal_clim <- seasonal_clim %>% 
-  filter( !(year < 2012 & treatment != 'control')) # remove all drought and irrigation treatments prior to 2012 
+  filter( !(year < 2012 & Treatment != 'Control')) # remove all Drought and Irrigation treatments prior to 2012 
 
-quarterly_clim <- quarterly_clim %>% 
-  filter( !(year < 2012 & treatment != 'control'))
+# quarterly_clim <- quarterly_clim %>% 
+#   filter( !(year < 2012 & Treatment != 'Control'))
 
 # -------- output -----------------------------------------------------------------------------#
 

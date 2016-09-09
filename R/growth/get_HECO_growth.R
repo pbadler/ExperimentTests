@@ -24,10 +24,12 @@ source("R/growth/fetchGrowthData.r")
 
 D1 <- fetchGdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir1,distWts=dists)
 D1$Treatment <- "Control"
+D1$Period <- "Historical"
 
 # import modern data--------------------------------------------------------
 
 D2 <- fetchGdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir2,distWts=dists)
+D2$Period <- "Modern"
 
 # merge in treatment data
 tmp <- read.csv(paste(dataDir2,"/quad_info.csv",sep=""))
