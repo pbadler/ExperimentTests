@@ -57,7 +57,7 @@ opts_chunk$set(dev='pdf')
 \begin{centering}
 \textbf{\large{Predicting the effects of precipitation change on plant communities}}
 
-\textsc{\small{Andrew R. Kleinhesselink\footnote{Corresponding author: arklein@aggiemail.usu.edu}\textsuperscript{1}, Peter B. Adler\textsuperscript{1} and Andrew Tredennick\textsuperscript{1}}}
+\textsc{\small{Andrew R. Kleinhesselink\footnote{Corresponding author: arklein@aggiemail.usu.edu}\textsuperscript{1}, Peter B. Adler\textsuperscript{1}, Andrew Tredennick\textsuperscript{1}, Caitlin Andrews{2}\textsuperscript{2} and John Bradford\textsuperscript{2} }
 
 \textit{\small{\textsuperscript{1}Department of Wildland Resources and the Ecology Center, 5230 Old Main Hill, Utah State University, Logan, Utah 84322 USA}} \\
 
@@ -90,7 +90,11 @@ In this experiment we tested our ability to predict how a natural grassland plan
 Materials and Methods
 ---------------------
 #### Multi-year plant community data  
-Long-term data on individual abundance and size of plants in a sagebrush steppe community have been collecting since the 1930s at the US Sheep Experiment Station in Dubois Idaho.  The plots were recensused beginning in 2007 using methods identical to the original studies. These data allow for the fitting of statistical models that estimate the effects of climate and competitive effects on individual plants in the plots.  In theory these statistical models can be used to project the effects of both a change in the competitive environment at this site--or a change in the climate.  
+Long-term data on individual abundance and size of plants come from the US Sheep Experiment Station (USSES) in Dubois, Idaho, USA (44\degree 12' N, 112\degree 1' W, 1500 m A.S.L.). This recieves 307 mm of precipitation annually and has a mean annual temperature of 6.2\degree C.  The vegetation is dominated by three perennial grasses, Pseudoroegneria spicata (Syn. Pascopyrum spicata), Poa secunda (Syn. Poa sandbergii), and Hesperostipa comata (Syn. Stipa comata), and one small woody shrub, Artemisia tripartita [Asteraceae].    
+
+Our historical data come from permanent plot monitoring at the USSES conducted annually from 1923 to 1957.  The permanent plots are 1 x 1 m and the corners were marked with steel bars so that they could be precisely relocated year after year. The size and position of each individual plant within the plots was recorded on paper maps using a mechanical tracing device called a pantograph.  This method accurately reproduces the exact spatial configuration of plants within a plot in a given year to less than 1 cm accuracy. 
+
+Beginning in 2007, 18 of the original permanent plots were relocated and re-measured annually using the same methods as the original investigators. The permanent plots measured in this contemporary period were located within three areas that had been ungrazed since the 1920's. 
 
 ### Rain-out shelter and irrigation experiment 
 In the summer of 2011, we established eight pairs of new plots within the largest exclosure at the USSES. Areas for plot pairs were selected to be similar in physical environment and vegetation composition to the original plots located at this site.  Plot locations were determined by running eight transects across the grazing exclosure and establishing new plot pairs at a random location on each transect. We rejected areas that fell on hill slopes, areas with greater than 20% bare rock, or areas with over 10% cover of the woody shrubs Purshia tridentata or Amelanchiar utahensis. Plots within each pair were established 6 m away from one another and the corners of the plots were marked with steel bars. To get baseline pre-treatment data, we then censused the plant communities within the new plots with the pantograph technique as in the original plots. 
@@ -101,12 +105,17 @@ Pumps were disconnected when temperatures were regularly below freezing, from ap
 
 ### Soil water model 
 
-### Estimating climate effects on vital rates 
+### Estimating effects of climate and competition on vital rates 
+
+We fit our predictive models using the multi-year records of individual plant growth, survival and recruitment in the (20) original permanent plots from 19XX to 19XX.   Each estimated the effects of temperature, precipitation and soil moisture on 
 
 ### Generating predictions 
 
 Results
 -------
+
+### Changes in climate and community composition
+
 
 Discussion
 -----------
