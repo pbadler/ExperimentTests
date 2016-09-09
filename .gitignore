@@ -45,6 +45,7 @@ vignettes/*.pdf
 figures/*
 data/temp_data/*
 plans_and_materials/*
+output/*
 
 # temp 
 *~
