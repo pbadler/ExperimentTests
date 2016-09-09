@@ -92,7 +92,10 @@ dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Tr
 dPSSP$year <- as.factor(dPSSP$year)
 mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
 
-texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
+
+statsOutput <- "output/stats_table.text"
+
+texreg::texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
       caption.above=TRUE,file=statsOutput)
 
 
@@ -118,7 +121,7 @@ png("figures/treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
             col=myCols,main=doSpp,font.main=4,lwd=2)
     if(doSpp==sppList[1]) {
-      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
+      legend("topright",c("Control","Drought","Irrigation"),pch=16,lty="solid",col=myCols,bty="n")
       mtext("Mean cover (%)",side=2,line=2,outer=F)
     }
   }
@@ -143,7 +146,7 @@ png("figures/treatment_trends_cover_simple.png",height=2.75,width=8,units="in",r
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
             col=myCols,main=doSpp,font.main=4,lwd=2)
     if(doSpp==sppList[1]) {
-      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
+      legend("topright",c("Control","Drought","Irrigation"),pch=16,lty="solid",col=myCols,bty="n")
       mtext("Mean cover (%)",side=2,line=2,outer=F)
     }
   }
@@ -172,7 +175,7 @@ png("figures/treatment_trends_logChange.png",height=3,width=8.5,units="in",res=4
     abline(h=0,col="gray")
     
     if(doSpp==sppList[1]) {
-      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
+      legend("topright",c("Control","Drought","Irrigation"),pch=16,lty="solid",col=myCols,bty="n")
       mtext("Mean log change",side=2,line=2,outer=F)
     }
     

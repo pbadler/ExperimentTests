@@ -70,12 +70,11 @@ dists <- read.csv(file.path(root, 'driversdata/data/idaho_modern/speciesData/Ida
 
 setwd("R/growth")
 source("write_params.r") # get function to format and output parameters
-iSpp = 'ARTR'
-source(paste0(iSpp, 'growth.R'))
+
 
 for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   
-  source(paste0(iSpp,"growth.r"))
+  source(paste0(iSpp,"growth.R"))
   
   # save fixed effects summary to file
   cat("",file=statsOutput,sep="\n",append=T)
@@ -93,6 +92,9 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   formatGrowthPars(m1,paste0(iSpp,"_growth.csv")) 
   
 }
+
+m1$summary.fixed[ tmp, c('mean', '0.025quant')]
+
 setwd("..")
 
 ###
@@ -137,8 +139,8 @@ setwd("..")
 ### write results to file
 ###
 
-trtTests <- trtTests[-1,] # throw away first line junk
-write.csv(trtTests,"treatment_test_results.csv",row.names=F)
+#trtTests <- trtTests[-1,] # throw away first line junk
+write.csv(trtTests,"../output/treatment_test_results.csv",row.names=F)
 
 # make treatment effect figure
 source("treatment_test_figure.r")

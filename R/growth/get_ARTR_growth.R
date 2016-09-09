@@ -3,7 +3,7 @@
 # call from precip_analysis_wrapper.r
 # simple test for differences in growth rate between precip treatments in the contemporary period 
 
-rm(list = ls())
+#rm(list = ls())
 
 #########################################
 #  1. Import data, merge treatment effects and save out 

@@ -1,6 +1,6 @@
 ######################################################################################
 #
-# Make STAN data 
+# Make STAN datalist  
 #
 #####################################################################################
 
@@ -118,16 +118,16 @@ make_datalist <- function(train, hold){
 datalist <- make_datalist(train, hold)
 
 #
-pars <- c("log_lik_pred", "log_lik")
-mcmc_oos <- stan(file="analysis/regularization/growth/growth_oos_cv.stan", data=datalist, 
-                 pars=pars, chains=1, iter = 50, warmup = 10 )
-
-waic
-waic(mcmc_oos)
-library(matrixStats)
+# pars <- c("log_lik_pred", "log_lik")
+# mcmc_oos <- stan(file="analysis/regularization/growth/growth_oos_cv.stan", data=datalist, 
+#                  pars=pars, chains=1, iter = 50, warmup = 10 )
+# 
+# waic
+# waic(mcmc_oos)
+# library(matrixStats)
 
 # ---- output ----------------------------------------------------------------------------# 
 
-saveRDS( G, 'data/temp_data/all_growth_combined.RDS')
+saveRDS( datalist, 'data/temp_data/all_growth_combined.RDS')
 
 
