@@ -1,3 +1,4 @@
+// Full model for growth: includes climate + intraspecific + interspecific competition effects 
 data{
   int<lower=0> N; // observations
   int<lower=0> npreds;

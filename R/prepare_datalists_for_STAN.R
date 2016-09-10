@@ -11,15 +11,18 @@ library(tidyr)
 library(ggplot2)
 library(zoo)
 
-scale_clim_covs <- function( df, train, hold, clim_vars ){ 
+scale_clim_covs <- function(df , train, hold, clim_vars ){ 
   
-  clim_means <- colMeans(df[ train, clim_vars], na.rm = TRUE)
-  clim_sds   <- apply(df[ train, clim_vars ], 2, FUN = sd, na.rm = TRUE)
+  training_df <- df[train, ]
+  holding_df  <- df[hold, ]
   
-  df[train, clim_vars] <- scale( df[ train, clim_vars], center = TRUE, scale = TRUE)
-  df[hold, clim_vars]  <- scale( df[ hold, clim_vars ], center = clim_means, scale = clim_sds )
+  clim_means <- colMeans(training_df[ , clim_vars], na.rm = TRUE)
+  clim_sds   <- apply(training_df[ , clim_vars ], 2, FUN = sd, na.rm = TRUE)
   
-  df
+  training_df[ , clim_vars] <- scale( training_df[ , clim_vars], center = TRUE, scale = TRUE)
+  holding_df[  , clim_vars] <- scale( holding_df[  , clim_vars], center = clim_means, scale = clim_sds )
+  
+  return( list( training_df, holding_df) ) 
 } 
 
 
@@ -27,10 +30,12 @@ make_datalist <- function(df, train, hold, clim_vars){
   
   # Function simply makes list of data for STAN models  
   
-  # --------split into training and holding data ------------------------------------------------------
+  # --------split into training and holding data and scale climate covariates -------------------------
   
-  training_df <- df[train, ]
-  holding_df  <- df[hold, ]
+  out <- scale_clim_covs(df, train, hold, clim_vars)
+  
+  training_df <- out[[1]]
+  holding_df <- out[[2]]
   
   # --------training data -----------------------------------------------------------------------------
   N         <- nrow(training_df)                                  # number of data points for training data 
@@ -83,39 +88,31 @@ growth_files <- dir('data/temp_data/', pattern = 'growth.RDS', full.names = TRUE
 
 spp_names <- regmatches(growth_files, m = gregexpr( pattern = '([A-Z]{4})', growth_files )) 
 
-# -- merge with all growth records -------------------------------------------------------#
+# -- read growth records -----------------------------------------------------------------#
 
 growth <- lapply( growth_files, readRDS)
-
-growth <- lapply( growth, function(x){ subset(x, year > 1926 & !Treatment %in% c('No_shrub', 'No_grass'))} )
-
-growth <-  lapply(growth, merge, y = clim_covs, by = c('Treatment', 'Period', 'year')) 
 
 # -- merge with all survival records -----------------------------------------------------#
 
 
 # -- merge with all recruitment records --------------------------------------------------#
 
+growth <- lapply( growth, function(x){ subset(x, year > 1926 & !Treatment %in% c('No_shrub', 'No_grass'))} )
 
-# -- scale climate based on historical period ------------------------------------------# 
+growth <- lapply(growth, merge, y = clim_covs, by = c('Treatment', 'Period', 'year')) 
+
+
+# -- make training and holding subsets ----------------------------------------------------# 
 
 training <- lapply( growth, function(x) { which(x$Period == "Historical" & x$Treatment == 'Control') } ) 
 holding  <- lapply( growth, function(x) { which(x$Period == "Modern" )  } ) 
 
-growth <- mapply( FUN = scale_clim_covs, df = growth, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars )) 
-# ggplot(subset( test[, c('year', 'Treatment', 'Period', clim_vars)], Period == "Historical") %>% gather_('var', 'val' , clim_vars) , aes( x = year, y = val, color = Treatment )) + geom_point() + geom_line() +  facet_wrap(~ var ) 
-# ggplot(subset( test[, c('year', 'Treatment', 'Period', clim_vars)], Period == "Modern") %>% gather_('var', 'val' , clim_vars) , aes( x = year, y = val, color = Treatment )) + geom_point() + geom_line() +  facet_wrap(~ var ) 
+# -- prepare for stan ---------------------------------------------------------------------# 
 
-# prepare for stan -----------------------------------------------------------------------# 
+datalists <- mapply( FUN = make_datalist, df = growth, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
 
-datalist <- mapply( FUN = make_datalist, df = growth, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
+# ---- output ------------------------------------------------------------------------------# 
 
-datalist[[1]]$yid
-
-datalist[[1]]$yid
-
-# ---- output ----------------------------------------------------------------------------# 
-
-saveRDS( datalist, 'data/temp_data/data_lists_for_stan_models.RDS')
+saveRDS( datalists, 'data/temp_data/data_lists_for_stan_models.RDS')
 
 
