@@ -81,16 +81,15 @@ clim_vars <- sort(clim_vars)
 
 clim_covs <- readRDS('data/temp_data/all_clim_covs.RDS')
 
-growth_files <- dir('data/temp_data/', pattern = 'growth.RDS', full.names = TRUE)
+gf <- dir('data/temp_data/', pattern = 'growth.RDS', full.names = TRUE)
+sf <- dir('data/temp_data/', pattern = 'survival.RDS', full.names = TRUE)
+rf <- dir('data/temp_data/', pattern = 'recruitment.RDS', full.names = TRUE)
 
-#survival_files <- dir('data/temp_data/')
-# recruitment_files <- dir('data/temp_data/)
-
-spp_names <- regmatches(growth_files, m = gregexpr( pattern = '([A-Z]{4})', growth_files )) 
+spp_names <- as.character( regmatches(c(gf, sf, rf), m = gregexpr( pattern = '([A-Z]{4})', c(gf, sf, rf) )) )
 
 # -- read growth records -----------------------------------------------------------------#
 
-growth <- lapply( growth_files, readRDS)
+growth <- lapply( gf, readRDS)
 
 # -- merge with all survival records -----------------------------------------------------#
 
@@ -101,7 +100,6 @@ growth <- lapply( growth, function(x){ subset(x, year > 1926 & !Treatment %in% c
 
 growth <- lapply(growth, merge, y = clim_covs, by = c('Treatment', 'Period', 'year')) 
 
-
 # -- make training and holding subsets ----------------------------------------------------# 
 
 training <- lapply( growth, function(x) { which(x$Period == "Historical" & x$Treatment == 'Control') } ) 
@@ -110,6 +108,8 @@ holding  <- lapply( growth, function(x) { which(x$Period == "Modern" )  } )
 # -- prepare for stan ---------------------------------------------------------------------# 
 
 datalists <- mapply( FUN = make_datalist, df = growth, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
+
+names(datalists) <- spp_names
 
 # ---- output ------------------------------------------------------------------------------# 
 
