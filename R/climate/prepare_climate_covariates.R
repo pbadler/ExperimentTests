@@ -90,46 +90,7 @@ allClim <-
 # test$TxP.sp.1 <- test$P.sp.1*test$T.sp.1
 # test$TxP.sp.2 <- test$P.sp.2*test$T.sp.2
 
-# -- scale variables based on historical period ------------------------------------------# 
-
-clim_covs_1 <- 
-  allClim %>% 
-  ungroup() %>% 
-  filter( Period == 'Historical' & Treatment == 'Control') %>% 
-  select_( 'Treatment', 'Period', 'year', .dots =  clim_vars )
-
-clim_covs_2 <- 
-  allClim %>% 
-  ungroup() %>% 
-  filter( Period == 'Modern') %>% 
-  select_( 'Treatment', 'Period', 'year', .dots = clim_vars ) 
-
-clim_means <- colMeans(clim_covs_1[, clim_vars], na.rm = TRUE)
-clim_sds <- apply(clim_covs_1 [ , clim_vars ], 2, FUN = sd, na.rm = TRUE)
-
-clim_covs_1 <- 
-  clim_covs_1 %>% 
-  mutate_each_(funs_("scale", args = list ('center' = TRUE, 'scale' = TRUE)), clim_vars) # scale historical data 
-
-# scale contemporary and Treatment data by historical mean and sd  
-clim_covs_2 <- cbind (clim_covs_2[ , c('Treatment', 'Period', 'year')], 
-       scale( clim_covs_2[, clim_vars ], center = clim_means, scale = clim_sds ) )
-
-ggplot(clim_covs_2 %>% gather_('var', 'val' , clim_vars) , aes( x = year, y = val, color = Treatment )) + geom_point() + geom_line() +  facet_wrap(~ var ) 
-
-
-# -- bind historical and contemporary climte ---------------------------------------------#
-
-clim_covs <- rbind(clim_covs_1, clim_covs_2)
-
-clim_covs <- data.frame(clim_covs)
 
 # ---- output ----------------------------------------------------------------------------# 
 
-saveRDS(clim_covs, 'data/temp_data/all_clim_covs.RDS')
-
-
-
-
-
-
+saveRDS( data.frame( allClim ) , 'data/temp_data/all_clim_covs.RDS')

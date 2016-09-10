@@ -20,7 +20,7 @@ dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
 
 # import old data--------------------------------------------------------
 
-source("R/growth/fetchGrowthData.r")
+source("R/growth/fetchGrowthData.R")
 
 D1 <- fetchGdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir1,distWts=dists)
 D1$Treatment <- "Control"

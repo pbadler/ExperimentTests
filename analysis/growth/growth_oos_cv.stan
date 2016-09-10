@@ -66,21 +66,16 @@ model{
   Y ~ normal(mu, sigma);
 }
 generated quantities {
-  real int_t;
-  vector[N] climpred;
-  vector[N] crowdhat;
-  vector[N] sigmahat;
-  vector[N] muhat;
 
-  vector[N] log_lik; // vector for computing log pointwise predictive density
+  real log_lik; // vector for computing log pointwise predictive density
   
   // Section for calculating log_lik of fitted data 
-  climpred = C*b2;
-  crowdhat = W*w;
-  int_t = normal_rng(a_mu, sig_a); // draw random year effect
-  for(n in 1:N){
-    muhat[n] = int_t + gint[gid[n]] + b1_mu*X[n] + crowdhat[n] + climpred[n];
-    sigmahat[n] = sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001))); 
-    log_lik[n] = normal_log(Y[n], muhat[n], sigmahat[n]);
-  }
+  // for(n in 1:N){
+  //   #log_lik[n] <- normal_log(Y[n], mu[n], sigma[n]);
+  //   log_lik[n] = normal_lpdf(Y[n] | mu[n] , sigma[n]); 
+  // }
+  
+  log_lik = normal_lpdf(Y | mu, sigma );
+  
 }
+
