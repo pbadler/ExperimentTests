@@ -1,18 +1,16 @@
 ##################################################################################################################
 #
-# Fit models to historical data only 
-#
-# Export starting values
+# Get init vals for stan models
 #
 ##################################################################################################################
 
 #---model descriptions --------------------------------------------------------------------------------------------
 #  
-#   m0: null model:                       
-#   m1: climate model:                    w/ climate 
-#   m2: single species model:             w/ climate, w/ intra-specific competition 
-#   m3: single species climate model:     w/ climate, w/ intra-specific competition
-#   m4: full model,                       w/ climate, w/ intra-specific competition, w/ interspecific competition 
+#   m1: null model:                       
+#   m2: climate model:                    w/ climate 
+#   m3: single species model:                         w/ intra-specific competition 
+#   m4: single species climate model:     w/ climate, w/ intra-specific competition
+#   m5: full model:                       w/ climate, w/ intra-specific competition, w/ interspecific competition 
 #
 # ----------------------------------------------------------------------------------------------------------------- 
 
@@ -20,59 +18,80 @@ rm(list = ls())
 
 library(lme4)
 
-dl <- readRDS('data/temp_data/data_lists_for_stan_models.RDS')
-
-test <- dl[[1]]
-spp <- names(dl)[1]
-nchains <- 4 
-
-make_df <- function( sl ) { 
-  
-  N <- sl$N
-  lens <- lapply( sl, length )
-  nrs <- lapply(  sl, nrow ) 
+make_df <- function( x ) { 
+  N <- x$N
+  lens <- lapply( x, length )
+  nrs <- lapply(  x, nrow ) 
   nrs [ sapply( nrs, is.null )  ]  <- 0
   
-  data.frame( sl [ which(lens == N | nrs == N) ]  )
+  data.frame( x [ which(lens == N | nrs == N) ]  )
 } 
 
-test <-  make_df(test ) 
+set_init_vals_list <-  function( model, C_names, W_names ) {  
+  
+  init_vals <- as.list( fixef(model)[1:2] )
+  
+  init_vals <- c(init_vals, as.numeric(data.frame( VarCorr(model) )$sdcor[ c(1,2,4)]))
+  
+  names( init_vals )[1:5] <- c('a_mu', 'b_mu', 'sig_a', 'sig_b1', 'sig_G')
+  
+  b2 <- fixef(model)[C_names]
+  w <- fixef(model)[W_names]
+
+  if( length(b2[!is.na(b2)]) > 0 )  { 
+    init_vals <- c(init_vals, list( b2 = as.numeric(b2[!is.na(b2)])))
+  } 
+  if( length(w[!is.na(w)]) > 0 )  { 
+    init_vals <- c(init_vals, list( w = as.numeric(w[!is.na(w)])))  
+  }
+  
+  # growth variance is size specific in these models 
+  # Choose initial values similar to those from Tredennick's paper 
+  init_vals$tau <- 1           
+  init_vals$tau_size <- 0
+  
+  return( init_vals )
+
+}
 
 
-Cnames <- names(test)[ grep('^C', names(test))] # climate effects 
-Wnames <- names(test)[ grep('^W', names(test))] # competition effects 
-Wintra <- names(test)[ grep(spp, names(test))]
+get_init_vals_growth_models <- function( spp, datalist, ... ) {
 
-# write models --------------------------------------------------------------- # 
-f0 <- 'Y ~ X + (1|gid) + (X|yid)'
-f1 <- paste(f0, paste(Cnames, collapse = ' + ' ), sep = ' + ')
-f2 <- paste(f0, paste(Wintra, collapse = ' + ' ), sep = ' + ')
-f3 <- paste(f0, paste(c(Wintra, Cnames), collapse = ' + '), sep = ' + ')
-f4 <- paste(f0, paste(c(Wnames, Cnames), collapse = ' + '), sep = ' + ')
+  df <- make_df(x = datalist) 
+  
+  C_names <- names(df)[ grep('^C', names(df))] # climate effects 
+  W_names <- names(df)[ grep('^W', names(df))] # competition effects 
+  W_intra <- names(df)[ grep(spp, names(df))]
+  
+  # write models --------------------------------------------------------------- # 
+  f1 <- 'Y ~ X + (1|gid) + (X|yid)'
+  f2 <- paste(f1, paste(C_names, collapse = ' + ' ), sep = ' + ')
+  f3 <- paste(f1, paste(W_intra, collapse = ' + ' ), sep = ' + ')
+  f4 <- paste(f1, paste(c(W_intra, C_names), collapse = ' + '), sep = ' + ')
+  f5 <- paste(f1, paste(c(W_names, C_names), collapse = ' + '), sep = ' + ')
+  
+  fs <- list(f1, f2, f3, f4, f5 ) 
+  # ----------------------------------------------------------------------------- #
+  
+  ms <- lapply( fs, FUN = function( x, ... ) lmer( x , data = df) ) # run models 
+  
+  # set initial values ----------------------------------------
+  init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names ) 
+  
+  return(init_vals)
+}
 
-fs <- c(f0, f1, f2, f3, f4 ) 
-# ----------------------------------------------------------------------------- #
+# input files ----------------------------------------------------------------------#
 
-ms <- lapply(fs, FUN = function( x, ... ) lmer( x, data = test) ) # run models 
+dl <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')
+nchains <- 4
+spp <- names(dl)
 
-m_null <- ms[[5]]
+# run functions---------------------------------------------------------------------# 
+init_vals <- mapply( get_init_vals_growth_models, spp = spp , datalist = dl, USE.NAMES = TRUE, SIMPLIFY = FALSE)
 
-refx <- as.data.frame(VarCorr(m_null))$sdcor
-init_vals <- c(as.numeric(fixef(m_null)), refx)
+# save output ----------------------------------------------------------------------#
 
-init_vals <- cbind(  c(names( fixef(m_null)), as.data.frame(VarCorr(m_null))$grp), init_vals  )
-
-init_vals
-
-# set initial values ----------------------------------------
-
-b2 <- fixef(m_null)[Cnames]
-w <- fixef(m_null)[Wnames]
+saveRDS( init_vals, file = file.path('data/temp_data', 'growth_init_vals.RDS'))
 
 
-
-inits <- rep ( list(list( sigma = init_vals[nrow(init_vals), 2 ],
-                          a_mu = init_vals[1, 2],
-                          b1_mu = init_vals[ 2, 2 ]  ) ), nchains  )
-
-inits

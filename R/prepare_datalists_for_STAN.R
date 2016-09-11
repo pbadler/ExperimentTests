@@ -26,7 +26,7 @@ scale_clim_covs <- function(df , train, hold, clim_vars ){
 } 
 
 
-make_datalist <- function(df, train, hold, clim_vars){ 
+growth_dataframe2datalist <- function(df, train, hold, clim_vars){ 
   
   # Function simply makes list of data for STAN models  
   
@@ -70,49 +70,50 @@ make_datalist <- function(df, train, hold, clim_vars){
   )
 }
 
+make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) { 
+
+
+  clim_vars <- sort(clim_vars ) 
+
+  # -- read data files ---------------------------------------------------------------------# 
+
+  clim_covs <- readRDS(file.path(data_path, clim_file))
+  
+  dfiles <- dir( data_path, pattern = paste0(vr, '.RDS'), full.names = TRUE)
+  
+  spp_names <- as.character( regmatches( dfiles, m = gregexpr( pattern = '([A-Z]{4})', dfiles )))
+  
+  dlist <- lapply( dfiles, readRDS)
+  
+  # -- subset ------------------------------------------------------------------------------#
+  all_data <- lapply(dlist, function(x){ subset(x, year > 1926 & !Treatment %in% c('No_shrub', 'No_grass'))} )
+  
+  all_data <- lapply(all_data, merge, y = clim_covs, by = c('Treatment', 'Period', 'year')) 
+  
+  # -- make training and holding subsets ----------------------------------------------------# 
+  
+  training <- lapply( all_data, function(x) { which(x$Period == "Historical" & x$Treatment == 'Control') } ) 
+  holding  <- lapply( all_data, function(x) { which(x$Period == "Modern" )  } ) 
+  
+  # -- prepare for stan ---------------------------------------------------------------------# 
+  fxn_list <- c('growth_dataframe2datalist', 'survival_dataframe2datalist', 'recruitment_dataframe2datalist')
+  
+  all_data <- mapply( FUN = match.fun( fxn_list [ grep(vr, fxn_list) ]), df = all_data, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
+  
+  names(all_data) <- spp_names
+  
+  # ---- output ------------------------------------------------------------------------------# 
+  
+  saveRDS(all_data, file.path( 'data/temp_data/', paste0( vr, '_data_lists_for_stan.RDS')))
+}
 
 
 # -- select covariates -------------------------------------------------------------------#
-
 clim_vars <- c('T.sp.1', 'T.sp.2', 'P.w.sp.1', 'P.w.sp.2', 'T.su.1', 'T.su.2', 'P.a.0', 'P.a.1')
-clim_vars <- sort(clim_vars)
-
-# -- read data files ---------------------------------------------------------------------# 
-
-clim_covs <- readRDS('data/temp_data/all_clim_covs.RDS')
-
-gf <- dir('data/temp_data/', pattern = 'growth.RDS', full.names = TRUE)
-sf <- dir('data/temp_data/', pattern = 'survival.RDS', full.names = TRUE)
-rf <- dir('data/temp_data/', pattern = 'recruitment.RDS', full.names = TRUE)
-
-spp_names <- as.character( regmatches(c(gf, sf, rf), m = gregexpr( pattern = '([A-Z]{4})', c(gf, sf, rf) )) )
-
-# -- read growth records -----------------------------------------------------------------#
-
-growth <- lapply( gf, readRDS)
-
-# -- merge with all survival records -----------------------------------------------------#
+clim_file <- 'all_clim_covs.RDS'
+data_path <- 'data/temp_data'
 
 
-# -- merge with all recruitment records --------------------------------------------------#
-
-growth <- lapply( growth, function(x){ subset(x, year > 1926 & !Treatment %in% c('No_shrub', 'No_grass'))} )
-
-growth <- lapply(growth, merge, y = clim_covs, by = c('Treatment', 'Period', 'year')) 
-
-# -- make training and holding subsets ----------------------------------------------------# 
-
-training <- lapply( growth, function(x) { which(x$Period == "Historical" & x$Treatment == 'Control') } ) 
-holding  <- lapply( growth, function(x) { which(x$Period == "Modern" )  } ) 
-
-# -- prepare for stan ---------------------------------------------------------------------# 
-
-datalists <- mapply( FUN = make_datalist, df = growth, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
-
-names(datalists) <- spp_names
-
-# ---- output ------------------------------------------------------------------------------# 
-
-saveRDS( datalists, 'data/temp_data/data_lists_for_stan_models.RDS')
+make_stan_datalist('growth', data_path, clim_vars, clim_file )
 
 
