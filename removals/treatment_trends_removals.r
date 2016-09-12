@@ -4,10 +4,10 @@
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
 dataDir <- paste(root,"/driversdata/data/idaho_modern/",sep="")
 
+
 # import data and calculate treatment trends ######################################
 
 covD<-read.csv(paste(dataDir,"allrecords_cover.csv",sep=""))
-names(covD)[which(names(covD)=="Species")] <- "species"  # rename species field
 trts<-read.csv(paste(dataDir,"quad_info.csv",sep=""))
 
 # use this to make sure we don't miss zeros
@@ -116,10 +116,9 @@ png("treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
     }
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
             col=myCols,main=doSpp,font.main=4,lwd=2)
-    if(doSpp==sppList[1]) {
-      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
-      mtext("Mean cover (%)",side=2,line=2,outer=F)
-    }
+    if(doSpp==sppList[1])  mtext("Mean cover (%)",side=2,line=2,outer=F)
+    if(doSpp==sppList[2])  legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
+      
   }
   mtext("Year",side=1,line=1,outer=T)
   

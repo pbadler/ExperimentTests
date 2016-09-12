@@ -1,0 +1,9 @@
+diff a/removals/treatment_trends_removals.r b/removals/treatment_trends_removals.r	(rejected hunks)
+@@ -7,6 +7,7 @@
+ # import data and calculate treatment trends ######################################
+ 
+ covD<-read.csv(paste(dataDir,"allrecords_cover.csv",sep=""))
++names(covD)[which(names(covD)=="Species")] <- "species"  # rename species field
+ trts<-read.csv(paste(dataDir,"quad_info.csv",sep=""))
+ 
+ # use this to make sure we don't miss zeros

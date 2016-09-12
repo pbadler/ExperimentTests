@@ -73,10 +73,10 @@ for(i in 1:4){
           lty=c("solid","dashed","solid","dashed","dotted"),
           col=c(rep("blue3",2),rep("red3",3)))   # removal plots
   title(main=sppNames[i],adj=0,font.main=4) 
-  if(i==3){
-    legend("bottomleft",c("Obs. control","Baseline","Obs. removal","Baseline","Removal"),
-    col=c(rep("blue3",2),rep("red3",3)), 
-    lty=c("solid","dashed","solid","dashed","dotted"),bty="n")
+  if(i==1){
+    legend("topleft",c("Control (observed)","Removal (observed)","Baseline (predicted)","Removal (predicted)"),
+    col=c("blue3","red3","darkgray","darkgray"), 
+    lty=c("solid","solid","dashed","dotted"),bty="n")
   }
 }
 
@@ -101,7 +101,7 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
   
   color1=rgb(0,100,255,alpha=175,maxColorValue = 255)
   color2=rgb(153,0,0,alpha=175,maxColorValue = 255)
-  my.y <- c(-1.2,1) # hard wire ylims
+  my.y <- c(-1.2,1.1) # hard wire ylims
   matplot(newD$year,newD[,2:6],type="o",xlab="",ylab="",ylim=my.y,
     col=c(rep(color1,2),rep(color2,3)),xaxt="n",
     pch=c(16,21,16,21,24),bg="white",
