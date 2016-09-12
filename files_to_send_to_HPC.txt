@@ -1,9 +1,0 @@
-data/temp_data/growth_data_lists_for_stan.RDS
-data/temp_data/growth_init_vals.RDS
-analysis/run_stan_models_no_climate.R
-analysis/run_stan_models.R
-analysis/growth/model_growth_1.stan
-analysis/growth/model_growth_2.stan
-analysis/growth/model_growth_3.stan
-analysis/growth/model_growth_4.stan
-analysis/growth/model_growth_5.stan

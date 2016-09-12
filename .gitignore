@@ -42,10 +42,10 @@ vignettes/*.pdf
 *.RDA
 
 # folders
-figures/*
-data/temp_data/*
-plans_and_materials/*
-output/*
+precip/figures/*
+precip/data/temp_data/*
+precip/plans_and_materials/*
+precip/output/*
 
 # temp 
 *~
