@@ -51,7 +51,7 @@ for (i in 2:(tlimit)){
     #now do conspecific no overlap W
     Ctot[ii]=h[ii]*sum(expv[[ii]]*nt[[ii]]) 
     Cr[[ii]]=splinefun(b.r[[ii]],h[ii]*c(0,cumsum(expv[[ii]]*nt[[ii]])),method="natural")
-    Wmat[[ii]][,ii]=Wrii(v.r[[ii]],ii)/A
+    Wmat[[ii]][,ii]=Wrii(v.r[[ii]],ii,offsets[ii])/A
     
   }
   for(doSpp in 1:Nspp){  
