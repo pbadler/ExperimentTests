@@ -1,7 +1,45 @@
-*.Rproj.user
+# History files
 *.Rhistory
 *.Rapp.history
-*.DS_Store
+
+# Session Data files
+.RData
+
+# Example code in package build process
+*-Ex.R
+
+# RStudio files
+*.Rproj.user/
+*.Rproj.user
+
+# produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+*.httr-oauth
+
+# images
+*.pdf
+*.jpg
+*.png
+
+# documents
+*.doc
+*.docx
+*.ods
+*.ppt
+*.xls
+*.xlsx
+*.odt
+
+# data 
+*.RDS
+*.rds
+*.dat
+*.sqlite
+*.rda
+*.RDA
 *.aux
 *.blg
 *.dvi
@@ -9,5 +47,16 @@
 *.log
 *.toc
 *.synctex.gz
-*.pdf
-*.png
+
+
+# folders
+precip/figures/*
+precip/data/temp_data/*
+precip/plans_and_materials/*
+precip/output/*
+
+# temp 
+*~
+*.DS_Store
+*._.DS_Store
+
