@@ -33,7 +33,7 @@ set_init_vals_list <-  function( model, C_names, W_names ) {
   
   init_vals <- c(init_vals, as.numeric(data.frame( VarCorr(model) )$sdcor[ c(1,2,4)]))
   
-  names( init_vals )[1:5] <- c('a_mu', 'b_mu', 'sig_a', 'sig_b1', 'sig_G')
+  names( init_vals )[1:5] <- c('a_mu', 'b1_mu', 'sig_a', 'sig_b1', 'sig_G')
   
   b2 <- fixef(model)[C_names]
   w <- fixef(model)[W_names]
@@ -48,7 +48,7 @@ set_init_vals_list <-  function( model, C_names, W_names ) {
   # growth variance is size specific in these models 
   # Choose initial values similar to those from Tredennick's paper 
   init_vals$tau <- 1           
-  init_vals$tau_size <- 0
+  init_vals$tauSize <- 0
   
   return( init_vals )
 

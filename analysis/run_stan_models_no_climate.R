@@ -20,39 +20,46 @@ library(rstan)
 args <- commandArgs(trailingOnly=TRUE)
 
 # test if there is at least one argument: if not, return an error
-if (length(args)==6){
+if (length(args) != 7){ 
+  stop('####### Incorrect number of arguments supplied ####### \n
+        ####### Six arguments required:  
+        #######  path: path for folder containing analysis, data and output
+        #######  do_spp: species name "ARTR" "HECO" "PSSP" or "POSE", 
+        #######          multiple species can be run as space separated list 
+        #######          e.g. "ARTR HECO" 
+        #######  do_vr:  vital rate name, "growth" "survival" or "recruitment"
+        #######  do_model:  model number: 1 - 4. Multiple can be run using R 
+        #######             notation e.g. "1:4" or "1,2". 
+        #######  do_prior:  prior stdev for regularization of climate effects. 
+        #######             Multiple can be run using R notation e.g. "1:24" 
+        #######  nchains:  number of chains to run: 1-4 
+        #######  niter:  number of iterations to run per chain')
+}else if (length(args) == 7){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
   args <- commandArgs(trailingOnly = TRUE)
   
-  # example:  args <- c("~/Documents/precip_experiment/", 1, 1, 1, 2)
-  
   setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
   
-  do_spp <- args[2] 
-  do_vr  <- args[3] 
-  do_model <- as.numeric(args[4] )
-  nchains <- as.numeric(args[5] )
-  niter <- as.numeric(args[6] )
-
-}else if(length(args) == 0 ){ 
+  do_spp <- strsplit( args[2], ' ' )[[1]]
+  do_vr <- strsplit( args[3], ' ' )[[1]]
   
-  # defaults ------------------------------------------------------------------# 
-  do_spp <- c('ARTR', 'HECO', 'POSE', 'PSSP')
-  do_vr <- c('growth')
-  do_model <- c(1, 3)
-  nchains <- 4 
-  niter <- 2000
-  # ---------------------------------------------------------------------------#
-  
-}else { stop('Incorrect number of arguments supplied.  Supply either 0 or 6.')}
+  do_model <- as.numeric(eval(parse (text = strsplit( args[4], ' '))))
+  do_prior_sd  <- as.numeric(eval(parse (text = strsplit( args[5], ' '))))
+  nchains <- as.numeric(eval(parse (text = strsplit( args[6], ' '))))
+  niter <- as.numeric(eval(parse (text = strsplit( args[7], ' '))))
 
+}
 
 source('analysis/run_stan_model_fxns.R')
 
 for ( i in do_spp ) { 
-  for ( m in do_model ) {
-    run_stan_model(i, 'growth', m, nchains = nchains, niter = niter)    
+  for (j in do_vr) {
+    for ( k in do_model ) {
+      for( l in do_prior_sd ) { 
+        run_stan_model(i, j, k, l, nchains = nchains, niter = niter)    
+      }
+    }
   }
 }
 

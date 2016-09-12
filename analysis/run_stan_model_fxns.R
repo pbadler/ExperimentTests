@@ -19,7 +19,7 @@ tweak_inits <- function(inits){
   
 }
 
-run_stan_model <- function(do_spp, do_vr, do_model, nchains, niter ) { 
+run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter ) { 
   
   require(rstan)
   
@@ -32,19 +32,20 @@ run_stan_model <- function(do_spp, do_vr, do_model, nchains, niter ) {
   data_file <- dir(data_path, pattern = paste0(do_vr, '_data_lists_for_stan.RDS'), full.names = TRUE )
   init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
 
-  data_list <- readRDS( data_file )[do_spp][[1]]
-  init_vals <- readRDS(init_file)[do_spp][[1]]
+  data_list <- readRDS( data_file )[[do_spp]]
+  init_vals <- readRDS(init_file)[[do_spp]]
   
   models <- dir(file.path(model_path, do_vr), '[0-9].stan', full.names = TRUE)
   
   # -- select model and initial vals -----------------------------------------------------------------------------# 
   
-
   m <- models [do_model]
   
   temp_inits <- init_vals[[do_model]]
   
   # modify data list for model ------------------------------------------------------------------------------------#
+  
+  data_list$tau_beta <- do_prior_sd
   
   #
   # select only intraspecific w's for models with intraspecific crowding only 
