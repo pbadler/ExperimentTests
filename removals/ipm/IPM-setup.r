@@ -98,8 +98,8 @@ expandW=function(v,u,W){
 }
 
 # Function to calculate size-dependent crowding, assuming no overlap
-wrii=function(r,i) {
-return(2*pi*integrate(function(z) z*Wfuns[[i]](z)*Cr[[i]](z-r), r, zc[i])$value)
+wrii=function(r,i,xi=1) {
+return(2*pi*integrate(function(z) z*Wfuns[[i]](z)*Cr[[i]](z-xi*r),xi*r,zc[i])$value)
 }
 Wrii=Vectorize(wrii,vectorize.args="r")
 

@@ -183,7 +183,10 @@ max.CI <- F  # TRUE means use maximum removal effect
 
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
-source("ibm/get_W_functions.r")  # get neighbor distance decay functions
+source("ipm/get_W_functions.r")  # get neighbor distance decay functions
+
+offsets <- read.csv("Wdistrib/OverlapOffsets.csv") # get offsets for extended no-overlap rule
+offsets <- offsets$offset
 
 #no treatment effects, all species
 init.species <- c(1:4)
