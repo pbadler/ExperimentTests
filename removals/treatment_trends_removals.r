@@ -32,7 +32,7 @@ names(sppD.q)[NCOL(sppD.q)]<-"cover"
 write.csv(sppD.q,"QuadYearCover.csv",row.names = FALSE)  # save these 
 
 # focus on all control plots or just those in the big exclosure?
-sppD.q <- subset(sppD.q,Group=="E1")
+# sppD.q <- subset(sppD.q,Group=="E1")
 
 #calculate treatment means by year
 spp.mean <- aggregate(sppD.q$cover,by=list(species=sppD.q$species,Treatment=sppD.q$Treatment,
@@ -112,14 +112,13 @@ png("treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
     if(doSpp==sppList[1]){
       my.y <- c(0,max(tmp.mean[,3:5]))
     }else{
-      my.y<- c(0,2.9)
+      my.y<- c(0,3.2)
     }
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
             col=myCols,main=doSpp,font.main=4,lwd=2)
-    if(doSpp==sppList[1]) {
-      legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
-      mtext("Mean cover (%)",side=2,line=2,outer=F)
-    }
+    if(doSpp==sppList[1])  mtext("Mean cover (%)",side=2,line=2,outer=F)
+    if(doSpp==sppList[2])  legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
+      
   }
   mtext("Year",side=1,line=1,outer=T)
   
@@ -180,39 +179,4 @@ png("treatment_trends_logChange.png",height=3,width=8.5,units="in",res=400)
 
 dev.off()
 
-# #2. Average cover deviation (w.r.t. pretreatment year)
-# pdf("cover_deviation.pdf",height=3,width=8)
-# par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
-# for(doSpp in sppList){
-#   tmp.mean<-subset(spp.mean.diff,species==doSpp)
-#   matplot(tmp.mean$year,tmp.mean[,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-#           col=myCols,main=doSpp)
-# 
-#   if(doSpp==sppList[1]) legend("right",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
-# }
-# mtext("Year",side=1,line=1,outer=T)
-# mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)
-# dev.off()
 
-
-#3. log change
-# hard wire ylims
-myLims <- c(-1,1)
-pdf("log_change.pdf",height=3,width=8)
-par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
-for(doSpp in sppList){
-  tmp.mean<-subset(mean.change,species==doSpp)
-  #remove irrelevant removal treatments
-  if(doSpp=="Artemisia tripartita"){
-    tmp.mean$pcgr.No_shrub <- NA
-  }else{
-    tmp.mean$pcgr.No_grass <- NA
-  }
-  matplot(tmp.mean$year[2:5],tmp.mean[2:5,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-          col=myCols,main=doSpp,ylim=myLims)
-  abline(h=0,col="gray")
-  if(doSpp==sppList[1]) legend("top",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
-}
-mtext("Year",side=1,line=1,outer=T)
-mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)
-dev.off()

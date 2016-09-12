@@ -8,7 +8,7 @@ A=10000 #Area of 100cm x 100cm quadrat
 sppList=c("ARTR","HECO","POSE","PSSP")
 bigM=c(75,75,50,50)     #Set matrix dimension for each species
 maxSize=c(3000,202,260,225)    # in cm^2: PSSP=225 HECO=202  POSE=260  ARTR=3000  # minSize=0.2  cm^2
-Nyrs=30
+Nyrs=31
 doGroup=NA  # NA for spatial avg., values 1-6 for a specific group
 
 #============================================================

@@ -11,6 +11,13 @@ simD <- read.csv("simulations1step/ObsPred_1step.csv")
 
 quad.info <- unique(simD[,c("quad","Treatment","Group")],MARGIN=2)
 
+### calculate mean cover by treatment
+
+covMeans <- aggregate(simD[,3:14],by=list(Treatment=simD$Treatment,year=simD$year),
+    na.rm=T,FUN=mean)
+covMeans[1:3,7:14] <- covMeans[1:3,3:6] # copy initial values across
+covMeans <- covMeans[order(covMeans$Treatment),]
+
 ### calculate per capita growth rates
 
 get.pgr <- function(myname){
@@ -27,7 +34,6 @@ obs.pgr <- get.pgr("obs.")
 pred.pgr <- get.pgr("pred.")
 pred.trt.pgr <- get.pgr("pred.trt.")
 
-
 # aggregate by treatment
 
 get.trt.means<-function(mydat){
@@ -36,10 +42,10 @@ get.trt.means<-function(mydat){
                         FUN=mean,na.rm=T)
   out <- out[order(out$Treatment,out$year),]
   #consolidate removal treatments
-  out[5:8,4:6] <- out[9:12,4:6]
-  out <- out[-c(9:12),]
+  out[6:10,4:6] <- out[11:15,4:6]
+  out <- out[-c(11:15),]
   out$Treatment <- as.character(out$Treatment)
-  out$Treatment[5:8] <- "Removal"
+  out$Treatment[6:10] <- "Removal"
   out
 }
 
@@ -47,7 +53,37 @@ obs.pgr.mean <- get.trt.means(obs.pgr)
 pred.pgr.mean <- get.trt.means(pred.pgr)
 pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 
+###
+### plot observed and predicted cover chronologically
+###
 
+png("cover_projections_1step.png",res=400,width=8.5,height=3,units="in")
+
+par(mfrow=c(1,4),tcl=0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+
+for(i in 1:4){
+  if(i==1){
+    doRows <- which(covMeans$Treatment=="No_grass")
+  }else{
+    doRows <- which(covMeans$Treatment=="No_shrub")
+  }  
+  matplot(covMeans$year[1:6],cbind(covMeans[1:6,2+i],covMeans[1:6,6+i], # control plots
+          covMeans[doRows,2+i],covMeans[doRows,6+i],covMeans[doRows,10+i]),
+          xlab="",ylab="",type="l",
+          lty=c("solid","dashed","solid","dashed","dotted"),
+          col=c(rep("blue3",2),rep("red3",3)))   # removal plots
+  title(main=sppNames[i],adj=0,font.main=4) 
+  if(i==1){
+    legend("topleft",c("Control (observed)","Removal (observed)","Baseline (predicted)","Removal (predicted)"),
+    col=c("blue3","red3","darkgray","darkgray"), 
+    lty=c("solid","solid","dashed","dotted"),bty="n")
+  }
+}
+
+mtext("Year",side=1,line=0.5,outer=T,cex=1)
+mtext("Cover (%)",side=2,line=0.5,outer=T,cex=1)
+
+dev.off()
 
 ###
 ### plot growth rates chronologically 
@@ -56,7 +92,7 @@ pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 plotObsPred<-function(doSpp,mytitle,doLegend=F){
   
   # format data
-  newD=data.frame(year=2011:2014,obs.pgr.mean[obs.pgr.mean$Treatment=="Control",2 + doSpp],
+  newD=data.frame(year=2011:2015,obs.pgr.mean[obs.pgr.mean$Treatment=="Control",2 + doSpp],
                  pred.pgr.mean[pred.pgr.mean$Treatment=="Control",2+doSpp], 
                  obs.pgr.mean[obs.pgr.mean$Treatment=="Removal",2+doSpp],
                  pred.pgr.mean[pred.pgr.mean$Treatment=="Removal",2+doSpp],
@@ -65,12 +101,12 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
   
   color1=rgb(0,100,255,alpha=175,maxColorValue = 255)
   color2=rgb(153,0,0,alpha=175,maxColorValue = 255)
-  my.y <- c(-1.2,1) # hard wire ylims
+  my.y <- c(-1.2,1.1) # hard wire ylims
   matplot(newD$year,newD[,2:6],type="o",xlab="",ylab="",ylim=my.y,
     col=c(rep(color1,2),rep(color2,3)),xaxt="n",
     pch=c(16,21,16,21,24),bg="white",
     lty=c("solid","dotted","solid","dotted","dotted"))
-  axis(1,at=c(2011:2014))
+  axis(1,at=c(2011:2015))
   abline(h=0,lty="solid",col="darkgray")
   # add standard error bars to observed means
 #   arrows(x0=mysd1$year,y0=c(mydata1[,1+doSpp]-mysd1[,1+doSpp]/sqrt(14)), # 14 = number of control plots

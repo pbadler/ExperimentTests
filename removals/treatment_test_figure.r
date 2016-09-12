@@ -7,7 +7,6 @@ if(exists("trtTests")==F)  trtTests <- read.csv("treatment_test_results.csv")
 plotEffects <- function(doStage){
   ii<-which(trtTests$stage==doStage)
   myLims <- c(min(trtTests$CI.02.5[ii],na.rm=T),max(trtTests$CI.97.5[ii],na.rm=T))
-  if(doStage=="recruitment") myLims <- c(-5,0.6)
   plot(c(1:4),trtTests$effect[ii],ylim=myLims,xlim=c(0.5,4.5),xlab="",ylab="",xaxt="n",pch=16)
   axis(1,at=c(1:4),labels=c("ARTR","HECO","POSE","PSSP"),las=2)
   abline(h=0,col="gray")

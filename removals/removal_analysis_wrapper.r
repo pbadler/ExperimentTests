@@ -99,7 +99,7 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-#source("call_recruit_m1.r")
+source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 
 pars.summary <- read.csv("recruit_params_m1.csv")
@@ -149,6 +149,7 @@ rm(list=tmp)
 ###
 
 library("TeachingDemos") # for inset plots
+library("quantreg")
 
 source("Wdistrib/exploreSurvivalWs.R")
 
@@ -165,7 +166,7 @@ sppList <-  c("ARTR","HECO","POSE","PSSP")
 # read in distance weights
 dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
-max.CI <- T  # TRUE means use maximum removal effect
+max.CI <- F  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
 source("ibm/summarize_sims1step.r")
 

@@ -17,7 +17,7 @@ QInv1 <- reshape(QInv1, idvar = "year", times=names(QInv1)[2:NCOL(QInv1)],
                  varying = list(2:NCOL(QInv1)),timevar = "quad", v.names="present",
                  direction = "long")
 QInv2 <- read.csv(paste0("../../../driversdata/data/idaho_modern/quad_inventory.csv"))
-QInv2$year <- c(2007:2015)
+QInv2$year <- c(2007:2016)
 QInv2 <- QInv2[,c("year",names(QInv2)[1:(NCOL(QInv2)-1)])]
 QInv2 <- reshape(QInv2, idvar = "year", times=names(QInv2)[2:NCOL(QInv2)],
                  varying = list(2:NCOL(QInv2)),timevar = "quad", v.names="present",

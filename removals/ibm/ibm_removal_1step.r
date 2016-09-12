@@ -8,7 +8,7 @@ outfile="ibm/simulations1step/ObsPred_1step.csv"
 Nspp=length(sppList)
 
 curDir <- getwd()
-Nyrs <- 30
+Nyrs <- 31
 # set up survival parameters and function
 source("survival/import2ibm_1step.r")
 # set up growth parameters and function
@@ -35,7 +35,7 @@ for(i in 1:length(sppList)){
   
   doSpp <- sppList[i]
   D2 <- fetchSdat(doSpp=doSpp,speciesList=neighborList,datadir=dataDir2,distWts=dists)
-
+  
   # merge in treatment data
   tmp <- read.csv(paste(dataDir2,"/quad_info.csv",sep=""))
   tmp <- tmp[,c("quad","Treatment")]
@@ -82,9 +82,9 @@ cov.obs <- reshape(cov.obs,idvar=c("quad","year"),direction="wide",timevar="spec
 cov.obs[is.na(cov.obs)] <- 0
 cov.obs <- cov.obs[,c(1,2,6,3,4,5)] # reorder columns
 
-# get 2015 quadrat cover totals (these are not in the survival data file)
+# get 2016 quadrat cover totals (these are not in the survival data file)
 tmp <- read.csv("QuadYearCover.csv")
-tmp <- subset(tmp, year==2015)
+tmp <- subset(tmp, year==2016)
 # set removed spp to zero
 tmp$cover[tmp$species=="Artemisia tripartita" & tmp$Treatment=="No_shrub"] <- 0
 tmp$cover[tmp$species!="Artemisia tripartita" & tmp$Treatment=="No_grass"] <- 0
@@ -136,7 +136,7 @@ cov.pred[is.na(cov.pred)] <- 0
 out.recruit <- out.recruit.trt <- data.frame(quad=cov.obs$quad,year=as.numeric(cov.obs$year),matrix(NA,dim(cov.obs)[1],4))
 names(out.recruit)[3:6] <- sppList
 names(out.recruit.trt)[3:6] <- sppList
-out.recruit <- subset(out.recruit,year<2015); out.recruit.trt <- subset(out.recruit.trt,year<2015)
+out.recruit <- subset(out.recruit,year<2016); out.recruit.trt <- subset(out.recruit.trt,year<2016)
 for(k in 1:dim(out.recruit)[1]){
     
     totArea <- cov.obs[which(cov.obs$year==out.recruit$year[k] & cov.obs$quad==out.recruit$quad[k]),3:6]

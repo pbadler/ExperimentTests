@@ -1,5 +1,5 @@
 
-fetchSdat <- function(doSpp,speciesList,datadir,distWts){
+fetchSdatRings <- function(doSpp,speciesList,datadir,distWts){
 
   infile=paste(datadir,"/speciesdata/",doSpp,"/survD.csv",sep="")
   survD=read.csv(file=infile)
@@ -31,18 +31,6 @@ fetchSdat <- function(doSpp,speciesList,datadir,distWts){
     C <- data.matrix(D1[,neighborCols]) #matrix of conspecific areas in the annuli 
     W[,iSpp] <- C%*%dist_wts 
   }
-  
-  # do allcov and allpts
-  for(iSpp in 5:6){
-    neighborCols=which(substr(names(D1),1,6)==speciesList[iSpp]) # pull out annulus data for the focal species 
-    dist_wts <- distWts[,paste0(speciesList[iSpp])]
-    C <- data.matrix(D1[,neighborCols]) #matrix of conspecific areas in the annuli 
-    W[,iSpp] <- C%*%dist_wts 
-  }
-  
-  #format
-  D1 <- D1[,c("species","quad","year","trackID","age","logarea","survives","distEdgeMin","allEdge","QuadName","Grazing","Group")]
-  D1 <- cbind(D1,W)
   
   return(D1)
 
