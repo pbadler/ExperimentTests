@@ -28,8 +28,8 @@ transformed parameters{
   vector[N] mu;
   real<lower=0> sigma[N];
   for(n in 1:N){
-    mu[n] = a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n];
-    sigma[n] = sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
+    mu[n] <- a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n];
+    sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
 }
 model{
@@ -53,16 +53,13 @@ model{
 }
 generated quantities {
 
-  real log_lik; // vector for computing log pointwise predictive density
-  
-  real log_lik2[N]; // second vector
-  
   // Section for calculating log_lik of fitted data 
-  for(n in 1:N){
-    log_lik2[n] = normal_lpdf(Y[n] | mu[n] , sigma[n]); 
-  }
   
-  log_lik = normal_lpdf(Y | mu, sigma );
+  vector[N] log_lik; 
+  
+  for(n in 1:N){
+    log_lik[n] <- normal_log(Y[n], mu[n] , sigma[n]); 
+  }
   
 }
 

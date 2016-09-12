@@ -9,9 +9,8 @@
 ##  m separate models for each species and vital rate. Models that include
 ##  climate effects are run for each level of n prior standard deviation 
 ##  for regularization of the climate effects parameters. Script will launch 
-##  l + n*c models:  'l' = number of models without climate effects, 'c' 
-##  the number of models with climate effects and 'n' the number of prior 
-##  standard deviations. 
+##  n*c models:  where 'c' is the the number of models with climate effects 
+##  and 'n' the number of prior standard deviations. 
 ##
 ##  Saved output:
 ##    Save full model output from each model  
@@ -36,15 +35,16 @@ tweak_inits <- function(inits){
   
 }
 
-# -- read in growth data lists and initial values --------------------------------------------------------# 
+# -- read in growth data lists and initial values ---------------------------------------------------------# 
 
-# ---Set SD Prior and CV Set from Command Line Arguments -------------------------------------------------#
+# ---Set SD Prior from Command Line Arguments -------------------------------------------------------------#
 
-args <- commandArgs(trailingOnly = F)
-myargument <- tail( args, 2)
+args <- commandArgs(trailingOnly = TRUE)
 
-do_spp <- myargument[1]
-do_vr  <- myargument[2]
+do_spp <- args[1]
+do_vr  <- args[2]
+do_sd  <- args[3]
+nchains <- args[4]
 
 # Set up regularization grid ------------------------------------------------------------------------------#
 
@@ -72,39 +72,7 @@ m <- length(init_vals)
 C <- grep( 'b2', lapply ( init_vals, names )) # models with climate 
 l <- c(1:5)[ - grep('b2', lapply ( init_vals, names ) ) ] # models without climate 
 
-# Fit model -----------------------------------------------------------------------------------------------#
-
-nchains <- 0 
-
-# run models without climate effects   
-
-for( i in l ) {           
-  
-  temp_data <- data_list
-  temp_inits <- init_vals[[i]]
-  
-  # -- select only intraspecific w's for models with intraspecific crowding only --------------------------------# 
-  
-  if( 'w' %in% names( temp_inits )  ) { 
-    if( length(temp_inits$w) == 1) { 
-      
-      w_names <- colnames(temp_data$W)
-      temp_data$W <- temp_data$W[ ,  grep(pattern = do_spp, w_names) ] 
-      temp_data$Whold <- temp_data$Whold[ , grep(pattern = do_spp, w_names) ]
-      temp_data$W_covs <- 1 
-    } 
-  }
-  
-  # ---------------------------------------------------------------------------------------------------------#
-  
-  save_file <- file.path( output_path, paste(do_spp, do_vr, i, sep = '_'))
-  
-  temp_fit <- stan(file = models[i], model_name = basename(save_file), init = init_vals[[i]], data = temp_data, chains = nchains, cores = max( 1, nchains) )
-  
-  saveRDS(temp_fit, file = paste0( save_file, '.RDS'))
-}
-
-# run models with climate effects   
+# run models -----------------------------------------------------------------------------------------------# 
 
 run_stan_iteration <- function(n.beta, stan_fit, do_spp, do_vr, model_num, datalist, inits, output_path = 'analysis', ... ) { 
   

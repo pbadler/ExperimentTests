@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 ##########################################################################
 #
 ##  Run from the command line given argument for species, vital rate and 
@@ -13,77 +15,46 @@
 ##########################################################################
 
 rm(list = ls())
-
 library(rstan)
 
-tweak_inits <- function(inits){ 
+args <- commandArgs(trailingOnly=TRUE)
+
+# test if there is at least one argument: if not, return an error
+if (length(args)==6){
   
-  inits + runif(length(inits), -0.001, 0.001)
+  # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
+  args <- commandArgs(trailingOnly = TRUE)
   
-}
-
-project_wd <- '~/Documents/precip_experiment/' # set to directory with the "data", "analysis" and "output" folders
-setwd(project_wd)
-
-data_path <- 'data/temp_data'
-model_path <- 'analysis'
-output_path <- 'output/stan_fits'
-
-# ---Set species and vital rate ---------------------------------------------------------------------------#
-
-args <- commandArgs(trailingOnly = TRUE)
-
-do_spp <- args[1]
-do_vr  <- args[2]
-nchains <- args[3]
-
-#do_vr <- 'growth'
-#do_spp <- 'ARTR'
-
-# read in data and models ---------------------------------------------------------------------------------#
-
-data_file <- dir(data_path, pattern = paste0(do_vr, '_data_lists_for_stan.RDS'), full.names = TRUE )
-init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
-
-data_list <- readRDS( data_file )[do_spp][[1]]
-init_vals <- readRDS(init_file)[do_spp][[1]]
-
-models <- dir(file.path(model_path, do_vr), '[0-9].stan', full.names = TRUE)
-
-# -- select models without climate effects ----------------------------------------------------------------------# 
-
-m <- length(init_vals)
-C <- grep( 'b2', lapply ( init_vals, names )) # models with climate 
-l <- c(1:5)[ - grep('b2', lapply ( init_vals, names ) ) ] # models without climate 
-
-
-# Fit model -----------------------------------------------------------------------------------------------------#
-
-for( i in l ) {           
+  # example:  args <- c("~/Documents/precip_experiment/", 1, 1, 1, 2)
   
-  save_file <- file.path( output_path, paste(do_spp, do_vr, i, sep = '_'))
+  setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
   
-  temp_data <- data_list
-  temp_inits <- init_vals[[i]]
+  do_spp <- args[2] 
+  do_vr  <- args[3] 
+  do_model <- as.numeric(args[4] )
+  nchains <- as.numeric(args[5] )
+  niter <- as.numeric(args[6] )
+
+}else if(length(args) == 0 ){ 
   
-  # -- select only intraspecific w's for models with intraspecific crowding only --------------------------------# 
+  # defaults ------------------------------------------------------------------# 
+  do_spp <- c('ARTR', 'HECO', 'POSE', 'PSSP')
+  do_vr <- c('growth')
+  do_model <- c(1, 3)
+  nchains <- 4 
+  niter <- 2000
+  # ---------------------------------------------------------------------------#
   
-  if( 'w' %in% names( temp_inits )  ) { 
-    if( length(temp_inits$w) == 1) { 
-      
-      w_names <- colnames(temp_data$W)
-      temp_data$W <- temp_data$W[ ,  grep(pattern = do_spp, w_names) ] 
-      temp_data$Whold <- temp_data$Whold[ , grep(pattern = do_spp, w_names) ]
-      temp_data$W_covs <- 1 
-    } 
+}else { stop('Incorrect number of arguments supplied.  Supply either 0 or 6.')}
+
+
+source('analysis/run_stan_model_fxns.R')
+
+for ( i in do_spp ) { 
+  for ( m in do_model ) {
+    run_stan_model(i, 'growth', m, nchains = nchains, niter = niter)    
   }
-  
-  
-  # -------------------------------------------------------------------------------------------------------------#
-  
-  temp_fit <- stan(file = models[i], model_name = basename(save_file), init = init_vals[[i]], data = temp_data, chains = nchains, cores = max( 1, nchains) )
-  
-  # -- output ---------------------------------------------------------------------------------------------------#
-  
-  saveRDS(temp_fit, file = paste0( save_file, '.RDS'))
 }
+
+
+

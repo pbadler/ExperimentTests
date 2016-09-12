@@ -68,16 +68,14 @@ model{
 }
 generated quantities {
 
-  real log_lik; // vector for computing log pointwise predictive density
-  
-  vector[N] log_lik2; // second vector
-  
   // Section for calculating log_lik of fitted data 
+  
+  vector[N] log_lik; 
+  
   for(n in 1:N){
-    log_lik2[n] = normal_lpdf(Y[n] | mu[n] , sigma[n]); 
+    log_lik[n] <- normal_log(Y[n], mu[n] , sigma[n]); 
   }
   
-  log_lik = normal_lpdf(Y | mu, sigma );
-  
 }
+
 
