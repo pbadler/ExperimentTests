@@ -7,7 +7,8 @@ Nspp=length(sppList)
 sppNames=c("A. tripartita","H. comata","Poa secunda","P. spicata")
 myCol=c("black","forestgreen","blue","red")
 
-simD <- read.csv("simulations1step/ObsPred_1step.csv")
+infile <- ifelse(max.CI==F,"simulations1step/ObsPred_1step.csv","simulations1step/ObsPred_1step_maxCI.csv")
+simD <- read.csv(infile)
 
 quad.info <- unique(simD[,c("quad","Treatment","Group")],MARGIN=2)
 
@@ -56,8 +57,8 @@ pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 ###
 ### plot observed and predicted cover chronologically
 ###
-
-png("cover_projections_1step.png",res=400,width=8.5,height=3,units="in")
+figName <- ifelse(max.CI==F,"cover_projections_1step.png","cover_projections_1step_maxCI.png" )
+png(figName,res=400,width=8.5,height=3,units="in")
 
 par(mfrow=c(1,4),tcl=0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 
@@ -121,7 +122,8 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
   }
 }
 
-png("cover_change_chrono.png",units="in",height=3,width=8.5,res=600)
+figName <- ifelse(max.CI==F,"cover_change_chrono.png","cover_change_chrono_maxCI.png" )
+png(figName,units="in",height=3,width=8.5,res=600)
   
   par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
   
