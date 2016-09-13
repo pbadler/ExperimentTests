@@ -28,8 +28,11 @@ periods <- data.frame( rbind( p1, p2, p3 ))
 
 # ----- read in data --------------------------------------------------------------------#
 
-station_dat <- read.csv('data/USSES_climate_monthly.csv')
-season <- read.csv('data/season_table.csv')
+# set to driversdata project 
+data_dir <- '~/driversdata/data/idaho_modern'
+
+station_dat <- read.csv(file.path(data_dir, 'climateData/USSES_climate_monthly.csv'))
+season <- read.csv(file.path(data_dir, 'soil_moisture_data/data/season_table.csv'))
 
 # ---process dates----------------------------------------------------------------------#
 
