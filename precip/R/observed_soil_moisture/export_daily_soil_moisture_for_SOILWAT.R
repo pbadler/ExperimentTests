@@ -6,10 +6,13 @@ library( tidyr )
 library(ggplot2)
 library(stringr)
 
+if( ! dir.exists('data/temp_data/soil_files') ) { dir.create('data/temp_data/soil_files/')}
+
 soil <- readRDS('data/temp_data/decagon_data_with_station_data.RDS')
 
 soil_export <- 
   soil %>% 
+  ungroup() %>% 
   filter( measure == 'VWC', 
           stat == 'raw', 
           bad_values == 0, 

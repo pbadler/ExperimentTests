@@ -4,14 +4,39 @@ rm(list = ls () )
 library( dplyr ) 
 library( tidyr )
 
+if( ! dir.exists('data/temp_data/weather_files') ) { dir.create('data/temp_data/weather_files/')}
+
+# --- functions -----------------------------------------------------------------------#
+
+write_with_header <- function(x, file, header, f = write.table, ...){
+  
+  datafile <- file(file, open = 'wt')
+  
+  on.exit(close(datafile))
+  
+  if(!missing(header)) writeLines(header,con=datafile)
+  
+  f(x, datafile,...)
+}
+
+make_header <- function( prefix, df, station, year) { 
+  
+  paste0( '#', prefix, station, ' year = ', year, '\n#', 'DOY', ' ', 'Tmax(C)', ' ', 'Tmin(C)', ' ', 'PPT(cm)')  
+  
+}
+
+# -- input -------------------------------------------------------------------------------#
+
 station_dat <- read.csv('data/USSES_climate.csv')
+
+
+# --- process ----------------------------------------------------------------------------# 
+
 station_dat$date <- as.POSIXct( strptime( station_dat$DATE, format = '%Y%m%d', tz = 'MST')    )
 
 station_dat <- station_dat %>% select( date, STATION, STATION_NAME, LATITUDE, LONGITUDE, ELEVATION, PRCP, SNWD, SNOW, TMAX, TMIN )  
 
 station_dat <- station_dat %>% mutate( LONGITUDE = LONGITUDE[which.max(date)], LATITUDE = LATITUDE[ which.max(date )], ELEVATION = ELEVATION[ which.max(date )] )
-
-head(station_dat)
 
 station_dat$year <- strftime(station_dat$date, '%Y')
 station_dat$DOY <- as.numeric( strftime( station_dat$date, '%j'))
@@ -25,23 +50,8 @@ station_dat <- merge( df,station_dat, by = c('year', 'DOY'), all.x = T, all.y = 
 
 year_list <- split( station_dat[ , c('DOY', 'TMAX', 'TMIN', 'PPT') ], station_dat$year)
 
-write_with_header <- function(x, file, header, f = write.table, ...){
 
-  datafile <- file(file, open = 'wt')
-
-  on.exit(close(datafile))
-
-  if(!missing(header)) writeLines(header,con=datafile)
-
-  f(x, datafile,...)
-}
-
-make_header <- function( prefix, df, station, year) { 
-  
-  paste0( '#', prefix, station, ' year = ', year, '\n#', 'DOY', ' ', 'Tmax(C)', ' ', 'Tmin(C)', ' ', 'PPT(cm)')  
-  
-}
-
+# -- output -----------------------------------------------------------------------------#
 
 for ( i in 1:length( year_list) ) { 
   

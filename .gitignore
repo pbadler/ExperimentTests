@@ -60,3 +60,4 @@ precip/output/*
 *.DS_Store
 *._.DS_Store
 
+.Rproj.user

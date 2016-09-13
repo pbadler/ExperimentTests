@@ -1,8 +1,8 @@
 
 ###########################################################################
 #
-# Output monthly summaries of climate for historical period, long-term average 
-# and contemporary period. 
+# Output monthly summaries of climate for historical Period, long-term average 
+# and contemporary Period. 
 #
 ###########################################################################
 
@@ -40,7 +40,7 @@ my_colors <- c( '#8da0cb', 'gray','#fc8d62')
 monthly_stats <- 
   monthly %>% 
   gather( var, val , TPCP:MMNT ) %>% 
-  group_by( var, period, month  ) %>% 
+  group_by( var, Period, month  ) %>% 
   summarise( avg = mean(val, na.rm = TRUE), 
              sd = sd(val, na.rm = TRUE), 
              n = n() , 
@@ -55,7 +55,7 @@ monthly_stats <-
              extreme_high_year = year[ which.max( val ) ], 
              extreme_low_year = year[ which.min(val) ]) %>% 
   mutate( month_label = factor(month, labels = c(month.abb)), 
-          period_label = factor( period, levels = c('historical', 'not monitored', 'contemporary'), ordered = TRUE), 
+          Period_label = factor( Period, levels = c('Historical', 'not monitored', 'Modern'), ordered = TRUE), 
           var_label = factor( var , 
                               levels = c('MMNT', 'MNTM', 'MMXT', 'TPCP'), 
                               labels = c('Mean~monthly~temperature~degree*C', 
@@ -67,7 +67,7 @@ annual_stats  <-
   annual %>% 
   mutate( TPPT = TPPT*10) %>% 
   gather( var, val, TPPT:MAT ) %>% 
-  group_by( var, period ) %>% 
+  group_by( var, Period ) %>% 
   summarise( avg = mean(val), 
              sd = sd(val), 
              n = n(), 
@@ -81,7 +81,7 @@ annual_stats  <-
              max = max(val ), 
              extreme_low_year = year[ which.min(val ) ], 
              extreme_high_year = year[ which.max( val ) ]) %>% 
-  mutate(Period = factor( period, levels = c('historical', 'not monitored', 'contemporary'), labels = c('Historical', 'Not monitored', 'Contemporary'), ordered = TRUE), 
+  mutate(Period = factor( Period, levels = c('Historical', 'not monitored', 'Modern'), labels = c('Historical', 'not monitored', 'Modern'), ordered = TRUE), 
          Period_lab = factor( Period, labels = c('Hist', 'Not mon.', 'Cont')), 
          var_label = factor( var , levels = c('MAT', 'TPPT'), labels = c('Mean~annual~temperature~degree*C', 'Mean~annual~precip~(mm)')))
 
@@ -90,7 +90,7 @@ annual_stats  <-
 
 month_plot <- 
   function(df ) { 
-    ggplot( df, aes( x = month_label, group = period_label, color = period_label,  fill = period_label, y = avg, ymin = LCL, ymax = UCL  ) ) + 
+    ggplot( df, aes( x = month_label, group = Period_label, color = Period_label,  fill = Period_label, y = avg, ymin = LCL, ymax = UCL  ) ) + 
       geom_point ( position = position_dodge(width = 0.8), size = 2) +
       geom_errorbar( position = position_dodge(width = 0.8), size = 1 ) + 
       scale_color_manual(values = my_colors) + 
@@ -154,15 +154,15 @@ plot_all <- grid.arrange(arrangeGrob(p1, p2, p3, p4, ncol = 2, widths = c(0.55, 
 annual_out <- 
   annual_stats %>%
   ungroup(.)  %>% 
-  select(var_label, period, avg, sd, n, UCL, LCL, start_year, end_year, min, max, extreme_low_year, extreme_high_year)
+  select(var_label, Period, avg, sd, n, UCL, LCL, start_year, end_year, min, max, extreme_low_year, extreme_high_year)
 
 monthly_out <- 
   monthly_stats %>% 
   ungroup(.) %>% 
-  select( var_label, period, month, month_label, avg, sd, n, UCL, LCL, start_year, end_year, min, max, extreme_low_year, extreme_high_year )
+  select( var_label, Period, month, month_label, avg, sd, n, UCL, LCL, start_year, end_year, min, max, extreme_low_year, extreme_high_year )
 
 
-# save --------- 
+# save -----------------------------------------------------------------------------------
 
 write.csv(x =  annual_out , file = 'output/annual_climate_stats.csv' ) 
 
@@ -172,49 +172,4 @@ ggsave(filename = 'figures/plot_climate_averages_by_month.png',device = 'png', p
 
 
 
-
 # ---------------------------------------------------------------------------------------
-
-MAT <- ts( ( climate %>% filter( treatment == 'control') %>% arrange( year) %>% distinct(year) %>% filter(year < 2016))$MAT )
-
-acf(MAT)
-pacf( MAT)
-
-arima(MAT, order = c(0, 0, 0))
-arima(MAT, order = c(1, 0, 0))
-arima(MAT, order = c(1, 0, 1))
-arima(MAT, order = c(2, 0, 0))
-arima(MAT, order = c(3, 0, 0))
-
-arima(MAT, order = c(0, 0, 1))
-arima(MAT, order = c(0, 0, 2))
-arima(MAT, order = c(1, 0, 3))
-?arima
-m <- arima(MAT, order = c(1,0,1))
-plot( m$residuals)
-plot( MAT, type = 'l')
-
-t <- 1:length(MAT)
-summary(lm(MAT ~ t ))
-summary(lm( m$residuals ~ t ))
-
-plot ( MAT, type = 'l', x = 1924 + t)
-
-# 
-
-MAP <- ts( ( climate %>% arrange( year) %>% distinct(year) %>% filter(year < 2016))$TPPT )
-
-acf(MAP)
-pacf( MAP)
-
-arima(MAP, order = c(1, 0, 1))
-arima(MAP, order = c(1, 0, 0))
-arima(MAP, order = c(0, 0, 1))
-arima(MAP, order = c(0, 0, 0))
-m<- arima(MAP, order = c(1, 0, 0))
-
-plot(m$residuals)
-t <- 1:length(MAP)
-
-summary(lm(residuals(m) ~ t ))
-summary(lm(MAP ~ t))

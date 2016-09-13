@@ -69,9 +69,13 @@ gather_ports <- function ( test ) {
     separate(col = port, into = c('port', 'measure') , sep = '_') 
 } 
 
+# read in ------------------------------------------------------------------------------# 
+
 q_info <- read.csv('data/quad_info.csv') 
 
 folders <- dir('data/soil_moist_data', pattern = '20[0-9]{2}_[1-2]$', full.names = TRUE)
+
+# --------------------------------------------------------------------------------------#
 
 data_list <- list(NA)
 

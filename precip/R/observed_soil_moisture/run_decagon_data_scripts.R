@@ -4,7 +4,11 @@
 # 
 ###############################################################################
 
-source('R/observed_soil_moisture/import_and_format_decagon_data.R')
+home <- '~'
+# setwd(file.path(home, 'driversdata', 'data', 'idaho_modern', 'soil_moisture'))
+setwd(file.path( home, 'Documents','ExperimentTests', 'precip', 'R'))
+
+source('import_and_format_decagon_data.R')
 
 source('R/observed_soil_moisture/correct_decagon_dates.R')
 
