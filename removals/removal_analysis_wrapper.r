@@ -170,6 +170,10 @@ max.CI <- F  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
 source("ibm/summarize_sims1step.r")
 
+max.CI <- T  # TRUE means use maximum removal effect
+source("ibm/ibm_removal_1step.r")
+source("ibm/summarize_sims1step.r")
+
 # clean up
 tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)

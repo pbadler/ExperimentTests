@@ -2,7 +2,7 @@
 # Predict survival and growth of each plant and recruitment in each quadrat*year
 # PBA 5/25/2016
 
-outfile="ibm/simulations1step/ObsPred_1step.csv"
+outfile=ifelse(max.CI==F,"ibm/simulations1step/ObsPred_1step.csv","ibm/simulations1step/ObsPred_1step_maxCI.csv")
 
 # FORMAT PARAMETERS ------------------------------------------------
 Nspp=length(sppList)
