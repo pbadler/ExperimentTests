@@ -27,7 +27,7 @@ make_df <- function( x ) {
   data.frame( x [ which(lens == N | nrs == N) ]  )
 } 
 
-set_init_vals_list <-  function( model, C_names, W_names ) {  
+set_init_vals_list <-  function( model, C_names, W_names, dl ) {  
   
   init_vals <- as.list( fixef(model)[1:2] )
   
@@ -49,6 +49,14 @@ set_init_vals_list <-  function( model, C_names, W_names ) {
   # Choose initial values similar to those from Tredennick's paper 
   init_vals$tau <- 1           
   init_vals$tauSize <- 0
+  
+  # random effects initial values need to be specified for STAN 2.6.0
+  nyrs <- length(unique(model@frame$yid) )
+  G <- length(unique(model@frame$gid)) 
+  
+  init_vals$a <- rep(0, nyrs)
+  init_vals$b1 <- rep(0, nyrs) 
+  init_vals$gint <- rep(0, G) 
   
   return( init_vals )
 
