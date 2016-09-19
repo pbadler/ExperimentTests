@@ -38,11 +38,11 @@ transformed parameters{
   real<lower=0> sigma[N];
   vector[N] climEff;
   vector[N] crowdEff;
-  climEff = C*b2;
-  crowdEff = W*w;
+  climEff <- C*b2;
+  crowdEff <- W*w;
   for(n in 1:N){
-    mu[n] = a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
-    sigma[n] = sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
+    mu[n] <- a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
+    sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
 }
 model{

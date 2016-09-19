@@ -12,5 +12,4 @@ get_recruitment_files <- dir('R', pattern = 'get.*recruitment\\.R', recursive = 
 
 lapply( c(get_growth_files, get_survival_files, get_recruitment_files), source) 
 
-#TODO write functions to export to HPC server 
 
