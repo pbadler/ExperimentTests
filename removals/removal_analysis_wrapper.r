@@ -17,6 +17,9 @@ library(lme4)
 statsOutput <- paste0(getwd(),"/stats_tables.tex")
 source("treatment_trends_removals.r")
 
+# make climate figure
+source("climate_fig.r")
+
 # clean up
 tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)
