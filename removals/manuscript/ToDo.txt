@@ -1,6 +1,5 @@
--Legend in cover change fig.
--Colors in IPM boxplots?
--References!
+
+-ask Steve for Metcalfe et al. 2016
 -Giles edits
 -Appendix text edits
 	-add extended no-overlap

@@ -116,9 +116,9 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
 #          x1=mysd2$year,y1=c(mydata2[,1+doSpp]+mysd2[,1+doSpp]/sqrt(8)),length=0.05,angle=90,code=3,col=color2)  
   title(main=mytitle,adj=0,font.main=4)  
   if(doLegend==T){
-    legend("bottomleft",c("Control","Baseline model","Removal","Baseline model","Removal model"),
-    col=c(rep(color1,2),rep(color2,3)), pch=c(16,21,16,21,24),pt.bg = "white",
-    lty=c("solid","dotted","solid","dotted","dotted"),bty="n")
+    legend("bottomleft",c("Control (observed)","Removal (observed)","Baseline (predicted)","Removal (predicted)"),
+    col=c(color1,color2,"darkgray","darkgray"), 
+    lty=c("solid","solid","dashed","dotted"),bty="n")
   }
 }
 
