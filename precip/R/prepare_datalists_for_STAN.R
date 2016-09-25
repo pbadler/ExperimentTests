@@ -22,6 +22,9 @@ scale_clim_covs <- function(df , train, hold, clim_vars ){
   training_df[ , clim_vars] <- scale( training_df[ , clim_vars], center = TRUE, scale = TRUE)
   holding_df[  , clim_vars] <- scale( holding_df[  , clim_vars], center = clim_means, scale = clim_sds )
   
+  training_df <-  training_df [ order(training_df$year), ]
+  holding_df  <-  holding_df [ order(holding_df$year), ]
+  
   return( list( training_df, holding_df) ) 
 } 
 
@@ -60,11 +63,14 @@ growth_dataframe2datalist <- function(df, train, hold, clim_vars){
   Chold     <- holding_df[ , clim_vars]                           # climate matrix, modern data 
   Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data 
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data 
+  yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
+  nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data 
+  treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments 
   
   return( 
     list(
       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, W = W, W_covs = W_covs,
-      gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, Whold = Whold, 
+      gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, Whold = Whold, yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
       tau_beta = 1
     )
   )
@@ -98,18 +104,20 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
   # -- prepare for stan ---------------------------------------------------------------------# 
   fxn_list <- c('growth_dataframe2datalist', 'survival_dataframe2datalist', 'recruitment_dataframe2datalist')
   
-  all_data <- mapply( FUN = match.fun( fxn_list [ grep(vr, fxn_list) ]), df = all_data, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
+  all_data_list <- mapply( FUN = match.fun( fxn_list [ grep(vr, fxn_list) ]), df = all_data, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
   
-  names(all_data) <- spp_names
-  
+  names(all_data_list) <- spp_names
+
   # ---- output ------------------------------------------------------------------------------# 
   
-  saveRDS(all_data, file.path( 'data/temp_data/', paste0( vr, '_data_lists_for_stan.RDS')))
+  saveRDS(all_data_list, file.path( 'data/temp_data/', paste0( vr, '_data_lists_for_stan.RDS')))
+  
 }
 
 
 # -- select covariates -------------------------------------------------------------------#
-clim_vars <- c('T.sp.1', 'T.sp.2', 'P.w.sp.1', 'P.w.sp.2', 'T.su.1', 'T.su.2', 'P.a.0', 'P.a.1')
+clim_vars <- c( 'P.a.0', 'P.a.1', 'P.w.sp.1', 'P.w.sp.2', 'T.sp.1', 'T.sp.2', 'T.su.1', 'T.su.2')
+
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'
 

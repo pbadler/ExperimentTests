@@ -19,7 +19,7 @@ library(rstan)
 
 # hard code in list of species and vital rate names 
 
-spp_list <- c('ARTR', 'HECO', 'PSSP', 'POSE')
+spp_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 vr_list <- c('growth', 'survival', 'recruitment')
 
 args <- commandArgs(trailingOnly=TRUE)
@@ -111,7 +111,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter,
   
   # modify data list for model ------------------------------------------------------------------------------------#
   
-  n.beta <- 24
+  n.beta <- 30
   sd_vec <- seq(0.1,1.5,length.out = n.beta)
   
   data_list$tau_beta <- sd_vec[do_prior_sd]  # modify prior for regularization 
