@@ -17,6 +17,9 @@ library(lme4)
 statsOutput <- paste0(getwd(),"/stats_tables.tex")
 source("treatment_trends_removals.r")
 
+# make climate figure
+source("climate_fig.r")
+
 # clean up
 tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)
@@ -99,7 +102,7 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-source("call_recruit_m1.r")
+#source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 
 pars.summary <- read.csv("recruit_params_m1.csv")
