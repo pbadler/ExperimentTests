@@ -4,6 +4,8 @@ data{
   int<lower=0> npreds;
   int<lower=0> Yrs; // years
   int<lower=0> yid[N]; // year id
+  int<lower=0> nyrs_out; // years out 
+  int<lower=0> yid_out[npreds]; //year out id
   int<lower=0> Covs; // climate covariates
   real<lower=0> tau_beta; // prior sdev for climate effects
   int<lower=0> G; // groups
@@ -60,15 +62,24 @@ model{
   Y ~ normal(mu, sigma);
 }
 generated quantities {
-
-  // Section for calculating log_lik of fitted data 
-  
-  vector[N] log_lik; 
-  
-  for(n in 1:N){
-    log_lik[n] <- normal_log(Y[n], mu[n] , sigma[n]); 
+  vector[nyrs_out] a_out;
+  vector[nyrs_out] b1_out;
+  vector[npreds] climpred;
+  vector[npreds] sigmahat;
+  vector[npreds] muhat;
+  vector[npreds] y_hat;
+  vector[npreds] log_lik; // vector for computing log pointwise predictive density
+  climpred <- Chold*b2;
+  for( i in 1:nyrs_out){
+    a_out[i] <- normal_rng(a_mu, sig_a); // draw random year intercept 
+    b1_out[i] <- normal_rng(b1_mu, sig_b1); //draw random year x size effect 
   }
-  
+  for(n in 1:npreds){
+    muhat[n] <- a_out[yid_out[n]] + gint[gid_out[n]] + b1_out[yid_out[n]]*Xhold[n] + climpred[n];
+    sigmahat[n] <- sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001))); 
+    
+    y_hat[n] <- normal_rng(muhat[n], sigmahat[n]);
+    log_lik[n] <- normal_log(y_holdout[n], muhat[n], sigmahat[n]);
+  }
 }
-
 
