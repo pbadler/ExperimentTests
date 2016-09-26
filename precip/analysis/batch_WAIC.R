@@ -76,7 +76,7 @@ file_df <- data.frame(fn = files )
 if( nrow(file_df) == 1){
   
     file_df <-  data.frame(file_df, waic(readRDS(file = as.character( file_df$fn) )))
-    saveRDS(file_df, file.path('..', gsub(basename( as.character(file_df$fn)), pattern = '.RDS', replacement = '_WAIC.RDS')))
+    saveRDS(file_df, file.path('..', 'WAIC_cache', gsub(basename( as.character(file_df$fn)), pattern = '.RDS', replacement = '_WAIC.RDS')))
     
   }else(stop('incorrect number of files provided'))
 

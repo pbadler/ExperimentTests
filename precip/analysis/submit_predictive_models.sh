@@ -10,4 +10,4 @@
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args $SLURM_ARRAY_TASK_ID" generate_prediction.R
+R CMD BATCH "--args $SLURM_ARRAY_TASK_ID" generate_predictions.R

@@ -1,5 +1,4 @@
 #!/bin/bash
-#SBATCH --array=1-nfiles
 #SBATCH --job-name=get_WAIC
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
