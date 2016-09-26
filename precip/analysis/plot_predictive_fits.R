@@ -34,7 +34,7 @@ if (length(args) != 3){
 # for testing
 # spp <- 'POSE'
 # vr <- 'growth'
-# m <- 2
+# m <- 4
 
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
@@ -81,7 +81,7 @@ climate_vars <- colnames( df$C)
 crowding_vars <- colnames(df$W)
 
 if( sum( str_detect( fit_ggs$Parameter, 'b2')) > 0  ) { 
-  b2 <- data.frame( extract( temp_fit, 'b2') ) 
+  b2 <- data.frame( rstan::extract( temp_fit, 'b2') ) 
   names(b2) <- climate_vars[1:ncol(b2)]
   
   b2_long <- 
@@ -92,7 +92,7 @@ if( sum( str_detect( fit_ggs$Parameter, 'b2')) > 0  ) {
   
   pdf( file.path( 'figures', paste( spp, vr, m, 'climate_effects.pdf')), height = 8, width = 11)
   
-  plot_posterior(b2_long) + ggtitle(paste('Posterior of climate effects on', spp, vr, 'model', m))
+  print( plot_posterior(b2_long) + ggtitle(paste('Posterior of climate effects on', spp, vr, 'model', m)) ) 
   
   dev.off()
 } 

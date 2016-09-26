@@ -44,8 +44,6 @@ compute_lppd <- function( stan_fit ) {
   lppd
 } 
 
-
-
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 print(paste('Working directory: ' , getwd()))

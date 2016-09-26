@@ -35,6 +35,8 @@ set_init_vals_list <-  function( model, C_names, W_names, dl ) {
   
   names( init_vals )[1:5] <- c('a_mu', 'b1_mu', 'sig_a', 'sig_b1', 'sig_G')
   
+  if(init_vals$sig_G < 0.0001) { init_vals$sig_G <- 0.05 } # prevent sig G from being zero in some cases 
+  
   b2 <- fixef(model)[C_names]
   w <- fixef(model)[W_names]
 
