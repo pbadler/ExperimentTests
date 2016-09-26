@@ -44,8 +44,8 @@ growth_dataframe2datalist <- function(df, train, hold, clim_vars){
   N         <- nrow(training_df)                                  # number of data points for training data 
   nyrs      <- length(unique(training_df$year))                   # number of years 
   yid       <- as.numeric(as.factor(training_df$year))            # integer id for each year 
-  Y         <- training_df$logarea.t1                             # plant size at time t 
-  X         <- training_df$logarea.t0                             # plant size at time t - 1  
+  Y         <- training_df$logarea.t1                             # plant size at time t + 1 
+  X         <- training_df$logarea.t0                             # plant size at time t   
   
   C         <- as.matrix(training_df[, clim_vars])                # all climate covariates 
   Covs      <- ncol(C)                                            # number of climate covariates 
@@ -76,52 +76,52 @@ growth_dataframe2datalist <- function(df, train, hold, clim_vars){
   )
 }
 
-survival_dataframe2datalist <- function(df, train, hold, clim_vars){ 
-  
-  # Function simply makes list of data for STAN models  
-  
-  # --------split into training and holding data and scale climate covariates -------------------------
-  
-  out <- scale_clim_covs(df, train, hold, clim_vars)
-  
-  training_df <- out[[1]]
-  holding_df <- out[[2]]
-  
-  # --------training data -----------------------------------------------------------------------------
-  N         <- nrow(training_df)                                  # number of data points for training data 
-  nyrs      <- length(unique(training_df$year))                   # number of years 
-  yid       <- as.numeric(as.factor(training_df$year))            # integer id for each year 
-  Y         <- training_df$logarea.t1                             # plant size at time t 
-  X         <- training_df$logarea.t0                             # plant size at time t - 1  
-  
-  C         <- as.matrix(training_df[, clim_vars])                # all climate covariates 
-  Covs      <- ncol(C)                                            # number of climate covariates 
-  
-  W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix 
-  W_covs    <- ncol(W)                                            # number of species in crowding matrix 
-  
-  gid       <- as.numeric(training_df$Group)                      # integer id for each plot area   
-  G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
-  
-  #---------hold out/prediction data ------------------------------------------------------------------
-  npreds    <- nrow(holding_df)                                   # total predicted observations, modern data 
-  y_holdout <- holding_df$logarea.t1                              # plant size at time t, modern data 
-  Xhold     <- holding_df$logarea.t0                              # plant size at time t-1, modern data 
-  Chold     <- holding_df[ , clim_vars]                           # climate matrix, modern data 
-  Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data 
-  gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data 
-  yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
-  nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data 
-  treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments 
-  
-  return( 
-    list(
-      N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, W = W, W_covs = W_covs,
-      gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, Whold = Whold, yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
-      tau_beta = 1
-    )
-  )
-}
+# survival_dataframe2datalist <- function(df, train, hold, clim_vars){ 
+#   
+#   # Function simply makes list of data for STAN models  
+#   
+#   # --------split into training and holding data and scale climate covariates -------------------------
+#   
+#   out <- scale_clim_covs(df, train, hold, clim_vars)
+#   
+#   training_df <- out[[1]]
+#   holding_df <- out[[2]]
+#   
+#   # --------training data -----------------------------------------------------------------------------
+#   N         <- nrow(training_df)                                  # number of data points for training data 
+#   nyrs      <- length(unique(training_df$year))                   # number of years 
+#   yid       <- as.numeric(as.factor(training_df$year))            # integer id for each year 
+#   Y         <- training_df$logarea.t1                             # plant size at time t 
+#   X         <- training_df$logarea.t0                             # plant size at time t - 1  
+#   
+#   C         <- as.matrix(training_df[, clim_vars])                # all climate covariates 
+#   Covs      <- ncol(C)                                            # number of climate covariates 
+#   
+#   W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix 
+#   W_covs    <- ncol(W)                                            # number of species in crowding matrix 
+#   
+#   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area   
+#   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
+#   
+#   #---------hold out/prediction data ------------------------------------------------------------------
+#   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data 
+#   y_holdout <- holding_df$logarea.t1                              # plant size at time t, modern data 
+#   Xhold     <- holding_df$logarea.t0                              # plant size at time t-1, modern data 
+#   Chold     <- holding_df[ , clim_vars]                           # climate matrix, modern data 
+#   Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data 
+#   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data 
+#   yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
+#   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data 
+#   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments 
+#   
+#   return( 
+#     list(
+#       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, W = W, W_covs = W_covs,
+#       gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, Whold = Whold, yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
+#       tau_beta = 1
+#     )
+#   )
+# }
 
 make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) { 
 

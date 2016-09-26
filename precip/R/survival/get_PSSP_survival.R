@@ -79,6 +79,6 @@ allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation'
 
 # ----------- use this data for prediction ------------------------------------------------------------------------------
 
-saveRDS(allD, 'data/temp_data/PSSP_growth.RDS') 
+saveRDS(allD, 'data/temp_data/PSSP_survival.RDS') 
 
 # -----------------------------------------------------------------------------------------------------------------------
