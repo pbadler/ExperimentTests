@@ -9,7 +9,7 @@
 ##  do not involve climate effects, i.e. do not require regularization. 
 ##
 ##  Saved output:
-##    Save full model output from each model  
+##    Save WAIC score for specified models   
 ##
 # 
 ##########################################################################
@@ -26,7 +26,7 @@ args <- commandArgs(trailingOnly=TRUE)
 
 
 # test if there is at least one argument: if not, return an error
-if (length(args) != 8){ 
+if (length(args) != 7){ 
   stop('####### Incorrect number of arguments supplied ####### \n
         ####### Arguments required:  
         #######  path: path for folder containing analysis, data and output
@@ -41,9 +41,9 @@ if (length(args) != 8){
         #######  do_prior:  prior stdev for regularization of climate effects. 
         #######             Multiple can be run using R notation e.g. "1:30" 
         #######  nchains:  number of chains to run: 1-4 
-        #######  niter:  number of iterations to run per chain
-        #######  pars:  parameters to save')
-}else if (length(args) == 8){
+        #######  niter:  number of iterations to run per chain')
+  
+}else if (length(args) == 7){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
   args <- commandArgs(trailingOnly = TRUE)
@@ -62,8 +62,6 @@ if (length(args) != 8){
   do_prior_sd  <- as.numeric(eval(parse (text = strsplit( args[5], ' '))))
   nchains <- as.numeric(eval(parse (text = strsplit( args[6], ' '))))
   niter <- as.numeric(eval(parse (text = strsplit( args[7], ' '))))
-  pars <- eval(parse ( text = args[8]))
-  
 
 }
 
@@ -75,7 +73,7 @@ if (length(args) != 8){
 # -------------------------------------------------------------------------------------------------------- 
 
 source('analysis/run_stan_fxns.R')
-
+source('analysis/waic_fxns.R')
 
 for ( i in do_spp ) { 
   for (j in do_vr) {
@@ -84,10 +82,11 @@ for ( i in do_spp ) {
         
         output_path <- file.path(getwd(),  'output/stan_fits')
         
-        save_file <- file.path( output_path, paste(i, j, k, l, nchains, sep = '_'))
+        save_file <- file.path( output_path, paste(i, j, k, l, nchains, 'WAIC.RDS', sep = '_'))
+        temp_fit <- run_stan_model(i, j, k, l, nchains = nchains, niter = niter, pars = 'log_lik')
         
-        temp_fit <- run_stan_model(i, j, k, l, nchains = nchains, niter = niter, pars = pars)
-        saveRDS(temp_fit, file = paste0( save_file, '.RDS'))
+        temp_waic <- waic(temp_fit)
+        saveRDS(temp_waic, file = save_file)
         
       }
     }
