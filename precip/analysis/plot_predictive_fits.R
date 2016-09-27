@@ -32,9 +32,9 @@ if (length(args) != 3){
   
 }
 # for testing
-# spp <- 'POSE'
-# vr <- 'growth'
-# m <- 4
+spp <- 'HECO'
+vr <- 'growth'
+m <- 4
 
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
@@ -100,7 +100,7 @@ if( sum( str_detect( fit_ggs$Parameter, 'b2')) > 0  ) {
 
 if (sum(str_detect(fit_ggs$Parameter, 'w')) > 0 ) { 
   w <- data.frame(extract(temp_fit, 'w'))
-
+  
   names(w) <- climate_vars[1:ncol(w)]
 
   if ( ncol(w) == 1 ) { 
@@ -117,8 +117,7 @@ if (sum(str_detect(fit_ggs$Parameter, 'w')) > 0 ) {
   
   pdf( file.path( 'figures', paste( spp, vr, m, 'crowding_effects.pdf')), height = 8, width = 11)
   
-  plot_posterior(w_long) + ggtitle(paste('Posterior of crowding effects on', spp, vr, 'model', m))
+  print( plot_posterior(w_long) + ggtitle(paste('Posterior of crowding effects on', spp, vr, 'model', m)))
   
   dev.off()
-  
 }

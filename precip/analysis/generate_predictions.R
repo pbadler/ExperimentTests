@@ -17,6 +17,8 @@ setwd('/pscratch/A01633220/precip')
 
 best_priors <- readRDS('output/best_WAIC_scores.RDS')
 
+nchains <- 4 
+
 # 
 total_rows <- nrow(best_priors)
 
@@ -45,12 +47,21 @@ if (length(args) != 1){
 
 # generate predictions -----------------------------------------------------------------
 
-temp_inits <- readRDS(file.path('output', 'stan_fits', as.character( best_priors$fn)))@inits
 do_species <-  best_priors$species
 do_vr <- best_priors$vital_rate
 do_model <- best_priors$model
 
-do_prior_stdev <- seq(0.1, 1.5, length.out = 30 ) [ best_priors$prior ] 
+temp_inits <- readRDS(file.path('data', 'temp_data', paste(do_vr, 'init_vals.RDS', sep = '_') ))
+
+temp_inits <- rep( temp_inits[[do_species]][do_model], nchains ) 
+
+# regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
+nlambda <- 30
+lambda.set <- exp(seq(-5, 15, length=nlambda))
+sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
+# ----------------------------------------------------------------------------------------------------------------# 
+
+do_prior_stdev <- sd_vec [ best_priors$prior ] 
 
 data_list <- readRDS(file.path('data', 'temp_data', paste(do_vr, 'data_lists_for_stan.RDS', sep = '_')))[[ do_species ]]
   

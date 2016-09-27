@@ -111,9 +111,12 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter,
   
   # modify data list for model ------------------------------------------------------------------------------------#
   
-  n.beta <- 30
-  sd_vec <- seq(0.1,1.5,length.out = n.beta)
-  
+  # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
+  nlambda <- 30
+  lambda.set <- exp(seq(-5, 15, length=nlambda))
+  sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
+  # ----------------------------------------------------------------------------------------------------------------# 
+    
   data_list$tau_beta <- sd_vec[do_prior_sd]  # modify prior for regularization 
   
   #
