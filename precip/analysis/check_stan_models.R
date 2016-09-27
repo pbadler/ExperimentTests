@@ -47,7 +47,7 @@ sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution
 
 dl[[do_spp]]$tau_beta <- sd_vec[1]
 
-out1 <- rstan::stan('analysis/growth/model_growth_2.stan', data = dl[[do_spp]], init = rep(inits[[do_spp]][do_model], 4), pars = c('log_lik', 'b2') , cores = 4 )
+out1 <- rstan::stan('analysis/growth/model_growth_2.stan', model_name = paste(do_spp, do_vital_rate, do_model, 'lambda_1', sep = '_'), data = dl[[do_spp]], init = rep(inits[[do_spp]][do_model], 4), pars = c('log_lik', 'b2') , cores = 4 )
 
 waic_1 <- round( waic(out1), 2)
 waic_1

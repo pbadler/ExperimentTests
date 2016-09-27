@@ -10,4 +10,4 @@
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args /pscratch/A01633220/precip/output/stan_fits $SLURM_ARRAY_TASK_ID" batch_WAIC.R
+R CMD BATCH "--args /projects/A01633220/precip/output/stan_fits $SLURM_ARRAY_TASK_ID" batch_WAIC.R

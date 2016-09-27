@@ -11,4 +11,4 @@
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args /pscratch/A01633220/precip/ $SLURM_ARRAY_TASK_ID 1 c(1:5) 1 0 1 log_lik" run_stan_models.R
+R CMD BATCH "--args /projects/A01633220/precip/ $SLURM_ARRAY_TASK_ID $1 c(1:5) 1 0 1 'log_lik'" run_stan_models.R

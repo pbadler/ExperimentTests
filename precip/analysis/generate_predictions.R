@@ -13,7 +13,7 @@ library(rstan)
 
 #
 
-setwd('/pscratch/A01633220/precip')
+setwd('/projects/A01633220/precip')
 
 best_priors <- readRDS('output/best_WAIC_scores.RDS')
 
