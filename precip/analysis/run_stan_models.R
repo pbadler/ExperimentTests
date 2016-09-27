@@ -62,7 +62,7 @@ if (length(args) != 8){
   do_prior_sd  <- as.numeric(eval(parse (text = strsplit( args[5], ' '))))
   nchains <- as.numeric(eval(parse (text = strsplit( args[6], ' '))))
   niter <- as.numeric(eval(parse (text = strsplit( args[7], ' '))))
-  pars <- as.character(args[8])
+  pars <- eval(parse ( text = args[8]))
   
 
 }
