@@ -31,16 +31,16 @@ if (length(args) != 3){
   print(paste('plot results for', spp, vr, 'model', m))
   
 }
-# for testing
-spp <- 'HECO'
-vr <- 'growth'
-m <- 4
+# # for testing
+# spp <- 'HECO'
+# vr <- 'growth'
+# m <- 4
 
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 print(paste('Working directory: ' , getwd()))
 
-temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions/', paste(spp, vr, m, 'predictions.RDS', sep = '_')))
+temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, 'predictions.RDS', sep = '_')))
 
 df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[spp]]
 
@@ -58,7 +58,7 @@ plot_posterior <- function( df ) {
 # make traceplots---------------------------------------------------------------------------------# 
 fit_ggs <- ggs(temp_fit)
 
-pdf(file.path( 'figures', paste(spp, vr, m, 'traceplot.pdf', sep = '_')), height = 8, width = 11)  
+pdf(file.path( 'figures', 'stan_fits',  paste(spp, vr, m, 'traceplot.pdf', sep = '_')), height = 8, width = 11)  
 
 ggs_traceplot(fit_ggs, 'a_mu') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m))
 
@@ -90,7 +90,7 @@ if( sum( str_detect( fit_ggs$Parameter, 'b2')) > 0  ) {
     group_by( var) %>% 
     mutate( lcl95 = quantile(val, 0.025), lcl90 = quantile(val, 0.05), med = quantile(val, 0.5), ucl90 = quantile(val, 0.95), ucl95 = quantile(val, 0.975))
   
-  pdf( file.path( 'figures', paste( spp, vr, m, 'climate_effects.pdf')), height = 8, width = 11)
+  pdf( file.path( 'figures', 'stan_fits', paste( spp, vr, m, 'climate_effects.pdf')), height = 8, width = 11)
   
   print( plot_posterior(b2_long) + ggtitle(paste('Posterior of climate effects on', spp, vr, 'model', m)) ) 
   
@@ -115,7 +115,7 @@ if (sum(str_detect(fit_ggs$Parameter, 'w')) > 0 ) {
     group_by( var) %>% 
     mutate( lcl95 = quantile(val, 0.025), lcl90 = quantile(val, 0.05), med = quantile(val, 0.5), ucl90 = quantile(val, 0.95), ucl95 = quantile(val, 0.975))
   
-  pdf( file.path( 'figures', paste( spp, vr, m, 'crowding_effects.pdf')), height = 8, width = 11)
+  pdf( file.path( 'figures', 'stan_fits', paste( spp, vr, m, 'crowding_effects.pdf')), height = 8, width = 11)
   
   print( plot_posterior(w_long) + ggtitle(paste('Posterior of crowding effects on', spp, vr, 'model', m)))
   

@@ -11,12 +11,12 @@ model_survival_by_treatment <- function( allD , species_name, output_dir) {
   # use lmer
   # w/o treatment effect
   
-  m0 <- lmer(survives~logarea + W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
-               (1|Group)+(logarea|year),data=allD) 
+  m0 <- glmer(survives~logarea + W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
+               (1|Group)+(logarea|year),data=allD, family = 'binomial') 
   
   # w/ treatment effect
-  m1 <- lmer(survives~logarea+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
-               (1|Group)+(logarea|year),data=allD) 
+  m1 <- glmer(survives~logarea+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+  W.allcov + W.allpts +
+               (1|Group)+(logarea|year),data=allD, family = 'binomial') 
   # 
   print( paste('RESULTS FOR:', species_name ))
   print( anova(m1, m0) )  # Test treatment effect 
@@ -25,7 +25,7 @@ model_survival_by_treatment <- function( allD , species_name, output_dir) {
   
   # save output -------------------------------------------------------------------
   
-  saveRDS(lmer_results, file = file.path(output_dir, paste0(species_name, 'growth_treatment_effects.lmer.RDS')))
+  saveRDS(lmer_results, file = file.path(output_dir, paste0(species_name, 'survival_treatment_effects.lmer.RDS')))
   
   # -------------------------------------------------------------------------------
 } 

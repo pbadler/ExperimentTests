@@ -51,7 +51,7 @@ compute_dev <- function( stan_fit, y_obs ) {
 setwd('~/Documents/ExperimentTests/precip/')
 print(paste('Working directory: ' , getwd()))
 
-temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions/', paste(spp, vr, m, 'predictions.RDS', sep = '_')))
+temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, 'predictions.RDS', sep = '_')))
 
 df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[spp]]
 
@@ -106,11 +106,11 @@ g_years <-
   ggtitle( paste( 'Predicted - observed for', spp, vr, 'model', m, '\n(mu_hat - observed)'))
 
 
-pdf( file.path( 'figures', paste(spp, vr, m, 'predicted_minus_obs_treatments.pdf')), width = 8, height = 11)
+pdf( file.path( 'figures/predictions', paste(spp, vr, m, 'predicted_minus_obs_treatments.pdf')), width = 8, height = 11)
 print( g_treatments)
 dev.off()
 
-pdf( file.path( 'figures', paste(spp, vr, m, 'predicted_minus_obs_years.pdf')), width = 8, height = 11)
+pdf( file.path( 'figures/predictions', paste(spp, vr, m, 'predicted_minus_obs_years.pdf')), width = 8, height = 11)
 print( g_years)
 dev.off()
 

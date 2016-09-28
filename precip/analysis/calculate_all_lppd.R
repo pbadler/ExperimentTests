@@ -16,7 +16,7 @@ compute_lppd <- function( stan_fit ) {
 setwd('~/Documents/ExperimentTests/precip/')
 print(paste('Working directory: ' , getwd()))
 
-waics <- readRDS('output/best_WAIC_scores.RDS')
+waics <- readRDS('output/best_WAIC_scores.csv')
 
 waics <- waics %>% 
   mutate( prediction_file = paste( species, vital_rate, model, 'predictions.RDS', sep = '_' )) 

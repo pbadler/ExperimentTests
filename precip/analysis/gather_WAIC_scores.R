@@ -9,12 +9,14 @@
 rm(list = ls())
 
 # input ------------------------------------------------------------------------------------
-files <- dir('../output/', pattern = '*WAIC.RDS', full.names = T)
+files <- dir('output/stan_fits/WAIC_scores/', pattern = '*WAIC.csv', full.names = T)
 
 # collect ----------------------------------------------------------------------------------
 
-WAIC_scores <- do.call( rbind , lapply( files, readRDS)  ) 
+WAIC_scores <- do.call( rbind , lapply( files, read.csv)  ) 
+
+WAIC_scores$fn <- basename( files ) 
 
 # output ------------------------------------------------------------------------------------
 
-saveRDS(WAIC_scores , '../output/WAIC_scores.RDS')
+write.csv(WAIC_scores , 'output/WAIC_scores.csv', row.names = FALSE)
