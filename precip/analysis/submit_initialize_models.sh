@@ -5,8 +5,9 @@
 #SBATCH --time=01:00:00
 #SBATCH --output=SLURM.out
 #SBATCH --mail-user=arklein@aggiemail.usu.edu
+#SBATCH --constraint=pandorina
 
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args /projects/A01633220/precip/ data/temp_data/short_model_table.csv $SLURM_ARRAY_TASK_ID 0 1 FALSE" run_stan_models_simple.R
+R CMD BATCH "--args /projects/A01633220/precip/ data/temp_data/short_model_table.csv $SLURM_ARRAY_TASK_ID 0 1 $1" run_stan_models_simple.R

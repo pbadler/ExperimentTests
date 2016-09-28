@@ -80,13 +80,13 @@ for ( i in do_spp ) {
     for ( k in do_model ) {
       for( l in do_prior_sd ) { 
         
-        output_path <- file.path(getwd(),  'output/stan_fits')
+        output_path <- file.path(getwd(),  'output/stan_fits/WAIC_scores/')
         
-        save_file <- file.path( output_path, paste(i, j, k, l, nchains, 'WAIC.RDS', sep = '_'))
-        temp_fit <- run_stan_model(i, j, k, l, nchains = nchains, niter = niter, pars = 'log_lik')
+        save_file <- file.path( output_path, paste(i, j, k, l, nchains, 'WAIC.csv', sep = '_'))
+        temp_fit <- run_stan_model(i, j, k, l, nchains = nchains, niter = niter, pars = 'log_lik', predict = FALSE)
         
         temp_waic <- waic(temp_fit)
-        saveRDS(temp_waic, file = save_file)
+        write.csv(temp_waic, file = save_file, row.names = FALSE)
         
       }
     }

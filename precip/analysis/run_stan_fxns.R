@@ -5,28 +5,41 @@ tweak_inits <- function(inits){
   
 }
 
-run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter, pars ) { 
+run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter, pars, predict = FALSE) { 
   
   require(rstan)
   
   data_path <- file.path(getwd(), 'data/temp_data')
   model_path <- file.path(getwd(), 'analysis')
-  output_path <- file.path(getwd(),  'output/stan_fits')
+  if( predict )  { 
+    output_path <- file.path(getwd(),  'output/stan_fits/predictions')
+  }else{ 
+    output_path <- file.path( getwd(), 'output/stan_fits')
+  }
   
   # read in data and models ---------------------------------------------------------------------------------------#
   
   data_file <- dir(data_path, pattern = paste0(do_vr, '_data_lists_for_stan.RDS'), full.names = TRUE )
   init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
   
-  initial_fit <- dir(output_path, pattern = paste0(paste(do_spp, do_vr, do_model, 1, 0, sep = '_'), '.RDS'), full.names = TRUE) # check pre-fit models
-  print(initial_fit)
+  if ( predict ){ 
+    initial_fit <- dir(output_path, pattern = paste(do_spp, do_vr, do_model, '[0-9]+', 0, 'predict.RDS', sep = '_'), full.names = TRUE) # check pre-fit models
+  }else{ 
+    initial_fit <- dir(output_path, pattern = paste(do_spp, do_vr, do_model, '[0-9]+', 0, '.RDS', sep = '_'), full.names = TRUE) # check pre-fit models
+  }
+  
+  
   data_list <- readRDS( data_file )[[do_spp]]
   init_vals <- readRDS(init_file)[[do_spp]]
   
   if(length(data_list) == 0) { stop('No data!!!')}
   if(length(init_vals) == 0) { stop('No init vals!!!')}
   
-  models <- dir(file.path(model_path, do_vr), '[0-9].stan', full.names = TRUE)
+  if(predict) { 
+    models <- dir(file.path(model_path, do_vr), '[0-9]_predict.stan', full.names = TRUE)
+  } else { 
+    models <- dir(file.path(model_path, do_vr), '[0-9].stan', full.names = TRUE)
+  }
   
   # -- select model and initial vals -----------------------------------------------------------------------------# 
   
@@ -70,9 +83,9 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter,
   print(paste('init vals has', length(temp_inits[[1]]), 'variables'))
   print(paste('pars requested', pars))
   
-  if (length( initial_fit) == 1 ) { 
+  if ( length(initial_fit) > 0 ) { 
     print(paste('initial fit being used', initial_fit ))
-    initial_fit <- readRDS(initial_fit)
+    initial_fit <- readRDS(head( initial_fit ) )
     temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, init = temp_inits, iter = niter , pars = pars, cores = max(1, nchains))
   }else{   
     temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, init = temp_inits, iter = niter , pars = pars, cores = max(1, nchains))

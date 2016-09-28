@@ -18,11 +18,11 @@ models <- expand.grid(species = do_spp, vital_rate_number = do_vr_number, model 
 
 vital_rates <- data.frame(vital_rate = do_vr, vital_rate_number = do_vr_number)
 
-model_type <- data.frame( model = do_model, pars = c( "c('a_mu', 'b1_mu', 'mu', 'muhat', 'sigmahat', 'log_lik', 'y_hat')", 
-                                                 "c('a_mu', 'b1_mu', 'b2', 'mu', 'muhat', 'sigmahat', 'log_lik', 'y_hat')", 
-                                                 "c('a_mu', 'b1_mu', 'w', 'mu', 'muhat', 'sigmahat', 'log_lik', 'y_hat')", 
-                                                 "c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat', 'sigmahat', 'log_lik', 'y_hat')", 
-                                                 "c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat', 'sigmahat', 'log_lik', 'y_hat')"))
+model_type <- data.frame( model = do_model, pars = c( "c('a_mu', 'b1_mu', 'mu', 'muhat',  'log_lik', 'y_hat')", 
+                                                 "c('a_mu', 'b1_mu', 'b2', 'mu', 'muhat', 'log_lik', 'y_hat')", 
+                                                 "c('a_mu', 'b1_mu', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')", 
+                                                 "c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')", 
+                                                 "c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')"))
 
 models <- merge( models, model_type)
 

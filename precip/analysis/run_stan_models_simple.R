@@ -35,7 +35,6 @@ if (length(args) != 6){
 }else if (length(args) == 6){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
-  args <- commandArgs(trailingOnly = TRUE)
   
   setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
   
@@ -76,9 +75,10 @@ if( predict ) {
   use_pars <- 'log_lik'
 }
 
-save_file <- file.path( output_path, paste(species, vital_rate, model, prior, nchains, ending, sep = '_'))
 
 temp_fit <- run_stan_model(species, vital_rate, model, prior, nchains = nchains, niter = niter, pars = use_pars, predict = predict)
+
+save_file <- file.path( output_path, paste(species, vital_rate, model, prior, nchains, ending, sep = '_'))
 
 saveRDS( temp_fit , file = save_file )
 
