@@ -3,11 +3,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --time=01:00:00
-#SBATCH --constraint=gonium
 #SBATCH --output=SLURM.out
 #SBATCH --mail-user=arklein@aggiemail.usu.edu
 
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args /projects/A01633220/precip/output/stan_fits $SLURM_ARRAY_TASK_ID" batch_WAIC.R
+R CMD BATCH "--args /projects/A01633220/precip/ $SLURM_ARRAY_TASK_ID $1 $2" get_WAIC_simple.R

@@ -35,3 +35,8 @@ analysis/run_stan_fxns.R
 analysis/get_WAIC.R
 data/temp_data/survival_data_lists_for_stan.RDS
 data/temp_data/survival_init_vals.RDS
+analysis/gather_WAIC_scores.R
+data/temp_data/model_table.csv
+analysis/get_WAIC_simple.R
+analysis/run_stan_models_simple.R
+data/temp_data/short_model_table.csv
