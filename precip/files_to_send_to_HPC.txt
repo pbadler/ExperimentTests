@@ -7,9 +7,6 @@ analysis/growth/model_growth_3.stan
 analysis/growth/model_growth_4.stan
 analysis/growth/model_growth_5.stan
 analysis/submit_initialize_models.sh
-analysis/submit_models_no_climate.sh
-analysis/submit_models_with_climate.sh
-analysis/batch_WAIC.R
 analysis/get_best_WAIC_scores.R
 analysis/submit_batch_WAIC.sh
 analysis/growth/model_growth_1_predict.stan
@@ -18,8 +15,6 @@ analysis/growth/model_growth_3_predict.stan
 analysis/growth/model_growth_4_predict.stan
 analysis/growth/model_growth_5_predict.stan
 analysis/submit_predictive_models.sh
-analysis/generate_predictions.R
-analysis/survival/get_initial_values.R
 analysis/survival/model_survival_1_predict.stan
 analysis/survival/model_survival_1.stan
 analysis/survival/model_survival_2_predict.stan
