@@ -23,7 +23,7 @@ best_waic <- do.call( rbind, lapply( df_list, function(x) x[which.min(x$waic), ]
 best_waic$vital_rate <- as.character( best_waic$vital_rate ) 
 model_table$vital_rate <- as.character(model_table$vital_rate)
 
-model_table <- model_table[ , - grep (names(model_table), pattern = 'prior') ] # drop prior column 
+model_table <- model_table[ , - grep (names(model_table), pattern = 'prior') ] # drop old prior column 
 
 best_waic <- merge( best_waic, model_table, all.x = TRUE, by = c('species', 'model', 'vital_rate'))
 

@@ -38,9 +38,10 @@ do_model <- 2
 
 dl <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')
 inits <- readRDS('data/temp_data/growth_init_vals.RDS')
+load('data/temp_data/master_list.Rdata')
 
 # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
-nlambda <- 30
+nlambda <- master_list$nlambda
 lambda.set <- exp(seq(-5, 15, length=nlambda))
 sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
 # ----------------------------------------------------------------------------------------------------------------# 
@@ -52,7 +53,7 @@ out1 <- rstan::stan('analysis/growth/model_growth_2.stan', model_name = paste(do
 waic_1 <- round( waic(out1), 2)
 waic_1
 
-dl[[do_spp]]$tau_beta <- sd_vec[30]
+dl[[do_spp]]$tau_beta <- sd_vec[nlambda]
 
 out2 <- rstan::stan('analysis/growth/model_growth_2.stan', data = dl[[do_spp]], init = rep(inits[[do_spp]][do_model], 4), pars = c('log_lik', 'b2') , cores = 4 )
 waic_2 <- round( waic(out2), 2)
@@ -63,7 +64,7 @@ b2_1 <- ggs(out1, 'b2')
 b2_2 <- ggs(out2, 'b2')
 
 b2_1$model <- paste('sd prior =', sd_prior[1], 'waic =', waic_1$waic)
-b2_2$model <- paste('sd prior =', sd_prior[30], 'waic =', waic_2$waic)
+b2_2$model <- paste('sd prior =', sd_prior[nlambda], 'waic =', waic_2$waic)
 
 both_models <- rbind(b2_1, b2_2)
 

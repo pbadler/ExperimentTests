@@ -5,7 +5,7 @@ tweak_inits <- function(inits){
   
 }
 
-run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter, pars, predict = FALSE) { 
+run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter, pars, predict = FALSE, nlambda = nlambda ) { 
   
   require(rstan)
   
@@ -50,7 +50,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter,
   # modify data list for model ------------------------------------------------------------------------------------#
   
   # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
-  nlambda <- 30
+  print( paste ( 'nlambda =' , nlambda ) ) 
   lambda.set <- exp(seq(-5, 15, length=nlambda))
   sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
   # ----------------------------------------------------------------------------------------------------------------# 

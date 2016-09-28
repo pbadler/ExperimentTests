@@ -46,13 +46,14 @@ if ( do_line < nrow(models)) {
   vital_rate <- line$vital_rate
   model <- line$model
   prior <- line$prior
+  nlambda <- line$nlambda
 
 }else{ stop('line number is greater than number of models')}
 
 output_path <- file.path(getwd(),  'output/stan_fits/WAIC_scores/')
 
 save_file <- file.path( output_path, paste(species, vital_rate, model, prior, nchains, 'WAIC.csv', sep = '_'))
-temp_fit <- run_stan_model(species, vital_rate, model, prior, nchains = nchains, niter = niter, pars = 'log_lik', predict = FALSE)
+temp_fit <- run_stan_model(species, vital_rate, model, prior, nchains = nchains, niter = niter, pars = 'log_lik', predict = FALSE, nlambda = nlambda )
 
 write.csv(waic(temp_fit), file = save_file, row.names = FALSE)
 

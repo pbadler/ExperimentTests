@@ -61,7 +61,8 @@ if ( do_line < nrow(models)) {
   prior <- line$prior
   pars_list <- eval (parse(text = as.character( line$pars )) )
   print(pars_list)
-
+  nlambda <- line$nlambda
+  
 }else{ stop('line number is greater than number of models')}
 
 if( predict ) { 
@@ -76,7 +77,7 @@ if( predict ) {
 }
 
 
-temp_fit <- run_stan_model(species, vital_rate, model, prior, nchains = nchains, niter = niter, pars = use_pars, predict = predict)
+temp_fit <- run_stan_model(species, vital_rate, model, prior, nchains = nchains, niter = niter, pars = use_pars, predict = predict, nlambda = nlambda)
 
 save_file <- file.path( output_path, paste(species, vital_rate, model, prior, nchains, ending, sep = '_'))
 
