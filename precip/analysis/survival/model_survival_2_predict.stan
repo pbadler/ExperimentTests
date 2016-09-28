@@ -30,8 +30,8 @@ parameters{
   vector[Yrs] b1;
   vector[Covs] b2;
   real gint[G];
-  real tau;
-  real tauSize;
+  
+  
   real<lower=0> sig_a;
   real<lower=0> sig_b1;
   real<lower=0> sig_G;
@@ -50,8 +50,8 @@ model{
   // Priors
   a_mu ~ normal(0,10);
   b1_mu ~ normal(0,10);
-  tau ~ normal(0,10);
-  tauSize ~ normal(0,10);
+  
+  
   sig_a ~ cauchy(0,2);
   sig_b1 ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
