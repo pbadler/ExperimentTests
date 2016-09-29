@@ -177,6 +177,7 @@ max.CI <- T  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
 source("ibm/summarize_sims1step.r")
 
+
 # clean up
 tmp=ls() ; tmp=tmp[tmp!="root" & tmp!="statsOutput"]
 rm(list=tmp)
@@ -191,9 +192,6 @@ max.CI <- F  # TRUE means use maximum removal effect
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
 source("ipm/get_W_functions.r")  # get neighbor distance decay functions
-
-offsets <- read.csv("Wdistrib/OverlapOffsets.csv") # get offsets for extended no-overlap rule
-offsets <- offsets$offset
 
 #no treatment effects, all species
 init.species <- c(1:4)
@@ -229,7 +227,7 @@ source("ipm/IPM-getEquilibrium.r")
 write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTR-maxCI.csv",row.names=F)
 meanCover4 <- meanCover
 
-# # removal treatment effects, ARTR removal, no PSSP
+# # removal treatment effects, ARTR removal, no PSSP, what happens to HECO and POSE?
 # init.species <- c(2:3)
 # trtEffects=T
 # max.CI=F
@@ -244,6 +242,17 @@ write.csv(simResults,"ipm/simResults-meanCover.csv",row.names=F)
 simResults <- rbind(meanCover1,meanCover2,meanCover4) 
 colnames(simResults) <- sppList
 write.csv(simResults,"ipm/simResults-meanCover-maxCI.csv",row.names=F)
+
+#no treatment effects, all species, boost ARTR cover
+init.species <- c(1:4)
+tlimit <- 2500
+burn.in <- 500
+trtEffects=F
+max.CI=F
+source("ipm/IPM-setup.r")
+Rpars$intcpt.yr[,1] <- Rpars$intcpt.yr[,1]+1
+source("ipm/IPM-getEquilibrium.r")
+print(rbind(meanCover1,meanCover)) # compare baseline run with this one
 
 simFile <- "ipm/simResults-meanCover.csv"
 
