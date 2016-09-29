@@ -1,0 +1,37 @@
+# 
+#
+# construct model table 
+#
+#
+rm(list = ls())
+
+library(dplyr)
+library(tidyr)
+
+load('data/temp_data/master_list.Rdata')
+
+models <- expand.grid(
+  species = master_list$species, 
+  vital_rate = master_list$vital_rates, 
+  model = master_list$models$model, 
+  prior = c(1:master_list$nlambda))
+
+models <- merge(models, master_list$models)
+
+full_table <- 
+  models %>% 
+  arrange( vital_rate, species, model, prior ) %>% 
+  filter( !(model == 1 & prior != ceiling(0.5*master_list$nlambda) )) %>%
+  filter( !(model == 3 & prior != ceiling(0.5*master_list$nlambda) )) %>% 
+  mutate( index = row_number())
+
+print (paste0( 'table has ' , nrow( full_table ), ' rows,   does this match expected??? '))
+
+short_table <- 
+  full_table %>% 
+  filter( prior == 20 )
+
+write.csv( full_table, 'data/temp_data/model_table.csv', row.names = FALSE)
+
+write.csv( short_table, 'data/temp_data/short_model_table.csv', row.names = FALSE )
+

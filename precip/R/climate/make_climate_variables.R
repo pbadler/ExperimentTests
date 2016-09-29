@@ -161,9 +161,39 @@ seasonal_clim <- seasonal_clim %>%
 # quarterly_clim <- quarterly_clim %>% 
 #   filter( !(year < 2012 & Treatment != 'Control'))
 
+# --------monthly from daily ------------------------------------------------------------------# 
+
+# aggregate daily to monthly for Peter
+
+station_dat <- read.csv('~/driversdata/data/idaho_modern/climateData/USSES_climate.csv')
+station_dat$date <- as.POSIXct( strptime( station_dat$DATE, format = '%Y%m%d', tz = 'MST')    )
+
+station_dat <- station_dat %>% select( date, STATION, STATION_NAME, LATITUDE, LONGITUDE, ELEVATION, PRCP, TMAX, TMIN )  
+
+station_dat <- station_dat %>% mutate( LONGITUDE = LONGITUDE[which.max(date)], LATITUDE = LATITUDE[ which.max(date )], ELEVATION = ELEVATION[ which.max(date )] )
+
+head(station_dat)
+
+station_dat$year <- strftime(station_dat$date, '%Y')
+station_dat$DOY <- as.numeric( strftime( station_dat$date, '%j'))
+station_dat$month <- strftime( station_dat$date, '%m')
+
+station_dat[ station_dat == -9999] <- NA
+
+monthly_from_daily <-
+  station_dat %>% 
+  group_by ( year, month ) %>% 
+  summarise( TMEAN = mean((TMAX + TMIN)/2, na.rm = TRUE), TPPT = sum(PRCP, na.rm = TRUE), ndays_missing_ppt = sum(is.na(PRCP)), n_days_missing_tmean = sum(is.na(TMAX + TMIN))) %>% 
+  mutate( TMEAN = round(TMEAN, 1), TPPT = round(TPPT, 1))
+
 # -------- output -----------------------------------------------------------------------------#
 
 saveRDS( seasonal_clim, 'data/temp_data/seasonal_climate.RDS')
 saveRDS( monthly_clim, 'data/temp_data/monthly_climate.RDS')
 saveRDS( quarterly_clim, 'data/temp_data/quarterly_climate.RDS')
 saveRDS( annual_clim, 'data/temp_data/annual_climate.RDS')
+
+write.csv(monthly_clim %>% arrange( year, month) %>% rename(TPPT = TPCP, TMEAN = MNTM) %>% select(-MMNT, -MMXT), 'data/temp_data/monthly_climate.csv', row.names = FALSE)
+
+write.csv(monthly_from_daily, 'data/monthly_climate_from_from_daily.csv', row.names = FALSE)
+

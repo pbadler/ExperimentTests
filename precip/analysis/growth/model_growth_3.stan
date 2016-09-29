@@ -39,11 +39,11 @@ transformed parameters{
 }
 model{
   // Priors
-  a_mu ~ normal(0,100);
+  a_mu ~ normal(0,10);
   w ~ normal(0,10);
-  b1_mu ~ normal(0,100);
-  tau ~ normal(0,100);
-  tauSize ~ normal(0,100);
+  b1_mu ~ normal(0,10);
+  tau ~ normal(0,10);
+  tauSize ~ normal(0,10);
   sig_a ~ cauchy(0,2);
   sig_b1 ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);

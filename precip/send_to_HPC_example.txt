@@ -1,3 +1,0 @@
-# this is an example of how to send files to the HPC 
-
-# rsync filename @A01633220@login.rc.usu.edu:/home/A01633220

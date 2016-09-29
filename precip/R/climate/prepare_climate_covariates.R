@@ -11,11 +11,6 @@ library(tidyr)
 library(ggplot2)
 library(zoo)
 
-# -- specify climate variables -------------------------------------------------------# 
-
-clim_vars <- c('T.sp.1', 'T.sp.2', 'P.w.sp.1', 'P.w.sp.2', 'T.su.1', 'T.su.2', 'P.a.0', 'P.a.1')
-clim_vars <- sort(clim_vars)
-
 # ------- load files ------------------------------------------------------------------ 
 
 quarterly_clim <- readRDS('data/temp_data/quarterly_climate.RDS')
@@ -51,15 +46,15 @@ q_precip <-
   filter( var == 'TPCP_ttl') %>%
   group_by(Treatment) %>% 
   arrange(Treatment, year, quarter) %>%
-  mutate(P.sp.2 = val, 
-         P.sp.1 = lag(val, 4), 
-         P.w.sp.2 = rollsum(val, 2, align = 'right', fill = NA), 
-         P.w.sp.1 = lag(P.w.sp.2, 4), 
-         P.su.2 = lag(val, 3), 
-         P.su.1 = lag(P.su.2, 4),
-         P.a.2 = rollsum(val, 4, align = 'right', fill = NA), 
-         P.a.1 = lag(P.a.2, 4), 
-         P.a.0 = lag(P.a.1, 4)) %>% 
+  mutate(P.sp.1 = val, 
+         P.sp.0 = lag(val, 4), 
+         P.w.sp.1 = rollsum(val, 2, align = 'right', fill = NA), 
+         P.w.sp.0 = lag(P.w.sp.1, 4), 
+         P.su.1 = lag(val, 3), 
+         P.su.0 = lag(P.su.1, 4),
+         P.a.1 = rollsum(val, 4, align = 'right', fill = NA), 
+         P.a.0 = lag(P.a.1, 4), 
+         P.a.l = lag(P.a.0, 4)) %>% 
   filter( quarter == 'Q2') %>% # plants are measured at the end of Q2 each year 
   select( Treatment, Period, year, quarter, starts_with("P"))
 
@@ -68,14 +63,14 @@ q_temp <-
   filter( var == 'MNTM_avg') %>% 
   group_by(Treatment) %>% 
   arrange(Treatment, year, quarter) %>% 
-  mutate( T.sp.2 = val, 
-          T.sp.1 = lag(T.sp.2, 4),
-          T.sp.0 = lag(T.sp.1, 4), 
-          T.w.sp.2 = rollapply(val, 2, 'mean', na.rm = TRUE, align = 'right', fill = NA), 
-          T.w.sp.1 = lag(T.w.sp.2, 4),
+  mutate( T.sp.1 = val, 
+          T.sp.0 = lag(T.sp.1, 4),
+          T.sp.l = lag(T.sp.0, 4), 
+          T.w.sp.1 = rollapply(val, 2, 'mean', na.rm = TRUE, align = 'right', fill = NA), 
           T.w.sp.0 = lag(T.w.sp.1, 4),
-          T.su.2 = lag(val, 3),
-          T.su.1 = lag(T.su.2, 4)) %>% 
+          T.w.sp.l = lag(T.w.sp.0, 4),
+          T.su.1 = lag(val, 3),
+          T.su.0 = lag(T.su.1, 4)) %>% 
   filter( quarter == 'Q2') %>% 
   select( Treatment, Period, year, quarter, starts_with("T"))
 
@@ -83,6 +78,8 @@ allClim <-
   q_precip %>% 
   left_join ( q_temp, by = c('Treatment', 'Period', 'quarter', 'year')) %>% 
   arrange( Treatment, year) 
+
+allClim$year <- allClim$year - 1 # adjust to match Peter's assignment of year 0 as the reference year in demographic data sets
 
 # -- calculate interactions --------------------------------------------------------------#
 
