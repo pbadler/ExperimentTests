@@ -39,7 +39,7 @@ if (length(args) != 7){
         #######  do_model:  model number: 1 - 4. Multiple can be run using R 
         #######             notation e.g. "1:5" or "1,2". 
         #######  do_prior:  prior stdev for regularization of climate effects. 
-        #######             Multiple can be run using R notation e.g. "1:30" 
+        #######             Multiple can be run using R notation 
         #######  nchains:  number of chains to run: 1-4 
         #######  niter:  number of iterations to run per chain')
   

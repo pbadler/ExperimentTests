@@ -40,7 +40,7 @@ if (length(args) != 3){
 setwd('~/Documents/ExperimentTests/precip/')
 print(paste('Working directory: ' , getwd()))
 
-temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, 'predictions.RDS', sep = '_')))
+temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, 20, 4, 'predict.RDS', sep = '_')))
 
 df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[spp]]
 

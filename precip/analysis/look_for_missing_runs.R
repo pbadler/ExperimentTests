@@ -3,11 +3,13 @@
 #
 #
 
+library(dplyr)
+library(tidyr)
+library(stringr)
+
 waics <- read.csv('output/WAIC_scores.csv')
 
 model_table <- read.csv('data/temp_data/model_table.csv')
-
-model_table$index <- 1:nrow(model_table)
 
 waics <- 
   waics %>% 
@@ -16,9 +18,9 @@ waics <-
 
 models_missing <- merge(model_table, waics , by = c('model' , 'species', 'vital_rate', 'prior'), all.x = TRUE)
 
-models_missing %>% 
+
+print( models_missing %>% 
   filter( vital_rate != 'recruitment') %>% 
   filter( is.na(waic) ) %>% 
-  arrange(index)
-
+  arrange(index) ) 
 

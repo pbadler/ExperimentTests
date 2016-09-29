@@ -5,9 +5,9 @@
 
 rm(list = ls())
 
-df <- read.csv('output/WAIC_scores.csv')
+df <- read.csv('../output/WAIC_scores.csv')
 
-model_table <- read.csv('data/temp_data/short_model_table.csv')
+model_table <- read.csv('../data/temp_data/short_model_table.csv')
 
 df$clean_fn <- gsub(as.character(df$fn), pattern = '_WAIC\\.RDS$', replacement = '')
 
@@ -23,12 +23,12 @@ best_waic <- do.call( rbind, lapply( df_list, function(x) x[which.min(x$waic), ]
 best_waic$vital_rate <- as.character( best_waic$vital_rate ) 
 model_table$vital_rate <- as.character(model_table$vital_rate)
 
-model_table <- model_table[ , - grep (names(model_table), pattern = 'prior') ] # drop prior column 
+model_table <- model_table[ , - grep (names(model_table), pattern = 'prior') ] # drop old prior column 
 
 best_waic <- merge( best_waic, model_table, all.x = TRUE, by = c('species', 'model', 'vital_rate'))
 
 best_waic <- best_waic[ order(best_waic$vital_rate, best_waic$species, best_waic$model), ]
 
-write.csv(best_waic, 'output/best_WAIC_scores.csv', row.names = FALSE)
+write.csv(best_waic, '../output/best_WAIC_scores.csv', row.names = FALSE)
 
 

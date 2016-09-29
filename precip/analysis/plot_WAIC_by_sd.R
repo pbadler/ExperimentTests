@@ -10,8 +10,10 @@ library(ggplot2)
 library(stringr)
 
 waics <- read.csv('output/WAIC_scores.csv')
+load('data/temp_data/master_list.Rdata')
+
 # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
-nlambda <- 30
+nlambda <- master_list$nlambda
 lambda.set <- exp(seq(-5, 15, length=nlambda))
 sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
 # ----------------------------------------------------------------------------------------------------------------# 
