@@ -35,3 +35,5 @@ data/temp_data/model_table.csv
 analysis/get_WAIC_simple.R
 analysis/run_stan_models_simple.R
 data/temp_data/short_model_table.csv
+analysis/submit_gather_WAIC_scores.sh
+analysis/submit_get_best_WAIC_scores.sh

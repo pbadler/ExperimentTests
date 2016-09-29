@@ -5,9 +5,9 @@
 
 rm(list = ls())
 
-df <- read.csv('output/WAIC_scores.csv')
+df <- read.csv('../output/WAIC_scores.csv')
 
-model_table <- read.csv('data/temp_data/short_model_table.csv')
+model_table <- read.csv('../data/temp_data/short_model_table.csv')
 
 df$clean_fn <- gsub(as.character(df$fn), pattern = '_WAIC\\.RDS$', replacement = '')
 
@@ -29,6 +29,6 @@ best_waic <- merge( best_waic, model_table, all.x = TRUE, by = c('species', 'mod
 
 best_waic <- best_waic[ order(best_waic$vital_rate, best_waic$species, best_waic$model), ]
 
-write.csv(best_waic, 'output/best_WAIC_scores.csv', row.names = FALSE)
+write.csv(best_waic, '../output/best_WAIC_scores.csv', row.names = FALSE)
 
 

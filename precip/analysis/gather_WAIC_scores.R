@@ -8,8 +8,9 @@
 
 rm(list = ls())
 
+
 # input ------------------------------------------------------------------------------------
-files <- dir('output/stan_fits/WAIC_scores/', pattern = '*WAIC.csv', full.names = T)
+files <- dir('../output/stan_fits/WAIC_scores/', pattern = '*WAIC.csv', full.names = T)
 
 # collect ----------------------------------------------------------------------------------
 
@@ -19,4 +20,4 @@ WAIC_scores$fn <- basename( files )
 
 # output ------------------------------------------------------------------------------------
 
-write.csv(WAIC_scores , 'output/WAIC_scores.csv', row.names = FALSE)
+write.csv(WAIC_scores , '../output/WAIC_scores.csv', row.names = FALSE)

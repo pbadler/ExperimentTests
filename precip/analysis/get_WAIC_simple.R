@@ -11,15 +11,15 @@ library(rstan)
 args <- commandArgs(trailingOnly=TRUE)
 
 # test if there is at least one argument: if not, return an error
-if (length(args) != 4){ 
+if (length(args) != 2){ 
   stop('####### Incorrect number of arguments supplied ####### \n
        ####### Arguments required:
        #######  working directory 
        #######  line number : 1 - total combination of models in 
-       #######  chains: 1 - 4 
-       #######  niter:  number of iterations to run per chain')
+       #######  chains = 4 hardcoded  
+       #######  niter = 2000 hardcoded')
   
-}else if (length(args) == 4){
+}else if (length(args) == 2){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
   args <- commandArgs(trailingOnly = TRUE)
@@ -28,10 +28,13 @@ if (length(args) != 4){
   
   do_line <- as.numeric(eval(parse(text = args[2])))
   
-  nchains <- as.numeric(eval(parse (text = strsplit( args[3], ' '))))
-  niter <- as.numeric(eval(parse (text = strsplit( args[4], ' '))))
+  # nchains <- as.numeric(eval(parse (text = strsplit( args[3], ' '))))
+  # niter <- as.numeric(eval(parse (text = strsplit( args[4], ' '))))
   
 }
+
+nchains <- 4 
+niter <- 2000
 
 models <- read.csv('data/temp_data/model_table.csv')
 source( 'analysis/run_stan_fxns.R')
