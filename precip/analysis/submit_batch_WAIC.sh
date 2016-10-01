@@ -9,4 +9,4 @@
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args /projects/A01633220/precip/ $SLURM_ARRAY_TASK_ID $1 $2" get_WAIC_simple.R
+R CMD BATCH "--args /projects/A01633220/precip/ $1 $SLURM_ARRAY_TASK_ID" get_WAIC_simple.R

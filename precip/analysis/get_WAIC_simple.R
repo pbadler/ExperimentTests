@@ -11,20 +11,23 @@ library(rstan)
 args <- commandArgs(trailingOnly=TRUE)
 
 # test if there is at least one argument: if not, return an error
-if (length(args) != 2){ 
+if (length(args) != 3){ 
   stop('####### Incorrect number of arguments supplied ####### \n
        ####### Arguments required:
        #######  working directory 
-       #######  line number : 1 - total combination of models in 
+       #######  vital rate "growth", "recruitment" or "survival"
+       #######  line number : 1 - total combination of models in
        #######  chains = 4 hardcoded  
        #######  niter = 2000 hardcoded')
   
-}else if (length(args) == 2){
+}else if (length(args) == 3){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
   args <- commandArgs(trailingOnly = TRUE)
   
   setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
+  
+  do_vr <- eval(parse(text = args[2]))
   
   do_line <- as.numeric(eval(parse(text = args[2])))
   
@@ -37,6 +40,8 @@ nchains <- 4
 niter <- 2000
 
 models <- read.csv('data/temp_data/model_table.csv')
+models <- subset( models, vital_rate == do_vr)
+
 source( 'analysis/run_stan_fxns.R')
 source( 'analysis/waic_fxns.R')
 
