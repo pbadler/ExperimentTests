@@ -144,10 +144,10 @@ Formally, we modeled the survival probability, $S$, of genet $i$ in species $j$,
 \label{eqn:survReg}
 \end{equation}
 
-
-% I could be wrong but I think the left-hand side of the equation needs to be 
-% indexed to {t + 1} not t.  
-
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% I could be wrong but I think the left-hand side of the equation above
+% needs to be  indexed to {t + 1} not t.  
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 where $\gamma$ is a time-dependent intercept, $\varphi$ is the coefficient for the effect of spatial location group, $\chi$ is the removal treatment effect, $\beta$ is the coefficient that represents the effect of log genet size, $u$, on survival. $\boldsymbol{\omega}$ is a vector of interaction coefficients which determine the impact of crowding, $\boldsymbol{W}$, by each species on the focal species. The vector $\boldsymbol{W}$ includes crowding from the four dominant species,  \textit{A. tripartita}, \textit{P. spicata}, \textit{H. comata}, and \textit{Poa secunda}, as well as two covariates representing total crowding from (1) all other perennial grasses and shrubs, which were mapped as polygons, and (2) all forb species, which were mapped as points. 
 $\left \langle \boldsymbol{x, y} \right \rangle$ denotes the inner product of vectors $\boldsymbol{x}$ and $\boldsymbol{y}$, 
@@ -228,7 +228,9 @@ in population size (cover) from one year to the next.
 
 To simulate changes in cover in each quadrat from year $t$ to year $t+1$, we initialized the IBM with the actual configuration of the four focal species (genet sizes and locations) observed in year $t$. We then projected the model forward one year, applying the random year effects corresponding to year $t$ and the spatial random effects corresponding to the quadrat of interest. Because we were interested in comparing model predictions to observations, and were not interested in the effects of demographic stochasticity, we used a deterministic version of the model (e.g., recruitment is the $\lambda$ of (\ref{eqn:recrProcessModel}), rather than a random draw from a Poisson distribution with a mean of $\lambda$).
 
-%% Wait, how are recruit positions within the plot distributed? 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Wait, how are recruit positions within the plot distributed? 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We first applied the recruitment regression to determine the expected number of new recruits at time $t+1$, which we then multiplied by the mean size of recruits observed for the focal species to get expected cover of new recruits. We then used the survival regression to predict the survival probability of each genet, and the growth regression to predict the change in size of each genet. Expected cover at $t+1$ is expected area of new recruits, plus the sum of the survival probabilities multiplied by the expected sizes. 
 
@@ -308,16 +310,22 @@ adequately predicted by models fit to observational data on non-removal plots.
 
 Our vital rate models take into account the effects of local species composition and should therefore be able to predict the effect of removals on survival, growth and recruitment without any additional parameters. If the removal treatment effects that we added to these models are statistically significant, it would indicate removal effects are stronger or weaker from those predicted by a model based on observational data. 
 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % There’s a bit of a leap here from statistical significance to predictions
 % I think this is intuitively correct and probably right most of the time, but 
 % I wonder whether a main effect of removal treatment necessarily implies 
 % that predictions don’t match observations. (I guess it probably does).  
 % However, in the case that treatment effects are not significant, I think there
-% could be cases where predictions still technically differ from observations. For % instance, do predictions technically differ from observations if they predict the % mean, but underestimate the variance? Something to consider.
+% could be cases where predictions still technically differ from observations. 
+% For % instance, do predictions technically differ from observations if they predict the 
+% mean, but underestimate the variance? Something to consider.
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For the survival models, the 95\% confidence intervals on the removal effects overlapped zero for all four species (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRsurvival} to \ref{PSSPsurvival}), meaning that the survival probabilities of plants in removal plots can be predicted based on data from control plots. However, for the growth models, the 95\% confidence intervals on the removal effects were positive for \textit{Poa secunda}  and \textit{P. spicata}, meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). 
 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % What about other species’ recruitment results? 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In contrast, \textit{Poa secunda} had lower recruitment in removal than controls plots (upper limit of 95\% CI $<0$; Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}).
 
@@ -330,10 +338,10 @@ In contrast, \textit{Poa secunda} had lower recruitment in removal than controls
  \end{figure}
 
 
-%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Peter the dashed and dotted lines in this figure don’t show up as distinct to me 
 % (baseline vs. removal predicted).  I can’t tell which is which
-%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 The positive removal effects on \textit{Poa secunda}  and \textit{P. spicata} growth suggest that models based on observational data underestimate competitive release. We conducted additional analyses to further explore removal effects on the growth of these two species. First, we classified all individuals of these species as located either inside or outside the limits of \textit{A. tripartita} canopies present in 2011 (before removal). If removal is releasing grasses from \textit{A. tripartita} competition, we would expect individuals located under the shrub canopies to experience a greater effect of removal. However, the location of individuals with respect to \textit{A. tripartita} canopies had no effect on growth of either species (Tables \ref{table:POSEgrowth-inARTR} and \ref{table:PSSPgrowth-inARTR}), meaning that individuals located outside \textit{A. tripartita} canopies responded to removals as much as individuals underneath (removed) canopies. 
@@ -374,8 +382,9 @@ For three of the four species, we find little or no evidence that models based o
 
 The story is different for the fourth species, \textit{P. spicata}. Both individual growth and short- and long-term population growth were higher in the sagebrush removal treatments than in the control plots, suggesting that our analyses of observational data may underestimate the competitive release that \textit{P. spicata} experiences following \textit{Artemisia} removal. However, the mechanism by which \textit{Artemisia} removal promotes \textit{P. spicata} remains unclear. If  \textit{Artemisia} removal is releasing \textit{P. spicata} from competition, we should expect \textit{P. spicata} individuals that were located beneath \textit{Artemisia} shrubs that we removed to respond more than individuals located away from any shrubs. Yet we found no evidence for such a difference. An alternative explanation involves pre-treatment differences in composition between control plots and  the \textit{Artemisia} removal  plots, which had higher cover of \textit{Artemisia} (see 2011 means in Fig. \ref{fig:CoverTrends}) and higher cover of subdominant grasses and shrubs (Fig. \ref{fig:W-by-treatment}). Perhaps these pre-treatment differences reflect subtle differences in edaphic and environmental factors which could promote \textit{P. spicata} growth. While \textit{P. spicata} appears to show stronger competitive release than our baseline model predicted, the evidence is not conclusive. 
 
-% another hypotheses about PSSP
-% I predict you will cut this! :)  
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Here's my   hypotheses about PSSP. I predict you will cut this! :)   
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Another explanation for the under-prediction of \textit{P. spicata} competitive release may come from consideration of the scale at which plots are monitored in this experiment. In our models the competition experienced by a focal plant is weighted by distance of competitors from the focal plant. However because our plots are 1 m across we have no information about the effects of competition at scales greater than on 1 m.  Given that \textit{Artemisia} roots can spread laterally beyond their canopy’s extent (Kleinhesselink personal observation), it is possible that even \textit{P. spicata} plants in plots without \textit{Artemisia} canopies, a situation in theory identical to our removals, are experiencing some competition below ground from \textit{Artemisia} outside the plots. When we conducted removals we removed plants within 50 cm of the removal plots. These “outside the bounds” removals could give an added boost to \textit{P. spicata} performance that would not be captured by our historical data.  Additionally, there is growing evidence that plant roots are territorial, they recognize self and non-self roots and respond differently to the roots of different species \citep{Krinnetz and Caldwell}. Moreover, roots of many species appear to grow towards interspecific competition and avoid intraspecific neighbors—resulting in patterns of intraspecific root aggregation \citep{bertelheimer_aggregative_2006}.  If \textit{Artemisia} roots behave in this way, it could mean that our removal plots contain much lower densities of \textit{Artemisia} roots belowground than control plots without \textit{Artemisia} canopies aboveground. If this is the case, we could find that as \textit{Artemisia} roots from plants outside our plots re-invade the territory within the plots, the growth of \textit{P. spicata} will gradually be reduced and come to match that in control plots without \textit{Artemisia}.  
 
@@ -387,8 +396,10 @@ In such a system, effective management and conservation requires understanding t
 
 Our results have given us more confidence that competitive release is quite small for the dominant species in our study system. But for many species in other communities, interspecific competition may still be an important driver. In closed-canopy forests where competition for light is intense, we might have found different results than in our system, in which competition for a number of belowground resources is more important than competition for light. However, a number of recent studies from forests have also found that heterospecific competitive effects are dramatically weaker than conspecific effects \citep{comita_asymmetric_2010,kunstler_plant_2015,johnson_conspecific_2012}. 
 
-% added this nutnet tie-in that I think is cool; it could go up after the Yenni 
-% reference above.   
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% I added this nutnet tie-in that I think is cool; it could go up 
+% after the Yenni reference above instead.   
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 
 In grasslands, our results may also help explain a recent study showing that plot level abundance of widespread species often show little variation across continents, even when the identity of competitors between these locations is very different \citep{firn_abundance_2011}. If intraspecific competition is very strong, as in our study site, then the effect of novel competitors and new interspecific interactions may be expected to have little impact on the relative abundances of species in these systems.   
 
