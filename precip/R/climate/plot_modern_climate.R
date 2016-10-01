@@ -247,9 +247,15 @@ write.csv(x = annual_long, file =  'output/annual_climate_with_avg_stats.csv')
 
 ggsave(filename = 'figures/plot_climate_averages_by_month.png',device = 'png', plot = plot_all, width = 11, height = 8, dpi = 300)
 
-ggsave(filename = 'figures/plot_annual_mean_temp_ts.png', device = 'png', plot = annual_ts_MAT, width = 8, height = 6, dpi = 300)
+ggsave(filename = 'figures/plot_annual_mean_temp_ts.png', 
+       device = 'png', 
+       plot = annual_ts_MAT + 
+         theme( axis.text = element_text(size = 16), axis.title = element_text(size = 20)), 
+       width = 8, height = 6, dpi = 300)
 
-ggsave( filename = 'figures/plot_annual_ppt_ts.png', device = 'png', plot = annual_ts_ppt, width = 8, height  = 6, dpi = 300 )
+ggsave( filename = 'figures/plot_annual_ppt_ts.png', 
+        device = 'png', 
+        plot = annual_ts_ppt, width = 8, height  = 6, dpi = 300 )
 
 ggsave(filename = 'figures/plot_monthly_mean_temp_ts.png', device = 'png', plot = monthly_ts_meanT, width = 8, height = 6, dpi = 300)
 
