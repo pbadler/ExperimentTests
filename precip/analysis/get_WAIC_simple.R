@@ -27,9 +27,9 @@ if (length(args) != 3){
   
   setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
   
-  do_vr <- eval(parse(text = args[2]))
+  do_vr <- as.character(args[2])
   
-  do_line <- as.numeric(eval(parse(text = args[2])))
+  do_line <- as.numeric(eval(parse(text = args[3])))
   
   # nchains <- as.numeric(eval(parse (text = strsplit( args[3], ' '))))
   # niter <- as.numeric(eval(parse (text = strsplit( args[4], ' '))))
