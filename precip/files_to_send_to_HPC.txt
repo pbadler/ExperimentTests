@@ -7,7 +7,6 @@ analysis/growth/model_growth_3.stan
 analysis/growth/model_growth_4.stan
 analysis/growth/model_growth_5.stan
 analysis/submit_initialize_models.sh
-analysis/get_best_WAIC_scores.R
 analysis/submit_batch_WAIC.sh
 analysis/growth/model_growth_1_predict.stan
 analysis/growth/model_growth_2_predict.stan
@@ -36,4 +35,3 @@ analysis/get_WAIC_simple.R
 analysis/run_stan_models_simple.R
 data/temp_data/short_model_table.csv
 analysis/submit_gather_WAIC_scores.sh
-analysis/submit_get_best_WAIC_scores.sh

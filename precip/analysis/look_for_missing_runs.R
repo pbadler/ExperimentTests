@@ -24,3 +24,7 @@ print( models_missing %>%
   filter( is.na(waic) ) %>% 
   arrange(index) ) 
 
+write.csv(models_missing %>% 
+        filter( vital_rate != 'recruitment') %>% 
+        filter( is.na(waic) ) %>% 
+        arrange(index), file = 'output/missing_runs.csv', row.names = FALSE)
