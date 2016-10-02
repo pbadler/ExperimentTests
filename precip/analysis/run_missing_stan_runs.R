@@ -41,7 +41,7 @@ models <- read.csv('output/missing_runs.csv')
 source( 'analysis/run_stan_fxns.R')
 source( 'analysis/waic_fxns.R')
 
-if ( do_line < nrow(models)) { 
+if ( do_line <= nrow(models)) { 
   
   line <- models[do_line, ]
   

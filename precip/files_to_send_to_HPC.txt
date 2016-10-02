@@ -35,3 +35,10 @@ analysis/get_WAIC_simple.R
 analysis/run_stan_models_simple.R
 data/temp_data/short_model_table.csv
 analysis/submit_gather_WAIC_scores.sh
+analysis/run_missing_stan_runs.R
+analysis/submit_missing_WAIC.sh
+analysis/run_outlier_stan_runs.R
+analysis/submit_outlier_WAIC.sh
+output/missing_runs.csv
+output/outlier_runs.csv
+output/best_WAIC_scores.csv

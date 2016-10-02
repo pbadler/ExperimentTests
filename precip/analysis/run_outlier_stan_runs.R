@@ -1,6 +1,6 @@
 # 
 # 
-# get WAIC simple 
+# get WAIC for outlier runs  
 # 
 # 
 
@@ -11,25 +11,22 @@ library(rstan)
 args <- commandArgs(trailingOnly=TRUE)
 
 # test if there is at least one argument: if not, return an error
-if (length(args) != 3){ 
+if (length(args) != 2){ 
   stop('####### Incorrect number of arguments supplied ####### \n
        ####### Arguments required:
        #######  working directory 
-       #######  vital rate "growth", "recruitment" or "survival"
        #######  line number : 1 - total combination of models in
        #######  chains = 4 hardcoded  
        #######  niter = 2000 hardcoded')
   
-}else if (length(args) == 3){
+}else if (length(args) == 2){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
   args <- commandArgs(trailingOnly = TRUE)
   
   setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
   
-  do_vr <- as.character(args[2])
-  
-  do_line <- as.numeric(eval(parse(text = args[3])))
+  do_line <- as.numeric(eval(parse(text = args[2])))
   
   # nchains <- as.numeric(eval(parse (text = strsplit( args[3], ' '))))
   # niter <- as.numeric(eval(parse (text = strsplit( args[4], ' '))))
@@ -37,25 +34,25 @@ if (length(args) != 3){
 }
 
 nchains <- 4 
-niter <- 2000
+niter <- 5000 # bump up number of iterations to hopefully improve model performance 
 
-models <- read.csv('data/temp_data/model_table.csv')
-models <- subset( models, vital_rate == do_vr)
+models <- read.csv('output/outlier_runs.csv')
 
 source( 'analysis/run_stan_fxns.R')
 source( 'analysis/waic_fxns.R')
 
-
 if ( do_line <= nrow(models)) { 
   
   line <- models[do_line, ]
+  
+  print(line)
   
   species <- line$species 
   vital_rate <- line$vital_rate
   model <- line$model
   prior <- line$prior
   nlambda <- line$nlambda
-
+  
 }else{ stop('line number is greater than number of models')}
 
 output_path <- file.path(getwd(),  'output/stan_fits/WAIC_scores/')
