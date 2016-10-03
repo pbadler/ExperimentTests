@@ -26,7 +26,7 @@ data{
   real<lower=0, upper=1> u;
 }
 transformed parameters{
-  real mu[N];
+  vector[N] mu;
   vector[N] trueP1;
   vector[N] trueP2;
   vector[N] lambda;
@@ -35,20 +35,19 @@ transformed parameters{
 
   
   climEff <- C*b2;
-  for(n in 1:N){
-    
-    trueP1[n] <- parents1[n]*u + parents2[n]*(1-u);
-    
+  
+  trueP1 <- parents1*u + parents2*(1-u);
+  
+  for( n in 1:N)
     trueP2[n] <- sqrt(trueP1[n]);
   
+  for(n in 1:N)
     mu[n] <- exp(a[yid[n]] + gint[gid[n]] + dd*trueP2[n] + climEff[n]);
-    
-    lambda[n] <- trueP1[n]*mu[n];
-    
-    q[n] <- lambda[n]*theta;
-    
-  }
   
+  lambda <- trueP1 .* mu;  // note use of elementwise multiplication operator 
+    
+  q <- lambda*theta;
+    
 }
 model{
   // Priors

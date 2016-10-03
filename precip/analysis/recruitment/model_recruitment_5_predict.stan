@@ -2,27 +2,30 @@
 data{
   int<lower=0> N; // observations
   int<lower=0> Nspp;
-  int<lower=0> npreds;
   int<lower=0> spp; // species id  
   int<lower=0> Yrs; // years
   int<lower=0> yid[N]; // year id
   
-  int<lower=0> nyrs_out; // years out 
-  int<lower=0> yid_out[npreds]; //year out id
-  
   int<lower=0> Covs; // climate covariates
   int<lower=0> G; // groups
-  int<lower=0> gid[N]; // group id
-  int<lower=0> gid_out[npreds]; // group id
-  int<lower=0> Y[N]; // observation vector
-  int<lower=0> y_holdout[npreds]; // observation vector
   matrix[N,Covs] C; // climate matrix
-  matrix[npreds,Covs] Chold; // climate matrix, holdout
   matrix[N, Nspp] parents1; // parents in plot
   matrix[N, Nspp] parents2; // parents in group
+  int<lower=0> gid[N]; // group id
+  int<lower=0> Y[N]; // observation vector
+  real<lower=0> tau_beta; // prior sd
+
+  int<lower=0> npreds;
+  int<lower=0> nyrs_out; // years out 
+  int<lower=0> yid_out[npreds]; //year out id
+  int<lower=0> gid_out[npreds]; // group id
+
+  int<lower=0> y_holdout[npreds]; // observation vector
+  matrix[npreds,Covs] Chold; // climate matrix, holdout
+
   matrix[npreds, Nspp] parents1_out; // hold out parents in plot 
   matrix[npreds, Nspp] parents2_out; // hold out parents in group
-  real<lower=0> tau_beta; // prior sd
+  
 }parameters{
   real a_mu;
   vector[Yrs] a;

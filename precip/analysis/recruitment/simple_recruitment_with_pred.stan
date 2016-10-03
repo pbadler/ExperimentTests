@@ -16,6 +16,17 @@ data{
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
   
+  int<lower=0> npreds;
+  int<lower=0> nyrs_out; // years out 
+  int<lower=0> yid_out[npreds]; //year out id
+  int<lower=0> gid_out[npreds]; // group id
+
+  int<lower=0> y_holdout[npreds]; // observation vector
+  matrix[npreds,Covs] Chold; // climate matrix, holdout
+
+  matrix[npreds, Nspp] parents1_out; // hold out parents in plot 
+  matrix[npreds, Nspp] parents2_out; // hold out parents in group
+  
 }parameters{
   real a_mu;
   vector[Yrs] a;
@@ -69,4 +80,42 @@ model{
 
   // Likelihood
   Y ~ neg_binomial_2(q, theta);
+}
+generated quantities{
+  
+  vector[nyrs_out] a_out;
+  vector[npreds] climEffpred;
+  vector[npreds] coverEffpred;
+  matrix[npreds, Nspp] trueP1_pred;
+  matrix[npreds, Nspp] trueP2_pred;
+  
+  vector[npreds] mu_pred;
+  vector[npreds] lambda_hat;
+  vector[npreds] qpred;
+  vector[npreds] log_lik; // vector for computing log pointwise predictive density
+  int<lower=0> y_hat[npreds]; // pointwise predictions  
+
+  climEffpred <- Chold*b2;
+    
+  trueP1_pred <- parents1_out*u + parents2_out*(1-u);
+
+  for(n in 1:npreds)
+    for( j in 1:Nspp)
+      trueP2_pred[n, j] <- sqrt(trueP1_pred[n, j]);
+  
+  coverEffpred <- trueP2_pred*dd;
+
+  for( i in 1:nyrs_out)
+    a_out[i] <- normal_rng(a_mu, sig_a); // draw random year intercept 
+
+  for(n in 1:npreds)
+    mu_pred[n] <- exp(a_out[yid_out[n]] + gint[gid_out[n]] + coverEffpred[n] + climEffpred[n]);
+    
+  lambda_hat <- trueP1_pred[, spp] .* mu_pred;  // note use of elementwise multiplication operator 
+  qpred <- lambda_hat*theta;
+  
+  for(n in 1:npreds){
+    y_hat[n] <- neg_binomial_2_rng(qpred[n],  theta);
+    log_lik[n] <- neg_binomial_2_log(y_holdout[n], qpred[n], theta);
+  }
 }

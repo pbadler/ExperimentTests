@@ -30,35 +30,83 @@ traceplot(test_fit, c('dd', 'b2'))
 traceplot(test_fit, c('theta', 'u'))
 
 # test model 2 ------------------------------------------------------------------------------------
+rm(list = ls())
+
+library(rstan)
 
 datalist <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')
 
 test_spp <- 'POSE'
 test <- datalist[[test_spp]]
-spp_id <- test$spp
+test$spp
 
-test$parents2[test$parents2[, spp_id] == 0, spp_id] <- min( test$parents2[test$parents2[, spp_id] > 0, spp_id] ) 
+test$parents2[test$parents2 == 0 ] <- min(test$parents2[test$parents2 > 0 ])
 
-inits <- list(a = rep( 3, 20),
+inits <- list(a = rep( 3, test$Yrs),
               a_mu = 3.4, 
               sig_a = 0.6,
-              gint = rep( 0, 6), 
+              gint = rep( 0, test$G), 
               sig_G = 0.15, 
-              u = 0.8, 
-              dd = rep(1, 4), 
-              theta=1.2)
+              u = 0.5, 
+              dd = rep(-1, test$Nspp), 
+              theta=1.3)
+inits <- rep(list(inits), 1)
 
 test$tau_beta <- 1.5
 
-test <- test[c('N', 'Y', 'gid', 'G', 'Yrs', 'yid', 'C', 'Covs', 'parents1', 'parents2', 'tau_beta')]
+test <- test[c('N', 'Nspp', 'spp',  'Y', 'gid', 'G', 'Yrs', 'yid', 'C', 'Covs', 'parents1', 'parents2', 'tau_beta')]
 
-test_fit <- stan('analysis/recruitment/simple_recruitment.stan', 
-                 data = test, init = list(inits), chains = 1, iter = 500)
-
-traceplot(test_fit, c('dd', 'b2'))
-traceplot(test_fit, c('theta', 'u'))
+test_fit <- stan('analysis/recruitment/simple_recruitment2.stan', 
+                 data = test, init = inits, chains = 1, iter = 1000, cores = 1)
 
 
+traceplot(test_fit, c('b2'))
+traceplot(test_fit, c('dd'))
+traceplot(test_fit, c('theta'))
+traceplot( test_fit, c('a_mu'))
+traceplot( test_fit, 'u')
+
+
+# test with predictions --------------------------------------------------------------------------------------------------- # 
+rm(list = ls())
+
+library(rstan)
+
+datalist <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')
+
+test_spp <- 'POSE'
+test <- datalist[[test_spp]]
+
+test$parents2[test$parents2 == 0 ] <- min(test$parents2[test$parents2 > 0 ])
+
+inits <- list(a = rep( 3, test$Yrs),
+              a_mu = 3.4, 
+              sig_a = 0.6,
+              gint = rep( 0, test$G), 
+              sig_G = 0.15, 
+              u = 0.5, 
+              dd = rep(-1, test$Nspp), 
+              theta=1.3)
+
+inits <- rep(list(inits), 1)
+
+test$tau_beta <- 1.5
+
+test <- test[c('N', 'Nspp', 'spp',  'Y', 'gid', 'G', 'Yrs', 'yid', 'C', 'Covs', 'parents1', 'parents2', 'tau_beta', 
+               'npreds', 'nyrs_out', 'yid_out', 'gid_out', 'y_holdout', 'Chold', 'parents1_out', 'parents2_out')]
+
+
+test_fit <- stan('analysis/recruitment/simple_recruitment_with_pred.stan', 
+                 data = test, init = inits, chains = 1, iter = 100, cores = 1)
+
+
+traceplot(test_fit, c('b2'))
+traceplot(test_fit, c('dd'))
+traceplot(test_fit, c('theta'))
+traceplot( test_fit, c('a_mu'))
+traceplot( test_fit, 'u')
+
+# ----------------------------------------------------------------------------------------------------------------- # 
 
 library(lme4)
 
