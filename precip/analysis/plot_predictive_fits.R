@@ -13,32 +13,31 @@ library(gridExtra)
 args <- commandArgs(trailingOnly=TRUE)
 
 # test if there is at least one argument: if not, return an error
-if (length(args) != 3){ 
+if (length(args) != 1){ 
   stop('####### Incorrect number of arguments supplied ####### \n
        ####### Arguments required:  
-       #######  spp: species name ("ARTR" "HECO" "PSSP" or "POSE") 
-       #######  vr:  vital rate ("growth" "survival" or "recruitment")
-       #######  m:  model number: (1, 2, 3, 4, 5)')
-}else if (length(args) == 3){
+       #######  line from short_model_table')
+  }else if (length(args) == 1){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
   args <- commandArgs(trailingOnly = TRUE)
   
-  spp <- args[1]
-  vr <- args[2]
-  m <- args[3]
-  
-  print(paste('plot results for', spp, vr, 'model', m))
-  
+  do_line <- args[1]
 }
-# # for testing
-# spp <- 'HECO'
-# vr <- 'growth'
-# m <- 4
 
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 print(paste('Working directory: ' , getwd()))
+
+model_table <- read.csv('data/temp_data/short_model_table.csv')
+
+do_model <- model_table[do_line, ]
+spp <- do_model$species
+vr <- do_model$vital_rate
+m <- do_model$model
+
+
+print(paste('plot results for', spp, vr, 'model', m))
 
 temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, 20, 4, 'predict.RDS', sep = '_')))
 
@@ -62,7 +61,9 @@ pdf(file.path( 'figures', 'stan_fits',  paste(spp, vr, m, 'traceplot.pdf', sep =
 
 ggs_traceplot(fit_ggs, 'a_mu') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m))
 
-ggs_traceplot(fit_ggs, 'b1_mu') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m))
+if( sum(str_detect(fit_ggs$Parameter, 'b1_mu')) > 0 ){
+  ggs_traceplot(fit_ggs, 'b1_mu') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m))
+}
 
 if( sum( str_detect( fit_ggs$Parameter, 'b2')) > 0  ) { 
   ggs_traceplot(fit_ggs, 'b2') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m))

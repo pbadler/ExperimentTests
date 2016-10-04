@@ -9,6 +9,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
+#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'recruitment', 101)
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 3){ 
@@ -23,7 +24,7 @@ if (length(args) != 3){
 }else if (length(args) == 3){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
-  args <- commandArgs(trailingOnly = TRUE)
+
   
   setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
   
@@ -36,7 +37,7 @@ if (length(args) != 3){
   
 }
 
-nchains <- 4 
+nchains <- 4
 niter <- 2000
 
 models <- read.csv('data/temp_data/model_table.csv')
