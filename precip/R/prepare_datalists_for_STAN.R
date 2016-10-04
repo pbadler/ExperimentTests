@@ -127,26 +127,6 @@ survival_dataframe2datalist <- function(df, train, hold, clim_vars){
 
 recruitment_dataframe2datalist <- function(df, train, hold, clim_vars){
   
-  # # set up data objects for bugs  
-  # y=as.matrix(D[,c(paste("R.",sppList,sep=""))])
-  # R.tot=rowSums(y)
-  # parents1=as.matrix(D[,c(paste("cov.",sppList,sep=""))])/100
-  # parents2=as.matrix(D[,c(paste("Gcov.",sppList,sep=""))])/100
-  # year=as.numeric(as.factor(D$year))
-  # Nyrs=length(unique(D$year))
-  # N=dim(D)[1]
-  # Nspp=length(sppList)
-  # Group=as.numeric(D$Group)
-  # Ngroups=length(unique(Group))
-  # # code treatment specific intercepts: 1 = old and modern control, 2 = no shrub, 3 = no grass
-  # TreatCode=matrix(1,length(y),Nspp)
-  # tmp=which(D$Treatment=="No_shrub")
-  # TreatCode[tmp,2:4]=2
-  # tmp=which(D$Treatment=="No_grass")
-  # TreatCode[tmp,1]=3
-  # test=data.frame(D$year,D$Treatment,TreatCode)
-  
-  
   # Function simply makes list of data for STAN models
   
   # --------split into training and holding data and scale climate covariates -------------------------
@@ -169,6 +149,8 @@ recruitment_dataframe2datalist <- function(df, train, hold, clim_vars){
   parents1  <- as.matrix(training_df[, grep('^cov', names(training_df)) ])/100  # parents in plot 
   parents2  <- as.matrix(training_df[, grep('^Gcov', names(training_df))])/100  # parents in group
   
+  parents2[parents2 == 0 ] <- min(parents2[parents2 > 0 ]) # set parents2 cover greater than 0 so that values can be fit with neg_binom 
+  
   spp_list  <- factor( str_extract( colnames(parents1), '[A-Z]+$'))        # get species names 
 
   Nspp      <- length(spp_list)                                   # number of parent species
@@ -188,11 +170,17 @@ recruitment_dataframe2datalist <- function(df, train, hold, clim_vars){
   
   parents1_out  <- as.matrix(holding_df[, grep('^cov',  names(holding_df)) ])/100  # parents in plot 
   parents2_out  <- as.matrix(holding_df[, grep('^Gcov', names(holding_df))])/100  # parents in group
-  
+
+  parents2_out[parents2_out == 0 ] <- min(parents2_out[parents2_out > 0 ]) # set parents2_out cover greater than 0 so that values can be predicted with neg_binom 
+    
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data
   yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data
   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments
+  
+
+  
+  
   
   return(
     list(
