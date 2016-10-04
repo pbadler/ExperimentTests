@@ -21,13 +21,15 @@ library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
 
+args <- c("/home/andy/Documents/ExperimentTests/precip/", "/home/andy/Documents/ExperimentTests/precip/data/temp_data/short_model_table.csv", "22", "0", "1", "FALSE")
+
 # test if there is at least one argument: if not, return an error
 if (length(args) != 6){ 
   stop('####### Incorrect number of arguments supplied ####### \n
        ####### Arguments required:
        #######  working directory 
-       #######  line number : 1 - total combination of models in 
        #######  table file :  csv file with model combinations 
+       #######  line number : 1 - total combination of models in 
        #######  chains: 1 - 4 
        #######  niter:  number of iterations to run per chain
        #######  predictions: TRUE/FALSE')

@@ -1,4 +1,4 @@
-// Full model for recruitment: includes climate + intraspecific + interspecific competition effects 
+// Single-species model for recruitment: includes intraspecific effects 
 data{
   int<lower=0> N; // observations
   int<lower=0> Yrs; // years
@@ -6,19 +6,15 @@ data{
   int<lower=0> G; // groups
   int<lower=0> gid[N]; // group id
   int<lower=0> Y[N]; // observation vector
+  int<lower=0> Nspp; // number of species 
+  int<lower=0> spp; // focal species id
   vector[N] parents1; // parents in plot
   vector[N] parents2; // parents in group
-  
-  int<lower=0> Covs; // climate covariates
-  matrix[N,Covs] C; // climate matrix
-  real tau_beta;
-  
+
 }parameters{
   real a_mu;
   vector[Yrs] a;
   real w;
-  vector[Covs] b2;
-
   real gint[G];
   real<lower=0> sig_a;
   real<lower=0> theta;
@@ -31,38 +27,42 @@ transformed parameters{
   vector[N] trueP2;
   vector[N] lambda;
   vector[N] q;
-  vector[N] climEff;
+  vector[N] coverEff;
 
-  
-  climEff <- C*b2;
-  
   trueP1 <- parents1*u + parents2*(1-u);
-  
-  for( n in 1:N)
-    trueP2[n] <- sqrt(trueP1[n]);
-  
+
   for(n in 1:N)
-    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + w*trueP2[n] + climEff[n]);
+      trueP2[n] <- sqrt(trueP1[n]);
   
-  lambda <- trueP1 .* mu;  // note use of elementwise multiplication operator 
-    
+  coverEff <- trueP2*w;
+
+  for(n in 1:N){
+    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n]);
+    lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication  
+  } 
+  
   q <- lambda*theta;
-    
+
 }
 model{
   // Priors
   u ~ uniform(0,1);
-  theta ~ uniform(0,10);
-  a_mu ~ normal(0,10);
+  theta ~ uniform(0,5);
+  a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
-  w ~ uniform(-10, 10);
-  
-  b2 ~ normal(0, tau_beta);
-  
+  w ~ normal(0, 5);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
 
   // Likelihood
   Y ~ neg_binomial_2(q, theta);
+}
+generated quantities{
+  
+  vector[N] log_lik; // vector for computing log pointwise predictive density
+  
+  for(n in 1:N)
+    log_lik[n] <- neg_binomial_2_log(Y[n], q[n], theta); 
+
 }

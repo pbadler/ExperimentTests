@@ -8,19 +8,22 @@ data{
   int<lower=0> Y[N]; // observation vector
   int<lower=0> Nspp; // number of species 
   int<lower=0> spp; // focal species id
+  
   matrix[N, Nspp] parents1; // parents in plot
   matrix[N, Nspp] parents2; // parents in group
+  
   int<lower=0> Covs; // climate covariates
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
   
-  // for out of sample prediction 
   int<lower=0> npreds;
   int<lower=0> nyrs_out; // years out 
-  int<lower=0> yid_out[npreds]; // year out id
+  int<lower=0> yid_out[npreds]; //year out id
   int<lower=0> gid_out[npreds]; // group id
+
   int<lower=0> y_holdout[npreds]; // observation vector
   matrix[npreds,Covs] Chold; // climate matrix, holdout
+
   matrix[npreds, Nspp] parents1_out; // hold out parents in plot 
   matrix[npreds, Nspp] parents2_out; // hold out parents in group
   
@@ -29,6 +32,7 @@ data{
   vector[Yrs] a;
   vector[Nspp] w;
   vector[Covs] b2;
+
   real gint[G];
   real<lower=0> sig_a;
   real<lower=0> theta;
@@ -45,6 +49,7 @@ transformed parameters{
   vector[N] coverEff;
 
   climEff <- C*b2;
+    
   trueP1 <- parents1*u + parents2*(1-u);
 
   for(n in 1:N)
@@ -53,14 +58,11 @@ transformed parameters{
   
   coverEff <- trueP2*w;
 
-  for(n in 1:N){
+  for(n in 1:N)
     mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
-    lambda[n] <- trueP1[n, spp]*mu[n];  // elementwise multiplication  
-  } 
-  
+    
+  lambda <- trueP1[, spp] .* mu;  // note use of elementwise multiplication operator 
   q <- lambda*theta;
-  
-  print(b2)
 }
 model{
   // Priors
@@ -70,7 +72,9 @@ model{
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
   w ~ normal(0, 5);
+  
   b2 ~ normal(0, tau_beta);
+  
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
 
@@ -104,15 +108,14 @@ generated quantities{
   for( i in 1:nyrs_out)
     a_out[i] <- normal_rng(a_mu, sig_a); // draw random year intercept 
 
-  for(n in 1:npreds){
+  for(n in 1:npreds)
     mu_pred[n] <- exp(a_out[yid_out[n]] + gint[gid_out[n]] + coverEffpred[n] + climEffpred[n]);
-    lambda_hat[n] <- trueP1_pred[n, spp]*mu_pred[n];  // elementwise multiplication 
-  }
-  
+    
+  lambda_hat <- trueP1_pred[, spp] .* mu_pred;  // note use of elementwise multiplication operator 
   qpred <- lambda_hat*theta;
   
   for(n in 1:npreds){
-    y_hat[n] <- neg_binomial_2_rng(qpred[npreds],  theta);
-    log_lik[n] <- neg_binomial_2_log(y_holdout[npreds], qpred[npreds], theta);
+    y_hat[n] <- neg_binomial_2_rng(qpred[n],  theta);
+    log_lik[n] <- neg_binomial_2_log(y_holdout[n], qpred[n], theta);
   }
 }

@@ -16,8 +16,6 @@
 
 rm(list = ls())
 
-library(inla)
-
 make_df <- function( x ) { 
   N <- x$N
   lens <- lapply( x, length )
@@ -27,15 +25,15 @@ make_df <- function( x ) {
   data.frame( x [ which(lens == N | nrs == N) ]  )
 } 
 
-set_init_vals_list <-  function( model, C_names, W_names, dl ) {  
+set_init_vals_list <-  function( model, C_names, W_names ) {  
   
-  init_vals <- as.list( fixef(model)[1:2] )
+  init_vals <- as.list( fixef(model)[1] )
   
-  init_vals <- c(init_vals, as.numeric(data.frame( VarCorr(model) )$sdcor[ c(1,2,4)]))
+  init_vals <- c(init_vals, as.numeric(data.frame( VarCorr(model) )$sdcor[ c(1,2)]))
   
-  names( init_vals )[1:5] <- c('a_mu', 'b1_mu', 'sig_a', 'sig_b1', 'sig_G')
+  names( init_vals )[1:3] <- c('a_mu', 'sig_a', 'sig_G')
   
-  if(init_vals$sig_G < 0.0001) { init_vals$sig_G <- 0.05 } # prevent sig G from being zero in some cases 
+  if(init_vals$sig_G < 0.0001) { init_vals$sig_G <- 0.1 } # prevent sig G from being zero in some cases 
   
   b2 <- fixef(model)[C_names]
   w <- fixef(model)[W_names]
@@ -43,22 +41,19 @@ set_init_vals_list <-  function( model, C_names, W_names, dl ) {
   if( length(b2[!is.na(b2)]) > 0 )  { 
     init_vals <- c(init_vals, list( b2 = as.numeric(b2[!is.na(b2)])))
   } 
-  if( length(w[!is.na(w)]) > 0 )  { 
-    init_vals <- c(init_vals, list( w = as.numeric(w[!is.na(w)])))  
+  if( length(w[!is.na(W_names)]) > 0 )  { 
+    init_vals <- c(init_vals, list(w = as.numeric(w[!is.na(w)])))  
   }
-  
-  # growth variance is size specific in these models 
-  # Choose initial values similar to those from Tredennick's paper 
-  init_vals$tau <- 1           
-  init_vals$tauSize <- 0
   
   # random effects initial values need to be specified for STAN 2.6.0
   nyrs <- length(unique(model@frame$yid) )
   G <- length(unique(model@frame$gid)) 
   
   init_vals$a <- rep(0, nyrs)
-  init_vals$b1 <- rep(0, nyrs) 
   init_vals$gint <- rep(0, G) 
+  
+  init_vals$theta <- median(model@theta)
+  init_vals$u <- 0.8
   
   return( init_vals )
 
@@ -66,42 +61,66 @@ set_init_vals_list <-  function( model, C_names, W_names, dl ) {
 
 
 get_init_vals_recruitment_models <- function( spp, datalist, ... ) {
-
-  df <- make_df(x = datalist) 
+  
+  df <-  make_df(datalist)
   
   C_names <- names(df)[ grep('^C', names(df))] # climate effects 
-  W_names <- names(df)[ grep('^W', names(df))] # competition effects 
-  W_intra <- names(df)[ grep(spp, names(df))]
+  parents1_names <- names(df)[ grep('^parents1', names(df))] # competition effects 
+  parents2_names <- names(df)[ grep('^parents2', names(df))] # competition effects 
+  
+  parents_intra <- names(df)[ grep(spp[1], names(df))]
+  
+  u <- 0.7 ### mixing parameter 
+  
+  # need to do some transformation to get parameters correct ------------------------ # 
+  
+  effective_cover <- df[, parents1_names ]*u + df[, parents2_names]*(1-u)
+  
+  effective_cover_sqrd <- sqrt( effective_cover )
+  
+  intra_df <- data.frame( 'intra' = log( effective_cover[, parents_intra[1]])) 
+  
+  prepped_df <- data.frame( df[ , -grep('^parents', names(df))], effective_cover_sqrd, intra_df )
+  
+  W_names <- names(prepped_df)[grep('^parents', names(prepped_df))]
+  W_intra <- names(prepped_df)[grep(spp, names(prepped_df))]
   
   # write models --------------------------------------------------------------- # 
-  f1 <- 'Y ~ X + (1|gid) + (X|yid)'
+  f1 <- paste( 'Y', ' ~ offset(intra)', '+ (1|gid) + (1|yid)' )
   f2 <- paste(f1, paste(C_names, collapse = ' + ' ), sep = ' + ')
   f3 <- paste(f1, paste(W_intra, collapse = ' + ' ), sep = ' + ')
   f4 <- paste(f1, paste(c(W_intra, C_names), collapse = ' + '), sep = ' + ')
   f5 <- paste(f1, paste(c(W_names, C_names), collapse = ' + '), sep = ' + ')
   
-  fs <- list(f1, f2, f3, f4, f5 ) 
+  fs <- list(f1, f2, f3, f4, f5 )
   # ----------------------------------------------------------------------------- #
   
-  ms <- lapply( fs, FUN = function( x, ... ) lmer( x , data = df) ) # run models 
+  ms <- lapply( fs, FUN = function( x, ... ) glmer.nb( x , data = prepped_df) ) # run models 
   
   # set initial values ----------------------------------------
   init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names ) 
-  
+   
   return(init_vals)
 }
 
 # input files ----------------------------------------------------------------------#
-
+ 
 dl <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')
-nchains <- 4
 spp <- names(dl)
 
 # run functions---------------------------------------------------------------------# 
-init_vals <- mapply( get_init_vals_growth_models, spp = spp , datalist = dl, USE.NAMES = TRUE, SIMPLIFY = FALSE)
+init_vals <- list( NA )
 
+init_vals[[1]] <- get_init_vals_recruitment_models( spp[1], dl[[1]])
+### init_vals[[2]] <- get_init_vals_recruitment_models( spp[2], dl[[2]]) ### Throwing error 
+init_vals[[3]] <- get_init_vals_recruitment_models( spp[3], dl[[3]])
+init_vals[[4]] <- get_init_vals_recruitment_models( spp[4], dl[[4]])
+
+init_vals[[2]] <- init_vals[[3]] # Assigning HECO's inits with POSE inits 
+
+names(init_vals) <- spp 
 # save output ----------------------------------------------------------------------#
 
-saveRDS( init_vals, file = file.path('data/temp_data', 'growth_init_vals.RDS'))
+saveRDS( init_vals, file = file.path('data/temp_data', 'recruitment_init_vals.RDS'))
 
 

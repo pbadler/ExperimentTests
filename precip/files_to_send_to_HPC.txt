@@ -41,4 +41,16 @@ analysis/run_outlier_stan_runs.R
 analysis/submit_outlier_WAIC.sh
 output/missing_runs.csv
 output/outlier_runs.csv
-output/best_WAIC_scores.csv
+analysis/recruitment/model_recruitment_1.stan
+analysis/recruitment/model_recruitment_2.stan
+analysis/recruitment/model_recruitment_3.stan
+analysis/recruitment/model_recruitment_4.stan
+analysis/recruitment/model_recruitment_5.stan
+analysis/recruitment/model_recruitment_1_predict.stan
+analysis/recruitment/model_recruitment_2_predict.stan
+analysis/recruitment/model_recruitment_3_predict.stan
+analysis/recruitment/model_recruitment_4_predict.stan
+analysis/recruitment/model_recruitment_5_predict.stan
+analysis/recruitment/run_recruitment_on_HPC.R
+data/temp_data/recruitment_data_lists_for_stan.RDS
+data/temp_data/recruitment_init_vals.RDS

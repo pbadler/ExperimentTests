@@ -21,6 +21,18 @@ models <- expand.grid(
 
 models <- merge(models, master_list$models)
 
+rmodels <- expand.grid( 
+  species = master_list$species, 
+  vital_rate = 'recruitment',
+  model = master_list$models$model, 
+  prior = c(1:master_list$nlambda))
+
+rmodels <- merge( rmodels, master_list$rmodels)
+
+models <- models[ !models$vital_rate == 'recruitment', ]
+
+models <- rbind( models, rmodels)
+
 full_table <- 
   models %>% 
   arrange( vital_rate, species, model, prior ) %>% 

@@ -1,3 +1,4 @@
+rm(list = ls())
 library(rstan)
 
 datalist <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')
@@ -10,24 +11,25 @@ test$parents2 <- test$parents2 [ , grep( colnames (test$parents2), pattern = tes
 
 test$parents2[test$parents2 == 0 ] <- min(test$parents2[test$parents2 > 0 ])
 
-inits <- list(a = rep( 3, 20),
-              a_mu = 3.4, 
-              sig_a = 0.6,
-              gint = rep( 0, 6), 
-              sig_G = 0.15, 
-              u = 0.8, 
-              dd = rep(1, 1), 
-              theta=1.2)
+inits <- readRDS('data/temp_data/recruit_init_vals.RDS')
+
+
+inits <- inits[[3]]
+inits
+inits <- rep(list( inits), 3)
 
 test$tau_beta <- 1.5
 
 test <- test[c('N', 'Y', 'gid', 'G', 'Yrs', 'yid', 'C', 'Covs', 'parents1', 'parents2', 'tau_beta')]
 
 test_fit <- stan('analysis/recruitment/simple_recruitment.stan', 
-                 data = test, init = list(inits), chains = 1, iter = 500)
+                 data = test, init = inits, chains = 3, iter = 2000)
+
+test_fit
 
 traceplot(test_fit, c('dd', 'b2'))
 traceplot(test_fit, c('theta', 'u'))
+traceplot(test_fit, c('a_mu'))
 
 # test model 2 ------------------------------------------------------------------------------------
 rm(list = ls())
