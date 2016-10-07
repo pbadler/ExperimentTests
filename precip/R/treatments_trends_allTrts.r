@@ -94,7 +94,7 @@ myCols<-c("black","red3","blue3")
 # remove removal treatments for clarity ----------------------------------------
 
 #1. Average cover by treatment and year
-pdf("figures/cover_by_treatment.pdf",height=3,width=8)
+png("figures/cover_by_treatment.png",height=3,width=7, units = 'in', res = 300)
 par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2,lwd=1)
 for(doSpp in sppList){
   tmp.mean<-subset(spp.mean,species==doSpp)
@@ -107,7 +107,7 @@ mtext("Mean cover (%)",side=2,line=1,outer=T)
 dev.off()
 
 #2. Average cover deviation (w.r.t. pretreatment year)
-pdf("figures/cover_deviation.pdf",height=3,width=8)
+png("figures/cover_deviation.png",height=3,width=7, units = 'in', res = 300)
 par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
 for(doSpp in sppList){
   tmp.mean<-subset(spp.mean.diff,species==doSpp)
@@ -124,7 +124,7 @@ dev.off()
 #3. log change
 # hard wire ylims
 myLims <- c(-1.8,1.2)
-pdf("figures/log_change.pdf",height=3,width=8)
+png("figures/log_change.png",height=3,width=7, units = 'in', res = 300)
 par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
 for(doSpp in sppList){
   tmp.mean<-subset(mean.change,species==doSpp)
@@ -140,5 +140,5 @@ for(doSpp in sppList){
   if(doSpp==sppList[1]) legend("bottomright",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
 }
 mtext("Year",side=1,line=1,outer=T)
-mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)
+mtext("Log change in cover",side=2,line=1,outer=T)
 dev.off()

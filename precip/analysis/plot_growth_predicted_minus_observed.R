@@ -8,122 +8,78 @@ library(stringr)
 library(rstan)
 library(gridExtra)
 
-# arguments --------------------------------------------------------------------------------# 
+# input ------------------------------------------------------------------------------------# 
+model_table <- read.csv('output/WAIC_selected_models.csv')
+lppd <- read.csv('output/lppd_scores.csv')
 
-args <- commandArgs(trailingOnly=TRUE)
+lppd_table <- merge(lppd, model_table, by = c('species', 'vital_rate' , 'model') )
 
-# test if there is at least one argument: if not, return an error
-if (length(args) != 3){ 
-  stop('####### Incorrect number of arguments supplied ####### \n
-       ####### Arguments required:  
-       #######  spp: species name ("ARTR" "HECO" "PSSP" or "POSE") 
-       #######  vr:  vital rate ("growth" "survival" or "recruitment")
-       #######  m:  model number: (1, 2, 3, 4, 5)')
-}else if (length(args) == 3){
+lppd_table <- 
+  lppd_table %>% 
+  group_by( vital_rate, species, model ) %>% 
+  mutate( diff = X50. - Y)
+
+lppd_table %>% 
+  group_by( vital_rate, species, model ) %>% 
+  summarise( n())
+
+g1 <-
+  ggplot(lppd_table, aes(x = diff, fill = Period)) +
+  geom_density(alpha = 0.6, color = NA) +
+  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.8) +
+  xlab( 'Predicted - observed') + 
+  facet_wrap( ~ Period, ncol = 1) 
+
+plot1 <- lppd_table %>% do(gg = g1 %+% . + ggtitle( paste( .$species, .$vital_rate, 'model', .$model)))
+
+my_colors <- c('#66c2a5','#fc8d62','#8da0cb')
+
+gg_treatments <-
+  ggplot( lppd_table, aes( x = diff, fill = treatment)) +
+  geom_density(alpha = 0.6, color = NA) +
+  facet_wrap(~ treatment, ncol = 1 ) +
+  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.8) +
+  scale_fill_manual(values = my_colors) +
+  xlab( 'Predicted - observed') 
+
+plot2 <- 
+  lppd_table %>% 
+  filter( Period == 'Modern') %>% 
+  do(gg = gg_treatments %+% . + ggtitle( paste( .$species, .$vital_rate, 'model', .$model)))
+
+gg_years <-
+  ggplot( lppd_table, aes( x = diff)) +
+  geom_density(fill = 'gray', alpha = 0.6) +
+  facet_wrap( ~ year, ncol = 1 ) +
+  geom_vline( aes( xintercept = 0 ) , linetype = 2, alpha = 0.5 )
+
+plot3 <- 
+  lppd_table %>% 
+  filter( Period == 'Modern') %>% 
+  do(gg = gg_years %+% . + ggtitle( paste( .$species, .$vital_rate, 'model', .$model)))
+
+
+png(file.path( 'figures/predictions/'))
+
+for( i in 1:length(plot1$gg) ) { 
   
-  # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
-  args <- commandArgs(trailingOnly = TRUE)
+  vr <- plot1$vital_rate[i]
+  species <- plot1$species[i]
+  m <- plot1$model[i]
   
-  spp <- args[1]
-  vr <- args[2]
-  m <- args[3]
+  png( file.path( 'figures/predictions', paste(species, vr, m, 'predicted_minus_obs.png', sep = '_')), width = 6, height = 6 , units = 'in', res = 300)
+    print( plot1$gg[[i]] )
+  dev.off()
   
-  print(paste('plot results for', spp, vr, 'model', m))
+  png( file.path( 'figures/predictions', paste(species, vr, m, 'predicted_minus_obs_by_treatment.png', sep = '_')), width = 6, height = 6 , units = 'in', res = 300)
+    print( plot2$gg[[i]] )
+  dev.off()
+  
+  png( file.path( 'figures/predictions', paste(species, vr, m, 'predicted_minus_obs_by_year.png', sep = '_')), width = 6, height = 6 , units = 'in', res = 300)
+    print( plot3$gg[[i]] )
+  dev.off()
+  
   
 }
-# # # for testing
-# spp <- 'POSE'
-# vr <- 'growth'
-# m <- 2
-
-
-compute_dev <- function( stan_fit, y_obs ) { 
-  
-  y_hat <- extract (stan_fit, "y_hat")$y_hat
-  dev <- colMeans(y_hat) - y_obs 
-  
-  dev
-  
-} 
-
-
-# input ------------------------------------------------------------------------------------# 
-setwd('~/Documents/ExperimentTests/precip/')
-print(paste('Working directory: ' , getwd()))
-
-temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, 'predictions.RDS', sep = '_')))
-
-df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[spp]]
-
-# plot observed - predicted  ------------------------------------------------------------
-
-y_out <- data.frame(
-  obs_id = 1:length(df$y_holdout), 
-  y_holdout = df$y_holdout, 
-  treatment = factor( df$treat_out, labels = c('Control', 'Drought', 'Irrigation')), 
-  year = factor( df$yid_out, labels = unique(df$yid_out) + 2006 ))
-
-muhat <- extract( temp_fit, 'muhat')$muhat 
-y_hat <- extract( temp_fit, 'y_hat')$y_hat
-
-mu_diff <- colMeans( sweep(muhat, MARGIN = 2, y_out$y_holdout, FUN = '-'))
-y_hat_diff <- colMeans( sweep( y_hat, MARGIN = 2, y_out$y_holdout, FUN = '-'))
-
-y_out$mu_diff <- mu_diff 
-y_out$y_hat_diff <- y_hat_diff 
-
-g1 <- 
-  ggplot(y_out, aes(x = mu_diff)) + 
-  geom_histogram() + 
-  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.5) + 
-  ggtitle( paste( 'Predicted - observed for', spp, vr, 'model', m, '\n(mu_hat - observed)'))
-
-g2 <- 
-  ggplot(y_out, aes(x = y_hat_diff)) + 
-  geom_histogram() + 
-  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.5) + 
-  ggtitle( paste( 'Predicted - observed for', spp, vr, 'model', m, '\n(y_hat - observed)'))
-
-pdf( file.path( 'figures', paste(spp, vr, m, 'all_predicted_minus_observed.pdf')),  width = 11, height = 8 )
-
-print( grid.arrange(g1, g2, nrow = 2) ) 
 
 dev.off()
-
-# 
-g_treatments <- 
-  ggplot( y_out, aes( x = mu_diff)) + 
-  geom_density() + 
-  facet_wrap(~ treatment, ncol = 1 ) +  
-  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.5) + 
-  ggtitle( paste( 'Predicted - observed for', spp, vr, 'model', m, '\n(mu_hat - observed)'))
-
-g_years <- 
-  ggplot( y_out, aes( x = mu_diff)) + 
-  geom_density() + 
-  facet_wrap( ~ year, ncol = 1 ) + 
-  geom_vline( aes( xintercept = 0 ) , linetype = 2, alpha = 0.5 ) + 
-  ggtitle( paste( 'Predicted - observed for', spp, vr, 'model', m, '\n(mu_hat - observed)'))
-
-
-pdf( file.path( 'figures/predictions', paste(spp, vr, m, 'predicted_minus_obs_treatments.pdf')), width = 8, height = 11)
-print( g_treatments)
-dev.off()
-
-pdf( file.path( 'figures/predictions', paste(spp, vr, m, 'predicted_minus_obs_years.pdf')), width = 8, height = 11)
-print( g_years)
-dev.off()
-
-# Root mean squared error ---------------------------------------------------------------------------------------------# 
-
-y_out$deviations <- compute_dev(temp_fit, y_out$y_holdout)
-
-RMSE_by_treatment <- y_out %>% group_by( treatment) %>% summarise( RMSE = sqrt( sum(deviations^2)/n() ))
-RMSE_by_year <- y_out %>% group_by( year, treatment ) %>% summarise( RMSE = sqrt(sum(deviations^2)/n()))
-
-ggplot( RMSE_by_year, aes( x = year, y = RMSE)) + geom_bar(stat = 'identity') + facet_wrap( ~ treatment)
-ggplot( RMSE_by_treatment, aes( x = treatment, y = RMSE )) + geom_bar(stat = 'identity')
-
-
-
-

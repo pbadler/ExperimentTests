@@ -60,7 +60,6 @@ transformed parameters{
   
   q <- lambda*theta;
   
-  print(b2)
 }
 model{
   // Priors

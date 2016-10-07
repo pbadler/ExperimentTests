@@ -103,8 +103,6 @@ outliers <-
   waics %>% 
   filter( outlier ) 
 
-print( outliers ) 
-
 write.csv(outliers, 'output/outlier_runs.csv', row.names = FALSE)
 
 # save lowest WAIC models 
@@ -120,5 +118,7 @@ no_reg_fits <-
 
 best_fits <- bind_rows ( best_fits %>% select_(.dots = names( all_waics)), no_reg_fits )
 best_fits <- left_join( best_fits, model_table)
+
+best_fits <- best_fits %>% arrange(vital_rate, species, model )
 
 write.csv(best_fits , 'output/best_WAIC_scores.csv')

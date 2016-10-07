@@ -21,8 +21,6 @@ library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
 
-#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'data/temp_data/short_model_table.csv', 25, 0, 1, FALSE)
-
 # test if there is at least one argument: if not, return an error
 if (length(args) != 6){ 
   stop('####### Incorrect number of arguments supplied ####### \n

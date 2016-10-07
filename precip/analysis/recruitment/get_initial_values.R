@@ -16,6 +16,8 @@
 
 rm(list = ls())
 
+library(lme4)
+
 make_df <- function( x ) { 
   N <- x$N
   lens <- lapply( x, length )
@@ -53,7 +55,7 @@ set_init_vals_list <-  function( model, C_names, W_names ) {
   init_vals$gint <- rep(0, G) 
   
   init_vals$theta <- median(model@theta)
-  init_vals$u <- 0.8
+  init_vals$u <- 0.9
   
   return( init_vals )
 
@@ -70,7 +72,7 @@ get_init_vals_recruitment_models <- function( spp, datalist, ... ) {
   
   parents_intra <- names(df)[ grep(spp[1], names(df))]
   
-  u <- 0.7 ### mixing parameter 
+  u <- 0.9 ### mixing parameter 
   
   # need to do some transformation to get parameters correct ------------------------ # 
   

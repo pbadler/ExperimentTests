@@ -1,78 +1,91 @@
 rm(list = ls() )
 
-library(ggmcmc)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
 library(stringr)
 library(rstan)
-library(gridExtra)
 
-# arguments --------------------------------------------------------------------------------# 
+# input ------------------------------------------------------------------------------------# 
+model_table <- read.csv('output/best_WAIC_scores.csv')
 
-args <- commandArgs(trailingOnly=TRUE)
+model_table <- subset( model_table, vital_rate != 'recruitment' )
 
-# test if there is at least one argument: if not, return an error
-if (length(args) != 3){ 
-  stop('####### Incorrect number of arguments supplied ####### \n
-       ####### Arguments required:  
-       #######  spp: species name ("ARTR" "HECO" "PSSP" or "POSE") 
-       #######  vr:  vital rate ("growth" "survival" or "recruitment")
-       #######  m:  model number: (1, 2, 3, 4, 5)')
-}else if (length(args) == 3){
-  
-  # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
-  args <- commandArgs(trailingOnly = TRUE)
-  
-  spp <- args[1]
-  vr <- args[2]
-  m <- args[3]
-  
-  print(paste('plot results for', spp, vr, 'model', m))
-  
-}
-# # # for testing
-# spp <- 'POSE'
-# vr <- 'growth'
-# m <- 2
-
-# Root mean squared error ---------------------------------------------------------------------------------------------# 
+# log-pointwise predictive density -------------------------------------------------------# 
 
 compute_lppd <- function( stan_fit ) { 
-  log_lik <- extract (stan_fit, "log_lik")$log_lik
+  log_lik <- rstan::extract(stan_fit, "log_lik")$log_lik
   lppd <- log(colMeans(exp(log_lik)))
   lppd
 } 
 
-# input ------------------------------------------------------------------------------------# 
-setwd('~/Documents/ExperimentTests/precip/')
-print(paste('Working directory: ' , getwd()))
-
-temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions/', paste(spp, vr, m, 'predictions.RDS', sep = '_')))
-
-df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[spp]]
-
 # ---------------------------------------------------------------------------------------------------------------------
 
-y_out <- data.frame(
-  obs_id = 1:length(df$y_holdout), 
-  y_holdout = df$y_holdout, 
-  treatment = factor( df$treat_out, labels = c('Control', 'Drought', 'Irrigation')), 
-  year = factor( df$yid_out, labels = unique(df$yid_out) + 2006 ))
+for( do_line in 1:nrow(model_table)){ 
+  
+  do_model <- model_table[do_line, ]
+  spp <- do_model$species
+  vr <- do_model$vital_rate
+  m <- do_model$model
+  prior <- do_model$prior
+  
+  temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, prior, 4, 'predict.RDS', sep = '_')))
+
+  df1 <- readRDS(file.path( 'data/temp_data', paste0 ( spp, '_', vr, '.RDS')) )
+
+  df <- readRDS(paste0( 'data/temp_data/', vr, '_data_lists_for_stan.RDS'))[[spp]]
+  
+  if( vr %in% c('growth', 'survival')){ 
+    y_out <- data.frame(
+      species = spp ,
+      vital_rate = vr, 
+      model = m , 
+      prior = prior, 
+      obs_id = 1:length(df$y_holdout),
+      Y = df$y_holdout,
+      X = df$Xhold,
+      Period = 'Modern',
+      treatment = factor( df$treat_out, labels = c('Control', 'Drought', 'Irrigation')),
+      G = df$G,
+      year = df$yid_out, 
+      cyear = df$year_out, 
+      trackid = df$trackid_out, 
+      quad = df$quad_out)
+    
+    y_training <- data.frame( 
+      species = spp, 
+      vital_rate = vr, 
+      model = m , 
+      prior = prior, 
+      obs_id = 1:length(df$Y), 
+      Y = df$Y,
+      X = df$X,
+      Period = 'Historical', 
+      treatment = 'Control',
+      G = df$G,
+      year = df$yid, 
+      cyear = df$year, 
+      trackid = df$trackid, 
+      quad = df$quad)
+  } 
+    
+  # log-pointwise predictive density ------------------------------------------------------------------------------------# 
+
+  lppd <- compute_lppd(temp_fit)
+  
+  muhat <- rstan::extract(temp_fit, 'muhat')$muhat
+  mu    <- rstan::extract(temp_fit, 'mu')$mu
+  
+  y_out <-  cbind ( y_out ,  t( apply (muhat, 2 ,  quantile,  c(0.025, 0.1, 0.5, 0.9, 0.975))))
+  y_training <- cbind ( y_training, t(apply( mu, 2, quantile,  c(0.025, 0.1, 0.5, 0.9, 0.975))))
+
+  y_out$lppd <- lppd  
+  y_training$lppd <- NA
+  
+  y_out <- rbind( y_out , y_training ) 
+  
+  if( do_line == 1 ) { 
+    write.table( y_out, file = file.path('output', 'lppd_scores.csv'), sep = ',', row.names = FALSE, append = FALSE )
+  }else { 
+    write.table( y_out, file = file.path('output', 'lppd_scores.csv'), sep = ',', col.names = FALSE, row.names = FALSE, append = TRUE )
+  }
+}
 
 
-# log-pointwise predictive density ------------------------------------------------------------------------------------# 
-
-lppd <- compute_lppd(temp_fit)
-
-y_out$lppd <- lppd  
-
-lppd_treatment <- y_out %>% group_by(treatment) %>% summarise( mean_lppd = -mean(lppd))
-lppd_year <- y_out %>% group_by(year) %>% summarise(mean_lppd = -mean(lppd))
-
-ggplot(lppd_treatment, aes( x = treatment, y = mean_lppd)) + geom_bar(stat = 'identity')
-ggplot(lppd_year, aes( x = year, y = mean_lppd )) + geom_bar(stat = 'identity')
-
-output_lppd <- data.frame( spp = spp , vr = vr , model = m , lppd = sum(lppd))
-
-saveRDS( output_lppd, file.path('output', paste(spp, vr, m, 'lpd_score.RDS')))

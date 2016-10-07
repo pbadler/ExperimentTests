@@ -27,7 +27,7 @@ rmodels <- data.frame( model = 1:5, pars = c("c('a_mu', 'theta', 'u', 'q', 'log_
                                              "c('a_mu', 'theta', 'u', 'q', 'b2', 'qpred', 'log_lik', 'y_hat')", 
                                              "c('a_mu', 'theta', 'u', 'q', 'w', 'qpred', 'log_lik', 'y_hat')", 
                                              "c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat')", 
-                                             "c('a_mu', 'b1_mu', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat')"))
+                                             "c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat')"))
 
 nlambda <- 40
 

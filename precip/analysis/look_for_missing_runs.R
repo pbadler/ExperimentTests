@@ -18,13 +18,10 @@ waics <-
 
 models_missing <- merge(model_table, waics , by = c('model' , 'species', 'vital_rate', 'prior'), all.x = TRUE)
 
-
 print( models_missing %>% 
-  filter( vital_rate != 'recruitment') %>% 
   filter( is.na(waic) ) %>% 
   arrange(index) ) 
 
 write.csv(models_missing %>% 
-        filter( vital_rate != 'recruitment') %>% 
         filter( is.na(waic) ) %>% 
         arrange(index), file = 'output/missing_runs.csv', row.names = FALSE)
