@@ -10,6 +10,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(zoo)
+library(stringr)
 
 scale_clim_covs <- function(df , train, hold, clim_vars ){ 
   
@@ -33,6 +34,8 @@ growth_dataframe2datalist <- function(df, train, hold, clim_vars){
   
   # Function simply makes list of data for STAN models  
   
+  survival_dlist <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')  
+    
   # --------split into training and holding data and scale climate covariates -------------------------
   
   out <- scale_clim_covs(df, train, hold, clim_vars)
@@ -56,6 +59,10 @@ growth_dataframe2datalist <- function(df, train, hold, clim_vars){
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area   
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
   
+  trackid   <- training_df$trackID
+  year      <- training_df$year
+  quad      <- training_df$quad
+  
   #---------hold out/prediction data ------------------------------------------------------------------
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data 
   y_holdout <- holding_df$logarea.t1                              # plant size at time t, modern data 
@@ -67,11 +74,39 @@ growth_dataframe2datalist <- function(df, train, hold, clim_vars){
   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data 
   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments 
   
+  trackid_out   <- holding_df$trackID
+  year_out      <- holding_df$year
+  quad_out      <- holding_df$quad
+  
+  #--------all survival data for cover predictions ------------------------------------------------------------# 
+  species_name   <- unique(training_df$species )
+  spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))       # get species names 
+  spp       <- grep(species_name, spp_list)                       # assign species number to datalist 
+  
+  survival_df <- survival_dlist[[spp]]                             # get frame for the right species
+  
+  N2        <- nrow(survival_df)                                   # total predictions
+  X2        <- survival_df$logarea.t0                              # plant size at time t-1 
+  C2        <- survival_df$C                                        # climate matrix 
+  W2        <- survival_df$W                                        # crowding matrix 
+  gid2      <- as.numeric(survival_df$Group)                       # group id 
+  yid2      <- as.numeric(as.factor(survival_df$year))             # year id
+  nyrs2     <- length(unique(survival_df$year))                    # num years 
+  treat2    <- as.numeric(factor(survival_df$Treatment))           # treatments 
+  
+  trackid2   <- survival_df$trackID
+  year2      <- survival_df$year
+  quad2      <- survival_df$quad
+  
   return( 
     list(
       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, W = W, W_covs = W_covs,
       gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, Whold = Whold, yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
-      tau_beta = 1
+      trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,        
+      tau_beta = 1, 
+      spp = spp, 
+      N2 = N2, X2 = X2, C2 = C2, W2 = W2, gid2 = gid2, yid2 = yid2, nrys2 = nyrs2, treat2 = treat2, trackid2 = trackid2, 
+      year2 = year2, quad2 = quad2 
     )
   )
 }
@@ -103,7 +138,15 @@ survival_dataframe2datalist <- function(df, train, hold, clim_vars){
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
 
+  trackid   <- training_df$trackID
+  year      <- training_df$year
+  quad      <- training_df$quad
+  
   #---------hold out/prediction data ------------------------------------------------------------------
+  species_name   <- unique(training_df$species )
+  spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))      # get species names 
+  spp       <- grep(species_name, spp_list)                       # assign species number to datalist 
+  
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data
   y_holdout <- holding_df$survives                                # plant survival at time t + 1, modern data
   Xhold     <- holding_df$logarea                                 # plant size at time t, modern data
@@ -114,11 +157,17 @@ survival_dataframe2datalist <- function(df, train, hold, clim_vars){
   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data
   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments
 
+  trackid_out   <- holding_df$trackID
+  year_out      <- holding_df$year
+  quad_out      <- holding_df$quad
+  
   return(
     list(
       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, W = W, W_covs = W_covs,
       gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, Whold = Whold, yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
-      tau_beta = 1
+      trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,              
+      tau_beta = 1, 
+      spp = spp
     )
   )
 }
@@ -149,7 +198,8 @@ recruitment_dataframe2datalist <- function(df, train, hold, clim_vars){
   parents1  <- as.matrix(training_df[, grep('^cov', names(training_df)) ])/100  # parents in plot 
   parents2  <- as.matrix(training_df[, grep('^Gcov', names(training_df))])/100  # parents in group
   
-  parents2[parents2 == 0 ] <- min(parents2[parents2 > 0 ]) # set parents2 cover greater than 0 so that values can be fit with neg_binom 
+  parents1   <- parents1[parents1 > 0 ]                             # eliminate zeros 0 so that values can be fit with neg_binom 
+  parents2  <- parents2[parents2 > 0 ]                             # eliminate zeros so that values can be fit with neg_binom 
   
   spp_list  <- factor( str_extract( colnames(parents1), '[A-Z]+$'))        # get species names 
 
@@ -162,6 +212,10 @@ recruitment_dataframe2datalist <- function(df, train, hold, clim_vars){
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
   
+  trackid   <- training_df$trackID
+  year      <- training_df$year
+  quad      <- training_df$quad
+  
   #---------hold out/prediction data ------------------------------------------------------------------
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data
   y_holdout <- holding_df$Y                                       # new recruit at time t + 1, modern data
@@ -170,23 +224,25 @@ recruitment_dataframe2datalist <- function(df, train, hold, clim_vars){
   
   parents1_out  <- as.matrix(holding_df[, grep('^cov',  names(holding_df)) ])/100  # parents in plot 
   parents2_out  <- as.matrix(holding_df[, grep('^Gcov', names(holding_df))])/100  # parents in group
-
-  parents2_out[parents2_out == 0 ] <- min(parents2_out[parents2_out > 0 ]) # set parents2_out cover greater than 0 so that values can be predicted with neg_binom 
-    
+  
+  parents1_out   <- parents1_out[parents1_out > 0 ]                             # eliminate zeros 0 so that values can be fit with neg_binom 
+  parents2_out  <- parents2_out[parents2_out > 0 ]                             # eliminate zeros so that values can be fit with neg_binom 
+  
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data
   yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data
   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments
   
-
-  
-  
+  trackid_out   <- holding_df$trackID
+  year_out      <- holding_df$year
+  quad_out      <- holding_df$quad
   
   return(
     list(
       N = N, Y = Y, Nspp = Nspp, spp = spp, gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, parents1 = parents1, parents2 = parents2,
       gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Chold = Chold, parents1_out = parents1_out, parents2_out = parents2_out, 
       yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
+      trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,        
       tau_beta = 1
     )
   )
@@ -194,7 +250,6 @@ recruitment_dataframe2datalist <- function(df, train, hold, clim_vars){
 
 
 make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) { 
-
 
   clim_vars <- sort(clim_vars ) 
 
@@ -221,7 +276,7 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
   # -- prepare for stan ---------------------------------------------------------------------# 
   fxn_list <- c('growth_dataframe2datalist', 'survival_dataframe2datalist', 'recruitment_dataframe2datalist')
   
-  all_data_list <- mapply( FUN = match.fun( fxn_list [ grep(vr, fxn_list) ]), df = all_data, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars ), SIMPLIFY = FALSE)
+  all_data_list <- mapply( FUN = match.fun( fxn_list [ grep(vr, fxn_list) ]), df = all_data, train = training, hold = holding, MoreArgs = list( 'clim_vars' = clim_vars), SIMPLIFY = FALSE)
   
   names(all_data_list) <- spp_names
   
@@ -238,8 +293,8 @@ clim_vars <- c( 'P.a.l', 'P.a.0', 'P.w.sp.0', 'P.w.sp.1', 'T.sp.0', 'T.sp.1', 'T
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'
 
+make_stan_datalist('survival', data_path, clim_vars, clim_file )
 
 make_stan_datalist('growth', data_path, clim_vars, clim_file )
-make_stan_datalist('survival', data_path, clim_vars, clim_file )
 
 make_stan_datalist('recruitment', data_path, clim_vars, clim_file )
