@@ -1,6 +1,5 @@
 data/temp_data/growth_data_lists_for_stan.RDS
 data/temp_data/growth_init_vals.RDS
-analysis/run_stan_models.R
 analysis/growth/model_growth_1.stan
 analysis/growth/model_growth_2.stan
 analysis/growth/model_growth_3.stan
@@ -26,7 +25,6 @@ analysis/survival/model_survival_5_predict.stan
 analysis/survival/model_survival_5.stan
 analysis/waic_fxns.R
 analysis/run_stan_fxns.R
-analysis/get_WAIC.R
 data/temp_data/survival_data_lists_for_stan.RDS
 data/temp_data/survival_init_vals.RDS
 analysis/gather_WAIC_scores.R
@@ -41,6 +39,7 @@ analysis/run_outlier_stan_runs.R
 analysis/submit_outlier_WAIC.sh
 output/missing_runs.csv
 output/outlier_runs.csv
+output/best_WAIC_scores.csv
 analysis/recruitment/model_recruitment_1.stan
 analysis/recruitment/model_recruitment_2.stan
 analysis/recruitment/model_recruitment_3.stan
