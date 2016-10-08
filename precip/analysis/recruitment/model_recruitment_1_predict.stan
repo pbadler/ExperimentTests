@@ -1,4 +1,4 @@
-// Null model for recruitment
+// Single-species model for recruitment: includes intraspecific effects 
 data{
   int<lower=0> N; // observations
   int<lower=0> Yrs; // years
@@ -10,7 +10,7 @@ data{
   int<lower=0> spp; // focal species id
   vector[N] parents1; // parents in plot
   vector[N] parents2; // parents in group
-
+  
   // for out of sample prediction 
   int<lower=0> npreds;
   int<lower=0> nyrs_out; // years out 
@@ -23,6 +23,7 @@ data{
 }parameters{
   real a_mu;
   vector[Yrs] a;
+  real w;
   real gint[G];
   real<lower=0> sig_a;
   real<lower=0> theta;
@@ -35,11 +36,17 @@ transformed parameters{
   vector[N] trueP2;
   vector[N] lambda;
   vector[N] q;
+  vector[N] coverEff;
 
   trueP1 <- parents1*u + parents2*(1-u);
 
+  for(n in 1:N)
+      trueP2[n] <- sqrt(trueP1[n]);
+  
+  coverEff <- trueP2*w;
+
   for(n in 1:N){
-    mu[n] <- exp(a[yid[n]] + gint[gid[n]]);
+    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n]);
     lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication  
   } 
   
@@ -53,6 +60,7 @@ model{
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
+  w ~ normal(0, 5);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
 
@@ -62,6 +70,7 @@ model{
 generated quantities{
   
   vector[nyrs_out] a_out;
+  vector[npreds] coverEffpred;
   vector[npreds] trueP1_pred;
   vector[npreds] trueP2_pred;
   
@@ -73,11 +82,16 @@ generated quantities{
 
   trueP1_pred <- parents1_out*u + parents2_out*(1-u);
 
+  for(n in 1:npreds)
+      trueP2_pred[n] <- sqrt(trueP1_pred[n]);
+  
+  coverEffpred <- trueP2_pred*w;
+
   for( i in 1:nyrs_out)
     a_out[i] <- normal_rng(a_mu, sig_a); // draw random year intercept 
 
   for(n in 1:npreds){
-    mu_pred[n] <- exp(a_out[yid_out[n]] + gint[gid_out[n]]);
+    mu_pred[n] <- exp(a_out[yid_out[n]] + gint[gid_out[n]] + coverEffpred[n]);
     lambda_hat[n] <- trueP1_pred[n]*mu_pred[n];  // elementwise multiplication 
   }
   

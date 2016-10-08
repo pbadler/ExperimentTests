@@ -1,4 +1,4 @@
-// Climate model for recruitment: includes climate effects 
+// Single species model with climate: includes climate + intraspecific effects
 data{
   int<lower=0> N; // observations
   int<lower=0> Yrs; // years
@@ -13,10 +13,10 @@ data{
   int<lower=0> Covs; // climate covariates
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
- 
 }parameters{
   real a_mu;
   vector[Yrs] a;
+  real w;
   vector[Covs] b2;
   real gint[G];
   real<lower=0> sig_a;
@@ -36,8 +36,13 @@ transformed parameters{
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
 
+  for(n in 1:N)
+      trueP2[n] <- sqrt(trueP1[n]);
+  
+  coverEff <- trueP2*w;
+
   for(n in 1:N){
-    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + climEff[n]);
+    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
     lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication  
   } 
   
@@ -47,10 +52,11 @@ transformed parameters{
 model{
   // Priors
   u ~ uniform(0,1);
-  theta ~ uniform(0,5);
+  theta ~ cauchy(0,2);
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
+  w ~ normal(0, 5);
   b2 ~ normal(0, tau_beta);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);

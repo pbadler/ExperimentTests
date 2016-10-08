@@ -1,4 +1,4 @@
-// Null model for recruitment
+// Single-species model for recruitment: includes intraspecific effects 
 data{
   int<lower=0> N; // observations
   int<lower=0> Yrs; // years
@@ -10,19 +10,11 @@ data{
   int<lower=0> spp; // focal species id
   vector[N] parents1; // parents in plot
   vector[N] parents2; // parents in group
-
-  // for out of sample prediction 
-  int<lower=0> npreds;
-  int<lower=0> nyrs_out; // years out 
-  int<lower=0> yid_out[npreds]; // year out id
-  int<lower=0> gid_out[npreds]; // group id
-  int<lower=0> y_holdout[npreds]; // observation vector
-  vector[npreds] parents1_out; // hold out parents in plot 
-  vector[npreds] parents2_out; // hold out parents in group
   
 }parameters{
   real a_mu;
   vector[Yrs] a;
+  real w;
   real gint[G];
   real<lower=0> sig_a;
   real<lower=0> theta;
@@ -35,11 +27,17 @@ transformed parameters{
   vector[N] trueP2;
   vector[N] lambda;
   vector[N] q;
+  vector[N] coverEff;
 
   trueP1 <- parents1*u + parents2*(1-u);
 
+  for(n in 1:N)
+      trueP2[n] <- sqrt(trueP1[n]);
+  
+  coverEff <- trueP2*w;
+
   for(n in 1:N){
-    mu[n] <- exp(a[yid[n]] + gint[gid[n]]);
+    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n]);
     lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication  
   } 
   
@@ -53,6 +51,7 @@ model{
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
+  w ~ normal(0, 5);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
 
@@ -65,6 +64,4 @@ generated quantities{
   
   for(n in 1:N)
     log_lik[n] <- neg_binomial_2_log(Y[n], q[n], theta); 
-
 }
-

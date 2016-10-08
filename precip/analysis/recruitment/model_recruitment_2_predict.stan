@@ -1,4 +1,4 @@
-// Climate model for recruitment: includes climate effects 
+// Single species model with climate: includes climate + intraspecific effects
 data{
   int<lower=0> N; // observations
   int<lower=0> Yrs; // years
@@ -14,7 +14,7 @@ data{
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
   
-  // for out of sample prediction 
+    // for out of sample prediction 
   int<lower=0> npreds;
   int<lower=0> nyrs_out; // years out 
   int<lower=0> yid_out[npreds]; // year out id
@@ -24,9 +24,11 @@ data{
   vector[npreds] parents1_out; // hold out parents in plot 
   vector[npreds] parents2_out; // hold out parents in group
   
+  
 }parameters{
   real a_mu;
   vector[Yrs] a;
+  real w;
   vector[Covs] b2;
   real gint[G];
   real<lower=0> sig_a;
@@ -46,8 +48,13 @@ transformed parameters{
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
 
+  for(n in 1:N)
+      trueP2[n] <- sqrt(trueP1[n]);
+  
+  coverEff <- trueP2*w;
+
   for(n in 1:N){
-    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + climEff[n]);
+    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
     lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication  
   } 
   
@@ -57,10 +64,11 @@ transformed parameters{
 model{
   // Priors
   u ~ uniform(0,1);
-  theta ~ uniform(0,5);
+  theta ~ cauchy(0,2);
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
+  w ~ normal(0, 5);
   b2 ~ normal(0, tau_beta);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
@@ -86,11 +94,16 @@ generated quantities{
     
   trueP1_pred <- parents1_out*u + parents2_out*(1-u);
 
+  for(n in 1:npreds)
+      trueP2_pred[n] <- sqrt(trueP1_pred[n]);
+  
+  coverEffpred <- trueP2_pred*w;
+
   for( i in 1:nyrs_out)
     a_out[i] <- normal_rng(a_mu, sig_a); // draw random year intercept 
 
   for(n in 1:npreds){
-    mu_pred[n] <- exp(a_out[yid_out[n]] + gint[gid_out[n]] + climEffpred[n]);
+    mu_pred[n] <- exp(a_out[yid_out[n]] + gint[gid_out[n]] + coverEffpred[n] + climEffpred[n]);
     lambda_hat[n] <- trueP1_pred[n]*mu_pred[n];  // elementwise multiplication 
   }
   
@@ -101,3 +114,4 @@ generated quantities{
     log_lik[n] <- neg_binomial_2_log(y_holdout[npreds], qpred[npreds], theta);
   }
 }
+
