@@ -6,26 +6,16 @@
 
 #---model descriptions --------------------------------------------------------------------------------------------
 #  
-#   m1: null model:                       
-#   m2: climate model:                    w/ climate 
-#   m3: single species model:                         w/ intra-specific competition 
-#   m4: single species climate model:     w/ climate, w/ intra-specific competition
-#   m5: full model:                       w/ climate, w/ intra-specific competition, w/ interspecific competition 
-#
+#   m1: null model:                       w/ size  + intra-specific competition                      
+#   m2: single species model              w/ size  + intra-specific competition + climate 
+#   m3: multi species model               w/ size  + all competition + climate  
+#   m4: year effects model                w/ size  + all competition + year effects 
 # ----------------------------------------------------------------------------------------------------------------- 
 
 rm(list = ls())
 
 library(lme4)
-
-make_df <- function( x ) { 
-  N <- x$N
-  lens <- lapply( x, length )
-  nrs <- lapply(  x, nrow ) 
-  nrs [ sapply( nrs, is.null )  ]  <- 0
-  
-  data.frame( x [ which(lens == N | nrs == N) ]  )
-} 
+library(parallel)
 
 set_init_vals_list <-  function( model, C_names, W_names ) {  
   
@@ -62,13 +52,11 @@ set_init_vals_list <-  function( model, C_names, W_names ) {
 }
 
 
-get_init_vals_recruitment_models <- function( spp, datalist, ... ) {
+get_init_vals_recruitment_models <- function( spp, df, ... ) {
   
-  df <-  make_df(datalist)
-  
-  C_names <- names(df)[ grep('^C', names(df))] # climate effects 
-  parents1_names <- names(df)[ grep('^parents1', names(df))] # competition effects 
-  parents2_names <- names(df)[ grep('^parents2', names(df))] # competition effects 
+  C_names <- names(df)[ grep('^[PT]\\.', names(df))] # climate effects 
+  parents1_names <- names(df)[ grep('^cov', names(df))] # competition effects 
+  parents2_names <- names(df)[ grep('^Gcov', names(df))] # competition effects 
   
   parents_intra <- names(df)[ grep(spp[1], names(df))]
   
@@ -82,22 +70,24 @@ get_init_vals_recruitment_models <- function( spp, datalist, ... ) {
   
   intra_df <- data.frame( 'intra' = log( effective_cover[, parents_intra[1]])) 
   
-  prepped_df <- data.frame( df[ , -grep('^parents', names(df))], effective_cover_sqrd, intra_df )
+  prepped_df <- data.frame( df[ , c(C_names, 'Y', 'gid', 'yid')], effective_cover_sqrd, intra_df )
   
-  W_names <- names(prepped_df)[grep('^parents', names(prepped_df))]
+  W_names <- names(prepped_df)[grep('^cov\\.', names(prepped_df))]
   W_intra <- names(prepped_df)[grep(spp, names(prepped_df))]
   
-  # write models --------------------------------------------------------------- # 
-  f1 <- paste( 'Y', ' ~ offset(intra)', '+ (1|gid) + (1|yid)' )
-  f2 <- paste(f1, paste(C_names, collapse = ' + ' ), sep = ' + ')
-  f3 <- paste(f1, paste(W_intra, collapse = ' + ' ), sep = ' + ')
-  f4 <- paste(f1, paste(c(W_intra, C_names), collapse = ' + '), sep = ' + ')
-  f5 <- paste(f1, paste(c(W_names, C_names), collapse = ' + '), sep = ' + ')
+  prepped_df$Y <- df$Y
   
-  fs <- list(f1, f2, f3, f4, f5 )
+  # write models --------------------------------------------------------------- # 
+  f0 <- paste( 'Y', ' ~ offset(intra)', '+ (1|gid) + (1|yid)' )
+  f1 <- paste(f0, paste(W_intra, collapse = ' + ' ), sep = ' + ')
+  f2 <- paste(f0, paste(c(W_intra, C_names), collapse = ' + '), sep = ' + ')
+  f3 <- paste(f0, paste(c(W_names, C_names), collapse = ' + '), sep = ' + ')
+  f4 <- paste(f0, paste(W_names, collapse = ' + '), sep = ' + ')
+  
+  fs <- list(f1, f2, f3, f4 )
   # ----------------------------------------------------------------------------- #
   
-  ms <- lapply( fs, FUN = function( x, ... ) glmer.nb( x , data = prepped_df) ) # run models 
+  ms <- mclapply( fs, FUN = function( x, ... ) glmer.nb( x , data = prepped_df) , mc.cores = 4) # run models 
   
   # set initial values ----------------------------------------
   init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names ) 
@@ -107,18 +97,16 @@ get_init_vals_recruitment_models <- function( spp, datalist, ... ) {
 
 # input files ----------------------------------------------------------------------#
  
-dl <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')
-spp <- names(dl)
+dfs <- lapply( dir( 'data/temp_data/', '*scaled_recruitment_dataframe.RDS', full.names = T), readRDS)
+spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
 
 # run functions---------------------------------------------------------------------# 
 init_vals <- list( NA )
 
-init_vals[[1]] <- get_init_vals_recruitment_models( spp[1], dl[[1]])
-### init_vals[[2]] <- get_init_vals_recruitment_models( spp[2], dl[[2]]) ### Throwing error 
-init_vals[[3]] <- get_init_vals_recruitment_models( spp[3], dl[[3]])
-init_vals[[4]] <- get_init_vals_recruitment_models( spp[4], dl[[4]])
-
-init_vals[[2]] <- init_vals[[3]] # Assigning HECO's inits with POSE inits 
+init_vals[[1]] <- get_init_vals_recruitment_models( spp[1], dfs[[1]])
+init_vals[[2]] <- get_init_vals_recruitment_models( spp[2], dfs[[2]]) ### Throwing error 
+init_vals[[3]] <- get_init_vals_recruitment_models( spp[3], dfs[[3]])
+init_vals[[4]] <- get_init_vals_recruitment_models( spp[4], dfs[[4]])
 
 names(init_vals) <- spp 
 # save output ----------------------------------------------------------------------#

@@ -251,7 +251,12 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   year_out      <- holding_df$year
   quad_out      <- holding_df$quad
   
-  saveRDS(do.call(rbind, out), paste0( 'data/temp_data/', species_name, '_scaled_recruitment_dataframe.RDS'))
+  out_df <-  do.call(rbind, out)
+  out_df$Y <- out_df$Y
+  out_df$yid <- as.numeric(factor(out_df$year))
+  out_df$gid <- as.numeric(factor(out_df$Group))
+  
+  saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_recruitment_dataframe.RDS'))
   
   return(
     list(
