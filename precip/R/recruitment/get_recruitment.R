@@ -92,6 +92,15 @@ D$species <- str_replace(D$species, pattern = '^R.', replacement = '')
 
 D <- split(D, D$species )
 
+drop_zeros <- 
+  function( x, spp ) { 
+  p <- x[, grep('^cov', names(x))]
+  drop <- which( p[, spp] ==0 )
+  x[-drop,]                 
+}
+
+D <- mapply( FUN = drop_zeros, D, c(1:4), SIMPLIFY = FALSE) # drop rows with zeros for focal species 
+
 for(i in 1:length(D)){
   saveRDS(D[[i]], file.path('data', 'temp_data', paste(names(D)[i], 'recruitment.RDS', sep = '_')))
 }

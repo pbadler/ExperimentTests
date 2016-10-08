@@ -41,6 +41,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   # --------split into training and holding data and scale climate covariates -------------------------
   
   out <- scale_covs(df, train, hold)
+  saveRDS(do.call(rbind, out), 'data/temp_data/growth_dataframe.RDS')
   
   covars <- grep( '^[PTW]\\.', names(out[[1]])) # grab all the covariates for scaling 
   
@@ -123,6 +124,8 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
 
   out <- scale_covs(df, train, hold)
   
+  saveRDS(do.call(rbind, out), 'data/temp_data/survival_dataframe.RDS')
+  
   covars <- grep( '^[PTW]\\.', names(out[[1]])) # grab all the covariates for scaling 
   
   training_df <- out[[1]]
@@ -190,8 +193,11 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   
   out <- scale_covs(df, train, hold)
   
+  saveRDS(do.call(rbind, out), 'data/temp_data/recruitment_dataframe.RDS')
+
   training_df <- out[[1]]
   holding_df <- out[[2]]
+  
   
   # --------training data -----------------------------------------------------------------------------
   N         <- nrow(training_df)                                  # number of data points for training data
@@ -205,9 +211,6 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   
   parents1  <- as.matrix(training_df[, grep('^cov', names(training_df)) ])/100  # parents in plot 
   parents2  <- as.matrix(training_df[, grep('^Gcov', names(training_df))])/100  # parents in group
-  
-  parents1   <- parents1[ apply( parents1, 1, function( x ) all(x != 0 ) ), ]       # eliminate zeros 0 so that values can be fit with neg_binom 
-  parents2   <- parents2[ apply( parents2, 1, function( x ) all(x != 0 ) ), ]       # eliminate zeros 0 so that values can be fit with neg_binom 
   
   spp_list  <- factor( str_extract( colnames(parents1), '[A-Z]+$'))        # get species names 
   Nspp      <- length(spp_list)                                   # number of parent species
@@ -230,10 +233,6 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   parents1_out  <- as.matrix(holding_df[, grep('^cov',  names(holding_df)) ])/100  # parents in plot 
   parents2_out  <- as.matrix(holding_df[, grep('^Gcov', names(holding_df))])/100  # parents in group
   
-  parents1_out   <- parents1_out[ apply( parents1_out, 1, function( x ) all(x != 0 ) ), ]       # eliminate zeros 0 so that values can be fit with neg_binom 
-  parents2_out   <- parents2_out[ apply( parents2_out, 1, function( x ) all(x != 0 ) ), ]       # eliminate zeros 0 so that values can be fit with neg_binom 
-  
-    
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data
   yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data
