@@ -50,9 +50,9 @@ set_init_vals_list <-  function( model, C_names, W_names) {
   nyrs <- length(unique(model@frame$yid) )
   G <- length(unique(model@frame$gid)) 
   
-  init_vals$a <- rep(0, nyrs)
-  init_vals$b1 <- rep(0, nyrs) 
-  init_vals$gint <- rep(0, G) 
+  init_vals$a <- rnorm(nyrs, 0, 0.001)
+  init_vals$b1 <- rnorm(nyrs, 0, 0.001) 
+  init_vals$gint <- rnorm(G, 0, 0.001) 
   
   return( init_vals )
 
