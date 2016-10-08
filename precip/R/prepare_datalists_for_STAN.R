@@ -41,8 +41,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   # --------split into training and holding data and scale climate covariates -------------------------
   
   out <- scale_covs(df, train, hold)
-  saveRDS(do.call(rbind, out), 'data/temp_data/growth_dataframe.RDS')
-  
+
   covars <- grep( '^[PTW]\\.', names(out[[1]])) # grab all the covariates for scaling 
   
   training_df <- out[[1]]
@@ -84,7 +83,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   quad_out      <- holding_df$quad
   
   #--------all survival data for cover predictions ------------------------------------------------------------# 
-  species_name   <- unique(training_df$species )
+  species_name   <- unique(out[[1]]$species )
   spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))       # get species names 
   spp       <- grep(species_name, spp_list)                       # assign species number to datalist 
   
@@ -103,6 +102,14 @@ growth_dataframe2datalist <- function(df, train, hold){
   year2      <- survival_df$year
   quad2      <- survival_df$quad
   
+  out_df <-  do.call(rbind, out)
+  out_df$Y <- out_df$logarea.t1
+  out_df$X <- out_df$logarea.t0
+  out_df$yid <- as.numeric(factor(out_df$year))
+  out_df$gid <- as.numeric(factor(out_df$Group))
+  
+  saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_growth_dataframe.RDS'))
+          
   return( 
     list(
       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C,
@@ -123,8 +130,6 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   # --------split into training and holding data and scale climate covariates -------------------------
 
   out <- scale_covs(df, train, hold)
-  
-  saveRDS(do.call(rbind, out), 'data/temp_data/survival_dataframe.RDS')
   
   covars <- grep( '^[PTW]\\.', names(out[[1]])) # grab all the covariates for scaling 
   
@@ -152,8 +157,8 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   quad      <- training_df$quad
   
   #---------hold out/prediction data ------------------------------------------------------------------
-  species_name   <- unique(training_df$species )
-  spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))      # get species names 
+  species_name   <- unique(out[[1]]$species )
+  spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))       # get species names 
   spp       <- grep(species_name, spp_list)                       # assign species number to datalist 
   
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data
@@ -170,6 +175,14 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   year_out      <- holding_df$year
   quad_out      <- holding_df$quad
   
+  out_df <-  do.call(rbind, out)
+  out_df$Y <- out_df$survives
+  out_df$X <- out_df$logarea
+  out_df$yid <- as.numeric(factor(out_df$year))
+  out_df$gid <- as.numeric(factor(out_df$Group))
+    
+  saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_survival_dataframe.RDS'))
+          
   return(
     list(
       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C,
@@ -188,17 +201,13 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   # Function simply makes list of data for STAN models
   
   # --------split into training and holding data and scale climate covariates -------------------------
-  
   clim_vars <- names(df)[ grep('^[PT]\\.', names(df)) ] 
   
   out <- scale_covs(df, train, hold)
   
-  saveRDS(do.call(rbind, out), 'data/temp_data/recruitment_dataframe.RDS')
-
   training_df <- out[[1]]
   holding_df <- out[[2]]
-  
-  
+
   # --------training data -----------------------------------------------------------------------------
   N         <- nrow(training_df)                                  # number of data points for training data
   
@@ -241,6 +250,8 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   trackid_out   <- holding_df$trackID
   year_out      <- holding_df$year
   quad_out      <- holding_df$quad
+  
+  saveRDS(do.call(rbind, out), paste0( 'data/temp_data/', species_name, '_scaled_recruitment_dataframe.RDS'))
   
   return(
     list(
