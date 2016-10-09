@@ -18,7 +18,7 @@ for(i in 1:Nspp){
   infile1=paste(dataDir1,sppList[i],"/recArea.csv",sep="")
   
   tmpD=read.csv(infile1)
-  
+
   tmpD=tmpD[,c("quad","year","NRquad","totParea","Group")]
   names(tmpD)[3]=paste("R.",sppList[i],sep="")
   names(tmpD)[4]=paste("cov.",sppList[i],sep="")

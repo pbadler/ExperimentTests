@@ -38,8 +38,8 @@ transformed parameters{
   vector[N] p1; 
   vector[N] p2;
   
-  p1 <- parents1[, Nspp];
-  p2 <- parents2[, Nspp];
+  p1 <- parents1[, spp];
+  p2 <- parents2[, spp];
 
   trueP1 <- p1*u + p2*(1-u);
 

@@ -21,7 +21,7 @@ transformed parameters{
   p1 <- parents1[, Nspp];
   p2 <- parents2[, Nspp];
 
-  trueP1 <- parents1 + parents2;
+  trueP1 <- parents1*0.5; //+ parents2*(1-u);
 
   for(n in 1:N){
     for( j in 1:Nspp) { 
@@ -33,7 +33,7 @@ transformed parameters{
 }
 model{
   // Priors
-
+  u ~ uniform(0,1);
   // Likelihood
   //Y ~ normal(10, 2);
 }

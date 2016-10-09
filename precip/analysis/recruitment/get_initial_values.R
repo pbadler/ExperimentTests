@@ -58,18 +58,18 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   G <- length(unique(df$gid))
   Ccovs <- length(df[, grep('^[PT]\\.', names(df))])
   
-  a_mu <- 4.0
-  sig_a <- 1.5
-  sig_G <- 0.2
-  w <- -3.4
+  a_mu <- 3.4
+  sig_a <- 0.8
+  sig_G <- 0.3
+  w <- -2.3
   a <- rep(a_mu, nyrs)
   gint <- rep( 0, G)
-  theta <- 0.6
-  u <- 0.25
-  b2 <- rep(0, Ccovs)
+  theta <- 1.23
+  u <- c(0.6, 0.6, 0.6, 0.6)
+  b2 <- c(-0.1, -0.1, 0.3, 0.3, 0.6, 0.1, -0.1, -0.7)
   
   w2 <- w*diag(4)
-  w2[w2==0] <- 0.01
+  w2[w2==0] <- -0.01
   
   inits <- list( NA ) 
   
