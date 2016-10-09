@@ -16,8 +16,8 @@ data{
 }parameters{
   real a_mu;
   vector[Yrs] a;
-  vector<lower=-10, upper=10>[Nspp] w;
-  vector<lower=-10, upper=10>[Covs] b2;
+  vector[Nspp] w;
+  vector[Covs] b2;
   real gint[G];
   real<lower=0> sig_a;
   real<lower=0> theta;
@@ -34,25 +34,26 @@ transformed parameters{
   vector[N] coverEff;
 
   climEff <- C*b2;
-  
-  for(n in 1:N){ 
-    for(j in 1:Nspp){
-      trueP1[n, j] <- parents1[n, j]*u + parents2[n, j]*(1-u);
+  trueP1 <- parents1*u + parents2*(1-u);
+
+  for(n in 1:N)
+    for( j in 1:Nspp)
       trueP2[n, j] <- sqrt(trueP1[n, j]);
-    }
-  }
   
-  for( n in 1:N){ 
-    coverEff[n] <- trueP2[n, ]*w;
+  coverEff <- trueP2*w;
+
+  for(n in 1:N){
     mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
-    lambda[n] <- trueP1[n, spp]*mu[n]; 
-    q[n] <- lambda[n]*theta;
-  }
+    lambda[n] <- trueP1[n, spp]*mu[n];  // elementwise multiplication  
+  } 
+  
+  q <- lambda*theta;
+  
 }
 model{
   // Priors
   u ~ uniform(0,1);
-  theta ~ uniform(0, 10);
+  theta ~ uniform(0,5);
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
@@ -60,7 +61,7 @@ model{
   b2 ~ normal(0, tau_beta);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
-  
+
   // Likelihood
   Y ~ neg_binomial_2(q, theta);
 }

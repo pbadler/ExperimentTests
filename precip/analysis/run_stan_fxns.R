@@ -5,7 +5,7 @@ tweak_inits <- function(inits){
   
 }
 
-run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter, pars, predict = FALSE, nlambda = nlambda ) { 
+run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars, nlamda, nchains = 1, niter = 1, predict = FALSE) { 
   
   require(rstan)
   
@@ -49,13 +49,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter,
   
   # modify data list for model ------------------------------------------------------------------------------------#
   
-  # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
-  print( paste ( 'nlambda =' , nlambda ) ) 
-  lambda.set <- exp(seq(-5, 15, length=nlambda))
-  sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
-  # ----------------------------------------------------------------------------------------------------------------# 
-  
-  data_list$tau_beta <- sd_vec[do_prior_sd]  # modify prior for regularization 
+  data_list$tau_beta <- do_prior_sd  # modify prior for regularization 
   
   #
   # select only intraspecific w's for models with intraspecific crowding only 
@@ -93,7 +87,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_prior_sd, nchains, niter,
   
   # -- run stan ---------------------------------------------------------------------------------------------------#  
   
-  save_file <- file.path( output_path, paste(do_spp, do_vr, do_model, do_prior_sd, nchains, sep = '_'))
+  save_file <- file.path( output_path, paste(do_spp, do_vr, do_model, do_lambda, nchains, sep = '_'))
   
   print(paste('data list has', length(data_list), 'variables'))
   print(paste('init vals has', length(temp_inits[[1]]), 'variables'))

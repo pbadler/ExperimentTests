@@ -58,9 +58,11 @@ if ( do_line <= nrow(models)) {
   species <- line$species 
   vital_rate <- line$vital_rate
   model <- line$model
-  prior <- line$prior
+  lambda <- line$lambda
+  sd <- line$sd
   pars_list <- eval (parse(text = as.character( line$pars )) )
   print(pars_list)
+  niter <- niter 
   nlambda <- line$nlambda
   
 }else{ stop('line number is greater than number of models')}
@@ -76,10 +78,9 @@ if( predict ) {
   use_pars <- 'log_lik'
 }
 
+temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, pars = use_pars, predict = predict, nlambda = nlambda)
 
-temp_fit <- run_stan_model(species, vital_rate, model, prior, nchains = nchains, niter = niter, pars = use_pars, predict = predict, nlambda = nlambda)
-
-save_file <- file.path( output_path, paste(species, vital_rate, model, prior, nchains, ending, sep = '_'))
+save_file <- file.path( output_path, paste(species, vital_rate, model, lambda, nchains, ending, sep = '_'))
 
 saveRDS( temp_fit , file = save_file )
 

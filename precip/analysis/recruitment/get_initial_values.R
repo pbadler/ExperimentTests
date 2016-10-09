@@ -58,25 +58,67 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   G <- length(unique(df$gid))
   Ccovs <- length(df[, grep('^[PT]\\.', names(df))])
   
-  a_mu <- 3.4
-  sig_a <- 0.8
-  sig_G <- 0.3
-  w <- -2.3
-  a <- rep(a_mu, nyrs)
-  gint <- rep( 0, G)
-  theta <- 1.23
-  u <- c(0.6, 0.6, 0.6, 0.6)
-  b2 <- c(-0.1, -0.1, 0.3, 0.3, 0.6, 0.1, -0.1, -0.7)
   
-  w2 <- w*diag(4)
-  w2[w2==0] <- -0.01
   
+  if(spp == 'ARTR'){
+    a_mu <- 1.2
+    sig_a <- 1.3
+    sig_G <- 0.5
+    w <- -0.4
+    a <- rep(a_mu, nyrs)
+    gint <- rep( 0, G)
+    theta <- 0.6
+    u <- 0.75
+    b2 <- c(-0.4, -0.8, 0.7, 1, 0.5, 0, -0.1, -0.9)
+    
+    w2 <- c(w, -0.1, -0.1, -0.1)
+    
+  }else if(spp == 'HECO'){
+    a_mu <- 2.6
+    sig_a <- 1.2
+    sig_G <- 0.1
+    w <- -1.6
+    a <- rep(a_mu, nyrs)
+    gint <- rep( 0, G)
+    theta <- 1.2
+    u <- 0.90
+    b2 <- c(-0.3, 0.04, 0.3, 0.4, 0.2, 0.5, 0.3, -0.1)
+    
+    w2 <- c(-0.1, w, -0.1, -0.1)
+    
+ }else if ( spp == 'POSE'){
+    a_mu <- 3.4
+    sig_a <- 0.8
+    sig_G <- 0.3
+    w <- -2.1
+    a <- rep(a_mu, nyrs)
+    gint <- rep( 0, G)
+    theta <- 1.23
+    u <- 0.7
+    b2 <- c(-0.1, -0.1, 0.3, 0.3, 0.6, 0.1, -0.1, -0.8)
+    
+    w2 <- c(-0.1, -0.1, w, -0.1)
+    
+  }else if ( spp == 'PSSP'){
+    a_mu <- 2.7
+    sig_a <- 1.3
+    sig_G <- 0.4
+    w <- -1.8
+    a <- rep(a_mu, nyrs)
+    gint <- rep( 0, G)
+    theta <- 1.23
+    u <- 0.8
+    b2 <- c(-0.1, -0.6, 0.5, 0.4, 0.4, 0.4, 0.1, -0.5)
+    
+    w2 <- c(0.16, -0.35, -0.04, w)
+    
+  }
+
   inits <- list( NA ) 
-  
   inits[[1]] <- list(a_mu = a_mu, sig_a = sig_a, sig_G = sig_G, a = a, gint = gint, theta = theta, u = u , w = w)
   inits[[2]] <- list(a_mu = a_mu, sig_a = sig_a, sig_G = sig_G, a = a, gint = gint, theta = theta, u = u , w = w, b2 = b2)
-  inits[[3]] <- list(a_mu = a_mu, sig_a = sig_a, sig_G = sig_G, a = a, gint = gint, theta = theta, u = u , w = w2[spp, ], b2 = b2)
-
+  inits[[3]] <- list(a_mu = a_mu, sig_a = sig_a, sig_G = sig_G, a = a, gint = gint, theta = theta, u = u , w = w2, b2 = b2)
+  
   return(inits)
 }
 
