@@ -9,7 +9,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'recruitment', 101)
+args <- c('/home/andy/Documents/ExperimentTests/precip/', 'survival', 2)
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 3){ 
@@ -38,7 +38,6 @@ if (length(args) != 3){
 }
 
 nchains <- 4
-niter <- 2000
 
 models <- read.csv('data/temp_data/model_table.csv')
 models <- subset( models, vital_rate == do_vr)
@@ -54,15 +53,18 @@ if ( do_line <= nrow(models)) {
   species <- line$species 
   vital_rate <- line$vital_rate
   model <- line$model
-  prior <- line$prior
+  lambda <- line$lambda
+  sd <- line$sd
   nlambda <- line$nlambda
-
+  niter <- line$niter
+  
 }else{ stop('line number is greater than number of models')}
 
 output_path <- file.path(getwd(),  'output/stan_fits/WAIC_scores/')
 
-save_file <- file.path( output_path, paste(species, vital_rate, model, prior, nchains, 'WAIC.csv', sep = '_'))
-temp_fit <- run_stan_model(species, vital_rate, model, prior, nchains = nchains, niter = niter, pars = 'log_lik', predict = FALSE, nlambda = nlambda )
+save_file <- file.path( output_path, paste(species, vital_rate, model, lambda, nchains, 'WAIC.csv', sep = '_'))
+
+temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, pars = 'log_lik', predict = FALSE)
 
 write.csv(waic(temp_fit), file = save_file, row.names = FALSE)
 

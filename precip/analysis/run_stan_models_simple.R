@@ -78,7 +78,7 @@ if( predict ) {
   use_pars <- 'log_lik'
 }
 
-temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, pars = use_pars, predict = predict, nlambda = nlambda)
+temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, pars = use_pars, predict = predict)
 
 save_file <- file.path( output_path, paste(species, vital_rate, model, lambda, nchains, ending, sep = '_'))
 

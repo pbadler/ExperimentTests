@@ -51,7 +51,9 @@ set_init_vals_list <-  function( model, C_names, W_names) {
 }
 
 
-get_init_vals_survival_models <- function( spp, df, ... ) {
+get_init_vals <- function( spp, df, ... ) {
+  
+  df <- subset( df, Period == 'Historical')
   
   C_names <- names(df)[ grep('^[TP]\\.', names(df))] # climate effects 
   W_names <- names(df)[ grep('^W', names(df))] # competition effects 
@@ -83,7 +85,7 @@ nchains <- 4
 spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
 
 # run functions---------------------------------------------------------------------# 
-init_vals <- mapply( get_init_vals_survival_models, spp = spp , df = dfs, USE.NAMES = TRUE, SIMPLIFY = FALSE)
+init_vals <- mapply( get_init_vals, spp = spp , df = dfs, USE.NAMES = TRUE, SIMPLIFY = FALSE)
 
 # save output ----------------------------------------------------------------------#
 

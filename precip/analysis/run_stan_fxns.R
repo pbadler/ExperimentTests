@@ -5,7 +5,7 @@ tweak_inits <- function(inits){
   
 }
 
-run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars, nlamda, nchains = 1, niter = 1, predict = FALSE) { 
+run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars, nchains = 1, niter = 1, predict = FALSE) { 
   
   require(rstan)
   
@@ -51,35 +51,21 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   
   data_list$tau_beta <- do_prior_sd  # modify prior for regularization 
   
-  #
-  # select only intraspecific w's for models with intraspecific crowding only 
-  #
+  # #
+  # # select only intraspecific w's for models with intraspecific crowding only 
+  # #
   
-  if( do_vr == 'recruitment'){ 
-    if('w' %in% names(temp_inits) ){
-      if( length(temp_inits$w) < 2){ ## for single species models 
-        
-        w_names <- colnames(data_list$parents1)
-        print(w_names)
-        print(do_spp)
-        data_list$parents1 <- data_list$parents1 [ , grep( pattern = do_spp, w_names)  ] 
-        data_list$parents2 <- data_list$parents2 [ , grep( pattern = do_spp, w_names)  ] 
-        
-        data_list$parents1_out <- data_list$parents1_out [ , grep( pattern = do_spp, w_names)  ] 
-        data_list$parents2_out <- data_list$parents2_out [ , grep( pattern = do_spp, w_names)  ] 
-        data_list$Nspp <- 1     
-        
+  if( !do_vr == 'recruitment') {
+    if( 'w' %in% names( temp_inits )) {
+      if( length(temp_inits$w) == 2) {  ## crowding plus size by crowding 
+        w_names <- colnames(data_list$W)
+        data_list$W <- data_list$W[ ,  grep(pattern = do_spp, w_names) ]
+        data_list$Whold <- data_list$Whold[ , grep(pattern = do_spp, w_names) ]
+        data_list$Wcovs <- 2
       }
     }
-  }else if( 'w' %in% names( temp_inits )  ) {  
-    if( length(temp_inits$w) == 1) {  ## for single species models 
-      w_names <- colnames(data_list$W)
-      data_list$W <- data_list$W[ ,  grep(pattern = do_spp, w_names) ] 
-      data_list$Whold <- data_list$Whold[ , grep(pattern = do_spp, w_names) ]
-      data_list$W_covs <- 1 
-    } 
   }
-  
+   
   # -- inital values ----------------------------------------------------------------------------------------------#
   
   temp_inits <- rep(list(temp_inits), max(1, nchains) )
