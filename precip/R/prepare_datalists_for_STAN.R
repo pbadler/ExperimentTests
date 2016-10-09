@@ -221,6 +221,8 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   parents1  <- as.matrix(training_df[, grep('^cov', names(training_df)) ])/100  # parents in plot 
   parents2  <- as.matrix(training_df[, grep('^Gcov', names(training_df))])/100  # parents in group
   
+  parents2[which(parents2 == 0) ] <- min(parents2[ which(parents2 > 0) ])
+  
   spp_list  <- factor( str_extract( colnames(parents1), '[A-Z]+$'))        # get species names 
   Nspp      <- length(spp_list)                                   # number of parent species
   species_name   <- unique(training_df$species )
@@ -241,7 +243,9 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   
   parents1_out  <- as.matrix(holding_df[, grep('^cov',  names(holding_df)) ])/100  # parents in plot 
   parents2_out  <- as.matrix(holding_df[, grep('^Gcov', names(holding_df))])/100  # parents in group
-  
+
+  parents2_out[which(parents2_out == 0) ] <- min(parents2_out[ which(parents2_out > 0) ])
+    
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data
   yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data
