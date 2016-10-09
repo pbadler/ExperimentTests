@@ -16,7 +16,9 @@ dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")
 Nspp=length(sppList)
 for(i in 1:Nspp){
   infile1=paste(dataDir1,sppList[i],"/recArea.csv",sep="")
+  
   tmpD=read.csv(infile1)
+  
   tmpD=tmpD[,c("quad","year","NRquad","totParea","Group")]
   names(tmpD)[3]=paste("R.",sppList[i],sep="")
   names(tmpD)[4]=paste("cov.",sppList[i],sep="")
@@ -100,6 +102,8 @@ drop_zeros <-
 }
 
 D <- mapply( FUN = drop_zeros, D, c(1:4), SIMPLIFY = FALSE) # drop rows with zeros for focal species 
+
+
 
 for(i in 1:length(D)){
   saveRDS(D[[i]], file.path('data', 'temp_data', paste(names(D)[i], 'recruitment.RDS', sep = '_')))

@@ -36,8 +36,7 @@ models <- rbind( models, rmodels)
 full_table <- 
   models %>% 
   arrange( vital_rate, species, model, prior ) %>% 
-  filter( !(model == 1 & prior != ceiling(0.5*master_list$nlambda) )) %>%
-  filter( !(model == 3 & prior != ceiling(0.5*master_list$nlambda) )) %>% 
+  filter( !(model == 1 & prior != ceiling(0.5*master_list$nlambda) )) %>% 
   mutate( nlambda = master_list$nlambda, 
           index = row_number())
 

@@ -8,8 +8,8 @@ data{
   int<lower=0> Y[N]; // observation vector
   int<lower=0> Nspp; // number of species 
   int<lower=0> spp; // focal species id
-  vector[N] parents1; // parents in plot
-  vector[N] parents2; // parents in group
+  matrix[N, Nspp] parents1; // parents in plot
+  matrix[N, Nspp] parents2; // parents in group
   
 }parameters{
   real a_mu;
@@ -28,8 +28,13 @@ transformed parameters{
   vector[N] lambda;
   vector[N] q;
   vector[N] coverEff;
+  vector[N] p1; 
+  vector[N] p2;
+  
+  p1 <- parents1[, Nspp];
+  p2 <- parents2[, Nspp];
 
-  trueP1 <- parents1*u + parents2*(1-u);
+  trueP1 <- p1*u + p2*(1-u);
 
   for(n in 1:N)
       trueP2[n] <- sqrt(trueP1[n]);

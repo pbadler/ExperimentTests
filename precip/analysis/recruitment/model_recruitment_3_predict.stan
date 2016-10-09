@@ -46,7 +46,7 @@ transformed parameters{
 
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
-
+  
   for(n in 1:N)
     for( j in 1:Nspp)
       trueP2[n, j] <- sqrt(trueP1[n, j]);

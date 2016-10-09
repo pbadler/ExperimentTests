@@ -32,36 +32,43 @@ transformed parameters{
   vector[N] q;
   vector[N] climEff;
   vector[N] coverEff;
-
+  vector[N] p1; 
+  
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
-
+  p1 <- trueP1[, spp]; 
+  
   for(n in 1:N)
     for( j in 1:Nspp)
       trueP2[n, j] <- sqrt(trueP1[n, j]);
   
   coverEff <- trueP2*w;
-
+  
   for(n in 1:N){
-    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
-    lambda[n] <- trueP1[n, spp]*mu[n];  // elementwise multiplication  
+    mu[n] <- exp(a[yid[n]] + gint[gid[n]] ); //coverEff[n] + climEff[n]);
+    lambda[n] <- p1[n]*mu[n];  // elementwise multiplication  
   } 
-  
-  q <- lambda*theta;
-  
+  print( coverEff[1:2])
+  print(mu[1:2])
+  print(lambda[1:2])
+  print( theta)
+  q <- lambda*theta;  
+  print(q[1:2])
+  print(a)
+  print(w)
 }
 model{
   // Priors
   u ~ uniform(0,1);
-  theta ~ uniform(0,5);
+  theta ~ uniform( 0, 5);
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
-  w ~ normal(0, 5);
-  b2 ~ normal(0, tau_beta);
+  //w ~ normal(0, 5);
+  //b2 ~ normal(0, tau_beta);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
-
+  
   // Likelihood
   Y ~ neg_binomial_2(q, theta);
 }

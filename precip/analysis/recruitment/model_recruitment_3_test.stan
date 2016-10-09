@@ -19,7 +19,7 @@ data{
 }parameters{
   real a_mu;
   vector[Yrs] a;
-  real w;
+  vector[Nspp] w;
   vector[Covs] b2;
   real gint[G];
   real<lower=0> sig_a;
@@ -29,38 +29,51 @@ data{
 }
 transformed parameters{
   vector[N] mu;
-  vector[N] trueP1;
-  vector[N] trueP2;
+  matrix[N, Nspp] trueP1;
+  matrix[N, Nspp] trueP2;
   vector[N] lambda;
   vector[N] q;
   vector[N] climEff;
   vector[N] coverEff;
   vector[N] p1; 
   vector[N] p2;
+  vector[N] trueP1vec;
+  vector[N] trueP2vec;
   
   p1 <- parents1[, Nspp];
   p2 <- parents2[, Nspp];
 
-  trueP1 <- p1*u + p2*(1-u);
-
+  trueP1 <- parents1*0.5 + parents2*(1-0.5);
+  
+  trueP1vec <- p1*0.5 + p2*(1-0.5); 
+  
   climEff <- C*b2;
 
-  for(n in 1:N)
-      trueP2[n] <- sqrt(trueP1[n]);
+  for(n in 1:N){
+    for( j in 1:Nspp) { 
+      trueP1[n, j] <- parents1[n, j]*u + parents2[n,j]*(1-u);
+      //print( trueP1[n,j])
+      print( sqrt(trueP1[n, j]));
+    }
+    trueP2vec[n] <- sqrt(trueP1vec[n]);
+  }
   
-  coverEff <- trueP2*w;
+  coverEff <- trueP2vec*w[Nspp];
 
   for(n in 1:N){
     mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
-    lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication  
+    lambda[n] <- trueP1vec[n]*mu[n];  // elementwise multiplication  
   } 
   
   q <- lambda*theta;
-
+  //print( trueP2vec[1:10])
+  //print( trueP2[1:10, Nspp])
+  //print(Nspp)
+  
 }
 model{
   // Priors
-  u ~ uniform(0,1);
+  u ~ uniform(0.1,0.9);
   theta ~ cauchy(0,2);
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);

@@ -231,7 +231,7 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   
   trackid   <- training_df$trackID
   year      <- training_df$year
-  quad      <- training_df$quad
+  quad      <- as.numeric( factor( training_df$quad ) ) 
   
   #---------hold out/prediction data ------------------------------------------------------------------
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data
@@ -249,7 +249,7 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   
   trackid_out   <- holding_df$trackID
   year_out      <- holding_df$year
-  quad_out      <- holding_df$quad
+  quad_out      <- as.numeric( factor(holding_df$quad) ) 
   
   out_df <-  do.call(rbind, out)
   out_df$Y <- out_df$Y

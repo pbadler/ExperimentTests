@@ -8,21 +8,24 @@ data{
   int<lower=0> Y[N]; // observation vector
   int<lower=0> Nspp; // number of species 
   int<lower=0> spp; // focal species id
-  vector[N] parents1; // parents in plot
-  vector[N] parents2; // parents in group
+  
+  matrix[N, Nspp] parents1; // parents in plot
+  matrix[N, Nspp] parents2; // parents in group
+  
   int<lower=0> Covs; // climate covariates
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
   
-    // for out of sample prediction 
+  // for out of sample prediction 
   int<lower=0> npreds;
   int<lower=0> nyrs_out; // years out 
   int<lower=0> yid_out[npreds]; // year out id
   int<lower=0> gid_out[npreds]; // group id
   int<lower=0> y_holdout[npreds]; // observation vector
   matrix[npreds,Covs] Chold; // climate matrix, holdout
-  vector[npreds] parents1_out; // hold out parents in plot 
-  vector[npreds] parents2_out; // hold out parents in group
+  matrix[npreds, Nspp] parents1_out; // hold out parents in plot 
+  matrix[npreds, Nspp] parents2_out; // hold out parents in group
+  
   
   
 }parameters{
@@ -44,9 +47,14 @@ transformed parameters{
   vector[N] q;
   vector[N] climEff;
   vector[N] coverEff;
+  vector[N] p1; 
+  vector[N] p2;
 
+  p1 <- parents1[, Nspp];
+  p2 <- parents2[, Nspp];
+
+  trueP1 <- p1*u + p2*(1-u);
   climEff <- C*b2;
-  trueP1 <- parents1*u + parents2*(1-u);
 
   for(n in 1:N)
       trueP2[n] <- sqrt(trueP1[n]);
@@ -89,11 +97,17 @@ generated quantities{
   vector[npreds] qpred;
   vector[npreds] log_lik; // vector for computing log pointwise predictive density
   int<lower=0> y_hat[npreds]; // pointwise predictions  
+  
+  vector[npreds] p1_out; 
+  vector[npreds] p2_out;
+  
+  p1_out <- parents1_out[, Nspp];
+  p2_out <- parents2_out[, Nspp];
+  
+  trueP1_pred <- p1_out*u + p2_out*(1-u);
 
   climEffpred <- Chold*b2;
     
-  trueP1_pred <- parents1_out*u + parents2_out*(1-u);
-
   for(n in 1:npreds)
       trueP2_pred[n] <- sqrt(trueP1_pred[n]);
   
