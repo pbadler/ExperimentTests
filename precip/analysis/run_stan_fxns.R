@@ -18,8 +18,11 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   }
   
   # read in data and models ---------------------------------------------------------------------------------------#
-  
-  do_stan_file <- min(2, do_model) # use stan file 2 for models 2 and 3
+  if(do_vr != 'recruitment'){
+    do_stan_file <- min(2, do_model) # use stan file 2 for models 2 and 3
+  }else{ 
+    do_stan_file <- do_model
+  }
   
   data_file <- dir(data_path, pattern = paste0(do_vr, '_data_lists_for_stan.RDS'), full.names = TRUE )
   init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)

@@ -10,7 +10,6 @@ data{
   int<lower=0> spp; // focal species id
   matrix[N, Nspp] parents1; // parents in plot
   matrix[N, Nspp] parents2; // parents in group
-  
 }parameters{
   real a_mu;
   vector[Yrs] a;

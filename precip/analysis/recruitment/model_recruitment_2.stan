@@ -10,12 +10,9 @@ data{
   int<lower=0> spp; // focal species id
   matrix[N, Nspp] parents1; // parents in plot
   matrix[N, Nspp] parents2; // parents in group
-  
   int<lower=0> Covs; // climate covariates
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
-  
-  
 }parameters{
   real a_mu;
   vector[Yrs] a;

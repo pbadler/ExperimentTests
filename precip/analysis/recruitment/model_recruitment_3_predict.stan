@@ -24,6 +24,15 @@ data{
   matrix[npreds, Nspp] parents1_out; // hold out parents in plot 
   matrix[npreds, Nspp] parents2_out; // hold out parents in group
   
+  // for year effect estimation using entire dataset 
+  int<lower=0> N2; // all observations
+  int<lower=0> Y2[N2]; // observation vector
+  int<lower=0> Yrs2; // all years
+  int<lower=0> yid2[N2]; // year id
+  int<lower=0> gid2[N2]; // group id 
+  matrix[N2, Nspp] parents1_2; // parents in plot
+  matrix[N2, Nspp] parents2_2; // parents in group
+  
 }parameters{
   real a_mu;
   vector[Yrs] a;
@@ -34,6 +43,16 @@ data{
   real<lower=0> theta;
   real<lower=0> sig_G;
   real<lower=0, upper=1> u;
+  
+  // for year effects model  
+  real a_mu2;
+  vector[Yrs2] a2;
+  vector[Nspp] w2;
+  real gint2[G];
+  real<lower=0> sig_a2;
+  real<lower=0> theta2;
+  real<lower=0> sig_G2;
+  real<lower=0, upper=1> u2;
 }
 transformed parameters{
   vector[N] mu;
@@ -43,6 +62,14 @@ transformed parameters{
   vector[N] q;
   vector[N] climEff;
   vector[N] coverEff;
+
+  // for year effects model 
+  vector[N2] mu2; 
+  matrix[N2, Nspp] trueP1_2;
+  matrix[N2, Nspp] trueP2_2;
+  vector[N2] lambda2;
+  vector[N2] q2; 
+  vector[N2] coverEff2;
 
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
@@ -60,6 +87,23 @@ transformed parameters{
   
   q <- lambda*theta;
   
+  // for year effects model 
+  
+  trueP1_2 <- parents1_2*u2 + parents2_2*(1-u2);
+
+  for(n in 1:N2)
+    for(j in 1:Nspp)
+      trueP2_2[n, j] <- sqrt(trueP1_2[n, j]);
+  
+  coverEff2 <- trueP2_2*w2;
+
+  for(n in 1:N2){
+    mu2[n] <- exp(a2[yid2[n]] + gint2[gid2[n]] + coverEff2[n]);
+    lambda2[n] <- trueP1_2[n, spp]*mu2[n];  // elementwise multiplication  
+  } 
+  
+  q2 <- lambda2*theta2;
+
 }
 model{
   // Priors
@@ -75,21 +119,41 @@ model{
 
   // Likelihood
   Y ~ neg_binomial_2(q, theta);
+  
+  // For year effects model 
+  u2 ~ uniform(0,1);
+  theta2 ~ uniform(0,5);
+  a_mu2 ~ normal(0,5);
+  sig_a2 ~ cauchy(0,2);
+  sig_G2 ~ cauchy(0,2);
+  w2 ~ normal(0, 5);
+  gint2 ~ normal(0, sig_G2);
+  a2 ~ normal(a_mu2, sig_a2);
+
+  // Likelihood
+  Y2 ~ neg_binomial_2(q2, theta2);
 }
 generated quantities{
-  
   vector[nyrs_out] a_out;
   vector[npreds] climEffpred;
   vector[npreds] coverEffpred;
   matrix[npreds, Nspp] trueP1_pred;
   matrix[npreds, Nspp] trueP2_pred;
-  
   vector[npreds] mu_pred;
   vector[npreds] lambda_hat;
   vector[npreds] qpred;
   vector[npreds] log_lik; // vector for computing log pointwise predictive density
   int<lower=0> y_hat[npreds]; // pointwise predictions  
 
+  // for year predictions from year effects model 
+  vector[npreds] qpred2;
+  vector[npreds] mu_pred2;
+  vector[npreds] lambda_hat2;
+  int<lower=0> y_hat2[npreds]; // pointwise predictions  
+  vector[npreds] log_lik2; // vector for computing log pointwise predictive density  
+  int<lower=0> yid_out2[npreds]; //integer for modern year effects  
+
+  // 1. Holdout data predictions 
   climEffpred <- Chold*b2;
     
   trueP1_pred <- parents1_out*u + parents2_out*(1-u);
@@ -114,4 +178,21 @@ generated quantities{
     y_hat[n] <- neg_binomial_2_rng(qpred[npreds],  theta);
     log_lik[n] <- neg_binomial_2_log(y_holdout[npreds], qpred[npreds], theta);
   }
+  
+  // 2. Predictions for holdout data with KNOWN year effects.  
+  //    Simulate predictions as if year effects in the out of sample data are known. 
+  
+  for(n in 1:npreds){
+    yid_out2[n] <- yid_out[n] + Yrs;  // add number of training years to get correct index for a2 and b12
+    mu_pred2[n] <- exp(a2[yid_out2[n]] + gint[gid_out[n]] + coverEffpred[n]);
+    lambda_hat2[n] <- trueP1_pred[n, spp]*mu_pred2[n];  // elementwise multiplication 
+  }
+  
+  qpred2 <- lambda_hat2*theta;
+  
+  for(n in 1:npreds){
+    y_hat2[n] <- neg_binomial_2_rng(qpred2[npreds],  theta);
+    log_lik2[n] <- neg_binomial_2_log(y_holdout[npreds], qpred2[npreds], theta);
+  }  
+  
 }
