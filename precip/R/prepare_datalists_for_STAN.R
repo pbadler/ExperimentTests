@@ -37,9 +37,12 @@ growth_dataframe2datalist <- function(df, train, hold){
   # Function simply makes list of data for STAN models  
   
   survival_dlist <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')  
-    
-  # --------split into training and holding data and scale climate covariates -------------------------
   
+  # -------- make year by treatment labels ------------------------------------------------------------ 
+  df$treat_year_label <- paste(df$Treatment, df$year, sep = '_')
+  df$treat_year <- as.numeric(factor(df$treat_year_label))
+  
+  # --------split into training and holding data and scale climate covariates -------------------------
   out <- scale_covs(df, train, hold)
 
   covars <- grep( '^[PT]\\.', names(out[[1]])) # grab all the covariates for scaling 
@@ -49,16 +52,16 @@ growth_dataframe2datalist <- function(df, train, hold){
   
   # --------training data -----------------------------------------------------------------------------
   N         <- nrow(training_df)                                  # number of data points for training data 
-  nyrs      <- length(unique(training_df$year))                   # number of years 
-  yid       <- as.numeric(as.factor(training_df$year))            # integer id for each year 
+  nyrs      <- length(unique(training_df$treat_year))                   # number of years 
+  yid       <- as.numeric(as.factor(training_df$treat_year))            # integer id for each year 
   Y         <- training_df$logarea.t1                             # plant size at time t + 1 
   X         <- training_df$logarea.t0                             # plant size at time t   
   
-  C         <- as.matrix(training_df[, covars])                # all climate covariates 
+  C         <- as.matrix(training_df[, covars])                   # all climate covariates 
   Covs      <- ncol(C)                                            # number of climate covariates 
   
   W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix 
-  Wcovs    <- ncol(W)                                            # number of species in crowding matrix 
+  Wcovs    <- ncol(W)                                             # number of species in crowding matrix 
   
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area   
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
@@ -66,50 +69,63 @@ growth_dataframe2datalist <- function(df, train, hold){
   trackid   <- training_df$trackID
   year      <- training_df$year
   quad      <- as.numeric(factor(training_df$quad))
+  treat     <- as.numeric(factor(training_df$Treatment))
   
   #---------hold out/prediction data ------------------------------------------------------------------
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data 
   y_holdout <- holding_df$logarea.t1                              # plant size at time t, modern data 
   Xhold     <- holding_df$logarea.t0                              # plant size at time t-1, modern data 
-  Chold     <- holding_df[ , covars]                           # climate matrix, modern data 
+  Chold     <- holding_df[ , covars]                              # climate matrix, modern data 
   Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data 
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data 
-  yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
-  nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data 
+  yid_out   <- as.numeric(as.factor(holding_df$treat_year))             # year id, modern data
+  nyrs_out  <- length(unique(holding_df$treat_year))                    # num years, modern data 
   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments 
   
   trackid_out   <- holding_df$trackID
   year_out      <- holding_df$year
   quad_out      <- as.numeric(factor(holding_df$quad))
   
-  #--------all survival data for cover predictions ------------------------------------------------------------# 
+  # save simple dataframe with scaled covariates ---------------------------------------------
+  
   species_name   <- unique(out[[1]]$species )
-  spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))       # get species names 
-  spp       <- grep(species_name, spp_list)                       # assign species number to datalist 
-  
-  survival_df <- survival_dlist[[spp]]                             # get frame for the right species
-  
-  N2        <- nrow(survival_df)                                   # total predictions
-  X2        <- survival_df$logarea.t0                              # plant size at time t-1 
-  C2        <- survival_df$C                                        # climate matrix 
-  W2        <- survival_df$W                                        # crowding matrix 
-  gid2      <- as.numeric(survival_df$Group)                       # group id 
-  yid2      <- as.numeric(as.factor(survival_df$year))             # year id
-  nyrs2     <- length(unique(survival_df$year))                    # num years 
-  treat2    <- as.numeric(factor(survival_df$Treatment))           # treatments 
-  
-  trackid2   <- survival_df$trackID
-  year2      <- survival_df$year
-  quad2      <- as.numeric(factor(survival_df$quad))
-  
-  out_df <-  do.call(rbind, out)
-  out_df$Y <- out_df$logarea.t1
-  out_df$X <- out_df$logarea.t0
-  out_df$yid <- as.numeric(factor(out_df$year))
-  out_df$gid <- as.numeric(factor(out_df$Group))
+  spp_list       <- factor( str_extract( colnames(W), '[A-Z]+$')) # get species names 
+  spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
+  out_df         <- do.call(rbind, out)
+
+  out_df$Y       <- out_df$logarea.t1
+  out_df$X       <- out_df$logarea.t0
+  out_df$yid     <- as.numeric(factor(out_df$treat_year))
+  out_df$gid     <- as.numeric(factor(out_df$Group))
   
   saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_growth_dataframe.RDS'))
-          
+  
+  #---------full dataset for estimating year effects ---------------------------------------------------
+  N2 <- nrow(out_df)
+  Y2 <- out_df$Y
+  X2 <- out_df$X
+  yid2 <- out_df$yid
+  Yrs2 <- length(unique(out_df$yid))
+  gid2 <- out_df$gid
+  W2 <- as.matrix(out_df[, grep('W', names(out_df)) ])
+  
+  #--------use survival dataframe for cover predictions ------------------------------------------------------------# 
+
+  survival_df <- survival_dlist[[spp]]                      # get data frame for the right species
+  
+  N3        <- survival_df$npreds                           # total predictions
+  X3        <- survival_df$Xhold                            # plant size at time t-1 
+  C3        <- survival_df$Chold                            # climate matrix 
+  W3        <- survival_df$Whold                            # crowding matrix 
+  gid3      <- survival_df$gid_out                          # group id 
+  yid3      <- survival_df$yid_out                          # year id
+  nyrs3     <- survival_df$nyrs_out                         # num years 
+  
+  treat3    <- survival_df$treat_out                        # Information for post processing  
+  trackid3  <- survival_df$trackid_out
+  year3     <- survival_df$year_out
+  quad3     <- survival_df$quad_out
+  
   return( 
     list(
       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, 
@@ -119,8 +135,10 @@ growth_dataframe2datalist <- function(df, train, hold){
       trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,        
       tau_beta = 1, 
       spp = spp, 
-      N2 = N2, X2 = X2, C2 = C2, gid2 = gid2, yid2 = yid2, nrys2 = nyrs2, treat2 = treat2, trackid2 = trackid2, 
-      year2 = year2, quad2 = quad2 
+      N2 = N2, Y2 = Y2, X2 = X2, yid2 = yid2, Yrs2 = Yrs2, gid2= gid2, W2 = W2, # for year effects model 
+      N3 = N3, X3 = X3, C3 = C3, gid3 = gid3, yid3 = yid3, W3 = W3, # for cover predictions 
+      nyrs3 = nyrs3, treat3 = treat3, trackid3 = trackid3, 
+      year3 = year3, quad3 = quad3 
     )
   )
 }
@@ -130,7 +148,10 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   # Function simply makes list of data for STAN models
 
   # --------split into training and holding data and scale climate covariates -------------------------
-
+  
+  df$treat_year_label <- paste(df$Treatment, df$year, sep = '_')
+  df$treat_year <- as.numeric(factor(df$treat_year_label))
+  
   out <- scale_covs(df, train, hold)
   
   covars <- grep( '^[PT]\\.', names(out[[1]])) # grab all the covariates for scaling 
@@ -140,12 +161,12 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
 
   # --------training data -----------------------------------------------------------------------------
   N         <- nrow(training_df)                                  # number of data points for training data
-  nyrs      <- length(unique(training_df$year))                   # number of years
-  yid       <- as.numeric(as.factor(training_df$year))            # integer id for each year
+  nyrs      <- length(unique(training_df$treat_year))                   # number of years
+  yid       <- training_df$treat_year                             # integer id for each year
   Y         <- training_df$survives                               # plant survival at time t + 1   
   X         <- training_df$logarea                                # plant size at time t
 
-  C         <- as.matrix(training_df[, covars])                # all climate covariates
+  C         <- as.matrix(training_df[, covars])                   # all climate covariates
   Covs      <- ncol(C)                                            # number of climate covariates
 
   W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix
@@ -158,20 +179,21 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   trackid   <- training_df$trackID
   year      <- training_df$year
   quad      <- as.numeric(factor(training_df$quad))
+  treat     <- as.numeric(factor(training_df$Treatment))
   
   #---------hold out/prediction data ------------------------------------------------------------------
   species_name   <- unique(out[[1]]$species )
-  spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))       # get species names 
+  spp_list  <- factor( str_extract( colnames(W), '[A-Z]+$'))      # get species names 
   spp       <- grep(species_name, spp_list)                       # assign species number to datalist 
   
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data
   y_holdout <- holding_df$survives                                # plant survival at time t + 1, modern data
   Xhold     <- holding_df$logarea                                 # plant size at time t, modern data
-  Chold     <- holding_df[ , covars]                           # climate matrix, modern data
+  Chold     <- holding_df[ , covars]                              # climate matrix, modern data
   Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data
-  yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
-  nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data
+  yid_out   <- as.numeric(as.factor(holding_df$treat_year))             # year id, modern data
+  nyrs_out  <- length(unique(holding_df$treat_year))                    # num years, modern data
   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments
 
   trackid_out   <- holding_df$trackID
@@ -181,9 +203,11 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   out_df <-  do.call(rbind, out)
   out_df$Y <- out_df$survives
   out_df$X <- out_df$logarea
-  out_df$yid <- as.numeric(factor(out_df$year))
+  out_df$yid <- as.numeric(factor(out_df$treat_year))
   out_df$gid <- as.numeric(factor(out_df$Group))
-  
+  out_df$treat_year_label <- out_df$treat_year_label
+  out_df$year <- out_df$year
+
   saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_survival_dataframe.RDS'))
 
   #---------full dataset for estimating year effects ---------------------------------------------------
@@ -195,7 +219,12 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   Yrs2 <- length(unique(out_df$yid))
   gid2 <- out_df$gid
   W2 <- as.matrix(out_df[, grep('W', names(out_df)) ])
-          
+  C2 <- as.matrix(out_df[, covars])
+  treat2 <- as.numeric( factor( out_df$Treatment))
+  trackid2 <- out_df$trackID
+  year2 <- out_df$year
+  quad2 <- as.numeric( factor(out_df$quad) )
+  
   return(
     list(
       N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid, 
@@ -214,7 +243,8 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
       quad_out = quad_out,
       spp = spp, 
       Nspp = Nspp, 
-      N2 = N2, Y2 = Y2, X2 = X2, yid2 = yid2, Yrs2 = Yrs2, gid2= gid2, W2 = W2 # for year effects model 
+      N2 = N2, Y2 = Y2, X2 = X2, yid2 = yid2, Yrs2 = Yrs2, gid2= gid2, W2 = W2, C2 = C2, # for year effects model
+      treat2 = treat2, year2 = year2, trackid2 = trackid2, quad2 = quad2
     )
   )
 }
@@ -224,6 +254,9 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
 recruitment_dataframe2datalist <- function(df, train, hold){
   
   # Function simply makes list of data for STAN models
+  
+  df$treat_year_label <- paste(df$Treatment, df$year, sep = '_')
+  df$treat_year <- as.numeric(factor(df$treat_year_label))
   
   # --------split into training and holding data and scale climate covariates -------------------------
   clim_vars <- names(df)[ grep('^[PT]\\.', names(df)) ] 
@@ -236,8 +269,8 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   # --------training data -----------------------------------------------------------------------------
   N         <- nrow(training_df)                                  # number of data points for training data
   
-  nyrs      <- length(unique(training_df$year))                   # number of years
-  yid       <- as.numeric(as.factor(training_df$year))            # integer id for each year
+  nyrs      <- length(unique(training_df$treat_year))                   # number of years
+  yid       <- as.numeric(as.factor(training_df$treat_year))            # integer id for each year
   Y         <- training_df$Y                                      # new recruit at time t + 1   
   
   C         <- as.matrix(training_df[, clim_vars])                # all climate covariates
@@ -272,8 +305,8 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   parents2_out[which(parents2_out == 0) ] <- min(parents2_out[ which(parents2_out > 0) ])
     
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data
-  yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
-  nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data
+  yid_out   <- as.numeric(as.factor(holding_df$treat_year))             # year id, modern data
+  nyrs_out  <- length(unique(holding_df$treat_year))                    # num years, modern data
   treat_out <- as.numeric(factor(holding_df$Treatment))           # treatments
   
   trackid_out   <- holding_df$trackID
@@ -282,7 +315,7 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   
   out_df <-  do.call(rbind, out)
   out_df$Y <- out_df$Y
-  out_df$yid <- as.numeric(factor(out_df$year))
+  out_df$yid <- as.numeric(factor(out_df$treat_year))
   out_df$gid <- as.numeric(factor(out_df$Group))
   
   saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_recruitment_dataframe.RDS'))

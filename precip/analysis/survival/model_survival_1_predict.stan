@@ -124,6 +124,7 @@ generated quantities {
   vector[npreds] log_lik2; // vector for computing log pointwise predictive density  
   int<lower=0> yid_out2[npreds]; //integer for modern year effects  
   
+  // 1. Holdout data predictions 
   crowdhat <- Whold*w;
   
   for( i in 1:nyrs_out){
@@ -137,10 +138,8 @@ generated quantities {
     log_lik[n] <- bernoulli_log(y_holdout[n], muhat[n]);
   }
   
-  // For year effects predictions 
-  // mix group effects and competition effects estimates from training data 
-  // with year effects estimates from the year effects model. 
-  // Simulate predictions if year effects in the out of sample data are known. 
+  // 2. Predictions for holdout data with KNOWN year effects.  
+  //    Simulate predictions as if year effects in the out of sample data are known. 
   
   for( n in 1:npreds){ 
     yid_out2[n] <- yid_out[n] + Yrs;  // add number of training years to get correct index for a2 and b12

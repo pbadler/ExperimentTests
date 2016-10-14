@@ -18,7 +18,7 @@ library(lme4)
 library(parallel)
 
 
-set_init_vals_list <-  function( model, C_names, W_names) {  
+set_init_vals_list <-  function( model, C_names, W_names, nyrs2) {  
   
   Nspp <- length(W_names[-grep(':', W_names)])
   
@@ -48,6 +48,22 @@ set_init_vals_list <-  function( model, C_names, W_names) {
   init_vals$a <- rnorm(nyrs, 0, 0.001)
   init_vals$b1 <- rnorm(nyrs, 0, 0.001) 
   init_vals$gint <- rnorm(G, 0, 0.001) 
+  init_vals$tau <- 0
+  init_vals$tauSize <- 0
+  
+  
+  # initial values for the year effects model 
+  init_vals$a2 <- rnorm(nyrs2, 0, 0.001)
+  init_vals$b12 <- rnorm(nyrs2, 0, 0.001)
+  init_vals$gint2 <- init_vals$gint
+  init_vals$w2 <- init_vals$w
+  init_vals$a_mu2 <- init_vals$a_mu
+  init_vals$b1_mu2 <- init_vals$b1_mu
+  init_vals$sig_a2 <- init_vals$sig_a
+  init_vals$sig_b12 <- init_vals$sig_b1
+  init_vals$sig_G2 <- init_vals$sig_G
+  init_vals$tau2 <- 0
+  init_vals$tauSize2 <- 0
   
   return( init_vals )
   
@@ -56,8 +72,9 @@ set_init_vals_list <-  function( model, C_names, W_names) {
 
 get_init_vals <- function( spp, df, ... ) {
   
-  df <- subset( df, Period == 'Historical')
+  nyrs2 <- length(unique(df$treat_year))
   
+  df <- subset( df, Period == 'Historical')
   
   C_names <- names(df)[ grep('^[TP]\\.', names(df))] # climate effects 
   W_names <- names(df)[ grep('^W', names(df))] # competition effects 
@@ -76,7 +93,7 @@ get_init_vals <- function( spp, df, ... ) {
   ms <- mclapply( fs, FUN = function( x, ... ) lmer( x , data = df), mc.cores = 4 ) # run models 
   
   # set initial values ----------------------------------------
-  init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names ) 
+  init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names, nyrs2 = nyrs2 ) 
   
   return(init_vals)
 }
@@ -92,6 +109,8 @@ spp <- unlist( lapply( dfs, function(x) unique(x$species)) )
 init_vals <- mapply( get_init_vals, spp = spp , df = dfs, USE.NAMES = TRUE, SIMPLIFY = FALSE)
 
 # save output ----------------------------------------------------------------------#
+
+names(init_vals) <- spp
 
 saveRDS( init_vals, file = file.path('data', 'temp_data', 'growth_init_vals.RDS'))
 

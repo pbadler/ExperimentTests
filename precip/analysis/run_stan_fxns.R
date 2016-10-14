@@ -65,6 +65,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
         data_list$Wcovs <- 2
         
         data_list$W2 <- data_list$W2[ , grep(pattern = do_spp, w_names) ]
+        data_list$W3 <- data_list$W3[ , grep(pattern = do_spp, w_names) ]
       }
     }
   }

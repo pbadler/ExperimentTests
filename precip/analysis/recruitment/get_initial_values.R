@@ -58,8 +58,6 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   G <- length(unique(df$gid))
   Ccovs <- length(df[, grep('^[PT]\\.', names(df))])
   
-  
-  
   if(spp == 'ARTR'){
     a_mu <- 1.2
     sig_a <- 1.3

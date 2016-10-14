@@ -73,7 +73,7 @@ set_init_vals_list <-  function( model, C_names, W_names, nyrs2) {
 
 get_init_vals <- function( spp, df, ... ) {
   
-  nyrs2 <- length(unique(df$year))
+  nyrs2 <- length(unique(df$treat_year))
   
   df <- subset(df, Period == 'Historical')
   
