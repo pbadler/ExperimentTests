@@ -259,7 +259,7 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   df$treat_year <- as.numeric(factor(df$treat_year_label))
   
   # --------split into training and holding data and scale climate covariates -------------------------
-  clim_vars <- names(df)[ grep('^[PT]\\.', names(df)) ] 
+  covars <- names(df)[ grep('^[PT]\\.', names(df)) ] 
   
   out <- scale_covs(df, train, hold)
   
@@ -273,7 +273,7 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   yid       <- as.numeric(as.factor(training_df$treat_year))            # integer id for each year
   Y         <- training_df$Y                                      # new recruit at time t + 1   
   
-  C         <- as.matrix(training_df[, clim_vars])                # all climate covariates
+  C         <- as.matrix(training_df[, covars])                # all climate covariates
   Covs      <- ncol(C)                                            # number of climate covariates
   
   parents1  <- as.matrix(training_df[, grep('^cov', names(training_df)) ])/100  # parents in plot 
@@ -297,7 +297,7 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data
   y_holdout <- holding_df$Y                                       # new recruit at time t + 1, modern data
   
-  Chold     <- holding_df[ , clim_vars]                           # climate matrix, modern data
+  Chold     <- holding_df[ , covars]                           # climate matrix, modern data
   
   parents1_out  <- as.matrix(holding_df[, grep('^cov',  names(holding_df)) ])/100  # parents in plot 
   parents2_out  <- as.matrix(holding_df[, grep('^Gcov', names(holding_df))])/100  # parents in group
@@ -318,15 +318,35 @@ recruitment_dataframe2datalist <- function(df, train, hold){
   out_df$yid <- as.numeric(factor(out_df$treat_year))
   out_df$gid <- as.numeric(factor(out_df$Group))
   
+  #---------full dataset for estimating year effects ---------------------------------------------------
+  
+  N2 <- nrow(out_df)
+  Y2 <- out_df$Y  
+  yid2 <- out_df$yid
+  Yrs2 <- length(unique(out_df$yid))
+  gid2 <- out_df$gid
+  parents1_2  <- rbind(parents1, parents1_out)
+  parents2_2  <- rbind(parents2, parents2_out)
+  
+  C2 <- as.matrix(out_df[, covars])
+  treat2 <- as.numeric( factor( out_df$Treatment))
+  year2 <- out_df$year
+  quad2 <- as.numeric( factor(out_df$quad) )
+  
   saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_recruitment_dataframe.RDS'))
   
   return(
     list(
-      N = N, Y = Y, Nspp = Nspp, spp = spp, gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, parents1 = parents1, parents2 = parents2,
-      gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Chold = Chold, parents1_out = parents1_out, parents2_out = parents2_out, 
+      N = N, Y = Y, Nspp = Nspp, spp = spp, gid = gid, G = G, Yrs = nyrs, yid = yid, 
+      Covs = Covs, C = C, 
+      parents1 = parents1, parents2 = parents2,
+      tau_beta = 1,
+      gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, 
+      Chold = Chold, 
+      parents1_out = parents1_out, parents2_out = parents2_out, 
       yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
-      trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,        
-      tau_beta = 1
+      trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out, 
+      N2 = N2, Y2 = Y2, yid2 = yid2, Yrs2 = Yrs2, gid2 = gid2, parents1_2 = parents1_2, parents2_2 = parents2_2, C2 = C2, treat2 = treat2, year2 = year2, quad2 = quad2
     )
   )
 }
