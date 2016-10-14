@@ -14,7 +14,7 @@ library(stringr)
 
 scale_covs <- function(df , train, hold){ 
   
-  covars <- grep( '^[PTW]\\.', names(df)) # grab all the covariates for scaling 
+  covars <- grep( '^[PT]\\.', names(df)) # grab all the climate covariates for scaling 
   
   training_df <- df[train, ]
   holding_df  <- df[hold, ]
@@ -183,19 +183,38 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   out_df$X <- out_df$logarea
   out_df$yid <- as.numeric(factor(out_df$year))
   out_df$gid <- as.numeric(factor(out_df$Group))
-    
+  
   saveRDS(out_df, paste0( 'data/temp_data/', species_name, '_scaled_survival_dataframe.RDS'))
+
+  #---------full dataset for estimating year effects ---------------------------------------------------
+  
+  N2 <- nrow(out_df)
+  Y2 <- out_df$Y  
+  X2 <- out_df$X
+  yid2 <- out_df$yid
+  Yrs2 <- length(unique(out_df$yid))
+  gid2 <- out_df$gid
+  W2 <- as.matrix(out_df[, grep('W', names(out_df)) ])
           
   return(
     list(
-      N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C,
-      W = W, Whold = Whold,
-      gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
-      trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,              
+      N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid, 
+      Wcovs = Wcovs, W = W,  # competition covariates 
+      Covs = Covs, C = C, # climate covariates 
       tau_beta = 1,
-      Wcovs = Wcovs,
+      npreds = npreds, y_holdout = y_holdout,  Xhold = Xhold, gid_out = gid_out, yid_out = yid_out, nyrs_out = nyrs_out,
+      Whold = Whold, 
+      Chold = Chold,
+      treat_out = treat_out,
+      trackid = trackid, 
+      trackid_out = trackid_out,               
+      year = year, 
+      year_out = year_out,
+      quad = quad, 
+      quad_out = quad_out,
       spp = spp, 
-      Nspp = Nspp
+      Nspp = Nspp, 
+      N2 = N2, Y2 = Y2, X2 = X2, yid2 = yid2, Yrs2 = Yrs2, gid2= gid2, W2 = W2 # for year effects model 
     )
   )
 }

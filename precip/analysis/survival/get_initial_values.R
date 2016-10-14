@@ -26,7 +26,7 @@ make_df <- function( x ) {
   data.frame( x [ which(lens == N | nrs == N) ]  )
 } 
 
-set_init_vals_list <-  function( model, C_names, W_names) {  
+set_init_vals_list <-  function( model, C_names, W_names, nyrs2) {  
   
   Nspp <- length(W_names[-grep(':', W_names)])
   init_vals <- as.list( fixef(model)[1:2] )
@@ -55,6 +55,17 @@ set_init_vals_list <-  function( model, C_names, W_names) {
   init_vals$b1 <- rnorm(nyrs, 0, 0.001) 
   init_vals$gint <- rnorm(G, 0, 0.001) 
   
+  # initial values for the year effects model 
+  init_vals$a2 <- rnorm(nyrs2, 0, 0.001)
+  init_vals$b12 <- rnorm(nyrs2, 0, 0.001)
+  init_vals$gint2 <- init_vals$gint
+  init_vals$w2 <- init_vals$w
+  init_vals$a_mu2 <- init_vals$a_mu
+  init_vals$b1_mu2 <- init_vals$b1_mu
+  init_vals$sig_a2 <- init_vals$sig_a
+  init_vals$sig_b12 <- init_vals$sig_b1
+  init_vals$sig_G2 <- init_vals$sig_G
+  
   return( init_vals )
 
 }
@@ -62,8 +73,10 @@ set_init_vals_list <-  function( model, C_names, W_names) {
 
 get_init_vals <- function( spp, df, ... ) {
   
+  nyrs2 <- length(unique(df$year))
+  
   df <- subset(df, Period == 'Historical')
-
+  
   C_names <- names(df)[ grep('^[TP]\\.', names(df))] # climate effects 
   W_names <- names(df)[ grep('^W', names(df))] # competition effects 
   W_intra <- names(df)[ grep(spp, names(df))]
@@ -81,7 +94,7 @@ get_init_vals <- function( spp, df, ... ) {
   ms <- mclapply( fs, FUN = function( x, ... ) glmer( x , data = df, family = 'binomial'), mc.cores = 4 ) # run models 
   
   # set initial values ----------------------------------------
-  init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names ) 
+  init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names , nyrs2 = nyrs2) 
   
   return(init_vals)
 }
@@ -90,7 +103,9 @@ get_init_vals <- function( spp, df, ... ) {
 
 dfs <- lapply( dir( 'data/temp_data/', '*scaled_survival_dataframe.RDS', full.names = T), readRDS)
 
-nchains <- 4
+dfs <- dfs[1]
+
+#nchains <- 4
 spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
 
 # run functions---------------------------------------------------------------------# 
