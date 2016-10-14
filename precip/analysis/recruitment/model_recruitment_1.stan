@@ -1,11 +1,11 @@
 // Single-species model for recruitment: includes intraspecific effects 
 data{
-  int<lower=0> N; // observations
+  int<lower=0> N; // observations  
+  int<lower=0> Y[N]; // observation vector
   int<lower=0> Yrs; // years
   int<lower=0> yid[N]; // year id
   int<lower=0> G; // groups
   int<lower=0> gid[N]; // group id
-  int<lower=0> Y[N]; // observation vector
   int<lower=0> Nspp; // number of species 
   int<lower=0> spp; // focal species id
   matrix[N, Nspp] parents1; // parents in plot

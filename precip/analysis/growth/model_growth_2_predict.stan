@@ -1,28 +1,35 @@
-// Climate model for growth: includes only climate effects 
+// Intra-specific competition model for survival: includes intraspecific effects only 
 data{
   int<lower=0> N; // observations
-  int<lower=0> npreds;
+  vector[N] Y; // observation vector
   int<lower=0> Yrs; // years
-  int<lower=0> yid[N]; // year id
-  int<lower=0> nyrs_out; // years out 
-  int<lower=0> yid_out[npreds]; //year out id
-  int<lower=0> Covs; // climate covariates
-  real<lower=0> tau_beta; // prior sdev for climate effects
+  int<lower=0> nyrs_out; // years holdout 
   int<lower=0> G; // groups
   int<lower=0> gid[N]; // group id
-  int<lower=0> gid_out[npreds]; // group id holdout
-  vector[N] Y; // observation vector
-  vector[npreds] y_holdout;
-  matrix[N,Covs] C; // climate matrix
-  matrix[npreds,Covs] Chold;
   vector[N] X; // size vector
+  int<lower=0> Wcovs; // number of crowding effects 
+  matrix[N,Wcovs] W; // crowding matrix
+  int<lower=0>Covs; // number of climate effects 
+  matrix[N,Covs] C; // climate matrix
+  real tau_beta;
+  
+  // For out of sample predictions
+  int<lower=0> npreds;
+  vector[npreds] y_holdout;
+  int<lower=0> gid_out[npreds]; // group id holdout
+  int<lower=0> yid_out[npreds];// year id holdout
+  int<lower=0> yid[N]; // year id
   vector[npreds] Xhold;
+  matrix[npreds,Wcovs] Whold; // crowding matrix for holdout data 
+  matrix[npreds,Covs] Chold;
+
 }
 parameters{
   real a_mu;
   vector[Yrs] a;
   real b1_mu;
   vector[Yrs] b1;
+  vector[Wcovs] w;
   vector[Covs] b2;
   real gint[G];
   real tau;
@@ -34,10 +41,15 @@ parameters{
 transformed parameters{
   vector[N] mu;
   real<lower=0> sigma[N];
+  vector[N] crowdEff;
   vector[N] climEff;
+  
+  
   climEff <- C*b2;
+  crowdEff <- W*w;
+
   for(n in 1:N){
-    mu[n] <- a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n] + climEff[n];
+    mu[n] <- a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
     sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
 }
@@ -45,12 +57,13 @@ model{
   // Priors
   a_mu ~ normal(0,10);
   b1_mu ~ normal(0,10);
+  w ~ normal(0, 10);
   tau ~ normal(0,10);
   tauSize ~ normal(0,10);
   sig_a ~ cauchy(0,2);
   sig_b1 ~ cauchy(0,2);
-  sig_G ~ cauchy(0,2);
   b2 ~ normal(0, tau_beta);
+  sig_G ~ cauchy(0,2);
   for(g in 1:G)
     gint[g] ~ normal(0, sig_G);
   for(y in 1:Yrs){
@@ -65,17 +78,19 @@ generated quantities {
   vector[nyrs_out] a_out;
   vector[nyrs_out] b1_out;
   vector[npreds] climpred;
+  vector[npreds] crowdhat;
   vector[npreds] sigmahat;
   vector[npreds] muhat;
   vector[npreds] y_hat;
   vector[npreds] log_lik; // vector for computing log pointwise predictive density
   climpred <- Chold*b2;
+  crowdhat <- Whold*w;
   for( i in 1:nyrs_out){
     a_out[i] <- normal_rng(a_mu, sig_a); // draw random year intercept 
     b1_out[i] <- normal_rng(b1_mu, sig_b1); //draw random year x size effect 
   }
   for(n in 1:npreds){
-    muhat[n] <- a_out[yid_out[n]] + gint[gid_out[n]] + b1_out[yid_out[n]]*Xhold[n] + climpred[n];
+    muhat[n] <- a_out[yid_out[n]] + gint[gid_out[n]] + b1_out[yid_out[n]]*Xhold[n] + crowdhat[n] + climpred[n];
     sigmahat[n] <- sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001))); 
     
     y_hat[n] <- normal_rng(muhat[n], sigmahat[n]);

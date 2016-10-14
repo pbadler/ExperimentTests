@@ -20,6 +20,8 @@ library(parallel)
 
 set_init_vals_list <-  function( model, C_names, W_names) {  
   
+  Nspp <- length(W_names[-grep(':', W_names)])
+  
   init_vals <- as.list( fixef(model)[1:2] )
   
   init_vals <- c(init_vals, as.numeric(data.frame( VarCorr(model) )$sdcor[ c(1,2,4)]))
@@ -28,8 +30,9 @@ set_init_vals_list <-  function( model, C_names, W_names) {
   
   if(init_vals$sig_G < 0.0001) { init_vals$sig_G <- 0.05 } # prevent sig G from being zero in some cases 
   
-  b2 <- fixef(model)[C_names]
-  w <- fixef(model)[W_names]
+  
+  b2 <- fixef(model)[ sort( unlist( lapply( C_names, grep,  names(fixef(model)))) )  ]
+  w <- fixef(model)[ sort( unlist( lapply( W_names[1:Nspp], grep, names(fixef(model)))))]
   
   if( length(b2[!is.na(b2)]) > 0 )  { 
     init_vals <- c(init_vals, list( b2 = as.numeric(b2[!is.na(b2)])))
@@ -54,6 +57,7 @@ set_init_vals_list <-  function( model, C_names, W_names) {
 get_init_vals <- function( spp, df, ... ) {
   
   df <- subset( df, Period == 'Historical')
+  
   
   C_names <- names(df)[ grep('^[TP]\\.', names(df))] # climate effects 
   W_names <- names(df)[ grep('^W', names(df))] # competition effects 

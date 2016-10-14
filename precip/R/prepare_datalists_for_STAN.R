@@ -42,7 +42,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   
   out <- scale_covs(df, train, hold)
 
-  covars <- grep( '^[PTW]\\.', names(out[[1]])) # grab all the covariates for scaling 
+  covars <- grep( '^[PT]\\.', names(out[[1]])) # grab all the covariates for scaling 
   
   training_df <- out[[1]]
   holding_df <- out[[2]]
@@ -58,7 +58,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   Covs      <- ncol(C)                                            # number of climate covariates 
   
   W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix 
-  W_covs    <- ncol(W)                                            # number of species in crowding matrix 
+  Wcovs    <- ncol(W)                                            # number of species in crowding matrix 
   
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area   
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
@@ -72,7 +72,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   y_holdout <- holding_df$logarea.t1                              # plant size at time t, modern data 
   Xhold     <- holding_df$logarea.t0                              # plant size at time t-1, modern data 
   Chold     <- holding_df[ , covars]                           # climate matrix, modern data 
-  #Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data 
+  Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data 
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data 
   yid_out   <- as.numeric(as.factor(holding_df$year))             # year id, modern data
   nyrs_out  <- length(unique(holding_df$year))                    # num years, modern data 
@@ -92,7 +92,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   N2        <- nrow(survival_df)                                   # total predictions
   X2        <- survival_df$logarea.t0                              # plant size at time t-1 
   C2        <- survival_df$C                                        # climate matrix 
-  #W2        <- survival_df$W                                        # crowding matrix 
+  W2        <- survival_df$W                                        # crowding matrix 
   gid2      <- as.numeric(survival_df$Group)                       # group id 
   yid2      <- as.numeric(as.factor(survival_df$year))             # year id
   nyrs2     <- length(unique(survival_df$year))                    # num years 
@@ -112,7 +112,9 @@ growth_dataframe2datalist <- function(df, train, hold){
           
   return( 
     list(
-      N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C,
+      N = N, Y = Y, X = X , gid = gid, G = G, Yrs = nyrs, yid = yid , Covs = Covs, C = C, 
+      W = W, Whold = Whold,
+      Wcovs = Wcovs,
       gid_out = gid_out, npreds = npreds, y_holdout = y_holdout, Xhold = Xhold, Chold = Chold, yid_out = yid_out, nyrs_out = nyrs_out, treat_out = treat_out,
       trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,        
       tau_beta = 1, 

@@ -1,4 +1,4 @@
-// NULL model for growth 
+// Intra-specific competition model for survival: includes intraspecific effects only 
 data{
   int<lower=0> N; // observations
   int<lower=0> npreds;
@@ -7,16 +7,23 @@ data{
   int<lower=0> G; // groups
   int<lower=0> gid[N]; // group id
   int<lower=0> gid_out[npreds]; // group id holdout
+  int<lower=0> Wcovs; // number of crowding effects 
+
   vector[N] Y; // observation vector
+  
   vector[npreds] y_holdout;
   vector[N] X; // size vector
   vector[npreds] Xhold;
+  
+  matrix[N,Wcovs] W; // crowding matrix
+  matrix[npreds,Wcovs] Whold; // crowding matrix for holdout data 
 }
 parameters{
   real a_mu;
   vector[Yrs] a;
   real b1_mu;
   vector[Yrs] b1;
+  vector[Wcovs] w;
   real gint[G];
   real tau;
   real tauSize;
@@ -27,8 +34,12 @@ parameters{
 transformed parameters{
   vector[N] mu;
   real<lower=0> sigma[N];
+  
+  vector[N] crowdEff;
+  crowdEff <- W*w;
+
   for(n in 1:N){
-    mu[n] <- a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n];
+    mu[n] <- a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n] + crowdEff[n];
     sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
 }
@@ -36,6 +47,7 @@ model{
   // Priors
   a_mu ~ normal(0,10);
   b1_mu ~ normal(0,10);
+  w ~ normal(0, 10);
   tau ~ normal(0,10);
   tauSize ~ normal(0,10);
   sig_a ~ cauchy(0,2);

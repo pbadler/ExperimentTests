@@ -1,30 +1,24 @@
 // Intra-specific competition model for survival: includes intraspecific effects only 
 data{
   int<lower=0> N; // observations
-  int<lower=0> npreds;
+  int<lower=0,upper=1> Y[N]; // observation vector
   int<lower=0> Yrs; // years
   int<lower=0> yid[N]; // year id
-  
-  int<lower=0> nyrs_out; // years out 
-  int<lower=0> yid_out[npreds]; //year out id
-  
-  int<lower=0> Covs; // climate covariates
-  real<lower=0> tau_beta; // prior sdev for climate effects
   int<lower=0> G; // groups
   int<lower=0> gid[N]; // group id
-  int<lower=0> gid_out[npreds]; // group id holdout
-  
-  int<lower=0,upper=1> Y[N]; // observation vector
-  
-  int<lower=0,upper=1> y_holdout[npreds];
-  int<lower=0> Wcovs;
-  
-  matrix[N,Covs] C; // climate matrix
-  matrix[npreds,Covs] Chold;
   vector[N] X; // size vector
+  int<lower=0> Wcovs; // number of crowding effects 
+  matrix[N,Wcovs] W; // crowding matrix
+
+  // for out of sample predictions 
+  int<lower=0> npreds;
+  int<lower=0,upper=1> y_holdout[npreds];
+  int<lower=0> nyrs_out; // years out 
+  int<lower=0> yid_out[npreds]; //year out id
+  int<lower=0> gid_out[npreds]; // group id holdout
   vector[npreds] Xhold;
-  matrix[N, Wcovs] W; // crowding effects
-  matrix[npreds, Wcovs] Whold; // crowding effects for holdout data 
+  matrix[npreds,Wcovs] Whold; // crowding matrix for holdout data 
+  
 
 }
 parameters{
