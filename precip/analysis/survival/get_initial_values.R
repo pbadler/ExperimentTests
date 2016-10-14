@@ -28,6 +28,7 @@ make_df <- function( x ) {
 
 set_init_vals_list <-  function( model, C_names, W_names) {  
   
+  Nspp <- length(W_names[-grep(':', W_names)])
   init_vals <- as.list( fixef(model)[1:2] )
   
   init_vals <- c(init_vals, as.numeric(data.frame( VarCorr(model) )$sdcor[ c(1,2,4)]))
@@ -36,8 +37,8 @@ set_init_vals_list <-  function( model, C_names, W_names) {
   
   if(init_vals$sig_G < 0.0001) { init_vals$sig_G <- 0.05 } # prevent sig G from being zero in some cases 
   
-  b2 <- fixef(model)[C_names]
-  w <- fixef(model)[W_names]
+  b2 <- fixef(model)[ sort( unlist( lapply( C_names, grep,  names(fixef(model)))) )  ]
+  w <- fixef(model)[ sort( unlist( lapply( W_names[1:Nspp], grep, names(fixef(model)))))]
 
   if( length(b2[!is.na(b2)]) > 0 )  { 
     init_vals <- c(init_vals, list( b2 = as.numeric(b2[!is.na(b2)])))
@@ -96,6 +97,8 @@ spp <- unlist( lapply( dfs, function(x) unique(x$species)) )
 init_vals <- mapply( get_init_vals, spp = spp , df = dfs, USE.NAMES = TRUE, SIMPLIFY = FALSE)
 
 # save output ----------------------------------------------------------------------#
+
+names(init_vals) <- spp 
 
 saveRDS( init_vals, file = file.path('data', 'temp_data', 'survival_init_vals.RDS'))
 

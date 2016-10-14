@@ -8,8 +8,8 @@
 ##  Runs separate models for each species and vital rate. Only runs the models that 
 ##  do not involve climate effects, i.e. do not require regularization. 
 ##
-##  Saved output:
-##    Save full model output from each model  
+##  Output:
+##    Save model 
 ##
 # 
 ##########################################################################
@@ -20,6 +20,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
+args <- c('/home/andy/Documents/ExperimentTests/precip/', 'data/temp_data/short_model_table.csv', 8, 4, 2000, 'TRUE')
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 6){ 

@@ -19,6 +19,8 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   
   # read in data and models ---------------------------------------------------------------------------------------#
   
+  do_stan_file <- min(2, do_model) # use stan file 2 for models 2 and 3
+  
   data_file <- dir(data_path, pattern = paste0(do_vr, '_data_lists_for_stan.RDS'), full.names = TRUE )
   init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
   
@@ -27,7 +29,6 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   }else{ 
     initial_fit <- dir(output_path, pattern = paste(do_spp, do_vr, do_model, '[0-9]+', 0, '.RDS', sep = '_'), full.names = TRUE) # check pre-fit models
   }
-  
   
   data_list <- readRDS( data_file )[[do_spp]]
   init_vals <- readRDS(init_file)[[do_spp]]
@@ -43,7 +44,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   
   # -- select model and initial vals -----------------------------------------------------------------------------# 
   
-  m <- models [do_model]
+  m <- models [do_stan_file]
   
   temp_inits <- init_vals[[do_model]]
   
@@ -65,7 +66,8 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
       }
     }
   }
-   
+  
+  
   # -- inital values ----------------------------------------------------------------------------------------------#
   
   temp_inits <- rep(list(temp_inits), max(1, nchains) )

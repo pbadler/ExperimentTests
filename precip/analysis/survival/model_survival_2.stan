@@ -22,6 +22,8 @@ data{
   matrix[N,Covs] C; // climate matrix
   matrix[npreds,Covs] Chold;
   real tau_beta;
+  int<lower=0> spp; // current
+  
 }
 parameters{
   real a_mu;

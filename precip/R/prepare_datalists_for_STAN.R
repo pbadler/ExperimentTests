@@ -65,7 +65,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   
   trackid   <- training_df$trackID
   year      <- training_df$year
-  quad      <- training_df$quad
+  quad      <- as.numeric(factor(training_df$quad))
   
   #---------hold out/prediction data ------------------------------------------------------------------
   npreds    <- nrow(holding_df)                                   # total predicted observations, modern data 
@@ -80,7 +80,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   
   trackid_out   <- holding_df$trackID
   year_out      <- holding_df$year
-  quad_out      <- holding_df$quad
+  quad_out      <- as.numeric(factor(holding_df$quad))
   
   #--------all survival data for cover predictions ------------------------------------------------------------# 
   species_name   <- unique(out[[1]]$species )
@@ -100,7 +100,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   
   trackid2   <- survival_df$trackID
   year2      <- survival_df$year
-  quad2      <- survival_df$quad
+  quad2      <- as.numeric(factor(survival_df$quad))
   
   out_df <-  do.call(rbind, out)
   out_df$Y <- out_df$logarea.t1
@@ -148,13 +148,14 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
 
   W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix
   Wcovs     <- ncol(W)                                            # number of crowding effects
-
+  Nspp      <- Wcovs/2
+  
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
 
   trackid   <- training_df$trackID
   year      <- training_df$year
-  quad      <- training_df$quad
+  quad      <- as.numeric(factor(training_df$quad))
   
   #---------hold out/prediction data ------------------------------------------------------------------
   species_name   <- unique(out[[1]]$species )
@@ -173,7 +174,7 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
 
   trackid_out   <- holding_df$trackID
   year_out      <- holding_df$year
-  quad_out      <- holding_df$quad
+  quad_out      <- as.numeric(factor(holding_df$quad))
   
   out_df <-  do.call(rbind, out)
   out_df$Y <- out_df$survives
@@ -191,7 +192,8 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
       trackid = trackid, trackid_out = trackid_out, year = year, year_out = year_out, quad = quad, quad_out = quad_out,              
       tau_beta = 1,
       Wcovs = Wcovs,
-      spp = spp
+      spp = spp, 
+      Nspp = Nspp
     )
   )
 }
