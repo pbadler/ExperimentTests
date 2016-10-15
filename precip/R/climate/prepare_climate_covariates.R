@@ -43,7 +43,7 @@ quarterly_clim <- readRDS('data/temp_data/quarterly_climate.RDS')
 # -------------------------------------------------------------------------------------# 
 q_precip <- 
   quarterly_clim %>% 
-  filter( var == 'TPCP_ttl') %>%
+  filter( var == 'PRCP_ttl') %>%
   group_by(Treatment) %>% 
   arrange(Treatment, year, quarter) %>%
   mutate(P.sp.1 = val, 
@@ -60,7 +60,7 @@ q_precip <-
 
 q_temp <- 
   quarterly_clim %>% 
-  filter( var == 'MNTM_avg') %>% 
+  filter( var == 'TAVG_avg') %>% 
   group_by(Treatment) %>% 
   arrange(Treatment, year, quarter) %>% 
   mutate( T.sp.1 = val, 
@@ -79,15 +79,16 @@ allClim <-
   left_join ( q_temp, by = c('Treatment', 'Period', 'quarter', 'year')) %>% 
   arrange( Treatment, year) 
 
-allClim$year <- allClim$year - 1 # adjust to match Peter's assignment of year 0 as the reference year in demographic data sets
+# adjust years so that they match the demographic data sets ------------------------------------------------------------------# 
+
+allClim$year <- allClim$year - 1 # adjust to match assignment of year 0 as the reference year in demographic data sets
+
+# ----------------------------------------------------------------------------------------------------------------------------# 
 
 # -- calculate interactions --------------------------------------------------------------#
-
-# make interactions: 
-# test$TxP.sp.1 <- test$P.sp.1*test$T.sp.1
-# test$TxP.sp.2 <- test$P.sp.2*test$T.sp.2
-
-
+#
+# none 
+# 
 # ---- output ----------------------------------------------------------------------------# 
 
 saveRDS( data.frame( allClim ) , 'data/temp_data/all_clim_covs.RDS')

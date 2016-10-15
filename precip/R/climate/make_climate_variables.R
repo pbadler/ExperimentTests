@@ -23,7 +23,7 @@ t.treatments <- c(1, 1)     # Drought and Irrigation adjustments to temperature
 
 p1 <- data.frame( Period = 'Modern', year = 2007:2016)
 p2 <- data.frame( Period = 'not monitored', year = 1957:2006)
-p3 <- data.frame( Period = 'Historical', year = 1926:1956)
+p3 <- data.frame( Period = 'Historical', year = 1925:1956)
 periods <- data.frame( rbind( p1, p2, p3 )) 
 
 # ----- read in data --------------------------------------------------------------------#
@@ -31,21 +31,14 @@ periods <- data.frame( rbind( p1, p2, p3 ))
 # set to driversdata project 
 data_dir <- '~/driversdata/data/idaho_modern'
 
-station_dat <- read.csv(file.path(data_dir, 'climateData/USSES_climate_monthly.csv'))
+station_dat <- read.csv(file.path(data_dir, 'climateData/USSES_climate_monthly_new.csv'))
 season <- read.csv(file.path(data_dir, 'soil_moisture_data/data/season_table.csv'))
 
 # ---process dates----------------------------------------------------------------------#
 
-station_dat$date <-  as.POSIXct( strptime( station_dat$DATE, '%Y%m%d', tz = 'MST')  ) 
+station_dat$date <-  as.POSIXct( strptime( paste0(as.character(station_dat$DATE), '-01'), '%Y-%m-%d', tz = 'MST')  ) 
 station_dat$month <- as.numeric(strftime( station_dat$date, '%m'))
 station_dat$year <- as.numeric(strftime( station_dat$date, '%Y'))
-
-# -------- NAs -------------------------------------------------------------------------#
-
-station_dat$TPCP[ station_dat$TPCP == -9999.0 ] <- NA
-station_dat$MMNT[ station_dat$MMNT == -9999.0 ] <- NA
-station_dat$MMXT[ station_dat$MMXT == -9999.0 ] <- NA
-station_dat$MNTM[ station_dat$MNTM == -9999.0 ] <- NA
 
 # set-up aggregate seasonal variables for model ----------------------------------------#
 
@@ -55,19 +48,19 @@ df <-
   df %>% 
   mutate( water_year = year + lag_year ) %>% 
   mutate( quarter = cut(month, 4, labels = paste0('Q', 1:4))) %>%
-  select(year, quarter, month, year, season, season_label, precip_seasons, water_year, TPCP, MNTM, MMXT, MMNT)
+  select(year, quarter, month, year, season, season_label, precip_seasons, water_year, PRCP, TAVG)
 
 # ---------- annual average Temperature -------------------------------------------------#
 annual_MAT <- 
   df %>% 
   group_by( year ) %>%
-  summarise (MAT = mean(MNTM, na.rm = TRUE))
+  summarise (MAT = mean(TAVG, na.rm = TRUE))
 
 # ---------- annual total precip --------------------------------------------------------#
 annual_TPPT <- 
   df %>% 
   group_by( year ) %>% 
-  summarise( TPPT = mean(TPCP, na.rm = TRUE), n = n())
+  summarise( TPPT = mean(PRCP, na.rm = TRUE), n = n())
 
 # ---------- seasonal average Temperature -----------------------------------------------#
 
@@ -75,7 +68,7 @@ seasonal_tmean <-
   df %>% 
   mutate(year = ifelse(month == 12 , year + 1, year  )) %>% # account for December 
   group_by(year, season_label) %>% 
-  summarise( l0 = mean(MNTM, na.rm = TRUE) )
+  summarise( l0 = mean(TAVG, na.rm = TRUE) )
 
 seasonal_tmean <- 
   seasonal_tmean %>% 
@@ -84,10 +77,10 @@ seasonal_tmean <-
   arrange( season_label, year ) %>% 
   mutate( l1 = lag ( l0, 1 ), 
           l2 = lag ( l0, 2 ) ) %>% 
-  gather( lag, MNTM, l0:l2 ) %>% 
+  gather( lag, TAVG, l0:l2 ) %>% 
   ungroup( ) %>% 
   unite( stat,  season_label, lag , sep = '_TMEAN_') %>% 
-  spread( stat, MNTM )
+  spread( stat, TAVG )
 
 # ---------- monthly climate  -----------------------------------------------------------#
 # 
@@ -96,24 +89,24 @@ seasonal_tmean <-
 
 monthly_clim <- 
   df %>% 
-  mutate(Control = TPCP) %>% 
-  select(-TPCP) %>% 
+  mutate(Control = PRCP) %>% 
+  select(-PRCP) %>% 
   mutate( Drought    = ifelse( year > 2011 & month %in% c(dm[1]:dm[2]), Control*p.treatments[1], Control) ) %>% 
   mutate( Irrigation = ifelse( year > 2011 & month %in% c(im[1]:im[2]), Control*p.treatments[2], Control) ) %>% 
-  gather(Treatment, TPCP, Control, Drought, Irrigation)
+  gather(Treatment, PRCP, Control, Drought, Irrigation)
 
 # ------------ aggregate monthly climate with Treatment effects by quarter ---------------#
 
 quarterly_clim <-
   monthly_clim %>% 
-  gather( var, val ,  MMNT, MMXT, MNTM, TPCP ) %>% 
+  gather( var, val , TAVG, PRCP ) %>% 
   group_by(Treatment, var, month) %>% 
-  mutate( val = ifelse( year > 1925 & is.na(val), mean(val, na.rm = TRUE), val)) %>% # !!!!!!! fill in missing monthly averages after 1925 with monthly average !!!!!!!! 
-  group_by( Treatment, var, year, quarter ) %>%                                      # !!!!!!! note missing values for max, and mean temperature in Feb. 1945.  !!!!!!!!
+  mutate( val = ifelse(is.na(val), mean(val, na.rm = TRUE), val)) %>% # !!!!!!! fill in missing monthly averages after 1925 with monthly average !!!!!!!! 
+  group_by( Treatment, var, year, quarter ) %>%                       # !!!!!!! note missing values TAVG  !!!!!!!!
   summarise( avg = mean(val), ttl = sum(val) ) %>% 
   group_by(var) %>% 
   gather( stat, val, avg, ttl ) %>% 
-  filter( (var == 'TPCP' & stat == 'ttl')| (str_detect(pattern = "^M", var) & stat == 'avg')) %>% 
+  filter( (var == 'PRCP' & stat == 'ttl')| (var == 'TAVG' & stat == 'avg')) %>% 
   group_by( Treatment, var, stat) %>% 
   arrange(year, quarter) %>%
   ungroup() %>% 
@@ -124,20 +117,20 @@ quarterly_clim <-
 
 seasonal_precip <- 
   monthly_clim %>% 
-  select ( -MMNT, -MMXT, -MNTM) %>%  
+  select ( -TAVG) %>%  
   group_by( Treatment, water_year, precip_seasons ) %>% 
-  summarise( TPCP = sum(TPCP) ) %>% 
+  summarise( PRCP = sum(PRCP) ) %>% 
   group_by( Treatment, precip_seasons ) %>% 
   arrange( water_year, precip_seasons) %>%
   rename( year = water_year ) %>% 
   arrange( year ) %>% 
-  rename( l0 = TPCP) %>% 
+  rename( l0 = PRCP) %>% 
   mutate( l1 = lag (l0, 1 ) , 
           l2 = lag (l0, 2 ) ) %>% 
-  gather( lag, TPCP, l0:l2) %>% 
+  gather( lag, PRCP, l0:l2) %>% 
   ungroup() %>% 
   unite( stat , precip_seasons, lag , sep = '_PRCP_') %>% 
-  spread( stat, TPCP )
+  spread( stat, PRCP )
 
 # -------------- join dfs for variables -------------------------------------------------------#
 
@@ -172,8 +165,6 @@ station_dat <- station_dat %>% select( date, STATION, STATION_NAME, LATITUDE, LO
 
 station_dat <- station_dat %>% mutate( LONGITUDE = LONGITUDE[which.max(date)], LATITUDE = LATITUDE[ which.max(date )], ELEVATION = ELEVATION[ which.max(date )] )
 
-head(station_dat)
-
 station_dat$year <- strftime(station_dat$date, '%Y')
 station_dat$DOY <- as.numeric( strftime( station_dat$date, '%j'))
 station_dat$month <- strftime( station_dat$date, '%m')
@@ -193,7 +184,7 @@ saveRDS( monthly_clim, 'data/temp_data/monthly_climate.RDS')
 saveRDS( quarterly_clim, 'data/temp_data/quarterly_climate.RDS')
 saveRDS( annual_clim, 'data/temp_data/annual_climate.RDS')
 
-write.csv(monthly_clim %>% arrange( year, month) %>% rename(TPPT = TPCP, TMEAN = MNTM) %>% select(-MMNT, -MMXT), 'data/temp_data/monthly_climate.csv', row.names = FALSE)
+write.csv(monthly_clim %>% arrange( year, month) %>% rename(TPPT = PRCP, TMEAN = TAVG), 'data/temp_data/monthly_climate.csv', row.names = FALSE)
 
 write.csv(monthly_from_daily, 'data/monthly_climate_from_from_daily.csv', row.names = FALSE)
 
