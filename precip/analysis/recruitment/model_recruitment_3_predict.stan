@@ -1,18 +1,18 @@
-// Full model for recruitment: includes climate + intraspecific + interspecific competition effects 
+// Full multi-species model with climate: includes climate + competition effects
 data{
-  int<lower=0> N; // observations
-  int<lower=0> Yrs; // years
-  int<lower=0> yid[N]; // year id
-  int<lower=0> G; // groups
-  int<lower=0> gid[N]; // group id
-  int<lower=0> Y[N]; // observation vector
-  int<lower=0> Nspp; // number of species 
-  int<lower=0> spp; // focal species id
-  matrix[N, Nspp] parents1; // parents in plot
-  matrix[N, Nspp] parents2; // parents in group
-  int<lower=0> Covs; // climate covariates
-  matrix[N,Covs] C; // climate matrix
-  real tau_beta;
+  int<lower=0> N;             // observations
+  int<lower=0> Y[N];          // observation vector
+  int<lower=0> Yrs;           // years
+  int<lower=0> yid[N];        // year id
+  int<lower=0> G;             // groups
+  int<lower=0> gid[N];        // group id
+  int<lower=0> Nspp;          // number of species 
+  int<lower=0> spp;           // focal species id
+  matrix[N, Nspp] parents1;   // parents in plot
+  matrix[N, Nspp] parents2;   // parents in group
+  int<lower=0> Covs;          // climate covariates
+  matrix[N,Covs] C;           // climate matrix
+  real tau_beta;              // prior standard deviation
   
   // for out of sample prediction 
   int<lower=0> npreds;
@@ -83,9 +83,8 @@ transformed parameters{
   for(n in 1:N){
     mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
     lambda[n] <- trueP1[n, spp]*mu[n];  // elementwise multiplication  
+    q[n] <- fmax(lambda[n]*theta, 1e-9);
   } 
-  
-  q <- lambda*theta;
   
   // for year effects model 
   
@@ -100,9 +99,8 @@ transformed parameters{
   for(n in 1:N2){
     mu2[n] <- exp(a2[yid2[n]] + gint2[gid2[n]] + coverEff2[n]);
     lambda2[n] <- trueP1_2[n, spp]*mu2[n];  // elementwise multiplication  
+    q2[n] <- fmax(lambda2[n]*theta, 1e-9);
   } 
-  
-  q2 <- lambda2*theta2;
 
 }
 model{
@@ -112,10 +110,10 @@ model{
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
-  w ~ normal(0, 5);
-  b2 ~ normal(0, tau_beta);
+  w ~ normal(0, 2);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
+  b2 ~ normal(0, tau_beta);
 
   // Likelihood
   Y ~ neg_binomial_2(q, theta);
@@ -126,7 +124,7 @@ model{
   a_mu2 ~ normal(0,5);
   sig_a2 ~ cauchy(0,2);
   sig_G2 ~ cauchy(0,2);
-  w2 ~ normal(0, 5);
+  w2 ~ normal(0, 2);
   gint2 ~ normal(0, sig_G2);
   a2 ~ normal(a_mu2, sig_a2);
 
@@ -170,13 +168,13 @@ generated quantities{
   for(n in 1:npreds){
     mu_pred[n] <- exp(a_out[yid_out[n]] + gint[gid_out[n]] + coverEffpred[n] + climEffpred[n]);
     lambda_hat[n] <- trueP1_pred[n, spp]*mu_pred[n];  // elementwise multiplication 
+    qpred[n] <- fmax(lambda_hat[n]*theta, 1e-9); // must be greater than 0
+    qpred[n] <- fmin( qpred[n], 1e8);  // must be less than 1e9 
   }
   
-  qpred <- lambda_hat*theta;
-  
   for(n in 1:npreds){
-    y_hat[n] <- neg_binomial_2_rng(qpred[npreds],  theta);
-    log_lik[n] <- neg_binomial_2_log(y_holdout[npreds], qpred[npreds], theta);
+    y_hat[n] <- neg_binomial_2_rng(qpred[n],  theta);
+    log_lik[n] <- neg_binomial_2_log(y_holdout[n], qpred[n], theta);
   }
   
   // 2. Predictions for holdout data with KNOWN year effects.  
@@ -186,13 +184,13 @@ generated quantities{
     yid_out2[n] <- yid_out[n] + Yrs;  // add number of training years to get correct index for a2 and b12
     mu_pred2[n] <- exp(a2[yid_out2[n]] + gint[gid_out[n]] + coverEffpred[n]);
     lambda_hat2[n] <- trueP1_pred[n, spp]*mu_pred2[n];  // elementwise multiplication 
+    qpred2[n] <- fmax(lambda_hat2[n]*theta, 1e-9); // must be greater than 0
+    qpred2[n] <- fmin( qpred2[n], 1e8);  // must be less than 1e9 
   }
   
-  qpred2 <- lambda_hat2*theta;
-  
   for(n in 1:npreds){
-    y_hat2[n] <- neg_binomial_2_rng(qpred2[npreds],  theta);
-    log_lik2[n] <- neg_binomial_2_log(y_holdout[npreds], qpred2[npreds], theta);
+    y_hat2[n] <- neg_binomial_2_rng(qpred2[n],  theta);
+    log_lik2[n] <- neg_binomial_2_log(y_holdout[n], qpred2[n], theta);
   }  
   
 }

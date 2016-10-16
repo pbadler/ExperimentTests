@@ -15,7 +15,7 @@ data{
   vector[Yrs] a;
   real w;
   real gint[G];
-  real<lower=0> sig_a;
+  real<lower=1e-7> sig_a;
   real<lower=0> theta;
   real<lower=0> sig_G;
   real<lower=0, upper=1> u;
@@ -42,10 +42,9 @@ transformed parameters{
 
   for(n in 1:N){
     mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n]);
-    lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication  
+    lambda[n] <- trueP1[n]*mu[n];  // elementwise multiplication 
+    q[n] <- fmax(lambda[n]*theta, 1e-9); // values must be greater than 0 
   } 
-  
-  q <- lambda*theta;
 
 }
 model{
@@ -55,12 +54,13 @@ model{
   a_mu ~ normal(0,5);
   sig_a ~ cauchy(0,2);
   sig_G ~ cauchy(0,2);
-  w ~ normal(0, 5);
+  w ~ normal(0, 2);
   gint ~ normal(0, sig_G);
   a ~ normal(a_mu, sig_a);
 
   // Likelihood
   Y ~ neg_binomial_2(q, theta);
+  
 }
 generated quantities{
   
