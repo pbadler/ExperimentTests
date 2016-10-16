@@ -25,7 +25,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   }
   
   data_file <- dir(data_path, pattern = paste0(do_vr, '_data_lists_for_stan.RDS'), full.names = TRUE )
-  init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
+  #init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
   
   if ( predict ){ 
     initial_fit <- dir(output_path, pattern = paste(do_spp, do_vr, do_model, '[0-9]+', 0, 'predict.RDS', sep = '_'), full.names = TRUE) # check pre-fit models
@@ -34,7 +34,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   }
   
   data_list <- readRDS( data_file )[[do_spp]]
-  init_vals <- readRDS(init_file)[[do_spp]]
+  #init_vals <- readRDS(init_file)[[do_spp]]
   
   if(length(data_list) == 0) { stop('No data!!!')}
   if(length(init_vals) == 0) { stop('No init vals!!!')}
@@ -49,7 +49,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   
   m <- models [do_stan_file]
   
-  temp_inits <- init_vals[[do_model]]
+  #temp_inits <- init_vals[[do_model]]
   
   # modify data list for model ------------------------------------------------------------------------------------#
   
@@ -59,25 +59,25 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   # # select only intraspecific w's for models with intraspecific crowding only 
   # #
   
-  if( !do_vr == 'recruitment') {
-    if( 'w' %in% names( temp_inits )) {
-      if( length(temp_inits$w) == 2) {  ## crowding plus size by crowding 
-        w_names <- colnames(data_list$W)
-        data_list$W <- data_list$W[ ,  grep(pattern = do_spp, w_names) ]
-        data_list$Whold <- data_list$Whold[ , grep(pattern = do_spp, w_names) ]
-        data_list$Wcovs <- 2
-        
-        data_list$W2 <- data_list$W2[ , grep(pattern = do_spp, w_names) ]
-        data_list$W3 <- data_list$W3[ , grep(pattern = do_spp, w_names) ]
-      }
-    }
-  }
+  # if( !do_vr == 'recruitment') {
+  #   if( 'w' %in% names( temp_inits )) {
+  #     if( length(temp_inits$w) == 2) {  ## crowding plus size by crowding 
+  #       w_names <- colnames(data_list$W)
+  #       data_list$W <- data_list$W[ ,  grep(pattern = do_spp, w_names) ]
+  #       data_list$Whold <- data_list$Whold[ , grep(pattern = do_spp, w_names) ]
+  #       data_list$Wcovs <- 2
+  #       
+  #       data_list$W2 <- data_list$W2[ , grep(pattern = do_spp, w_names) ]
+  #       data_list$W3 <- data_list$W3[ , grep(pattern = do_spp, w_names) ]
+  #     }
+  #   }
+  # }
   
   
   # -- inital values ----------------------------------------------------------------------------------------------#
   
-  temp_inits <- rep(list(temp_inits), max(1, nchains) )
-  temp_inits <- lapply(temp_inits, lapply, tweak_inits)
+  # temp_inits <- rep(list(temp_inits), max(1, nchains) )
+  # temp_inits <- lapply(temp_inits, lapply, tweak_inits)
   
   # -- run stan ---------------------------------------------------------------------------------------------------#  
   
@@ -90,9 +90,9 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   if ( length(initial_fit) > 0 ) { 
     print(paste('initial fit being used', initial_fit ))
     initial_fit <- readRDS(head( initial_fit ) )
-    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, init = temp_inits, iter = niter , pars = pars, cores = max(1, nchains))
+    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars, cores = max(1, nchains))
   }else{   
-    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, init = temp_inits, iter = niter , pars = pars, cores = max(1, nchains))
+    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars, cores = max(1, nchains))
   }
   
   # -- output -----------------------------------------------------------------------------------------------------#

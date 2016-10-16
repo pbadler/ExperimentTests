@@ -371,27 +371,28 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
   
   all_data <- lapply(all_data, merge, y = clim_covs[, c('Treatment', 'Period', 'year', clim_vars)], by = c('Treatment', 'Period', 'year')) 
   
-  # -- make size by interaction effects -------------------------------------------------------------# 
   
   if(vr == 'survival'){ 
     all_data <- lapply( all_data, function(x) { names(x)[names(x) == 'logarea'] <- 'logarea.t0'; x } )
   } 
   
-  if( vr != 'recruitment') { 
-    all_data <- 
-      lapply( all_data, function( x ) {  
-      ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions 
+  # -- make size by interaction effects -------------------------------------------------------------# 
+  
+  if( vr != 'recruitment') {
+    all_data <-
+      lapply( all_data, function( x ) {
+      ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
       names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
       cbind(x, ifx)
     })
-    
+
     # all_data <-
     #   lapply( all_data, function( x ) {
     #     ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions
     #     names(ifx ) <- paste0(names(ifx)[grep('W', names(ifx))] , ':', 'logarea.t0')
     #     cbind(x, ifx)
     #   })
-  }  
+  }
   
   # -- make training and holding subsets ----------------------------------------------------# 
   

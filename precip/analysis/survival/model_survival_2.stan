@@ -1,4 +1,3 @@
-// Single species climate model for growth: includes climate + intraspecific effects 
 data{
   int<lower=0> N; // observations
   int<lower=0,upper=1> Y[N]; // observation vector
@@ -12,28 +11,31 @@ data{
   int<lower=0>Covs; // number of climate effects 
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
-  
+  int<lower=0> spp; // focal species number 
 }
 parameters{
   real a_mu;
   vector[Yrs] a;
   real b1_mu;
   vector[Yrs] b1;
-  vector[Covs] b2;
-  vector[Wcovs] w;
+  real w;
   real gint[G];
-  real<lower=0> sig_a;
-  real<lower=0> sig_b1;
-  real<lower=0> sig_G;
+  real<lower=1e-7> sig_a;
+  real<lower=1e-7> sig_b1;
+  real<lower=1e-7> sig_G;
+  vector[Covs] b2;
 }
 transformed parameters{
   real mu[N];
-  vector[N] climEff;
   vector[N] crowdEff;
+  vector[N] climEff;
+  vector[N] W_intra; 
   
+  W_intra <- W[,spp];
+  
+  crowdEff <- W_intra*w;
   climEff <- C*b2;
-  crowdEff <- W*w;
-
+  
   for(n in 1:N){
     mu[n] <- inv_logit( a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n]);
   }
@@ -43,17 +45,17 @@ model{
   a_mu ~ normal(0,10);
   w ~ normal(0,10);
   b1_mu ~ normal(0,10);
-  sig_a ~ cauchy(0,2);
-  sig_b1 ~ cauchy(0,2);
-  sig_G ~ cauchy(0,2);
-  b2 ~ normal(0, tau_beta);
+  sig_a ~ cauchy(0,5);
+  sig_b1 ~ cauchy(0,5);
+  sig_G ~ cauchy(0,5);
   for(g in 1:G)
     gint[g] ~ normal(0, sig_G);
   for(y in 1:Yrs){
     a[y] ~ normal(a_mu, sig_a);
     b1[y] ~ normal(b1_mu, sig_b1);
   }
-
+  b2 ~ normal(0, tau_beta);
+  
   // Likelihood
   Y ~ binomial(1,mu);
 }

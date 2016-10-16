@@ -1,10 +1,25 @@
 "vital_rate","lambda","model","species","pars","sd","niter","nlambda","index"
-"growth",1,1,"ARTR","c('a_mu', 'b1_mu', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,1
-"growth",1,2,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,2
-"growth",1,3,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,3
-"recruitment",1,1,"ARTR","c('a_mu', 'theta', 'u', 'q', 'w', 'qpred', 'log_lik', 'y_hat')",12.1824939607035,1,1,4
-"recruitment",1,2,"ARTR","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat')",12.1824939607035,1,1,5
-"recruitment",1,3,"ARTR","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat')",12.1824939607035,1,1,6
-"survival",1,1,"ARTR","c('a_mu', 'b1_mu', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,7
-"survival",1,2,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,8
-"survival",1,3,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,9
+"growth",20,1,"PSSP","c('a_mu',  'a',  'b1_mu', 'b1', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.315421274638948,1,40,1
+"growth",20,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.315421274638948,1,40,21
+"growth",20,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.315421274638948,1,40,61
+"recruitment",20,1,"PSSP","c('a_mu', 'a', 'theta', 'u', 'q', 'w', 'qpred', 'log_lik', 'y_hat', 
+                                  'a_mu2','a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.315421274638948,1,40,82
+"recruitment",20,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.315421274638948,1,40,102
+"recruitment",20,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.315421274638948,1,40,142
+"survival",20,1,"PSSP","c('a_mu',  'b1_mu',  'w',  'mu',  'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.315421274638948,1,40,163
+"survival",20,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.315421274638948,1,40,183
+"survival",20,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.315421274638948,1,40,223

@@ -1,10 +1,649 @@
 "vital_rate","lambda","model","species","pars","sd","niter","nlambda","index"
-"growth",1,1,"ARTR","c('a_mu', 'b1_mu', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,1
-"growth",1,2,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,2
-"growth",1,3,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,3
-"recruitment",1,1,"ARTR","c('a_mu', 'theta', 'u', 'q', 'w', 'qpred', 'log_lik', 'y_hat')",12.1824939607035,1,1,4
-"recruitment",1,2,"ARTR","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat')",12.1824939607035,1,1,5
-"recruitment",1,3,"ARTR","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat')",12.1824939607035,1,1,6
-"survival",1,1,"ARTR","c('a_mu', 'b1_mu', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,7
-"survival",1,2,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,8
-"survival",1,3,"ARTR","c('a_mu', 'b1_mu', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat')",12.1824939607035,1,1,9
+"growth",20,1,"PSSP","c('a_mu',  'a',  'b1_mu', 'b1', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.315421274638948,1,40,1
+"growth",1,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",12.1824939607035,1,40,2
+"growth",2,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",10.0512027875009,1,40,3
+"growth",3,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",8.29277468155062,1,40,4
+"growth",4,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",6.84197835551441,1,40,5
+"growth",5,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",5.64499454223377,1,40,6
+"growth",6,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",4.65741949565891,1,40,7
+"growth",7,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",3.84261777336637,1,40,8
+"growth",8,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",3.17036319488807,1,40,9
+"growth",9,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",2.61571756034829,1,40,10
+"growth",10,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",2.15810553394845,1,40,11
+"growth",11,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1.78055137384128,1,40,12
+"growth",12,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1.46904919384902,1,40,13
+"growth",13,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1.2120433960255,1,40,14
+"growth",14,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1,1,40,15
+"growth",15,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.825052966980536,1,40,16
+"growth",16,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.680712398323385,1,40,17
+"growth",17,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.561623783897145,1,40,18
+"growth",18,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.463369369231175,1,40,19
+"growth",19,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.382304272892081,1,40,20
+"growth",20,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.315421274638948,1,40,21
+"growth",21,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.260239258489646,1,40,22
+"growth",22,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.214711172341697,1,40,23
+"growth",23,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.177148089784387,1,40,24
+"growth",24,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.146156557071542,1,40,25
+"growth",25,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.120586901055536,1,40,26
+"growth",26,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0994905804948584,1,40,27
+"growth",27,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0820849986238988,1,40,28
+"growth",28,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0677244716592409,1,40,29
+"growth",29,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0558762762796459,1,40,30
+"growth",30,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.046100887528346,1,40,31
+"growth",31,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0380356740356979,1,40,32
+"growth",32,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0313814457142571,1,40,33
+"growth",33,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0258913548946864,1,40,34
+"growth",34,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.021361739175007,1,40,35
+"growth",35,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0176245662862039,1,40,36
+"growth",36,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0145412007061777,1,40,37
+"growth",37,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0119972607860913,1,40,38
+"growth",38,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0098983756072039,1,40,39
+"growth",39,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.00816668416301134,1,40,40
+"growth",40,2,"PSSP","c('a_mu',   'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.00673794699908547,1,40,41
+"growth",1,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",12.1824939607035,1,40,42
+"growth",2,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",10.0512027875009,1,40,43
+"growth",3,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",8.29277468155062,1,40,44
+"growth",4,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",6.84197835551441,1,40,45
+"growth",5,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",5.64499454223377,1,40,46
+"growth",6,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",4.65741949565891,1,40,47
+"growth",7,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",3.84261777336637,1,40,48
+"growth",8,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",3.17036319488807,1,40,49
+"growth",9,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",2.61571756034829,1,40,50
+"growth",10,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",2.15810553394845,1,40,51
+"growth",11,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1.78055137384128,1,40,52
+"growth",12,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1.46904919384902,1,40,53
+"growth",13,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1.2120433960255,1,40,54
+"growth",14,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",1,1,40,55
+"growth",15,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.825052966980536,1,40,56
+"growth",16,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.680712398323385,1,40,57
+"growth",17,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.561623783897145,1,40,58
+"growth",18,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.463369369231175,1,40,59
+"growth",19,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.382304272892081,1,40,60
+"growth",20,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.315421274638948,1,40,61
+"growth",21,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.260239258489646,1,40,62
+"growth",22,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.214711172341697,1,40,63
+"growth",23,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.177148089784387,1,40,64
+"growth",24,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.146156557071542,1,40,65
+"growth",25,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.120586901055536,1,40,66
+"growth",26,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0994905804948584,1,40,67
+"growth",27,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0820849986238988,1,40,68
+"growth",28,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0677244716592409,1,40,69
+"growth",29,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0558762762796459,1,40,70
+"growth",30,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.046100887528346,1,40,71
+"growth",31,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0380356740356979,1,40,72
+"growth",32,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0313814457142571,1,40,73
+"growth",33,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0258913548946864,1,40,74
+"growth",34,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.021361739175007,1,40,75
+"growth",35,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0176245662862039,1,40,76
+"growth",36,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0145412007061777,1,40,77
+"growth",37,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0119972607860913,1,40,78
+"growth",38,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.0098983756072039,1,40,79
+"growth",39,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.00816668416301134,1,40,80
+"growth",40,3,"PSSP","c('a_mu', 'a', 'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
+                                  'muhat3', 'y_hat3', 
+                                  'muhat4', 'y_hat4')",0.00673794699908547,1,40,81
+"recruitment",20,1,"PSSP","c('a_mu', 'a', 'theta', 'u', 'q', 'w', 'qpred', 'log_lik', 'y_hat', 
+                                  'a_mu2','a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.315421274638948,1,40,82
+"recruitment",1,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",12.1824939607035,1,40,83
+"recruitment",2,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",10.0512027875009,1,40,84
+"recruitment",3,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",8.29277468155062,1,40,85
+"recruitment",4,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",6.84197835551441,1,40,86
+"recruitment",5,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",5.64499454223377,1,40,87
+"recruitment",6,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",4.65741949565891,1,40,88
+"recruitment",7,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",3.84261777336637,1,40,89
+"recruitment",8,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",3.17036319488807,1,40,90
+"recruitment",9,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",2.61571756034829,1,40,91
+"recruitment",10,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",2.15810553394845,1,40,92
+"recruitment",11,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1.78055137384128,1,40,93
+"recruitment",12,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1.46904919384902,1,40,94
+"recruitment",13,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1.2120433960255,1,40,95
+"recruitment",14,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1,1,40,96
+"recruitment",15,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.825052966980536,1,40,97
+"recruitment",16,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.680712398323385,1,40,98
+"recruitment",17,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.561623783897145,1,40,99
+"recruitment",18,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.463369369231175,1,40,100
+"recruitment",19,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.382304272892081,1,40,101
+"recruitment",20,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.315421274638948,1,40,102
+"recruitment",21,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.260239258489646,1,40,103
+"recruitment",22,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.214711172341697,1,40,104
+"recruitment",23,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.177148089784387,1,40,105
+"recruitment",24,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.146156557071542,1,40,106
+"recruitment",25,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.120586901055536,1,40,107
+"recruitment",26,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0994905804948584,1,40,108
+"recruitment",27,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0820849986238988,1,40,109
+"recruitment",28,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0677244716592409,1,40,110
+"recruitment",29,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0558762762796459,1,40,111
+"recruitment",30,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.046100887528346,1,40,112
+"recruitment",31,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0380356740356979,1,40,113
+"recruitment",32,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0313814457142571,1,40,114
+"recruitment",33,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0258913548946864,1,40,115
+"recruitment",34,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.021361739175007,1,40,116
+"recruitment",35,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0176245662862039,1,40,117
+"recruitment",36,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0145412007061777,1,40,118
+"recruitment",37,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0119972607860913,1,40,119
+"recruitment",38,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0098983756072039,1,40,120
+"recruitment",39,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.00816668416301134,1,40,121
+"recruitment",40,2,"PSSP","c('a_mu', 'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.00673794699908547,1,40,122
+"recruitment",1,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",12.1824939607035,1,40,123
+"recruitment",2,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",10.0512027875009,1,40,124
+"recruitment",3,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",8.29277468155062,1,40,125
+"recruitment",4,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",6.84197835551441,1,40,126
+"recruitment",5,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",5.64499454223377,1,40,127
+"recruitment",6,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",4.65741949565891,1,40,128
+"recruitment",7,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",3.84261777336637,1,40,129
+"recruitment",8,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",3.17036319488807,1,40,130
+"recruitment",9,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",2.61571756034829,1,40,131
+"recruitment",10,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",2.15810553394845,1,40,132
+"recruitment",11,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1.78055137384128,1,40,133
+"recruitment",12,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1.46904919384902,1,40,134
+"recruitment",13,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1.2120433960255,1,40,135
+"recruitment",14,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",1,1,40,136
+"recruitment",15,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.825052966980536,1,40,137
+"recruitment",16,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.680712398323385,1,40,138
+"recruitment",17,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.561623783897145,1,40,139
+"recruitment",18,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.463369369231175,1,40,140
+"recruitment",19,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.382304272892081,1,40,141
+"recruitment",20,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.315421274638948,1,40,142
+"recruitment",21,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.260239258489646,1,40,143
+"recruitment",22,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.214711172341697,1,40,144
+"recruitment",23,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.177148089784387,1,40,145
+"recruitment",24,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.146156557071542,1,40,146
+"recruitment",25,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.120586901055536,1,40,147
+"recruitment",26,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0994905804948584,1,40,148
+"recruitment",27,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0820849986238988,1,40,149
+"recruitment",28,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0677244716592409,1,40,150
+"recruitment",29,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0558762762796459,1,40,151
+"recruitment",30,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.046100887528346,1,40,152
+"recruitment",31,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0380356740356979,1,40,153
+"recruitment",32,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0313814457142571,1,40,154
+"recruitment",33,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0258913548946864,1,40,155
+"recruitment",34,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.021361739175007,1,40,156
+"recruitment",35,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0176245662862039,1,40,157
+"recruitment",36,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0145412007061777,1,40,158
+"recruitment",37,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0119972607860913,1,40,159
+"recruitment",38,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.0098983756072039,1,40,160
+"recruitment",39,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.00816668416301134,1,40,161
+"recruitment",40,3,"PSSP","c('a_mu',  'theta', 'u', 'q', 'b2', 'w', 'qpred',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'a2', 'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')",0.00673794699908547,1,40,162
+"survival",20,1,"PSSP","c('a_mu',  'b1_mu',  'w',  'mu',  'muhat',  'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.315421274638948,1,40,163
+"survival",1,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",12.1824939607035,1,40,164
+"survival",2,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",10.0512027875009,1,40,165
+"survival",3,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",8.29277468155062,1,40,166
+"survival",4,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",6.84197835551441,1,40,167
+"survival",5,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",5.64499454223377,1,40,168
+"survival",6,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",4.65741949565891,1,40,169
+"survival",7,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",3.84261777336637,1,40,170
+"survival",8,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",3.17036319488807,1,40,171
+"survival",9,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",2.61571756034829,1,40,172
+"survival",10,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",2.15810553394845,1,40,173
+"survival",11,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1.78055137384128,1,40,174
+"survival",12,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1.46904919384902,1,40,175
+"survival",13,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1.2120433960255,1,40,176
+"survival",14,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1,1,40,177
+"survival",15,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.825052966980536,1,40,178
+"survival",16,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.680712398323385,1,40,179
+"survival",17,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.561623783897145,1,40,180
+"survival",18,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.463369369231175,1,40,181
+"survival",19,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.382304272892081,1,40,182
+"survival",20,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.315421274638948,1,40,183
+"survival",21,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.260239258489646,1,40,184
+"survival",22,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.214711172341697,1,40,185
+"survival",23,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.177148089784387,1,40,186
+"survival",24,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.146156557071542,1,40,187
+"survival",25,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.120586901055536,1,40,188
+"survival",26,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0994905804948584,1,40,189
+"survival",27,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0820849986238988,1,40,190
+"survival",28,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0677244716592409,1,40,191
+"survival",29,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0558762762796459,1,40,192
+"survival",30,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.046100887528346,1,40,193
+"survival",31,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0380356740356979,1,40,194
+"survival",32,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0313814457142571,1,40,195
+"survival",33,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0258913548946864,1,40,196
+"survival",34,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.021361739175007,1,40,197
+"survival",35,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0176245662862039,1,40,198
+"survival",36,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0145412007061777,1,40,199
+"survival",37,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0119972607860913,1,40,200
+"survival",38,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0098983756072039,1,40,201
+"survival",39,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.00816668416301134,1,40,202
+"survival",40,2,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.00673794699908547,1,40,203
+"survival",1,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",12.1824939607035,1,40,204
+"survival",2,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",10.0512027875009,1,40,205
+"survival",3,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",8.29277468155062,1,40,206
+"survival",4,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",6.84197835551441,1,40,207
+"survival",5,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",5.64499454223377,1,40,208
+"survival",6,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",4.65741949565891,1,40,209
+"survival",7,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",3.84261777336637,1,40,210
+"survival",8,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",3.17036319488807,1,40,211
+"survival",9,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",2.61571756034829,1,40,212
+"survival",10,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",2.15810553394845,1,40,213
+"survival",11,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1.78055137384128,1,40,214
+"survival",12,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1.46904919384902,1,40,215
+"survival",13,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1.2120433960255,1,40,216
+"survival",14,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",1,1,40,217
+"survival",15,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.825052966980536,1,40,218
+"survival",16,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.680712398323385,1,40,219
+"survival",17,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.561623783897145,1,40,220
+"survival",18,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.463369369231175,1,40,221
+"survival",19,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.382304272892081,1,40,222
+"survival",20,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.315421274638948,1,40,223
+"survival",21,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.260239258489646,1,40,224
+"survival",22,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.214711172341697,1,40,225
+"survival",23,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.177148089784387,1,40,226
+"survival",24,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.146156557071542,1,40,227
+"survival",25,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.120586901055536,1,40,228
+"survival",26,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0994905804948584,1,40,229
+"survival",27,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0820849986238988,1,40,230
+"survival",28,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0677244716592409,1,40,231
+"survival",29,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0558762762796459,1,40,232
+"survival",30,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.046100887528346,1,40,233
+"survival",31,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0380356740356979,1,40,234
+"survival",32,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0313814457142571,1,40,235
+"survival",33,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0258913548946864,1,40,236
+"survival",34,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.021361739175007,1,40,237
+"survival",35,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0176245662862039,1,40,238
+"survival",36,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0145412007061777,1,40,239
+"survival",37,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0119972607860913,1,40,240
+"survival",38,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.0098983756072039,1,40,241
+"survival",39,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.00816668416301134,1,40,242
+"survival",40,3,"PSSP","c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')",0.00673794699908547,1,40,243
