@@ -19,7 +19,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-args <- c('/home/andy/Documents/ExperimentTests/precip/', 'data/temp_data/short_model_table.csv', 6, 1, 100, 'TRUE')
+args <- c('/home/andy/Documents/ExperimentTests/precip/', 'data/temp_data/short_model_table.csv', 9, 1, 4000, 'TRUE')
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 6){ 

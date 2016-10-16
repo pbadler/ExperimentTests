@@ -1,4 +1,4 @@
-// Single species climate model for growth: includes climate + intraspecific effects 
+// Climate model for survival: includes climate + intraspecific effects 
 data{
   int<lower=0> N; // observations
   int<lower=0,upper=1> Y[N]; // observation vector

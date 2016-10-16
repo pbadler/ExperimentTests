@@ -14,7 +14,7 @@ library(stringr)
 
 scale_covs <- function(df , train, hold){ 
   
-  covars <- grep( '^[PT]\\.', names(df)) # grab all the climate covariates for scaling 
+  covars <- grep( '^[PT]\\.', names(df)) # scale all the competition and climate covariates 
   
   training_df <- df[train, ]
   holding_df  <- df[hold, ]
@@ -45,7 +45,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   # --------split into training and holding data and scale climate covariates -------------------------
   out <- scale_covs(df, train, hold)
 
-  covars <- grep( '^[PT]\\.', names(out[[1]])) # grab all the covariates for scaling 
+  covars <- grep( '^[PT]\\.', names(out[[1]])) # climate covariates  
   
   training_df <- out[[1]]
   holding_df <- out[[2]]
@@ -154,7 +154,7 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   
   out <- scale_covs(df, train, hold)
   
-  covars <- grep( '^[PT]\\.', names(out[[1]])) # grab all the covariates for scaling 
+  covars <- grep( '^[PT]\\.', names(out[[1]])) # climate covariates 
   
   training_df <- out[[1]]
   holding_df <- out[[2]]
@@ -385,12 +385,12 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
       cbind(x, ifx)
     })
     
-    all_data <- 
-      lapply( all_data, function( x ) {  
-        ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions 
-        names(ifx ) <- paste0(names(ifx)[grep('W', names(ifx))] , ':', 'logarea.t0')
-        cbind(x, ifx)
-    })
+    # all_data <-
+    #   lapply( all_data, function( x ) {
+    #     ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions
+    #     names(ifx ) <- paste0(names(ifx)[grep('W', names(ifx))] , ':', 'logarea.t0')
+    #     cbind(x, ifx)
+    #   })
   }  
   
   # -- make training and holding subsets ----------------------------------------------------# 

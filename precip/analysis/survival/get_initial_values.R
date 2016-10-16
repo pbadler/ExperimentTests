@@ -107,7 +107,7 @@ dfs <- dfs[1]
 
 #nchains <- 4
 spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
-
+spp <- 'PSSP'
 # run functions---------------------------------------------------------------------# 
 init_vals <- mapply( get_init_vals, spp = spp , df = dfs, USE.NAMES = TRUE, SIMPLIFY = FALSE)
 
