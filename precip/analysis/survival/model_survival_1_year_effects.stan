@@ -43,9 +43,9 @@ model{
   a_mu2 ~ normal(0,10);
   w2 ~ normal(0,10);
   b1_mu2 ~ normal(0,10);
-  sig_a2 ~ cauchy(0,2);
-  sig_b12 ~ cauchy(0,2);
-  sig_G2 ~ cauchy(0,2);
+  sig_a2 ~ cauchy(0,5);
+  sig_b12 ~ cauchy(0,5);
+  sig_G2 ~ cauchy(0,5);
   for(g in 1:G)
     gint2[g] ~ normal(0, sig_G2);
   for(y in 1:Yrs2){

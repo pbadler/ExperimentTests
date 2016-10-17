@@ -11,44 +11,49 @@ data{
   int<lower=0> spp; // focal species 
 }
 parameters{
-  real a_mu;
-  vector[Yrs] a;
+  real gint_mu; 
+  vector[G] gint_raw;
+  vector[Yrs] a_raw;
   real b1_mu;
-  vector[Yrs] b1;
+  vector[Yrs] b1_raw;
   real w;
-  real gint[G];
-  real<lower=1e-7> sig_a;
-  real<lower=1e-7> sig_b1;
-  real<lower=1e-7> sig_G;
+  real<lower=0> sig_a;
+  real<lower=0> sig_b1;
+  real<lower=0> sig_G;
 }
 transformed parameters{
+  vector[Yrs] a;
+  vector[Yrs] b1;
+  vector[G] gint; 
   real mu[N];
   vector[N] crowdEff;
   vector[N] W_intra; 
-  
+
   W_intra <- W[, spp];
   crowdEff <- W_intra*w;
   
+  // reparamaterize the hierarchical parameters  
+  a <- 0 + sig_a*a_raw;
+  b1 <- b1_mu + sig_b1*b1_raw;
+  gint <- gint_mu + sig_G*gint_raw;
+  
   for(n in 1:N){
-    mu[n] <- inv_logit(a[yid[n]] + gint[gid[n]] + b1[yid[n]]*X[n] + crowdEff[n]);
+    mu[n] <- inv_logit(gint[gid[n]] + a[yid[n]]  + b1[yid[n]]*X[n] + crowdEff[n]);
   }
   
 }
 model{
   // Priors
-  a_mu ~ normal(0,10);
+  gint_mu ~ normal(0,10);
   w ~ normal(0,10);
   b1_mu ~ normal(0,10);
   sig_a ~ cauchy(0,5);
-  sig_b1 ~ cauchy(0,5);
-  sig_G ~ cauchy(0,5);
-  for(g in 1:G)
-    gint[g] ~ normal(0, sig_G);
-  for(y in 1:Yrs){
-    a[y] ~ normal(a_mu, sig_a);
-    b1[y] ~ normal(b1_mu, sig_b1);
-  }
-
+  sig_b1 ~ cauchy(0,2);
+  sig_G ~ cauchy( 0,5);
+  gint_raw ~ normal(0, 1);
+  a_raw ~ normal(0, 1);
+  b1_raw ~ normal(0, 1);
+  
   // Likelihood
   Y ~ binomial(1,mu);
 

@@ -14,7 +14,7 @@ library(stringr)
 
 scale_covs <- function(df , train, hold){ 
   
-  covars <- grep( '^[PT]\\.', names(df)) # scale all the competition and climate covariates 
+  covars <- grep( '^[PT]\\.', names(df)) # scale all the climate covariates 
   
   training_df <- df[train, ]
   holding_df  <- df[hold, ]
@@ -65,6 +65,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area   
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
+  Gmat      <- model.matrix(~ 0 + training_df$Group)
   
   trackid   <- training_df$trackID
   year      <- training_df$year
@@ -378,21 +379,21 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
   
   # -- make size by interaction effects -------------------------------------------------------------# 
   
-  if( vr != 'recruitment') {
-    all_data <-
-      lapply( all_data, function( x ) {
-      ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
-      names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
-      cbind(x, ifx)
-    })
-
-    # all_data <-
-    #   lapply( all_data, function( x ) {
-    #     ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions
-    #     names(ifx ) <- paste0(names(ifx)[grep('W', names(ifx))] , ':', 'logarea.t0')
-    #     cbind(x, ifx)
-    #   })
-  }
+  # if( vr != 'recruitment') {
+  #   all_data <-
+  #     lapply( all_data, function( x ) {
+  #     ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
+  #     names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
+  #     cbind(x, ifx)
+  #   })
+  # 
+  #   # all_data <-
+  #   #   lapply( all_data, function( x ) {
+  #   #     ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions
+  #   #     names(ifx ) <- paste0(names(ifx)[grep('W', names(ifx))] , ':', 'logarea.t0')
+  #   #     cbind(x, ifx)
+  #   #   })
+  # }
   
   # -- make training and holding subsets ----------------------------------------------------# 
   

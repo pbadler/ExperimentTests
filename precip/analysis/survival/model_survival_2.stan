@@ -20,9 +20,9 @@ parameters{
   vector[Yrs] b1;
   real w;
   real gint[G];
-  real<lower=1e-7> sig_a;
-  real<lower=1e-7> sig_b1;
-  real<lower=1e-7> sig_G;
+  real<lower=0> sig_a;
+  real<lower=0> sig_b1;
+  real<lower=0> sig_G;
   vector[Covs] b2;
 }
 transformed parameters{

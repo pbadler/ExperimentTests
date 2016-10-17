@@ -57,9 +57,9 @@ model{
   a_mu ~ normal(0,10);
   w ~ normal(0,10);
   b1_mu ~ normal(0,10);
-  sig_a ~ cauchy(0,2);
-  sig_b1 ~ cauchy(0,2);
-  sig_G ~ cauchy(0,2);
+  sig_a ~ cauchy(0,5);
+  sig_b1 ~ cauchy(0,5);
+  sig_G ~ cauchy(0,5);
   for(g in 1:G)
     gint[g] ~ normal(0, sig_G);
   for(y in 1:Yrs){
@@ -94,7 +94,7 @@ generated quantities {
   }
   
   for(n in 1:npreds){
-    muhat[n] <- inv_logit(a_out[yid_out[n]] + gint[gid_out[n]] + b1_out[yid_out[n]]*Xhold[n] + crowdhat[n]);
+    muhat[n] <- inv_logit(a_out[yid_out[n]] + gint[gid_out[n]] + b1_out[yid_out[n]]*Xhold[n] + crowdhat[n] + climhat[n]);
     y_hat[n] <- bernoulli_rng(muhat[n]);
     log_lik[n] <- bernoulli_log(y_holdout[n], muhat[n]);
   }
