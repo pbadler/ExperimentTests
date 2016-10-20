@@ -60,12 +60,12 @@ growth_dataframe2datalist <- function(df, train, hold){
   C         <- as.matrix(training_df[, covars])                   # all climate covariates 
   Covs      <- ncol(C)                                            # number of climate covariates 
   
-  W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix 
+  W         <- as.matrix(training_df[, grep('W.[A-Z]+', names(training_df)) ]) # crowding matrix 
   Wcovs    <- ncol(W)                                             # number of species in crowding matrix 
   
   gid       <- as.numeric(training_df$Group)                      # integer id for each plot area   
   G         <- length(unique(training_df$Group))                  # number of groups representing exclosure areas
-  Gmat      <- model.matrix(~ 0 + training_df$Group)
+  gm        <- model.matrix(~ 0 + training_df$Group)
   
   trackid   <- training_df$trackID
   year      <- training_df$year
@@ -77,7 +77,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   y_holdout <- holding_df$logarea.t1                              # plant size at time t, modern data 
   Xhold     <- holding_df$logarea.t0                              # plant size at time t-1, modern data 
   Chold     <- holding_df[ , covars]                              # climate matrix, modern data 
-  Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data 
+  Whold     <- holding_df[ , grep('W.[A-Z]+', names(holding_df)) ]       # crowding matrix, modern data 
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data 
   yid_out   <- as.numeric(as.factor(holding_df$treat_year))             # year id, modern data
   nyrs_out  <- length(unique(holding_df$treat_year))                    # num years, modern data 
@@ -108,7 +108,7 @@ growth_dataframe2datalist <- function(df, train, hold){
   yid2 <- out_df$yid
   Yrs2 <- length(unique(out_df$yid))
   gid2 <- out_df$gid
-  W2 <- as.matrix(out_df[, grep('W', names(out_df)) ])
+  W2 <- as.matrix(out_df[, grep('W.[A-Z]+', names(out_df)) ])
   
   #--------use survival dataframe for cover predictions ------------------------------------------------------------# 
 
@@ -170,7 +170,7 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   C         <- as.matrix(training_df[, covars])                   # all climate covariates
   Covs      <- ncol(C)                                            # number of climate covariates
 
-  W         <- as.matrix(training_df[, grep('W', names(training_df)) ]) # crowding matrix
+  W         <- as.matrix(training_df[, grep('W.[A-Z]+', names(training_df)) ]) # crowding matrix
   Wcovs     <- ncol(W)                                            # number of crowding effects
   Nspp      <- Wcovs/2
   
@@ -191,7 +191,7 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   y_holdout <- holding_df$survives                                # plant survival at time t + 1, modern data
   Xhold     <- holding_df$logarea                                 # plant size at time t, modern data
   Chold     <- holding_df[ , covars]                              # climate matrix, modern data
-  Whold     <- holding_df[ , grep('W', names(holding_df)) ]       # crowding matrix, modern data
+  Whold     <- holding_df[ , grep('W.[A-Z]+', names(holding_df)) ]       # crowding matrix, modern data
   gid_out   <- as.numeric(holding_df$Group)                       # group id, modern data
   yid_out   <- as.numeric(as.factor(holding_df$treat_year))             # year id, modern data
   nyrs_out  <- length(unique(holding_df$treat_year))                    # num years, modern data
@@ -219,7 +219,7 @@ survival_dataframe2datalist <- function(df, train, hold, covars){
   yid2 <- out_df$yid
   Yrs2 <- length(unique(out_df$yid))
   gid2 <- out_df$gid
-  W2 <- as.matrix(out_df[, grep('W', names(out_df)) ])
+  W2 <- as.matrix(out_df[, grep('W.[A-Z]+', names(out_df)) ])
   C2 <- as.matrix(out_df[, covars])
   treat2 <- as.numeric( factor( out_df$Treatment))
   trackid2 <- out_df$trackID
@@ -368,7 +368,7 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
   dlist <- lapply( dfiles, readRDS)
   
   # -- subset -------------------------------------------------------------------------------#
-  all_data <- lapply(dlist, function(x){ subset(x, year > 1926 & !Treatment %in% c('No_shrub', 'No_grass'))} )
+  all_data <- lapply(dlist, function(x){ subset(x, !Treatment %in% c('No_shrub', 'No_grass'))} )
   
   all_data <- lapply(all_data, merge, y = clim_covs[, c('Treatment', 'Period', 'year', clim_vars)], by = c('Treatment', 'Period', 'year')) 
   
@@ -379,21 +379,21 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
   
   # -- make size by interaction effects -------------------------------------------------------------# 
   
-  # if( vr != 'recruitment') {
-  #   all_data <-
-  #     lapply( all_data, function( x ) {
-  #     ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
-  #     names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
-  #     cbind(x, ifx)
-  #   })
-  # 
+  if( vr != 'recruitment') {
+    all_data <-
+      lapply( all_data, function( x ) {
+      ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
+      names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
+      cbind(x, ifx)
+    })
+
   #   # all_data <-
   #   #   lapply( all_data, function( x ) {
   #   #     ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions
-  #   #     names(ifx ) <- paste0(names(ifx)[grep('W', names(ifx))] , ':', 'logarea.t0')
+  #   #     names(ifx ) <- paste0(names(ifx)[grep('W.[A-Z]+', names(ifx))] , ':', 'logarea.t0')
   #   #     cbind(x, ifx)
   #   #   })
-  # }
+  }
   
   # -- make training and holding subsets ----------------------------------------------------# 
   
@@ -415,7 +415,7 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file, ... ) {
 
 
 # -- select covariates -------------------------------------------------------------------#
-clim_vars <- c( 'P.a.l', 'P.a.0', 'P.w.sp.0', 'P.w.sp.1', 'T.sp.0', 'T.sp.1', 'T.su.0', 'T.su.1')
+clim_vars <- c( 'P.f.w.sp.l', 'P.f.w.sp.0', 'P.f.w.sp.1', 'P.su.0', 'P.su.1', 'T.sp.0', 'T.sp.1')
 
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'
