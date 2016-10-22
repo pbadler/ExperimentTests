@@ -50,12 +50,6 @@ if(doSpp!="ARTR"){
 allD <- rbind(D1,D2)
 rm(D1,D2,tmp)
 
-# merge data on removals at individual level
-tmp <- read.csv(paste(dataDir2,"/speciesData/",doSpp,"/",doSpp,"_within_ARTRremovals.csv",sep=""))
-tmp <- tmp[,c("quad","year","trackID","inARTR")] 
-allD<-merge(allD,tmp,all.x=T)
-allD$inARTR[is.na(allD$inARTR)] <- 0
-
 # clean up dataset ----------------------------------------------
 allD$year[allD$year<2000] <- allD$year[allD$year<2000] + 1900
 
