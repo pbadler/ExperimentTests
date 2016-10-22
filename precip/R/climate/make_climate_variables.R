@@ -22,14 +22,32 @@ t.treatments <- c(1, 1)     # Drought and Irrigation adjustments to temperature
 # make time periods --------------------------------------------------------------------
 
 p1 <- data.frame( Period = 'Modern', year = 2007:2016)
-p2 <- data.frame( Period = 'not monitored', year = 1957:2006)
-p3 <- data.frame( Period = 'Historical', year = 1925:1956)
+p2 <- data.frame( Period = 'not monitored', year = 1958:2006)
+p3 <- data.frame( Period = 'Historical', year = 1925:1957)
 periods <- data.frame( rbind( p1, p2, p3 )) 
 
 # ----- read in data --------------------------------------------------------------------#
 
 # set to driversdata project 
 data_dir <- '~/driversdata/data/idaho_modern'
+
+old_climate_files <- dir(file.path(data_dir, 'climateData'), pattern = 'Zachman', full.names = T) # Climate Data from Ecological Archives 
+old_station_dat <- lapply( old_climate_files, read.csv)
+
+old_station_dat[[1]] <- old_station_dat[[1]] %>% 
+  dplyr::select( - ANNUAL) %>% 
+  gather(Month_name, TAVG, JAN:DEC) %>% 
+  mutate( TAVG = (TAVG - 32)*5/9) # convert to celsius 
+
+old_station_dat[[2]] <- old_station_dat[[2]] %>% 
+  dplyr::select( - ANNUAL) %>% 
+  gather(Month_name, PRCP, JAN:DEC) %>% 
+  mutate( PRCP = PRCP*25.4)       # convert to mm 
+
+months <- data.frame( month = 1:12, Month_name = toupper( month.abb))
+
+old_station_dat <- merge( old_station_dat[[1]], old_station_dat[[2]], by = c('YEAR', 'Month_name'))
+old_station_dat <- merge( old_station_dat, months)
 
 station_dat <- read.csv(file.path(data_dir, 'climateData/USSES_climate_monthly_new.csv'))
 season <- read.csv(file.path(data_dir, 'soil_moisture_data/data/season_table.csv'))
@@ -39,16 +57,24 @@ season <- read.csv(file.path(data_dir, 'soil_moisture_data/data/season_table.csv
 station_dat$date <-  as.POSIXct( strptime( paste0(as.character(station_dat$DATE), '-01'), '%Y-%m-%d', tz = 'MST')  ) 
 station_dat$month <- as.numeric(strftime( station_dat$date, '%m'))
 station_dat$year <- as.numeric(strftime( station_dat$date, '%Y'))
+old_station_dat$year <- as.numeric(old_station_dat$YEAR)
 
 # set-up aggregate seasonal variables for model ----------------------------------------#
 
-df <- merge( station_dat, season, by = 'month')
+month_data <- merge(  old_station_dat[ , c('year', 'month', 'PRCP', 'TAVG')], station_dat[, c('year', 'month', 'PRCP', 'TAVG')], by = c('year', 'month'), all = TRUE) 
+
+month_data <- 
+  month_data %>% 
+  mutate( TAVG = ifelse(is.na(TAVG.x), TAVG.y, TAVG.x)) %>% 
+  mutate( PRCP = ifelse(is.na(PRCP.x), PRCP.y, PRCP.x))
+
+df <- merge( month_data, season, by = 'month')
 
 df <- 
   df %>% 
   mutate( water_year = year + lag_year ) %>% 
   mutate( quarter = cut(month, 4, labels = paste0('Q', 1:4))) %>%
-  select(year, quarter, month, year, season, season_label, precip_seasons, water_year, PRCP, TAVG)
+  dplyr::select(year, quarter, month, year, season, season_label, precip_seasons, water_year, PRCP, TAVG)
 
 # ---------- annual average Temperature -------------------------------------------------#
 annual_MAT <- 
@@ -90,7 +116,7 @@ seasonal_tmean <-
 monthly_clim <- 
   df %>% 
   mutate(Control = PRCP) %>% 
-  select(-PRCP) %>% 
+  dplyr::select(-PRCP) %>% 
   mutate( Drought    = ifelse( year > 2011 & month %in% c(dm[1]:dm[2]), Control*p.treatments[1], Control) ) %>% 
   mutate( Irrigation = ifelse( year > 2011 & month %in% c(im[1]:im[2]), Control*p.treatments[2], Control) ) %>% 
   gather(Treatment, PRCP, Control, Drought, Irrigation)
@@ -117,7 +143,7 @@ quarterly_clim <-
 
 seasonal_precip <- 
   monthly_clim %>% 
-  select ( -TAVG) %>%  
+  dplyr::select ( -TAVG) %>%  
   group_by( Treatment, water_year, precip_seasons ) %>% 
   summarise( PRCP = sum(PRCP) ) %>% 
   group_by( Treatment, precip_seasons ) %>% 
@@ -161,7 +187,7 @@ seasonal_clim <- seasonal_clim %>%
 station_dat <- read.csv('~/driversdata/data/idaho_modern/climateData/USSES_climate.csv')
 station_dat$date <- as.POSIXct( strptime( station_dat$DATE, format = '%Y%m%d', tz = 'MST')    )
 
-station_dat <- station_dat %>% select( date, STATION, STATION_NAME, LATITUDE, LONGITUDE, ELEVATION, PRCP, TMAX, TMIN )  
+station_dat <- station_dat %>% dplyr::select( date, STATION, STATION_NAME, LATITUDE, LONGITUDE, ELEVATION, PRCP, TMAX, TMIN )  
 
 station_dat <- station_dat %>% mutate( LONGITUDE = LONGITUDE[which.max(date)], LATITUDE = LATITUDE[ which.max(date )], ELEVATION = ELEVATION[ which.max(date )] )
 

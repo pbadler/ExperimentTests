@@ -35,8 +35,8 @@ quarterly_clim <- readRDS('data/temp_data/quarterly_climate.RDS')
 #     the cumulative precipitation of the winter and spring. 
 #   
 #     Number after the second period indicates the year of the transition, For example, 
-#     "P.sp.1" gives the cumulative precipitation of the spring preceding the first year of the 
-#     transition, whereas "T.f.w.2" gives the average temperature of the fall and winter 
+#     "P.sp.0" gives the cumulative precipitation of year preceding the transition. 
+#     Whereas "T.f.w.1" gives the average temperature of the fall and winter 
 #     preceding the second year of the transition. "0" refers to year before first year, 
 #     i.e. "lag effect" (sensu Adler). 
 #
@@ -46,15 +46,11 @@ q_precip <-
   filter( var == 'PRCP_ttl') %>%
   group_by(Treatment) %>% 
   arrange(Treatment, year, quarter) %>%
-  mutate(P.sp.1 = val, 
-         P.sp.0 = lag(val, 4), 
-         P.w.sp.1 = rollsum(val, 2, align = 'right', fill = NA), 
-         P.w.sp.0 = lag(P.w.sp.1, 4), 
-         P.su.1 = lag(val, 3), 
-         P.su.0 = lag(P.su.1, 4),
-         P.a.1 = rollsum(val, 4, align = 'right', fill = NA), 
-         P.a.0 = lag(P.a.1, 4), 
-         P.a.l = lag(P.a.0, 4)) %>% 
+  mutate(P.f.w.sp.1 = rollsum(val, 3, align = 'right', fill = NA), 
+         P.f.w.sp.0 = lag(P.f.w.sp.1, 4),
+         P.f.w.sp.l = lag(P.f.w.sp.0, 4),
+         P.su.1 = lag(val, 3),                 
+         P.su.0 = lag(P.su.1, 4)) %>% 
   filter( quarter == 'Q2') %>% # plants are measured at the end of Q2 each year 
   select( Treatment, Period, year, quarter, starts_with("P"))
 
@@ -68,8 +64,8 @@ q_temp <-
           T.sp.l = lag(T.sp.0, 4), 
           T.w.sp.1 = rollapply(val, 2, 'mean', na.rm = TRUE, align = 'right', fill = NA), 
           T.w.sp.0 = lag(T.w.sp.1, 4),
-          T.w.sp.l = lag(T.w.sp.0, 4),
-          T.su.1 = lag(val, 3),
+          T.w.sp.l = lag(T.w.sp.0, 4), 
+          T.su.1 = lag(T.sp.1, 3), 
           T.su.0 = lag(T.su.1, 4)) %>% 
   filter( quarter == 'Q2') %>% 
   select( Treatment, Period, year, quarter, starts_with("T"))
@@ -92,3 +88,8 @@ allClim$year <- allClim$year - 1 # adjust to match assignment of year 0 as the r
 # ---- output ----------------------------------------------------------------------------# 
 
 saveRDS( data.frame( allClim ) , 'data/temp_data/all_clim_covs.RDS')
+
+ggplot( q_temp, aes( x = year, y = T.sp.su.0)) + geom_line() + 
+  geom_line(aes( y = T.sp.0), col = 'red') + 
+  geom_line(aes( y = T.sp.1), col = 'blue') + 
+  geom_line(aes( y = T.su.0), col = 'green')
