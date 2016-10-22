@@ -19,7 +19,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-args <- c('/home/andy/Documents/ExperimentTests/precip/', 'data/temp_data/short_model_table.csv', 9, 1, 4000, 'TRUE')
+args <- c('/home/andy/Documents/ExperimentTests/precip/', 'data/temp_data/short_model_table.csv', 7, 1, 200, 'TRUE')
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 6){ 
@@ -54,7 +54,6 @@ source( 'analysis/waic_fxns.R')
 if ( do_line <= nrow(models)) { 
   
   line <- models[do_line, ]
-  
   species <- line$species 
   vital_rate <- line$vital_rate
   model <- line$model

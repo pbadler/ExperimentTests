@@ -17,16 +17,16 @@ library(dplyr)
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 species <- c('PSSP')
 vital_rates <- c('growth', 'recruitment', 'survival')
-niter <- c(1, 1, 1)
+niter <- c(1000, 1000, 1000)
 
 smodels <- data.frame(model = 1:3, 
                       vital_rate = 'survival',
-                      pars=c(  "c('a_mu',  'b1_mu',  'w',  'mu',  'muhat',  'log_lik', 'y_hat', 
-                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')", 
-                               "c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
-                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')", 
-                               "c('a_mu',  'b1_mu',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
-                                  'a_mu2', 'b1_mu2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')"))
+                      pars=c(  "c('a',  'b1_mu', 'b1',  'w',  'mu',  'muhat',  'log_lik', 'y_hat', 
+                                  'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')", 
+                               "c('a',  'b1_mu', 'b12',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
+                                  'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')", 
+                               "c('a',  'b1_mu', 'b12', 'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
+                                  'a2', 'b1_mu2', 'b12', 'b2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')"))
 
 gmodels <-data.frame( model = 1:3, 
                       vital_rate = 'growth',  
@@ -56,7 +56,7 @@ rmodels <- data.frame(model = 1:3,
 # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
 nlambda <- 40
 print( paste ( 'nlambda =' , nlambda ) ) 
-lambda.set <- exp(seq(-5, 10, length=nlambda))
+lambda.set <- exp(seq(-4, 10, length.out = nlambda))
 sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
 
 sd_vec <- cbind( lambda = 1:nlambda, sd = sd_vec )

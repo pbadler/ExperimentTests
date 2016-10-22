@@ -1,5 +1,5 @@
 
-waic <- function(stanfit){
+waic <- function(stanfit, llname = 'log_lik'){
   
   require(rstan)
   require(matrixStats)
@@ -7,7 +7,7 @@ waic <- function(stanfit){
   # from Gelman 2014
   # http://www.stat.columbia.edu/~gelman/research/unpublished/waic_stan.pdf
   
-  log_lik <- extract (stanfit, "log_lik")$log_lik
+  log_lik <- extract (stanfit, llname)[[llname]]
   dim(log_lik) <- if (length(dim(log_lik))==1) c(length(log_lik),1) else
     c(dim(log_lik)[1], prod(dim(log_lik)[2:length(dim(log_lik))]))
   S <- nrow(log_lik)

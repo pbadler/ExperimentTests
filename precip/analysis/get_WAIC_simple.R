@@ -9,7 +9,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-args <- c('/home/andy/Documents/ExperimentTests/precip/', 'growth', 2)
+args <- c('/home/andy/Documents/ExperimentTests/precip/', 'survival', 42)
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 3){ 
@@ -17,9 +17,7 @@ if (length(args) != 3){
        ####### Arguments required:
        #######  working directory 
        #######  vital rate "growth", "recruitment" or "survival"
-       #######  line number : 1 - total combination of models in
-       #######  chains = 4 hardcoded  
-       #######  niter = 2000 hardcoded')
+       #######  line number : 1 - total combination of models in')
   
 }else if (length(args) == 3){
   
@@ -32,9 +30,6 @@ if (length(args) != 3){
   
   do_line <- as.numeric(eval(parse(text = args[3])))
   
-  # nchains <- as.numeric(eval(parse (text = strsplit( args[3], ' '))))
-  # niter <- as.numeric(eval(parse (text = strsplit( args[4], ' '))))
-  
 }
 
 nchains <- 4
@@ -44,7 +39,6 @@ models <- subset( models, vital_rate == do_vr)
 
 source( 'analysis/run_stan_fxns.R')
 source( 'analysis/waic_fxns.R')
-
 
 if ( do_line <= nrow(models)) { 
   
