@@ -45,7 +45,7 @@ df2list <- function(df, covars, vr, type) {
   N         <- nrow(df)                                           # number of data points for training data 
   gid       <- as.numeric(df$gid)                                 # integer id for each plot area   
   G         <- length(unique(df$gid))                             # number of groups representing exclosure areas
-  gm        <- model.matrix(~ 0 + df$gid)                         # group contrast matrix 
+  gm        <- model.matrix.lm(~ df$gid)                         # group contrast matrix 
   
   yid       <- df$yid                                             # integer id for each year 
   nyrs      <- length(unique(df$yid))                             # number of years 
@@ -121,13 +121,13 @@ compile_datalists <- function( df, train, hold, vr ) {
   
   # save simple dataframe with scaled covariates ---------------------------------------------
   
-  out_df         <- rbind(out[[1]], out[[2]])
+  out_df           <- rbind(out[[1]], out[[2]])
   if(vr == 'survival'){ 
     out_df$Y       <- out_df$survives
   }else { 
     out_df$Y       <- out_df$logarea.t1
   }
-  out_df$X       <- out_df$logarea.t0
+  out_df$X         <- out_df$logarea.t0
   
   saveRDS(out_df, paste0( 'data/temp_data/', species, '_scaled_', vr, '_dataframe.RDS'))
   

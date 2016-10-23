@@ -15,7 +15,6 @@ library(tidyr)
 library(dplyr)
 
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
-species <- c('PSSP')
 vital_rates <- c('growth', 'recruitment', 'survival')
 niter <- c(1000, 1000, 1000)
 

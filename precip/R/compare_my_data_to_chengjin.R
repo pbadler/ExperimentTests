@@ -54,4 +54,6 @@ summary(mymodmer)
 
 ccdf$`pptLag:logarea_scaled` <- scale( ccdf$pptLag*ccdf$logarea ) 
 
-ccmodmer <- glmer( data = ccdf, survives ~ Group + logarea.t0 + pptLag_scaled + `pptLag:logarea_scaled` + W.ARTR + (logarea.t0|year), family = 'binomial')
+ccmodmer <- glmer( data = ccdf, survives ~ Group + logarea + pptLag_scaled + `pptLag:logarea_scaled` + ccW[, 1] + (logarea|year), family = 'binomial')
+summary(ccmodmer)
+

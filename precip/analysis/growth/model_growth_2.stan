@@ -2,23 +2,23 @@
 data{
   int<lower=0> N; // observations
   vector[N] Y; // observation vector
-  int<lower=0> Yrs; // years
+  int<lower=0> nyrs; // years
   int<lower=0> yid[N]; // year id
   int<lower=0> G; // groups
   int<lower=0> gid[N]; // group id
   vector[N] X; // size vector
   int<lower=0> Wcovs; // number of crowding effects 
-  matrix[N,Wcovs] W; // crowding matrix
+  vector[N] W; // crowding vector
   int<lower=0>Covs; // number of climate effects 
   matrix[N,Covs] C; // climate matrix
   real tau_beta;
 }
 parameters{
   real a_mu;
-  vector[Yrs] a;
+  vector[nyrs] a;
   real b1_mu;
-  vector[Yrs] b1;
-  vector[Wcovs] w;
+  vector[nyrs] b1;
+  real w;
   vector[Covs] b2;
   real gint[G];
   real tau;
@@ -54,7 +54,7 @@ model{
   sig_G ~ cauchy(0,2);
   for(g in 1:G)
     gint[g] ~ normal(0, sig_G);
-  for(y in 1:Yrs){
+  for(y in 1:nyrs){
     a[y] ~ normal(a_mu, sig_a);
     b1[y] ~ normal(b1_mu, sig_b1);
   }

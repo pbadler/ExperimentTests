@@ -9,7 +9,6 @@
 #   m1: null model:                       w/ size  + intra-specific competition                      
 #   m2: single species model              w/ size  + intra-specific competition + climate 
 #   m3: multi species model               w/ size  + all competition + climate  
-#   m4: year effects model                w/ size  + all competition + year effects 
 # ----------------------------------------------------------------------------------------------------------------- 
 
 rm(list = ls())
@@ -17,102 +16,97 @@ rm(list = ls())
 library(lme4)
 library(parallel)
 
-
-set_init_vals_list <-  function( model, C_names, W_names, nyrs2) {  
+get_init_vals_growth_models <- function( spp, df, ... ) {
   
-  Nspp <- length(W_names[-grep(':', W_names)])
+  df_old <- subset(df, Period == 'Historical')
+  nyrs2 <- length(unique(df$treat_year))
+  nyrs <- length(unique(df_old$yid))
+  G <- length(unique(df$gid))
+  Covs <- length(df[, grep('^[PT]\\.', names(df))])
   
-  init_vals <- as.list( fixef(model)[1:2] )
-  
-  init_vals <- c(init_vals, as.numeric(data.frame( VarCorr(model) )$sdcor[ c(1,2,4)]))
-  
-  names( init_vals )[1:5] <- c('a_mu', 'b1_mu', 'sig_a', 'sig_b1', 'sig_G')
-  
-  if(init_vals$sig_G < 0.0001) { init_vals$sig_G <- 0.05 } # prevent sig G from being zero in some cases 
-  
-  
-  b2 <- fixef(model)[ sort( unlist( lapply( C_names, grep,  names(fixef(model)))) )  ]
-  w <- fixef(model)[ sort( unlist( lapply( W_names[1:Nspp], grep, names(fixef(model)))))]
-  
-  if( length(b2[!is.na(b2)]) > 0 )  { 
-    init_vals <- c(init_vals, list( b2 = as.numeric(b2[!is.na(b2)])))
-  } 
-  if( length(w[!is.na(w)]) > 0 )  { 
-    init_vals <- c(init_vals, list( w = as.numeric(w[!is.na(w)])))  
+  if(spp == 'ARTR'){
+    a <- rep(0,nyrs)
+    b1_mu <- 1
+    b1 <- rep(b1_mu, nyrs)
+    sig_a <- sig_a2 <- 0.9
+    sig_b1 <- sig_b12 <- 0.13
+    bg <- c(0.3, rep(0, G - 1))
+    w <- w2 <- -0.15
+    tau <- 4
+    tau_size <- -0.5
+    b2 <- rep( 0, Covs)
+    w_all <-c(w, 0, 0, 0)
+    a2 <- rep(0, nyrs2)
+    b12 <- rep(0, nyrs2)
+  }else if ( spp == 'HECO'){
+    a <- rep(0,nyrs)
+    b1_mu <- 0.9
+    b1 <- rep(b1_mu, nyrs)
+    sig_a <- sig_a2 <- 0.4
+    sig_b1 <- sig_b12 <- 0.1
+    bg <- c(0.35, rep(0, G - 1))
+    w <- w2 <-  -0.18
+    tau <- 0.6
+    tau_size <- -0.1
+    b2 <- rep( 0, Covs)
+    w_all <-c(0, w, 0, 0)
+    a2 <- rep(0, nyrs2)
+    b12 <- rep(0, nyrs2)
+  }else if ( spp == 'POSE'){
+    a <- rep(0,nyrs)
+    b1_mu <- 0.7
+    b1 <- rep(b1_mu, nyrs)
+    sig_a <- sig_a2 <- 0.4
+    sig_b1 <- sig_b12 <- 0.09
+    bg <- c(0.4, rep(0, G - 1))
+    w <- w2 <-  -0.4
+    tau <- 0.8
+    tau_size <- -0.1
+    b2 <- rep( 0, Covs)
+    w_all <-c(0, 0, w, 0)
+    a2 <- rep(0, nyrs2)
+    b12 <- rep(0, nyrs2)
+  }else if ( spp == 'PSSP'){
+    a <- rep(0,nyrs)
+    b1_mu <- 1
+    b1 <- rep(b1_mu, nyrs)
+    sig_a <- sig_a2 <- 1.2
+    sig_b1 <- sig_b12 <- 0.25
+    bg <- c(0.3, rep(0, G - 1))
+    w <- w2 <-  -0.5
+    tau <- 0.9
+    tau_size <- -0.25
+    b2 <- rep( 0, Covs)
+    w_all <-c(0, 0, 0, w)
+    a2 <- rep(0, nyrs2)
+    b12 <- rep(0, nyrs2)
   }
   
-  # random effects initial values need to be specified for STAN 2.6.0
-  nyrs <- length(unique(model@frame$yid) )
-  G <- length(unique(model@frame$gid)) 
+  rm(df, df_old)
   
-  init_vals$a <- rnorm(nyrs, 0, 0.001)
-  init_vals$b1 <- rnorm(nyrs, 0, 0.001) 
-  init_vals$gint <- rnorm(G, 0, 0.001) 
-  init_vals$tau <- 0
-  init_vals$tauSize <- 0
-  
-  
-  # initial values for the year effects model 
-  init_vals$a2 <- rnorm(nyrs2, 0, 0.001)
-  init_vals$b12 <- rnorm(nyrs2, 0, 0.001)
-  init_vals$gint2 <- init_vals$gint
-  init_vals$w2 <- init_vals$w
-  init_vals$a_mu2 <- init_vals$a_mu
-  init_vals$b1_mu2 <- init_vals$b1_mu
-  init_vals$sig_a2 <- init_vals$sig_a
-  init_vals$sig_b12 <- init_vals$sig_b1
-  init_vals$sig_G2 <- init_vals$sig_G
-  init_vals$tau2 <- 0
-  init_vals$tauSize2 <- 0
-  
-  return( init_vals )
-  
-}
+  init_vals <-  lapply( ls(), function(x) eval(parse( text = x) ))  # collect inits 
+  names( init_vals) <- ls()[-which(ls() == 'init_vals')]
 
-
-get_init_vals <- function( spp, df, ... ) {
+  inits <- rep( list(init_vals), 3 ) 
   
-  nyrs2 <- length(unique(df$treat_year))
+  inits[[3]]$w <- init_vals$w_all_2
+  inits[[3]]$w2 <- init_vals$w_all_2
   
-  df <- subset( df, Period == 'Historical')
-  
-  C_names <- names(df)[ grep('^[TP]\\.', names(df))] # climate effects 
-  W_names <- names(df)[ grep('^W', names(df))] # competition effects 
-  W_intra <- names(df)[ grep(spp, names(df))]
-  
-  # write models --------------------------------------------------------------- # 
-  f0 <- 'Y ~ X + (1|gid) + (X|yid)'
-  f1 <- paste(f0, paste(W_intra, collapse = ' + ' ), sep = ' + ')
-  f2 <- paste(f0, paste(c(W_intra, C_names), collapse = ' + '), sep = ' + ')
-  f3 <- paste(f0, paste(c(W_names, C_names), collapse = ' + '), sep = ' + ')
-  f4 <- paste(f0, paste(W_names, collapse = ' + '), sep = ' + ')
-  
-  fs <- list(f1, f2, f3, f4) 
-  # ----------------------------------------------------------------------------- #
-  
-  ms <- mclapply( fs, FUN = function( x, ... ) lmer( x , data = df), mc.cores = 4 ) # run models 
-  
-  # set initial values ----------------------------------------
-  init_vals <- lapply( ms, set_init_vals_list, C_names = C_names, W_names = W_names, nyrs2 = nyrs2 ) 
-  
-  return(init_vals)
+  return(inits)
 }
 
 # input files ----------------------------------------------------------------------#
 
 dfs <- lapply( dir( 'data/temp_data/', '*scaled_growth_dataframe.RDS', full.names = T), readRDS)
-
-nchains <- 4
 spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
 
 # run functions---------------------------------------------------------------------# 
-init_vals <- mapply( get_init_vals, spp = spp , df = dfs, USE.NAMES = TRUE, SIMPLIFY = FALSE)
+init_vals <- list( NA )
+
+init_vals <- mapply(get_init_vals_growth_models, spp = factor(spp), df = dfs, SIMPLIFY = FALSE)
+
+names(init_vals) <- spp 
 
 # save output ----------------------------------------------------------------------#
 
-names(init_vals) <- spp
-
-saveRDS( init_vals, file = file.path('data', 'temp_data', 'growth_init_vals.RDS'))
-
-
-
+saveRDS( init_vals, file = file.path('data/temp_data', 'growth_init_vals.RDS'))

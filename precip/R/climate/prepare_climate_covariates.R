@@ -89,7 +89,4 @@ allClim$year <- allClim$year - 1 # adjust to match assignment of year 0 as the r
 
 saveRDS( data.frame( allClim ) , 'data/temp_data/all_clim_covs.RDS')
 
-ggplot( q_temp, aes( x = year, y = T.sp.su.0)) + geom_line() + 
-  geom_line(aes( y = T.sp.0), col = 'red') + 
-  geom_line(aes( y = T.sp.1), col = 'blue') + 
-  geom_line(aes( y = T.su.0), col = 'green')
+

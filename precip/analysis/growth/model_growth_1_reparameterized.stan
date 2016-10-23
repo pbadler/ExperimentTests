@@ -15,13 +15,16 @@ parameters{
   real b1_mu;
   real<lower=0> sig_a;
   real<lower=0> sig_b1;
-  vector[nyrs] a; 
-  vector[nyrs] b1;
+  vector[nyrs] a_raw;
+  vector[nyrs] b1_raw;
   real tauSize;
   real tau;
   real w;
 }
 transformed parameters{
+  vector[nyrs] a;
+  vector[nyrs] b1;
+  
   // for training data model  
   real<lower=0> sigma[N];
   vector[N] gint; 
@@ -32,6 +35,10 @@ transformed parameters{
   gint     <- gm*bg;
   crowdEff <- W*w;
   
+  // reparamaterize the hierarchical parameters  
+  a <- 0 + sig_a*a_raw;
+  b1 <- b1_mu + sig_b1*b1_raw;
+
   for(n in 1:N){
     mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n];
     sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
@@ -45,8 +52,11 @@ model{
   b1_mu ~ normal(0,10);
   sig_a ~ cauchy(0,5);
   sig_b1 ~ cauchy(0,5);
-  a ~ normal(0, sig_a); 
-  b1 ~ normal(b1_mu, sig_b1);
+  a_raw ~ normal(0,1);
+  b1_raw ~ normal(0,1);
+  
+  //a ~ normal(0, sig_a); 
+  //b1 ~ normal(b1_mu, sig_b1);
   tau ~ normal(0,10);
   tauSize ~ normal(0,10);
   w ~ normal(0,10);
