@@ -12,6 +12,7 @@ data{
   int<lower=0> spp;           // focal species 
   int<lower=0> Covs;          // climate effects 
   matrix[N, Covs] C;          // climate matrix 
+  real<lower=0> tau_beta;     // prior sd for climate effects 
 }
 parameters{
   vector[G] bg;                     // varying group effects with first group as intercept 

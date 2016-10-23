@@ -12,6 +12,7 @@ data{
   int<lower=0> spp;           // focal species 
   int<lower=0> Covs;          // climate effects 
   matrix[N, Covs] C;          // climate matrix 
+  real <lower=0> tau_beta;    // prior sd for climate effects 
   
   // full datalist, all observations for year effects  
   int<lower=0> N2;              // observations
@@ -27,7 +28,7 @@ data{
   int<lower=0,upper=1> Yhold[Nhold];
   int<lower=0> nyrshold;            // years out
   int<lower=0> yidhold[Nhold];      //year out id
-  int<lower=0> gidhold[Nhold];      // group id holdout
+  matrix[Nhold, G] gmhold;          // group dummy variable matrix 
   vector[Nhold] Xhold;
   matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
   matrix[Nhold, Covs] Chold;        // climate matrix 
@@ -105,8 +106,8 @@ model{
   a_raw ~ normal(0,1);
   b1_raw ~ normal(0,1);
   w ~ normal(0,10);
-  b2 ~ normal(0,10); 
-  
+  b2 ~ normal(0,tau_beta); 
+    
   // Likelihood
   Y ~ binomial(1,mu);
   
@@ -128,6 +129,7 @@ generated quantities {
   // hold out predictions 
   vector[nyrshold] a_out;
   vector[nyrshold] b1_out;
+  vector[Nhold] gint_out;
   real muhat[Nhold];
   int<lower=0,upper=1> y_hat[Nhold];          // pointwise predictions  
   vector[Nhold] log_lik;                      // vector for computing log pointwise predictive density  
@@ -136,10 +138,12 @@ generated quantities {
   
   // for predictions with year effects 
   real muhat2[Nhold];
+  vector[Nhold] gint_out2;
   int<lower=0,upper=1> y_hat2[Nhold];          // pointwise predictions  
   vector[Nhold] log_lik2;                      // vector for computing log pointwise predictive density  
   
   // 1. Holdout data predictions 
+  gint_out  <- gmhold*bg;
   crowdhat <- Whold*w;
   climhat  <- Chold*b2; 
   
@@ -149,15 +153,16 @@ generated quantities {
   }
   
   for(n in 1:Nhold){
-    muhat[n] <- inv_logit(gint[gidhold[n]] + a_out[yidhold[n] - nyrs] + b1_out[yidhold[n] - nyrs]*Xhold[n] + crowdhat[n] + climhat[n]);
+    muhat[n] <- inv_logit(gint_out[n] + a_out[yidhold[n] - nyrs] + b1_out[yidhold[n] - nyrs]*Xhold[n] + crowdhat[n] + climhat[n]);
     y_hat[n] <- bernoulli_rng(muhat[n]);
     log_lik[n] <- bernoulli_log(Yhold[n], muhat[n]);
   }
   
   // 2. Holdout data predictions with known year effects 
+  gint_out2 <- gmhold*bg;
   
   for(n in 1:Nhold){
-    muhat2[n] <- inv_logit(gint[gidhold[n]] + a2[yidhold[n]] + b12[yidhold[n]]*Xhold[n] + crowdhat[n]);
+    muhat2[n] <- inv_logit(gint_out2[n] + a2[yidhold[n]] + b12[yidhold[n]]*Xhold[n] + crowdhat[n]);
     y_hat2[n] <- bernoulli_rng(muhat2[n]);
     log_lik2[n] <- bernoulli_log(Yhold[n], muhat2[n]);
   }
