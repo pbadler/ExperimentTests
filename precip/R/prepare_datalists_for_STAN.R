@@ -67,17 +67,20 @@ df2list <- function(df, covars, vr, type) {
 
   if(vr == 'recruitment'){
     Y         <- df$Y
-    parents1  <- df$parents1
-    parents2  <- df$parents2 
+    parents1  <- as.matrix(df[ , grep('^cov\\.[A-Z]+', names(df))])
+    parents2  <- as.matrix(df[ , grep('^Gcov\\.[A-Z]+', names(df))])
+    
+    parents2[which(parents2 == 0) ] <- min(parents2[ which(parents2 > 0) ])
     
     species_name   <- unique(df$species )
     spp_list       <- factor( str_extract( colnames(parents1), '[A-Z]+$')) # get species names 
     spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
+    Nspp           <- nlevels(spp_list)
     
   }else if( vr == 'survival'){ 
     Y         <- df$survives
     X         <- df$logarea.t0
-    W         <- as.matrix(df[, grep('W\\.[A-Z]+', names(df)) ])      # crowding matrix 
+    W         <- as.matrix(df[, grep('^W\\.[A-Z]+', names(df)) ])      # crowding matrix 
     Wcovs     <- ncol(W)                                               # number of species in crowding matrix
     
     species_name   <- unique(df$species)
@@ -128,7 +131,7 @@ compile_datalists <- function( df, train, hold, vr ) {
   out_df           <- rbind(out[[1]], out[[2]])
   if(vr == 'survival'){ 
     out_df$Y       <- out_df$survives
-  }else { 
+  }else if(vr == 'growth'){
     out_df$Y       <- out_df$logarea.t1
   }
   out_df$X         <- out_df$logarea.t0
@@ -244,4 +247,3 @@ make_stan_datalist('survival', data_path, clim_vars, clim_file )
 make_stan_datalist('growth', data_path, clim_vars, clim_file )
 
 make_stan_datalist('recruitment', data_path, clim_vars, clim_file )
-
