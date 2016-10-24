@@ -2,7 +2,7 @@
 data{
   int<lower=0> N;             // observations
   int<lower=0> Y[N];          // observation vector
-  int<lower=0> Yrs;           // years
+  int<lower=0> nyrs;           // years
   int<lower=0> yid[N];        // year id
   int<lower=0> G;             // groups
   int<lower=0> gid[N];        // group id
@@ -13,18 +13,16 @@ data{
   int<lower=0> Covs;          // climate covariates
   matrix[N,Covs] C;           // climate matrix
   real tau_beta;              // prior standard deviation
-  
+  matrix[N, G] gm;
+
 }parameters{
-  real a_mu;
-  vector[Yrs] a;
+  vector[nyrs] a_raw;
   vector[Nspp] w;
-  real gint[G];
-  real<lower=1e-7> sig_a;
+  real<lower=0> sig_a;
   real<lower=0> theta;
-  real<lower=0> sig_G;
   real<lower=0, upper=1> u;
   vector[Covs] b2;
-
+  vector[G] bg; 
 }
 transformed parameters{
   vector[N] mu;
@@ -34,7 +32,9 @@ transformed parameters{
   vector[N] q;
   vector[N] coverEff;
   vector[N] climEff;
-
+  vector[N] gint; 
+  vector[nyrs] a; 
+  
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
   
@@ -42,10 +42,12 @@ transformed parameters{
     for( j in 1:Nspp)
       trueP2[n, j] <- sqrt(trueP1[n, j]);
   
+  gint     <- gm*bg;
   coverEff <- trueP2*w;
+  a  <- 0 + a_raw*sig_a; 
 
   for(n in 1:N){
-    mu[n] <- exp(a[yid[n]] + gint[gid[n]] + coverEff[n] + climEff[n]);
+    mu[n] <- exp(gint[n] + a[yid[n]] + coverEff[n] + climEff[n]);
     lambda[n] <- trueP1[n, spp]*mu[n];  // elementwise multiplication  
     q[n] <- fmax(lambda[n]*theta, 1e-9);
   }
@@ -54,13 +56,11 @@ transformed parameters{
 model{
   // Priors
   u ~ uniform(0,1);
-  theta ~ uniform(0,5);
-  a_mu ~ normal(0,5);
-  sig_a ~ cauchy(0,2);
-  sig_G ~ cauchy(0,2);
-  w ~ normal(0, 2);
-  gint ~ normal(0, sig_G);
-  a ~ normal(a_mu, sig_a);
+  theta ~ cauchy(0,5);
+  sig_a ~ cauchy(0,5);
+  w ~ normal(0, 5);
+  a_raw ~ normal(0, 1);
+  bg ~ normal(0, 10);
   b2 ~ normal(0, tau_beta);
 
   // Likelihood
