@@ -82,6 +82,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   }
   
   rm(df, df_old)
+  spp <- as.numeric(spp)
   
   init_vals <-  lapply( ls(), function(x) eval(parse( text = x) ))  # collect inits 
   names( init_vals) <- ls()[-which(ls() == 'init_vals')]
