@@ -28,7 +28,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -0.18
+    w <- w2 <-  -2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
     a_raw2 <- rep(0,nyrs2)
@@ -42,7 +42,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -0.18
+    w <- w2 <-  -2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
     a_raw2 <- rep(0,nyrs2)
@@ -56,7 +56,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -0.18
+    w <- w2 <-  -2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
     a_raw2 <- rep(0,nyrs2)
@@ -70,7 +70,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -0.18
+    w <- w2 <-  -2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
     a_raw2 <- rep(0,nyrs2)

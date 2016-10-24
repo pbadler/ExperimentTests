@@ -55,7 +55,7 @@ df2list <- function(df, covars, vr, type) {
   nyrs      <- length(unique(df$yid))                             # number of years 
 
   W         <- as.matrix(df[, grep('W.[A-Z]+', names(df)) ])      # crowding matrix 
-  Wcovs    <- ncol(W)                                             # number of species in crowding matrix 
+  Wcovs     <- ncol(W)                                             # number of species in crowding matrix 
   
   C         <- as.matrix(df[, covars])                            # all climate covariates 
   Covs      <- ncol(C)                                            # number of climate covariates 
@@ -67,10 +67,8 @@ df2list <- function(df, covars, vr, type) {
 
   if(vr == 'recruitment'){
     Y         <- df$Y
-    parents1  <- as.matrix(df[ , grep('^cov\\.[A-Z]+', names(df))])
-    parents2  <- as.matrix(df[ , grep('^Gcov\\.[A-Z]+', names(df))])
-    
-    parents2[which(parents2 == 0) ] <- min(parents2[ which(parents2 > 0) ])
+    parents1  <- as.matrix(df[ , grep('^cov\\.[A-Z]+', names(df))])/100
+    parents2  <- as.matrix(df[ , grep('^Gcov\\.[A-Z]+', names(df))])/100
     
     species_name   <- unique(df$species )
     spp_list       <- factor( str_extract( colnames(parents1), '[A-Z]+$')) # get species names 

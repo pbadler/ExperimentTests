@@ -78,9 +78,9 @@ transformed parameters{
   for(n in 1:N)
       trueP2[n] <- sqrt(trueP1[n]);
   
-  gint     <- gm*bg;
-  coverEff <- trueP2*w;
-  a  <- 0 + a_raw*sig_a; 
+  gint      <- gm*bg;
+  coverEff  <- trueP2*w;
+  a         <- 0 + a_raw*sig_a; 
   
   for(n in 1:N){
     mu[n] <- exp(gint[n]  + a[yid[n]]  + coverEff[n]);
@@ -100,7 +100,7 @@ transformed parameters{
   
   gint2     <- gm2*bg2;
   coverEff2 <- trueP2_2*w2;
-  a2  <- 0 + a_raw2*sig_a2; 
+  a2        <- 0 + a_raw2*sig_a2; 
 
   for(n in 1:N2){
     mu2[n] <- exp(gint2[n]  + a2[yid2[n]]  + coverEff2[n]);
@@ -126,7 +126,7 @@ model{
   u2 ~ uniform(0,1);
   theta2 ~ uniform(0,5);
   sig_a2 ~ cauchy(0,5);
-  a_raw ~ normal(0, 1);
+  a_raw2 ~ normal(0, 1);
   w2 ~ normal(0, 5);
 
   // Likelihood
@@ -157,6 +157,8 @@ generated quantities{
   p1_pred <- parents1hold[, spp];
   p2_pred <- parents2hold[, spp];
   
+  
+  gint_pred   <- gmhold*bg;
   trueP1_pred <- p1_pred*u + p2_pred*(1-u);
 
   for(n in 1:Nhold)
@@ -169,7 +171,7 @@ generated quantities{
 
   for(n in 1:Nhold){
     mu_pred[n] <- exp(gint_pred[n] + a_pred[yidhold[n] - nyrs ] + coverEff_pred[n]);
-    lambda_pred[n] <- trueP1_pred[n]*mu_pred[n];  // elementwise multiplication 
+    lambda_pred[n] <- trueP1_pred[n]*mu_pred[n];
     q_pred[n] <- fmax( lambda_pred[n]*theta, 1e-9);
   }
   

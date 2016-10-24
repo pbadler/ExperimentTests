@@ -2,7 +2,7 @@
 data{
   int<lower=0> N;             // observations
   int<lower=0> Y[N];          // observation vector
-  int<lower=0> nyrs;           // years
+  int<lower=0> nyrs;          // years
   int<lower=0> yid[N];        // year id
   int<lower=0> G;             // groups
   int<lower=0> gid[N];        // group id

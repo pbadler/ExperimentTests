@@ -87,6 +87,11 @@ D$Treatment3 <- D$Treatment
 D$Treatment3[D$Treatment=="Control" & D$year>2000] <- "ControlModern"
 D$Treatment[ D$year < 2012 & D$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
 
+# assign group level zeros to smallest non-zero value 
+historical_Gcov <- D[ D$Period == 'Historical', grep ( '^Gcov\\.', names(D) ) ]
+min_cover <- min(historical_Gcov[ historical_Gcov > 0 ] )
+D[ ,grep ( '^Gcov\\.', names(D) )][D[, grep ( '^Gcov\\.', names(D) )] == 0 ] <- min_cover
+
 D <- D %>% gather(species, Y, R.ARTR, R.HECO, R.POSE, R.PSSP)
 D$species <- str_replace(D$species, pattern = '^R.', replacement = '') 
 
