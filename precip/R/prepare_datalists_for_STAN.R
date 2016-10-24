@@ -12,6 +12,10 @@ library(ggplot2)
 library(zoo)
 library(stringr)
 
+source('R/get_all_demographic_data.R')
+source('R/climate/make_climate_variables.R')
+source('R/climate/prepare_climate_covariates.R')
+
 scale_covs <- function(df, train, hold){ 
   
   # -------- make year by treatment labels ------------------------------------------------------------ 
@@ -142,18 +146,20 @@ compile_datalists <- function( df, train, hold, vr ) {
     survival_df <- survival_dlist[[species]]                      # get data frame for the right species
     
     cover_list <- list()
-    cover_list$N3        <- survival_df$npreds                           # total predictions
+    cover_list$N3        <- survival_df$Nhold                            # total predictions
+    cover_list$Y3        <- survival_df$Yhold 
     cover_list$X3        <- survival_df$Xhold                            # plant size at time t-1 
     cover_list$C3        <- survival_df$Chold                            # climate matrix 
     cover_list$W3        <- survival_df$Whold                            # crowding matrix 
-    cover_list$gid3      <- survival_df$gid_out                          # group id 
-    cover_list$yid3      <- survival_df$yid_out                          # year id
-    cover_list$nyrs3     <- survival_df$nyrs_out                         # num years 
+    cover_list$gid3      <- survival_df$gidhold                          # group id 
+    cover_list$yid3      <- survival_df$yidhold                          # year id
+    cover_list$nyrs3     <- survival_df$nyrshold                         # num years 
+    cover_list$gm3       <- survival_df$gmhold 
     
-    cover_list$treat3    <- survival_df$treat_out                        # Information for post processing  
-    cover_list$trackid3  <- survival_df$trackid_out
-    cover_list$year3     <- survival_df$year_out
-    cover_list$quad3     <- survival_df$quad_out
+    cover_list$treat3    <- survival_df$treathold                        # Information for post processing  
+    cover_list$trackid3  <- survival_df$trackidhold
+    cover_list$year3     <- survival_df$yearhold
+    cover_list$quad3     <- survival_df$quadhold
     
     out_list <-   c(training_list, holding_list, full_list, cover_list)
     
@@ -228,7 +234,7 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
 
 
 # -- select covariates -------------------------------------------------------------------#
-clim_vars <- c( 'P.f.w.sp.l', 'P.f.w.sp.0', 'P.f.w.sp.1', 'P.su.0', 'P.su.1', 'T.sp.0', 'T.sp.1')
+clim_vars <- c( 'P.a.l', 'P.f.w.sp.0', 'P.f.w.sp.1', 'P.su.0', 'P.su.1', 'T.sp.0', 'T.sp.1')
 
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'

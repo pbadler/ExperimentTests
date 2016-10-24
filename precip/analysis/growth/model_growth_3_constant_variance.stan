@@ -16,20 +16,18 @@ data{
 }
 parameters{
   // for training data model  
+  real<lower=0> sigma; 
   vector[G] bg;                     // varying group effects with first group as intercept 
   vector[nyrs] a_raw;
   real b1_mu;
   vector[nyrs] b1_raw;
   real<lower=0> sig_a;
   real<lower=0> sig_b1;
-  real tauSize;
-  real tau;
   vector[Wcovs] w;
   vector[Covs]  b2; 
 }
 transformed parameters{
-  // for training data model  
-  real<lower=0> sigma[N];
+// for training data model  
   vector[nyrs] a;
   vector[nyrs] b1;
   vector[N] gint; 
@@ -42,27 +40,23 @@ transformed parameters{
   crowdEff <- W*w;
   climEff  <- C*b2;
   
-  // reparamaterize the year effects parameters  
-  a <- 0 + sig_a*a_raw;
   b1 <- b1_mu + sig_b1*b1_raw;
-
+  a  <- 0 + sig_a*a_raw; 
+  
   for(n in 1:N){
     mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
-    sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
-
 }
 model{
-  // for training data model 
+   // for training data model 
   // Priors
+  sigma ~ cauchy(0, 5);
   bg ~ normal(0,10);
   b1_mu ~ normal(0,10);
   sig_a ~ cauchy(0,5);
-  sig_b1 ~ cauchy(0,4);
+  sig_b1 ~ cauchy(0,5);
   a_raw ~ normal(0,1);
   b1_raw ~ normal(0,1);
-  tau ~ normal(0,10);
-  tauSize ~ normal(0,10);
   w ~ normal(0,10);
   b2 ~ normal(0,tau_beta); 
     
@@ -71,9 +65,9 @@ model{
 }
 generated quantities {
   // hold out predictions 
-  vector[N] log_lik;                      // vector for computing log pointwise predictive density  
+  vector[N] log_lik;          // vector for computing log pointwise predictive density  
 
   for(n in 1:N){
-      log_lik[n] <- normal_log(Y[n], mu[n], sigma[n]);
+      log_lik[n] <- normal_log(Y[n], mu[n], sigma);
   }
 }

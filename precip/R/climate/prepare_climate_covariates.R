@@ -48,7 +48,9 @@ q_precip <-
   arrange(Treatment, year, quarter) %>%
   mutate(P.f.w.sp.1 = rollsum(val, 3, align = 'right', fill = NA), 
          P.f.w.sp.0 = lag(P.f.w.sp.1, 4),
-         P.f.w.sp.l = lag(P.f.w.sp.0, 4),
+         P.a.1      = rollsum(val, 4, align = 'right', fill = NA),
+         P.a.0      = lag(P.a.1, 4),
+         P.a.l  = lag(P.a.0, 4),
          P.su.1 = lag(val, 3),                 
          P.su.0 = lag(P.su.1, 4)) %>% 
   filter( quarter == 'Q2') %>% # plants are measured at the end of Q2 each year 
