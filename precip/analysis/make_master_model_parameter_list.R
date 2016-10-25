@@ -16,7 +16,7 @@ library(dplyr)
 
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 vital_rates <- c('growth', 'recruitment', 'survival')
-niter <- c(10, 10, 10)
+niter <- c(4000, 4000, 4000)
 
 smodels <- data.frame(model = 1:3, 
                       vital_rate = 'survival',
@@ -55,7 +55,7 @@ rmodels <- data.frame(model = 1:3,
 # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
 nlambda <- 40
 print( paste ( 'nlambda =' , nlambda ) ) 
-lambda.set <- exp(seq(-4, 10, length.out = nlambda))
+lambda.set <- exp(seq(-4.5, 10, length.out = nlambda))
 sd_vec <- sqrt(1/lambda.set) # use sd for stan normal distribution 
 
 sd_vec <- cbind( lambda = 1:nlambda, sd = sd_vec )
