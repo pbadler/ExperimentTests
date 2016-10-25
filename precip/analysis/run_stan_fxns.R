@@ -1,6 +1,6 @@
 tweak_inits <- function(inits, devs ){ 
   # adds random deviation to list of inital values 
-  inits + runif(length(inits), 0, 0.5)
+  inits + runif(length(inits), -0.05, 0.05)
 }
 
 run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars = NULL, nchains = 1, niter = 1, predict = FALSE) { 
@@ -69,6 +69,8 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   devs <- seq(-0.5,0.5,length.out = nchains)
   temp_inits <- lapply(temp_inits, lapply, tweak_inits)
   
+  if(length(temp_inits) == 0 ) { stop('No initial values found!')}
+    
   # -- run stan ---------------------------------------------------------------------------------------------------#  
   
   save_file <- file.path( output_path, paste(do_spp, do_vr, do_model, do_lambda, nchains, sep = '_'))
