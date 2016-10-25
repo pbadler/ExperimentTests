@@ -144,7 +144,7 @@ generated quantities{
   vector[Nhold] lambda_pred;
   vector[Nhold] q_pred;
   vector[Nhold] log_lik; // vector for computing log pointwise predictive density
-  int<lower=0> y_hat[Nhold]; // pointwise predictions  
+  //int<lower=0> y_hat[Nhold]; // pointwise predictions  
   vector[Nhold] p1_pred; 
   vector[Nhold] p2_pred;
   vector[Nhold] gint_pred; 
@@ -153,7 +153,7 @@ generated quantities{
   vector[Nhold] q_pred2;
   vector[Nhold] mu_pred2;
   vector[Nhold] lambda_pred2;
-  int<lower=0> y_hat2[Nhold]; // pointwise predictions  
+  //int<lower=0> y_hat2[Nhold]; // pointwise predictions  
   vector[Nhold] log_lik2; // vector for computing log pointwise predictive density  
 
   // 1. Holdout data predictions 
@@ -180,7 +180,7 @@ generated quantities{
   }
   
   for(n in 1:Nhold){
-    y_hat[n] <- neg_binomial_2_rng(q_pred[n],  theta);
+    //y_hat[n] <- neg_binomial_2_rng(q_pred[n],  theta);
     log_lik[n] <- neg_binomial_2_log(Yhold[n], q_pred[n], theta);
   }
   
@@ -194,7 +194,7 @@ generated quantities{
   }
   
   for(n in 1:Nhold){
-    y_hat2[n] <- neg_binomial_2_rng(q_pred2[n],  theta);
+    //y_hat2[n] <- neg_binomial_2_rng(q_pred2[n],  theta);
     log_lik2[n] <- neg_binomial_2_log(Yhold[n], q_pred2[n], theta);
   }  
 }

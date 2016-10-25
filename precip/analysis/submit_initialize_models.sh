@@ -10,4 +10,4 @@
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args /projects/A01633220/precip/ data/temp_data/short_model_table.csv $SLURM_ARRAY_TASK_ID 0 1 $1" run_stan_models_simple.R
+R CMD BATCH "--args /projects/A01633220/precip/ data/temp_data/short_model_table.csv $SLURM_ARRAY_TASK_ID 0 $1" run_stan_models_simple.R
