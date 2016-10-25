@@ -79,9 +79,9 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   if ( length(initial_fit) > 0 ) { 
     print(paste('initial fit being used', initial_fit ))
     initial_fit <- readRDS(head( initial_fit ) )
-    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter, pars = pars, init = temp_inits, cores = max(1, nchains))
+    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter, pars = pars)
   }else{   
-    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars, init = temp_inits, cores = max(1, nchains))
+    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars)
   }
   
   # -- output -----------------------------------------------------------------------------------------------------#

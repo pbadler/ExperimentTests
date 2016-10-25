@@ -10,7 +10,7 @@
 # #######################################################################################
 
 rm(list = ls())
-
+options("useFancyQuotes" = FALSE)
 library(tidyr)
 library(dplyr)
 
@@ -18,38 +18,36 @@ species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 vital_rates <- c('growth', 'recruitment', 'survival')
 niter <- c(4000, 10000, 4000)
 
+make_pars_string <- function( x ) { 
+  paste0( 'c(', toString(sQuote( x )), ')')
+}
+
+survparms1 <- c('a','b1_mu','b1','w','mu','muhat','log_lik','y_hat','bg','sig_a','sig_b1')
+survparms2 <- c(survparms1, 'b2')
+survparms1 <- c(survparms1, paste0(survparms1, '2'))
+
+growparms1 <- c('a','b1_mu','b1','w','mu','muhat','log_lik','y_hat','bg','sig_a','sig_b1','sigma')
+growparms2 <- c(growparms1, 'b2')
+growparms1 <- c(growparms1, paste0(growparms1, '2'))
+growparms1 <- c(growparms1, 'muhat3', 'y_hat3', 'muhat4', 'y_hat4')
+growparms2 <- c(growparms2, 'muhat3', 'y_hat3', 'muhat4', 'y_hat4')
+
+recparms1 <- c('a','theta','u','w','log_lik','y_hat', 'bg', 'sig_a')
+recparms2 <- c(recparms1, 'b2')
+recparms1 <- c(recparms1, paste0(recparms1, '2'))
+
 smodels <- data.frame(model = 1:3, 
                       vital_rate = 'survival',
-                      pars=c(  "c('a',  'b1_mu', 'b1',  'w',  'mu',  'muhat',  'log_lik', 'y_hat', 
-                                  'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')", 
-                               "c('a',  'b1_mu', 'b12',  'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat', 
-                                  'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')", 
-                               "c('a',  'b1_mu', 'b12', 'b2', 'w',   'mu',     'muhat',   'log_lik', 'y_hat',
-                                  'a2', 'b1_mu2', 'b12', 'b2', 'w2', 'mu2', 'muhat2', 'log_lik2','y_hat2')"))
+                      pars=c( make_pars_string(survparms1), make_pars_string(survparms2), make_pars_string(survparms2) )) 
 
 gmodels <-data.frame( model = 1:3, 
                       vital_rate = 'growth',  
-                      pars = c("c('a_mu',  'a',  'b1_mu', 'b1', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
-                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
-                                  'muhat3','y_hat3', 
-                                  'muhat4','y_hat4')", 
-                               "c('a_mu',  'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
-                                  'a_mu2', 'a2', 'b1_mu2', 'b2', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
-                                  'muhat3','y_hat3', 
-                                  'muhat4','y_hat4')", 
-                               "c('a_mu',  'a',  'b1_mu', 'b1', 'b2', 'w', 'mu', 'muhat',  'log_lik', 'y_hat', 
-                                  'a_mu2', 'a2', 'b1_mu2', 'b12', 'w2', 'mu2', 'muhat2',  'log_lik2', 'y_hat2', 
-                                  'muhat3','y_hat3', 
-                                  'muhat4','y_hat4')"))
+                      pars = c(make_pars_string(growparms1), make_pars_string(growparms2), make_pars_string(growparms2)))
+
 
 rmodels <- data.frame(model = 1:3, 
                       vital_rate = 'recruitment', 
-                      pars = c( "c('a_mu', 'a',    'theta',  'u',  'q',  'w',  'qpred',  'log_lik',  'y_hat', 
-                                  'a_mu2', 'a2',   'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')", 
-                                "c('a_mu', 'a',    'theta',  'u',  'q',  'b2', 'w',      'qpred',    'log_lik', 'y_hat', 
-                                  'a_mu2', 'a2',   'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')", 
-                                "c('a_mu', 'a',    'theta',  'u',  'q',  'b2', 'w',      'qpred',    'log_lik', 'y_hat', 
-                                  'a_mu2', 'a2',   'theta2', 'u2', 'q2', 'w2', 'qpred2', 'log_lik2', 'y_hat2')"))
+                      pars = c( make_pars_string(recparms1), make_pars_string(recparms2), make_pars_string(recparms2)))
 
 
 # regularization based on Gerber et al. 2015 ---------------------------------------------------------------------# 
