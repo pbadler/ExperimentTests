@@ -3,15 +3,11 @@ data/temp_data/growth_init_vals.RDS
 analysis/growth/model_growth_1.stan
 analysis/growth/model_growth_2.stan
 analysis/growth/model_growth_3.stan
-analysis/growth/model_growth_4.stan
-analysis/growth/model_growth_5.stan
 analysis/submit_initialize_models.sh
 analysis/submit_batch_WAIC.sh
 analysis/growth/model_growth_1_predict.stan
 analysis/growth/model_growth_2_predict.stan
 analysis/growth/model_growth_3_predict.stan
-analysis/growth/model_growth_4_predict.stan
-analysis/growth/model_growth_5_predict.stan
 analysis/submit_predictive_models.sh
 analysis/survival/model_survival_1_predict.stan
 analysis/survival/model_survival_1.stan
@@ -19,10 +15,6 @@ analysis/survival/model_survival_2_predict.stan
 analysis/survival/model_survival_2.stan
 analysis/survival/model_survival_3_predict.stan
 analysis/survival/model_survival_3.stan
-analysis/survival/model_survival_4_predict.stan
-analysis/survival/model_survival_4.stan
-analysis/survival/model_survival_5_predict.stan
-analysis/survival/model_survival_5.stan
 analysis/waic_fxns.R
 analysis/run_stan_fxns.R
 data/temp_data/survival_data_lists_for_stan.RDS
@@ -46,6 +38,5 @@ analysis/recruitment/model_recruitment_3.stan
 analysis/recruitment/model_recruitment_1_predict.stan
 analysis/recruitment/model_recruitment_2_predict.stan
 analysis/recruitment/model_recruitment_3_predict.stan
-analysis/recruitment/run_recruitment_on_HPC.R
 data/temp_data/recruitment_data_lists_for_stan.RDS
 data/temp_data/recruitment_init_vals.RDS

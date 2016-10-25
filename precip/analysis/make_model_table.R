@@ -3,6 +3,8 @@
 # construct model table 
 #
 #
+source('analysis/make_master_model_parameter_list.R')
+
 rm(list = ls())
 
 library(dplyr)

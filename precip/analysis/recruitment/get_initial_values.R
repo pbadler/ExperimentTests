@@ -25,7 +25,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   Covs <- length(df[, grep('^[PT]\\.', names(df))])
   
   if(spp == 'ARTR'){
-    bg  <- c(-2, rep(0, G - 1))
+    bg  <- bg2 <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
     w <- w2 <-  -2
@@ -39,7 +39,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     
     
   }else if ( spp == 'HECO'){
-    bg  <- c(-2, rep(0, G - 1))
+    bg  <- bg2  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
     w <- w2 <-  -2
@@ -53,7 +53,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     
     
   }else if ( spp == 'POSE'){
-    bg  <- c(-2, rep(0, G - 1))
+    bg  <- bg2 <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
     w <- w2 <-  -2
@@ -67,7 +67,7 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     
     
   }else if ( spp == 'PSSP'){
-    bg  <- c(-2, rep(0, G - 1))
+    bg  <- bg2  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- sig_a2 <- 1.3
     w <- w2 <-  -2
@@ -89,8 +89,8 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   
   inits <- rep( list(init_vals), 3 ) 
   
-  inits[[3]]$w <- init_vals$w_all_2
-  inits[[3]]$w2 <- init_vals$w_all_2
+  inits[[3]]$w <- init_vals$w_all
+  inits[[3]]$w2 <- init_vals$w_all
   
   return(inits)
 }

@@ -221,8 +221,7 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
   holding  <- lapply( all_data, function(x) { which(x$Period == "Modern" )  } ) 
 
   # -- prepare for stan ---------------------------------------------------------------------# 
-  #fxn_list <- c('growth_dataframe2datalist', 'survival_dataframe2datalist', 'recruitment_dataframe2datalist')
-  
+
   all_data_list <- mapply( FUN = compile_datalists, df = all_data, train = training, hold = holding, MoreArgs = list(vr = vr), SIMPLIFY = FALSE)
   
   names(all_data_list) <- spp_names

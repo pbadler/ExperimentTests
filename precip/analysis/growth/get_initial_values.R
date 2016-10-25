@@ -94,8 +94,8 @@ get_init_vals_growth_models <- function( spp, df, ... ) {
 
   inits <- rep( list(init_vals), 3 ) 
   
-  inits[[3]]$w <- init_vals$w_all_2
-  inits[[3]]$w2 <- init_vals$w_all_2
+  inits[[3]]$w <- init_vals$w_all
+  inits[[3]]$w2 <- init_vals$w_all
   
   return(inits)
 }

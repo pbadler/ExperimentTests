@@ -31,8 +31,10 @@ transformed parameters{
   vector[N] gint; 
   vector[nyrs] a; 
   
-  p1 <- parents1[, spp];
-  p2 <- parents2[, spp];
+  for( n in 1:N){
+    p1[n] <- parents1[n,spp];
+    p2[n] <- parents2[n,spp];
+  }
 
   trueP1 <- p1*u + p2*(1-u);
 

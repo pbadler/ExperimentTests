@@ -1,5 +1,9 @@
+tweak_inits <- function(inits, devs ){ 
+  # adds random deviation to list of inital values 
+  inits + runif(length(inits), 0, 0.5)
+}
 
-run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars, nchains = 1, niter = 1, predict = FALSE) { 
+run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars = NULL, nchains = 1, niter = 1, predict = FALSE) { 
   
   require(rstan)
   
@@ -33,6 +37,7 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
     models <- dir(file.path(model_path, do_vr), '[0-9].stan', full.names = TRUE)
   }
   
+  
   # -- select model and initial vals -----------------------------------------------------------------------------# 
   
   m <- models [do_stan_file]
@@ -55,19 +60,27 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
       }
   }
   
+  # get initial values for proper species and model --------------------------------------------------------------# 
+  
+  init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
+  init_vals <- readRDS(init_file)[[do_spp]]
+  temp_inits <- init_vals[[do_model]]
+  temp_inits <- rep(list(temp_inits), max(1, nchains) )
+  devs <- seq(-0.5,0.5,length.out = nchains)
+  temp_inits <- lapply(temp_inits, lapply, tweak_inits)
+  
   # -- run stan ---------------------------------------------------------------------------------------------------#  
   
   save_file <- file.path( output_path, paste(do_spp, do_vr, do_model, do_lambda, nchains, sep = '_'))
   
   print(paste('data list has', length(data_list), 'variables'))
-  print(paste('pars requested', pars))
   
   if ( length(initial_fit) > 0 ) { 
     print(paste('initial fit being used', initial_fit ))
     initial_fit <- readRDS(head( initial_fit ) )
-    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars, cores = max(1, nchains))
+    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter, pars = pars, init = temp_inits, cores = max(1, nchains))
   }else{   
-    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars, cores = max(1, nchains))
+    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars, init = temp_inits, cores = max(1, nchains))
   }
   
   # -- output -----------------------------------------------------------------------------------------------------#

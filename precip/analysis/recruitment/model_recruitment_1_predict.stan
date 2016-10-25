@@ -69,10 +69,12 @@ transformed parameters{
   vector[N2] p2_2;
   vector[N2] gint2; 
   vector[nyrs2] a2; 
-
-  p1 <- parents1[, spp];
-  p2 <- parents2[, spp];
-
+  
+  for( n in 1:N){ 
+    p1[n] <- parents1[n, spp];
+    p2[n] <- parents2[n, spp];
+  }
+  
   trueP1 <- p1*u + p2*(1-u);
 
   for(n in 1:N)
@@ -89,10 +91,11 @@ transformed parameters{
   } 
   
   // for year effects model 
-  
-  p1_2 <- parents12[, spp];
-  p2_2 <- parents22[, spp];
-  
+  for( n in 1:N2){ 
+    p1_2[n] <- parents12[n, spp];
+    p2_2[n] <- parents22[n, spp];
+  }
+
   trueP1_2 <- p1_2*u2 + p2_2*(1-u2);
 
   for(n in 1:N2)
@@ -154,9 +157,10 @@ generated quantities{
   vector[Nhold] log_lik2; // vector for computing log pointwise predictive density  
 
   // 1. Holdout data predictions 
-  p1_pred <- parents1hold[, spp];
-  p2_pred <- parents2hold[, spp];
-  
+  for( n in 1:Nhold){ 
+    p1_pred[n] <- parents1hold[n, spp];
+    p2_pred[n] <- parents2hold[n, spp];
+  }
   
   gint_pred   <- gmhold*bg;
   trueP1_pred <- p1_pred*u + p2_pred*(1-u);
