@@ -66,7 +66,6 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   init_vals <- readRDS(init_file)[[do_spp]]
   temp_inits <- init_vals[[do_model]]
   temp_inits <- rep(list(temp_inits), max(1, nchains) )
-  devs <- seq(-0.5,0.5,length.out = nchains)
   temp_inits <- lapply(temp_inits, lapply, tweak_inits)
   
   if(length(temp_inits) == 0 ) { stop('No initial values found!')}

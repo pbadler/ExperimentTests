@@ -40,3 +40,4 @@ analysis/recruitment/model_recruitment_2_predict.stan
 analysis/recruitment/model_recruitment_3_predict.stan
 data/temp_data/recruitment_data_lists_for_stan.RDS
 data/temp_data/recruitment_init_vals.RDS
+analysis/submit_check_best_WAIC_runs.sh

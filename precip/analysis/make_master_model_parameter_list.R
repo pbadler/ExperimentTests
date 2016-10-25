@@ -16,7 +16,7 @@ library(dplyr)
 
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 vital_rates <- c('growth', 'recruitment', 'survival')
-niter <- c(4000, 4000, 4000)
+niter <- c(4000, 10000, 4000)
 
 smodels <- data.frame(model = 1:3, 
                       vital_rate = 'survival',

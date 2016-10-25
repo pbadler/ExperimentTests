@@ -2,28 +2,30 @@ rm(list = ls())
 
 load('data/temp_data/master_list.Rdata')
 
-df <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')[['PSSP']]
+df <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['HECO']]
 
-inits <- readRDS('data/temp_data/survival_init_vals.RDS')[['PSSP']][[3]]
+inits <- readRDS('data/temp_data/recruitment_init_vals.RDS')[['HECO']][[3]]
+inits <- rep(list(inits), 1)
 
 library(rstan)
-df$tau_beta <- 7
+df$tau_beta <- master_list$sd_vec[33, 2]
+
 # df$W <- df$W[, df$spp]
 # df$W2 <- df$W2[, df$spp]
 # df$Whold <- df$Whold[, df$spp]
 # df$W3 <- df$W3[, df$spp]
 
-testfit1 <- stan('analysis/survival/model_survival_3.stan', init = rep(list(inits), 4), chains = 4, data = df, cores = 4, iter = 200)
+testfit1 <- stan('analysis/recruitment/model_recruitment_3_predict.stan', chains = 1, init = inits, data = df, cores = 1, iter = 2000)
 
+# init = rep(list(inits), 2) #
 
 traceplot(testfit1, 'w')
 traceplot(testfit1, 'bg')
 traceplot(testfit1, 'sig_a')
 traceplot(testfit1, 'theta')
 traceplot(testfit1, 'u')
-traceplot(testfit1, 'a_pred')
 
-#traceplot(testfit1, 'b2')
+traceplot(testfit1, 'b2')
 
 summary(testfit1, c('sig_a'))$summary
 summary(testfit1, c('bg', 'a_raw', 'sig_a', 'w', 'sig_b1', 'b2'))$summary[, 1]
@@ -55,8 +57,6 @@ plot(ranef(m1)[[1]][, 1], type ='l')
 
 plot( summary(testfit1, c('a2'))$summary[, 6], type = 'l', col = 'red')
 points( summary(testfit1, c('a'))$summary[, 6], type = 'l', col = 'blue')
-
-
 
 plot(ranef(m1)[[1]][, 2], type ='l')
 points( summary(testfit, c('b1'))$summary[, 6] - summary(testfit, 'b1_mu')$summary[, 1], type = 'l', col = 'red') 
