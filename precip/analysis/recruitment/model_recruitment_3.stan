@@ -49,7 +49,7 @@ transformed parameters{
   for(n in 1:N){
     mu[n] <- exp(gint[n] + a[yid[n]] + coverEff[n] + climEff[n]);
     lambda[n] <- trueP1[n, spp]*mu[n];  // elementwise multiplication  
-    q[n] <- fmax(lambda[n]*theta, 1e-9);
+    q[n] <- lambda[n]*theta;
   }
 }
 
@@ -67,10 +67,12 @@ model{
   Y ~ neg_binomial_2(q, theta);
 }
 generated quantities{
-  
+    
   vector[N] log_lik; // vector for computing log pointwise predictive density
+  //vector[N] y_hat; 
   
-  for(n in 1:N)
+  for(n in 1:N){ 
     log_lik[n] <- neg_binomial_2_log(Y[n], q[n], theta); 
-
+    //y_hat[n]   <- neg_binomial_2_rng(q[n], theta);
+  }
 }

@@ -49,7 +49,7 @@ transformed parameters{
   for(n in 1:N){
     mu[n] <- exp(gint[n]  + a[yid[n]]  + coverEff[n]);
     lambda[n] <- trueP1[n]*mu[n];  
-    q[n] <- fmax(lambda[n]*theta, 1e-9); // values must be greater than 0 
+    q[n] <- lambda[n]*theta; 
   } 
 
 }

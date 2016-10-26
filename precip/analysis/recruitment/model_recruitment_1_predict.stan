@@ -41,7 +41,7 @@ data{
   vector [nyrs2] a_raw2;
   real w2;
   real<lower=1e-7> sig_a2;
-  real<lower=0.0001> theta2;
+  real<lower=0> theta2;
   real<lower=0, upper=1> u2;
   vector[G] bg2; 
 
@@ -87,7 +87,7 @@ transformed parameters{
   for(n in 1:N){
     mu[n] <- exp(gint[n]  + a[yid[n]]  + coverEff[n]);
     lambda[n] <- trueP1[n]*mu[n];  
-    q[n] <- fmax(lambda[n]*theta, 1e-9); // values must be greater than 0 
+    q[n] <- lambda[n]*theta; // values must be greater than 0 
   } 
   
   // for year effects model 
@@ -108,7 +108,7 @@ transformed parameters{
   for(n in 1:N2){
     mu2[n] <- exp(gint2[n]  + a2[yid2[n]]  + coverEff2[n]);
     lambda2[n] <- trueP1_2[n]*mu2[n];  // elementwise multiplication  
-    q2[n] <- fmax(lambda2[n]*theta2, 1e-9); // values must be greater than 0
+    q2[n] <- lambda2[n]*theta2; // values must be greater than 0
   }
 
 }
@@ -127,7 +127,7 @@ model{
   
   // For year effects model 
   u2 ~ uniform(0,1);
-  theta2 ~ uniform(0,5);
+  theta2 ~ cauchy(0,5);
   sig_a2 ~ cauchy(0,5);
   a_raw2 ~ normal(0, 1);
   w2 ~ normal(0, 5);
@@ -176,7 +176,7 @@ generated quantities{
   for(n in 1:Nhold){
     mu_pred[n] <- exp(gint_pred[n] + a_pred[yidhold[n] - nyrs ] + coverEff_pred[n]);
     lambda_pred[n] <- trueP1_pred[n]*mu_pred[n];
-    q_pred[n] <- fmax( lambda_pred[n]*theta, 1e-9);
+    q_pred[n] <- lambda_pred[n]*theta;
   }
   
   for(n in 1:Nhold){
@@ -190,7 +190,7 @@ generated quantities{
   for(n in 1:Nhold){
     mu_pred2[n] <- exp(gint_pred[n] + a2[yidhold[n]] + coverEff_pred[n]);
     lambda_pred2[n] <- trueP1_pred[n]*mu_pred2[n];  // elementwise multiplication 
-    q_pred2[n] <- fmax( lambda_pred2[n]*theta, 1e-9);
+    q_pred2[n] <- lambda_pred2[n]*theta;
   }
   
   for(n in 1:Nhold){
