@@ -29,7 +29,6 @@ transformed parameters{
   matrix[N, Nspp] trueP1;
   matrix[N, Nspp] trueP2;
   vector[N] lambda;
-  vector[N] q;
   vector[N] coverEff;
   vector[N] climEff;
   vector[N] gint; 
@@ -48,31 +47,30 @@ transformed parameters{
 
   for(n in 1:N){
     mu[n] <- exp(gint[n] + a[yid[n]] + coverEff[n] + climEff[n]);
-    lambda[n] <- trueP1[n, spp]*mu[n];  // elementwise multiplication  
-    q[n] <- lambda[n]*theta;
+    lambda[n] <- trueP1[n, spp]*mu[n];  
   }
 }
 
 model{
   // Priors
   u ~ uniform(0,1);
-  theta ~ cauchy(0,5);
-  sig_a ~ cauchy(0,5);
-  w ~ normal(0, 5);
+  theta ~ cauchy(0,2);
+  sig_a ~ cauchy(0,2);
   a_raw ~ normal(0, 1);
   bg ~ normal(0, 10);
+  w ~ normal(0, 5);
   b2 ~ normal(0, tau_beta);
 
   // Likelihood
-  Y ~ neg_binomial_2(q, theta);
+  Y ~ neg_binomial_2(lambda, theta);
 }
 generated quantities{
-    
+  
   vector[N] log_lik; // vector for computing log pointwise predictive density
-  //vector[N] y_hat; 
+  vector[N] y_hat; 
   
   for(n in 1:N){ 
-    log_lik[n] <- neg_binomial_2_log(Y[n], q[n], theta); 
-    //y_hat[n]   <- neg_binomial_2_rng(q[n], theta);
+    y_hat[n]   <- neg_binomial_rng( lambda[n], theta);
+    log_lik[n] <- neg_binomial_2_log(Y[n], lambda[n], theta); 
   }
 }

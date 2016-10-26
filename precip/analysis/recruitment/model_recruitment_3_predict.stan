@@ -1,4 +1,3 @@
-// Single-species model for recruitment: includes intraspecific effects 
 data{
   int<lower=0> N;                 // observations
   int<lower=0> Y[N];              // observation vector
@@ -56,7 +55,6 @@ transformed parameters{
   matrix[N, Nspp] trueP1;
   matrix[N, Nspp] trueP2;
   vector[N] lambda;
-  vector[N] q;
   vector[N] coverEff;
   vector[N] gint; 
   vector[nyrs] a; 
@@ -67,7 +65,6 @@ transformed parameters{
   matrix[N2, Nspp] trueP12;
   matrix[N2, Nspp] trueP22;
   vector[N2] lambda2;
-  vector[N2] q2;
   vector[N2] coverEff2;
   vector[N2] gint2;
   vector[nyrs2] a2;
@@ -87,7 +84,6 @@ transformed parameters{
   for(n in 1:N){
     mu[n] <- exp(gint[n] + a[yid[n]] + coverEff[n] + climEff[n]);
     lambda[n] <- trueP1[n, spp]*mu[n];  
-    q[n] <- lambda[n]*theta;
   }
   
   // for year effects model
@@ -105,32 +101,32 @@ transformed parameters{
   for(n in 1:N2){
     mu2[n] <- exp(gint2[n] + a2[yid2[n]] + coverEff2[n]);
     lambda2[n] <- trueP12[n, spp]*mu2[n];
-    q2[n] <- lambda2[n]*theta2;
   }
 
 }
 model{
    // Priors
   u ~ uniform(0,1);
-  theta ~ cauchy(0,5);
-  sig_a ~ cauchy(0,5);
-  w ~ normal(0, 5);
-  a_raw ~ normal(0, 1);
-  bg ~ normal(0, 10);
-  b2 ~ normal(0, tau_beta);
+  theta ~ cauchy(0,2);
+  sig_a ~ cauchy(0,2);
+  w ~ normal(0,5);
+  a_raw ~ normal(0,1);
+  bg ~ normal(0,10);
+  b2 ~ normal(0,tau_beta);
   
   // Likelihood
-  Y ~ neg_binomial_2(q, theta);
+  Y ~ neg_binomial_2(lambda, theta);
   
   // For year effects model
   u2 ~ uniform(0,1);
-  theta2 ~ cauchy(0,5);
-  sig_a2 ~ cauchy(0,5);
-  a_raw2 ~ normal(0, 1);
-  w2 ~ normal(0, 5);
+  theta2 ~ cauchy(0,2);
+  sig_a2 ~ cauchy(0,2);
+  a_raw2 ~ normal(0,1);
+  bg2 ~ normal(0,10);
+  w2 ~ normal(0,5);
 
   // Likelihood
-  Y2 ~ neg_binomial_2(q2, theta2);
+  Y2 ~ neg_binomial_2(lambda2, theta2);
 }
 generated quantities{
   vector[nyrshold] a_pred;
@@ -139,17 +135,15 @@ generated quantities{
   matrix[Nhold, Nspp] trueP2_pred;
   vector[Nhold] mu_pred;
   vector[Nhold] lambda_pred;
-  vector[Nhold] q_pred;
   vector[Nhold] log_lik; // vector for computing log pointwise predictive density
-  //int<lower=0> y_hat[Nhold]; // pointwise predictions  
+  int<lower=0> y_hat[Nhold]; // pointwise predictions  
   vector[Nhold] gint_pred; 
   vector[Nhold] climEff_pred; 
   
   //for year predictions from year effects model
-  vector[Nhold] q_pred2;
   vector[Nhold] mu_pred2;
   vector[Nhold] lambda_pred2;
-  //int<lower=0> y_hat2[Nhold]; // pointwise predictions
+  int<lower=0> y_hat2[Nhold]; // pointwise predictions
   vector[Nhold] log_lik2; // vector for computing log pointwise predictive density
 
   // 1. Holdout data predictions 
@@ -170,12 +164,11 @@ generated quantities{
   for(n in 1:Nhold){
     mu_pred[n] <- exp(gint_pred[n] + a_pred[yidhold[n] - nyrs ] + coverEff_pred[n] + climEff_pred[n]);
     lambda_pred[n] <- trueP1_pred[n, spp]*mu_pred[n];
-    q_pred[n] <- lambda_pred[n]*theta;
   }
 
   for(n in 1:Nhold){
-    //y_hat[n] <- neg_binomial_2_rng(q_pred[n],  theta);
-    log_lik[n] <- neg_binomial_2_log(Yhold[n], q_pred[n], theta);
+    y_hat[n] <- neg_binomial_2_rng(lambda_pred[n],  theta);
+    log_lik[n] <- neg_binomial_2_log(Yhold[n], lambda_pred[n], theta);
   }
 
   // 2. Predictions for holdout data with KNOWN year effects.  
@@ -184,12 +177,11 @@ generated quantities{
   for(n in 1:Nhold){
     mu_pred2[n] <- exp(gint_pred[n] + a2[yidhold[n]] + coverEff_pred[n]);
     lambda_pred2[n] <- trueP1_pred[n, spp]*mu_pred2[n];  // elementwise multiplication 
-    q_pred2[n] <- lambda_pred2[n]*theta;
   }
   
   for(n in 1:Nhold){
-    //y_hat2[n] <- neg_binomial_2_rng(q_pred2[n],  theta);
-    log_lik2[n] <- neg_binomial_2_log(Yhold[n], q_pred2[n], theta);
+    y_hat2[n] <- neg_binomial_2_rng(lambda_pred2[n],  theta);
+    log_lik2[n] <- neg_binomial_2_log(Yhold[n], lambda_pred2[n], theta);
   } 
   
 }
