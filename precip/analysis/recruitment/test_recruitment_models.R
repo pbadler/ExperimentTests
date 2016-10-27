@@ -24,7 +24,7 @@ traceplot(fit, 'phi' )
 # simulate climate, competition, year and group effects ------------------------------------- # 
 rm(list = ls())
 
-test_dat <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['POSE']]
+test_dat <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['ARTR']]
 
 sig_a <- 1
 

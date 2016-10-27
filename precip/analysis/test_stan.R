@@ -2,20 +2,20 @@ rm(list = ls())
 
 load('data/temp_data/master_list.Rdata')
 
-df <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['HECO']]
-
-inits <- readRDS('data/temp_data/recruitment_init_vals.RDS')[['HECO']][[3]]
-inits <- rep(list(inits), 1)
+df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['HECO']]
+df$W3
 
 library(rstan)
-df$tau_beta <- master_list$sd_vec[33, 2]
+df$tau_beta <- master_list$sd_vec[1, 2]
 
 # df$W <- df$W[, df$spp]
 # df$W2 <- df$W2[, df$spp]
 # df$Whold <- df$Whold[, df$spp]
 # df$W3 <- df$W3[, df$spp]
 
-testfit1 <- stan('analysis/recruitment/model_recruitment_3_predict.stan', chains = 1, init = inits, data = df, cores = 1, iter = 2000)
+testfit1 <- stan('analysis/growth/model_growth_3_predict.stan', chains = 1, data = df, cores = 1, iter = 100)
+
+
 
 # init = rep(list(inits), 2) #
 
@@ -30,7 +30,35 @@ traceplot(testfit1, 'b2')
 summary(testfit1, c('sig_a'))$summary
 summary(testfit1, c('bg', 'a_raw', 'sig_a', 'w', 'sig_b1', 'b2'))$summary[, 1]
 
+
 testfit1@model_pars
+
+y_hat <- rstan::extract(testfit1, 'y_hat')$y_hat
+q     <- rstan::extract(testfit1, 'q')$q
+theta <- rstan::extract(testfit1, 'theta')$theta
+
+q[1:10, 1]
+mean(y_hat[, 1])
+theta[1:10]
+
+
+simulate_recruitment <- function(q, theta){ 
+  out <- q
+  out[]  <- NA
+  for( i in 1:ncol(q)){ 
+    out[, i] <-  mapply(function(mu, size) rnbinom(1, mu = mu, size = size ), mu = q[, i], size = theta)
+  }
+  return(out)
+}
+
+out <- simulate_recruitment(q, theta)
+
+plot( colMeans(y_hat),  colMeans(out) ) 
+max(out)
+max(y_hat)
+
+max( y_hat$y_hat ) 
+
 
 summary(testfit1, c('b1_mu2', 'bg2', 'sig_a2', 'sig_b12', 'w2', 'sigma2'))$summary[, 1]
 

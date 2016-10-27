@@ -5,35 +5,16 @@ library(parallel)
 library(dplyr)
 library(tidyr)
 
-# # function --------------------------------------------------------------------------------# 
-# 
-compute_lppd <- function( stan_fit ) {
-  log_lik <- rstan::extract (stan_fit, "log_lik")$log_lik
-  lppd <- log(colMeans(exp(log_lik)))
-  sum(lppd)
-}
-
 # input ------------------------------------------------------------------------------------# 
 waics <- read.csv('output/best_WAIC_scores.csv')
-lppd  <- read.csv('output/lppd_scores.csv')
-
-#real_files <- dir('output/stan_fits/predictions', pattern = '*[4]_predict*', full.names = TRUE)
-#waics$pred_files <- file.path( 'output', 'stan_fits', 'predictions', paste( waics$species, waics$vital_rate, waics$model, waics$prior, waics$chains, 'predict.RDS', sep = '_'))
-# waics$pred_files %in% real_files
-# waics <- 
-#   waics %>% 
-#   filter( !vital_rate == 'recruitment' )
-# lppd <- mclapply( waics$pred_files, FUN = function( x ) compute_lppd, mc.cores = 4)
-# waics$prediction_lppd <- lppd
+lppd_table  <- read.csv('output/lppd_scores.csv')
 
 total_lppd <- 
-  lppd %>% 
-  filter( Period == 'Modern') %>% 
+  lppd_table %>% 
   group_by( species, vital_rate , model ) %>% 
-  summarise( lppd_out = sum(lppd)) %>% 
+  summarise( lppd_out = sum(lppd1), lppd_out2 = sum(lppd2)) %>% 
   group_by( species, vital_rate) %>% 
   mutate( rank_lppd = lppd_out/sum(lppd_out))
-
 
 model_scores <- merge( total_lppd, waics, by = c('species', 'vital_rate', 'model')  )
 

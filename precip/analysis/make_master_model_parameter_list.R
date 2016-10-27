@@ -16,7 +16,7 @@ library(dplyr)
 
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 vital_rates <- c('growth', 'recruitment', 'survival')
-niter <- c(4000, 10000, 4000)
+niter <- c(2000, 2000, 2000)
 
 make_pars_string <- function( x ) { 
   paste0( 'c(', toString(sQuote( x )), ')')
@@ -32,7 +32,7 @@ growparms1 <- c(growparms1, 'muhat3', 'y_hat3', 'muhat4', 'y_hat4')
 growparms2 <- c(growparms1, 'b2')
 growparms2 <- c(growparms2, 'muhat3', 'y_hat3', 'muhat4', 'y_hat4')
 
-recparms1 <- c('a','theta','u','w','log_lik','q_pred', 'bg', 'sig_a')
+recparms1 <- c('a','theta','u','w','log_lik','lambda_pred', 'bg', 'sig_a')
 recparms1 <- c(recparms1, paste0(recparms1, '2'))
 recparms2 <- c(recparms1, 'b2')
 

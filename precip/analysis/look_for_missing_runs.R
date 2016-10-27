@@ -23,7 +23,7 @@ print( models_missing %>%
   arrange(index) ) 
 
 models_missing %>% 
-  filter( is.na(WAIC) & vital_rate == 'recruitment')
+  filter( is.na(waic) & vital_rate == 'recruitment')
 
 write.csv(models_missing %>% 
         filter( is.na(waic) ) %>% 
