@@ -146,6 +146,8 @@ compile_datalists <- function( df, train, hold, vr ) {
     survival_df <- readRDS(paste0('data/temp_data/', species , '_scaled_survival_dataframe.RDS' ))
     survival_df <- survival_df[ survival_df$yid %in% c(full_list$yid2), ] # only use years that are in the growth dataframe  
     survival_df <- subset(survival_df, Period == 'Modern')
+    
+    covars <- grep( '^[PT]\\.', names(survival_df))     
     cover_list  <- df2list(survival_df, covars, vr = vr, type = '3')
     
     out_list <-   c(training_list, holding_list, full_list, cover_list)
