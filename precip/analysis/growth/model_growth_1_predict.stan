@@ -35,7 +35,6 @@ data{
   
   // survival data for cover predictions
   int<lower=0> N3;              // observations
-  vector[N3] Y3;                // observation vector
   vector[N3] X3;                // size vector
   matrix[N3, G] gm3;            // group dummy variable matrix 
   int<lower=0> nyrs3;           // years

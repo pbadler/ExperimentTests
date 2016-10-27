@@ -140,27 +140,13 @@ compile_datalists <- function( df, train, hold, vr ) {
   full_list <- df2list(out_df, covars, vr = vr, type = '2')
   
   if ( vr == 'growth') { 
+    
     #--------use survival dataframe for growth cover predictions ------------------------------# 
-    
-    survival_dlist <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')  
-    
-    survival_df <- survival_dlist[[species]]                      # get data frame for the right species
-    
-    cover_list <- list()
-    cover_list$N3        <- survival_df$Nhold                            # total predictions
-    cover_list$Y3        <- survival_df$Yhold 
-    cover_list$X3        <- survival_df$Xhold                            # plant size at time t-1 
-    cover_list$C3        <- survival_df$Chold                            # climate matrix 
-    cover_list$W3        <- survival_df$Whold                            # crowding matrix 
-    cover_list$gid3      <- survival_df$gidhold                          # group id 
-    cover_list$yid3      <- survival_df$yidhold                          # year id
-    cover_list$nyrs3     <- survival_df$nyrshold                         # num years 
-    cover_list$gm3       <- survival_df$gmhold 
-    
-    cover_list$treat3    <- survival_df$treathold                        # Information for post processing  
-    cover_list$trackid3  <- survival_df$trackidhold
-    cover_list$year3     <- survival_df$yearhold
-    cover_list$quad3     <- survival_df$quadhold
+
+    survival_df <- readRDS(paste0('data/temp_data/', species , '_scaled_survival_dataframe.RDS' ))
+    survival_df <- survival_df[ survival_df$yid %in% c(full_list$yid2), ] # only use years that are in the growth dataframe  
+    survival_df <- subset(survival_df, Period == 'Modern')
+    cover_list  <- df2list(survival_df, covars, vr = vr, type = '3')
     
     out_list <-   c(training_list, holding_list, full_list, cover_list)
     
