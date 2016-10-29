@@ -3,7 +3,7 @@ library(rstan)
 
 # simulate climate, competition, year and group effects ------------------------------------- # 
 
-test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['POSE']]
+test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['ARTR']]
 
 sig_a <- 1
 sig_b1 <- 0.2
@@ -17,7 +17,7 @@ pars <- list(
   w  = seq(0, 0, length.out = 4),
   sigma = 1.1)
 
-simulate_recruitment <- function( pars , test_dat ){ 
+simulate_growth <- function( pars , test_dat ){ 
   
   N <- test_dat$N
   C <- test_dat$C
@@ -43,14 +43,59 @@ simulate_recruitment <- function( pars , test_dat ){
   return(Y)
 }
 
-test_dat$Y <- simulate_recruitment(pars, test_dat)
-test_dat$W <- test_dat$W[, test_dat$spp]
+#test_dat$Y <- simulate_growth(pars, test_dat)
+#test_dat$W <- test_dat$W[, test_dat$spp]
 
-hist( test_dat$X ) 
-hist(test_dat$Y)
+test_dat$tau_beta <- 7
 
-test_dat$tau_beta <- 10
-myfit <- stan('analysis/growth/model_growth_2.stan', data = test_dat, iter = 1000, cores = 4 ) 
+myfit <- stan('analysis/growth/model_growth_3.stan', data = test_dat, chains = 1, cores = 4, iter = 100)
+myfit <- stan('analysis/growth/model_growth_3.stan', data = test_dat, chains = 1, cores = 4, iter = 1000)
+
+b1 <- summary(myfit, c('b1'))$summary[,1]
+b1_mu <- summary(myfit, c('b1_mu'))$summary[, 1]
+w  <- summary(myfit, c('w'))$summary[, 1]
+bg  <- summary(myfit, c('bg'))$summary[, 1]
+a   <- summary(myfit, c('a'))$summary[, 1]
+b2  <- summary(myfit, c('b2'))$summary[, 1]
+#mu <- test_dat$gm%*%bg + test_dat$W*w + a[test_dat$yid] + b1[test_dat$yid]*test_dat$X + test_dat$C%*%b2
+
+# plot ( test_dat$Y, mu) 
+# abline( 0, 1)
+
+# fit same with lmer 
+library(lme4)
+df <- readRDS('data/temp_data/ARTR_scaled_growth_dataframe.RDS')
+df <- subset(df, Period == 'Historical')
+
+names(df) <- gsub( ':', '.' , names(df))
+
+cnames <- colnames( test_dat$C ) 
+cnames <- gsub(':', '.',cnames)
+
+f <- as.formula( paste( c( expression(Y ~ Group + X + (X|yid) + W.ARTR), paste(cnames,collapse = ' + ')), collapse = ' + '  )  ) 
+m1 <- lmer(data = df, f )
+summary(m1)
+m1.b2 <- fixef(m1)[grep('^[PT]\\.', names(fixef(m1)))]
+b2
+m1.b2
+plot( b2, m1.b2) 
+abline(0,1)
+
+X <- fixef(m1)['X']
+ranef(m1)
+ranef(m1)$yid[, 1] 
+
+plot( ranef(m1)$yid[, 1], a ) 
+abline(0, 1)
+plot( ranef(m1)$yid[, 2], b1 - b1_mu )
+abline(0, 1)
+
+
+yhat <- predict(m1)
+plot(df$Y, yhat)
+abline(0, 1)
+plot(yhat, mu)
+
 
 estimates <- summary(myfit, c('sig_a', 'w', 'bg', 'a', 'sigma', 'sig_b1', 'b2'))$summary[, 1]
 

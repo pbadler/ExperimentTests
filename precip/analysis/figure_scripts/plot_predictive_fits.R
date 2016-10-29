@@ -10,21 +10,20 @@ library(gridExtra)
 
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
-print(paste('Working directory: ' , getwd()))
 
-model_table <- read.csv('output/best_WAIC_scores.csv')
+mfiles <- dir('output/stan_fits/predictions', '4_predict.RDS', full.names = TRUE)
 
-for( do_line in 1:nrow(model_table)){ 
+for( i in 1:length(mfiles)){ 
   
-  do_model <- model_table[do_line, ]
-  spp <- do_model$species
-  vr <- do_model$vital_rate
-  m <- do_model$model
-  prior <- do_model$prior
+  bname <- basename(mfiles[i])
+  mpars <- unlist( str_split(bname, '_') ) 
   
-  print(paste('plot results for', spp, vr, 'model', m))
+  spp <- mpars[1]
+  vr <- mpars[2]
+  m <- mpars[3]
+  lambda <- mpars[4]
   
-  temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, prior, 4, 'predict.RDS', sep = '_')))
+  temp_fit <- readRDS(mfiles[i])
   
   df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[spp]]
   
@@ -106,5 +105,6 @@ for( do_line in 1:nrow(model_table)){
     print( plot_posterior(w_long) + ggtitle(paste('Posterior of crowding effects on', spp, vr, 'model', m)))
     
     dev.off()
+  
   }
 }

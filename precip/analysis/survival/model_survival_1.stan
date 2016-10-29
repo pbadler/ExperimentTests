@@ -8,7 +8,6 @@ data{
   int<lower=0> nyrs;          // years
   int<lower=0> yid[N];        // year id
   vector[N] W;                // crowding vector
-  int<lower=0> spp;           // focal species 
 }
 parameters{
   vector[G] bg;               // varying group effects with first group as intercept 

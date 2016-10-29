@@ -4,9 +4,9 @@ library(stringr)
 library(rstan)
 
 # input ------------------------------------------------------------------------------------# 
-model_table <- read.csv('output/best_WAIC_scores.csv')
+setwd('~/Documents/ExperimentTests/precip/')
 
-model_table <- subset( model_table, vital_rate == 'recruitment' )
+mfiles <- dir('output/stan_fits/predictions', '4_predict.RDS', full.names = TRUE)
 
 # log-pointwise predictive density -------------------------------------------------------# 
 
@@ -18,27 +18,33 @@ compute_lppd <- function( stan_fit, ll = 'log_lik' ) {
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-for( do_line in 1:nrow(model_table)){ 
+for( i in 1:length(mfiles)){ 
   
-  do_model <- model_table[do_line, ]
-  spp <- do_model$species
-  vr <- do_model$vital_rate
-  m <- do_model$model
-  lambda <- do_model$lambda
+  bname <- basename(mfiles[i])
+  mpars <- unlist( str_split(bname, '_') ) 
   
-  temp_fit <- readRDS(file = file.path( 'output/stan_fits/predictions', paste(spp, vr, m, lambda, 4, 'predict.RDS', sep = '_')))
+  spp <- mpars[1]
+  vr <- mpars[2]
+  m <- mpars[3]
+  lambda <- mpars[4]
+  
+  temp_fit <- readRDS(mfiles[i])
 
   # log-pointwise predictive density ------------------------------------------------------------------------------------# 
 
   lppd1 <- compute_lppd(temp_fit)
   lppd2 <- compute_lppd(temp_fit, 'log_lik2')  
+  
+  rm(temp_fit)
+  
   y_out <- data.frame(species = spp, vital_rate = vr, model = m, lambda = lambda , lppd1 = lppd1 , lppd2 = lppd2 )
   
-  if( do_line == 1 ) { 
+  if( i == 1 ) { 
     write.table( y_out, file = file.path('output', 'lppd_scores.csv'), sep = ',', row.names = FALSE, append = FALSE )
   }else { 
     write.table( y_out, file = file.path('output', 'lppd_scores.csv'), sep = ',', col.names = FALSE, row.names = FALSE, append = TRUE )
   }
+  rm(y_out, lppd1, lppd2)
 }
 
 
