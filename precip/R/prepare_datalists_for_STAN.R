@@ -16,32 +16,16 @@ source('R/get_all_demographic_data.R')
 source('R/climate/make_climate_variables.R')
 source('R/climate/prepare_climate_covariates.R')
 
-scale_covs <- function(df, train, hold){ 
+split_df <- function(df, train, hold){ 
   
-  # -------- make year by treatment labels ------------------------------------------------------------ 
-  df$treat_year_label <- paste(df$Treatment, df$year, sep = '_')
-  df$yid              <- as.numeric(factor(df$treat_year_label)) # each year by treatment gets unique id
-  
-  # set factors for whole dataset 
-  df$gid        <- factor(df$Group)
-  df$G          <- nlevels(df$gid)
-
-  # get the climate covariates 
-  covars <- grep( '^[PT]\\.', names(df)) 
-  
+  # split by training and holding 
   training_df <- df[train, ]
   holding_df  <- df[hold, ]
-  
-  c_means <- colMeans(training_df[ , covars], na.rm = TRUE)
-  c_sds   <- apply(training_df[ , covars ], 2, FUN = sd, na.rm = TRUE)
-  
-  training_df[ , covars] <- scale( training_df[ , covars], center = TRUE, scale = TRUE)
-  holding_df[  , covars] <- scale( holding_df[  , covars], center = c_means, scale = c_sds )
   
   training_df <-  training_df [ order(training_df$year), ]
   holding_df  <-  holding_df [ order(holding_df$year), ]
   
-  return( list(training_df, holding_df, covars) ) 
+  return( list(training_df, holding_df) ) 
 } 
 
 df2list <- function(df, covars, vr, type) { 
@@ -75,28 +59,15 @@ df2list <- function(df, covars, vr, type) {
     spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
     Nspp           <- nlevels(spp_list)
     
-  }else if( vr == 'survival'){ 
-    Y         <- df$survives
-    X         <- df$logarea.t0
-    W         <- as.matrix(df[, grep('^W\\.[A-Z]+', names(df)) ])      # crowding matrix 
-    Wcovs     <- ncol(W)                                               # number of species in crowding matrix
-    
+  }else { 
+    Y         <- df$Y
+    X         <- df$X
+
     species_name   <- unique(df$species)
     spp_list       <- factor( str_extract( colnames(W), '[A-Z]+$')) # get species names 
     spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
-    
-  }else if( vr == 'growth'){ 
-    Y         <- df$logarea.t1
-    X         <- df$logarea.t0
-    W         <- as.matrix(df[, grep('W.[A-Z]+', names(df)) ])      # crowding matrix 
-    Wcovs     <- ncol(W)                                             # number of species in crowding matrix 
-    
-    species_name   <- unique(df$species)
-    spp_list       <- factor( str_extract( colnames(W), '[A-Z]+$')) # get species names 
-    spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
-    
-  }
-  
+  }    
+
   out <- lapply( ls(), function(x) eval(parse(text = x)))
   lnames <- ls()[- grep('out', ls()) ]
   names(out) <- paste0(lnames, type)  
@@ -109,30 +80,41 @@ compile_datalists <- function( df, train, hold, vr ) {
 
   species <- as.character(  unique(df$species) )
   
-  # Function simply makes list of data for STAN models  
+  # -------- make year by treatment labels ------------------------------------------------------------ 
+  df$treat_year_label <- paste(df$Treatment, df$year, sep = '_')
+  df$yid              <- as.numeric(factor(df$treat_year_label)) # each year by treatment gets unique id
   
+  # set factors for whole dataset 
+  df$gid        <- factor(df$Group)
+  df$G          <- nlevels(df$gid)
+  
+  # get the climate covariates 
+  covars <- grep( '^[PT]\\.|^(VWC)\\.', names(df)) 
+
+  if(vr == 'growth'){ 
+    df$X <- df$logarea.t0
+    df$Y <- df$logarea.t1
+  }else if( vr == 'survival'){
+    df$X <- df$logarea.t0
+    df$Y <- df$survives
+  }
+  
+
   # --------split into training and holding data and scale climate covariates -------------------------
-  out <- scale_covs(df, train, hold)
+  out <- split_df(df, train, hold)
   
   training_df   <- out[[1]]
   holding_df    <- out[[2]]
-  covars        <- out[[3]]
-  
+
   # --------training data -----------------------------------------------------------------------------
   training_list  <- df2list(training_df, covars, vr = vr, type = '')
   
   #---------hold out/prediction data ------------------------------------------------------------------
   holding_list  <- df2list(holding_df, covars, vr = vr, type = 'hold')
   
-  # save simple dataframe with scaled covariates ---------------------------------------------
+  # save dataframe with covariates ---------------------------------------------
   
   out_df           <- rbind(out[[1]], out[[2]])
-  if(vr == 'survival'){ 
-    out_df$Y       <- out_df$survives
-  }else if(vr == 'growth'){
-    out_df$Y       <- out_df$logarea.t1
-  }
-  out_df$X         <- out_df$logarea.t0
   
   saveRDS(out_df, paste0( 'data/temp_data/', species, '_scaled_', vr, '_dataframe.RDS'))
   
@@ -222,7 +204,10 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
 
 
 # -- select covariates -------------------------------------------------------------------#
-clim_vars <- c( 'P.a.l', 'P.f.w.sp.0', 'P.f.w.sp.1', 'P.su.0', 'P.su.1', 'T.sp.0', 'T.sp.1')
+clim_vars <- c('VWC.sp.l_layer1', 'VWC.sp.l_layer2', 
+               'VWC.sp.0_layer1', 'VWC.sp.0_layer2', 
+               'VWC.sp.1_layer2', 'VWC.sp.1_layer2', 
+               'T.sp.0', 'T.sp.1')                     
 
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'
