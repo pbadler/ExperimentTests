@@ -42,6 +42,19 @@ spp.mean <- reshape(spp.mean,direction="wide",timevar="Treatment",idvar=c("speci
 spp.mean <- subset(spp.mean,year>2010)
 spp.mean <- spp.mean[order(spp.mean$species,spp.mean$year),]
 
+#calculate standard errors by year
+spp.sd <- aggregate(sppD.q$cover,by=list(species=sppD.q$species,Treatment=sppD.q$Treatment,
+                  year=sppD.q$year),FUN=sd)
+spp.N <- aggregate(sppD.q$cover,by=list(species=sppD.q$species,Treatment=sppD.q$Treatment,
+                  year=sppD.q$year),FUN=length)
+spp.se <- spp.sd
+names(spp.se)[NCOL(spp.se)] <- "StErr"
+spp.se$StErr <- spp.se$StErr/sqrt(spp.N$x)
+rm(spp.sd);rm(spp.N)
+spp.se <- reshape(spp.se,direction="wide",timevar="Treatment",idvar=c("species","year"))
+spp.se <- subset(spp.se,year>2010)
+spp.se <- spp.se[order(spp.se$species,spp.se$year),]
+
 # calculate year-to-year log changes
 tmp <- sppD.q
 tmp$year <- tmp$year + 1
@@ -102,25 +115,30 @@ trtLabels<-substr(x=names(spp.mean)[3:5],start=7,stop=nchar(names(spp.mean)[3:5]
 myCols<-c("black","darkgoldenrod","darkgreen")
 
 #1. Average cover treatment and year
-png("treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
+png("treatment_trends_cover.png",height=6,width=8,units="in",res=400)
   
-  par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2)
+  par(mfrow=c(2,2),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0),tcl=-0.2)
 
   # mean cover
   for(doSpp in sppList){
     tmp.mean<-subset(spp.mean,species==doSpp)
+    tmp.se<-subset(spp.se,species==doSpp)
     if(doSpp==sppList[1]){
-      my.y <- c(0,max(tmp.mean[,3:5]))
+      my.y <- c(0,36)
     }else{
-      my.y<- c(0,3.2)
+      my.y<- c(0,4.2)
     }
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
             col=myCols,main=doSpp,font.main=4,lwd=2)
-    if(doSpp==sppList[1])  mtext("Mean cover (%)",side=2,line=2,outer=F)
+    for(iTrt in 1:3){
+      arrows(x0=tmp.mean$year,y0=tmp.mean[,2+iTrt]+tmp.se[,2+iTrt],x1=tmp.mean$year,y1=tmp.mean[,2+iTrt]-tmp.se[,2+iTrt],
+             col=,myCols[iTrt],length=0.02,code=3,angle=90)
+    }
     if(doSpp==sppList[2])  legend("topright",c("Control","Grass removal","Shrub removal"),pch=16,lty="solid",col=myCols,bty="n")
       
   }
-  mtext("Year",side=1,line=1,outer=T)
+  mtext("Mean cover (%)",side=2,line=0.5,outer=T,cex=1.2)
+  mtext("Year",side=1,line=0.5,outer=T,cex=1.2)
   
 dev.off()
 
@@ -145,6 +163,7 @@ png("treatment_trends_cover_simple.png",height=2.75,width=8,units="in",res=400)
       mtext("Mean cover (%)",side=2,line=2,outer=F)
     }
   }
+  
   mtext("Year",side=1,line=1,outer=T)
   
 dev.off()
