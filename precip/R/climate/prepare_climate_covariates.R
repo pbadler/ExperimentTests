@@ -14,7 +14,7 @@ library(zoo)
 # ------- load files ------------------------------------------------------------------ 
 
 quarterly_clim <- readRDS('data/temp_data/quarterly_climate.RDS')
-
+quarterly_VWC  <- readRDS('data/temp_data/quarterly_VWC.RDS')
 # ------ calculate quarterly lags -----------------------------------------------------# 
 #
 #   Variable names follow these conventions: 
@@ -41,6 +41,29 @@ quarterly_clim <- readRDS('data/temp_data/quarterly_climate.RDS')
 #     i.e. "lag effect" (sensu Adler). 
 #
 # -------------------------------------------------------------------------------------# 
+
+
+q_VWC <- 
+  quarterly_VWC %>% 
+  ungroup() %>% 
+  group_by(Treatment, layer) %>% 
+  arrange(layer, Treatment, year, quarter) %>%
+  mutate(VWC.sp.1 = avg, 
+         VWC.sp.0 = lag(VWC.sp.1, 4),
+         VWC.sp.l = lag(VWC.sp.0, 4),
+         VWC.a.1  = rollapply(avg, 4,'mean', na.rm = TRUE, align = 'right', fill = NA),
+         VWC.a.0  = lag(VWC.a.1, 4),
+         VWC.a.l  = lag(VWC.a.0, 4),
+         VWC.su.1 = lag(avg, 3),                 
+         VWC.su.0 = lag(VWC.su.1, 4)) %>% 
+  filter( quarter == 'Q2') %>% # plants are measured at the end of Q2 each year 
+  select( layer, Treatment, Period, year, quarter, starts_with("VWC")) %>%
+  ungroup() %>% 
+  gather( var, val, starts_with('VWC')) %>% 
+  unite( var, var, layer, sep = '_layer') %>%
+  spread( var, val ) 
+
+
 q_precip <- 
   quarterly_clim %>% 
   filter( var == 'PRCP_ttl') %>%
@@ -75,6 +98,7 @@ q_temp <-
 allClim <- 
   q_precip %>% 
   left_join ( q_temp, by = c('Treatment', 'Period', 'quarter', 'year')) %>% 
+  left_join ( q_VWC, by = c('Treatment', 'Period', 'quarter', 'year')) %>% 
   arrange( Treatment, year) 
 
 # adjust years so that they match the demographic data sets ------------------------------------------------------------------# 
@@ -91,4 +115,7 @@ allClim$year <- allClim$year - 1 # adjust to match assignment of year 0 as the r
 
 saveRDS( data.frame( allClim ) , 'data/temp_data/all_clim_covs.RDS')
 
+allClim %>% 
+  group_by( Treatment ) %>% 
+  summarise( mean(VWC.sp.0_layer1, na.rm = TRUE), mean( VWC.sp.0_layer2, na.rm = TRUE))
 

@@ -93,7 +93,7 @@ ccfiltered_out2 <- lmer(logarea.t1~logarea.t0 + W + pptLag + ppt1 + TmeanSpr1 +
                           (1|Group)+(logarea.t0|year),data=ccdat_filtered2)      ##full model
 
 summary(myout)
-summary(ccfiltered_out2)
+summary(ccfiltered_out2)  # intercept changes and tmean spr 2 effect goes away with rescaled climate data 
 
 plot( fixef(myout), fixef(ccfiltered_out2)) ## basically the same 
 plot( fixef(myout), fixef(ccfiltered_out))  ## 
@@ -110,3 +110,45 @@ summary( lm(logarea.t1~logarea.t0 + W + pptLag + ppt1 + TmeanSpr1 +
               ppt2 + TmeanSpr2 + logarea.t0:pptLag + logarea.t0:ppt1 + 
               logarea.t0:TmeanSpr1 + logarea.t0:ppt2 + ppt1:TmeanSpr1 + 
               ppt2:TmeanSpr2 + logarea.t0:ppt1:TmeanSpr1, data = ccdat_filtered2) ) 
+
+# check my interaction variables 
+mydat <- readRDS('data/temp_data/ARTR_scaled_growth_dataframe.RDS')
+
+mydat <- subset(mydat, Period == 'Historical')
+mydat$TmeanSpr1 <- mydat$T.sp.0
+mydat$TmeanSpr2 <- mydat$T.sp.1
+mydat$ppt1 <- mydat$P.f.w.sp.0
+mydat$ppt2 <- mydat$P.f.w.sp.1
+mydat$pptLag <- mydat$P.a.l
+
+mydat$logarea.t0xTmeanSpr1 <- mydat$`T.sp.0:logarea.t0`
+mydat$logarea.t0xTmeanSpr2 <- mydat$`T.sp.1:logarea.t0`
+mydat$logarea.t0xpptLag    <- mydat$`P.a.l:logarea.t0`
+mydat$logarea.t0xppt1      <- mydat$`P.f.w.sp.0:logarea.t0`
+mydat$logarea.t0xppt2      <- mydat$`P.f.w.sp.1:logarea.t0`
+
+mydat$ppt2xTmeanSpr2       <- scale(mydat$ppt2*mydat$TmeanSpr2)
+mydat$ppt1xTmeanSpr1       <- scale(mydat$ppt1*mydat$TmeanSpr1)
+mydat$logarea.t0xppt1xTmeanSpr1 <- scale(mydat$logarea.t0*mydat$ppt1*mydat$TmeanSpr1)
+
+m1_scaled_ifx <- lmer(logarea.t1~logarea.t0 + W + pptLag + ppt1 + TmeanSpr1 + 
+                             ppt2 + TmeanSpr2 + logarea.t0xpptLag + logarea.t0xppt1 + 
+                             logarea.t0xTmeanSpr1 + logarea.t0xppt2 + ppt1xTmeanSpr1 + 
+                             ppt2xTmeanSpr2 + logarea.t0:ppt1:TmeanSpr1 +
+                             (1|Group)+(logarea.t0|year),data=mydat)      ##full model
+
+
+m1_unscaled_ifx <- lmer(logarea.t1~logarea.t0 + W + pptLag + ppt1 + TmeanSpr1 + 
+                ppt2 + TmeanSpr2 + logarea.t0:pptLag + logarea.t0:ppt1 + 
+                logarea.t0:TmeanSpr1 + logarea.t0:ppt2 + ppt1:TmeanSpr1 + 
+                ppt2:TmeanSpr2 + logarea.t0:ppt1:TmeanSpr1 +
+                (1|Group)+(logarea.t0|year),data=mydat)      ##full model
+
+
+summary(m1_scaled_ifx)
+summary(m1_unscaled_ifx)
+
+plot( summary(m1_scaled_ifx)$coefficients[, 3], summary(m1_unscaled_ifx)$coefficients[, 3])
+s$coefficients
+names(mydat)
+pairs(mydat[, grep('^[PT]\\.|^(logarea.t0)', names(mydat))]) # correlations among climate variables 
