@@ -57,10 +57,14 @@ pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 ###
 ### plot observed and predicted cover chronologically
 ###
-figName <- ifelse(max.CI==F,"cover_projections_1step.png","cover_projections_1step_maxCI.png" )
-png(figName,res=400,width=8.5,height=3,units="in")
+color1="black"
+color2=rgb(0,100,255,alpha=175,maxColorValue = 255)
+color3=rgb(153,0,0,alpha=175,maxColorValue = 255)
 
-par(mfrow=c(1,4),tcl=0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+figName <- ifelse(max.CI==F,"cover_projections_1step.png","cover_projections_1step_maxCI.png" )
+png(figName,res=400,width=8.5,height=6,units="in")
+
+par(mfrow=c(2,2),tcl=0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 
 for(i in 1:4){
   if(i==1){
@@ -70,19 +74,21 @@ for(i in 1:4){
   }  
   matplot(covMeans$year[1:6],cbind(covMeans[1:6,2+i],covMeans[1:6,6+i], # control plots
           covMeans[doRows,2+i],covMeans[doRows,6+i],covMeans[doRows,10+i]),
-          xlab="",ylab="",type="l",
-          lty=c("solid","dashed","solid","dashed","dotted"),
-          col=c(rep("blue3",2),rep("red3",3)))   # removal plots
+          xlab="",ylab="",type="o",
+          col=c(color1,color2,color1,color2,color3),xaxt="n",
+          pch=c(15,15,0,0,0), cex=1.1, 
+          lty=c("solid","dotted","solid","dotted","dotted"))   # removal plots
   title(main=sppNames[i],adj=0,font.main=4) 
   if(i==1){
-    legend("topleft",c("Control (observed)","Removal (observed)","Baseline (predicted)","Removal (predicted)"),
-    col=c("blue3","red3","darkgray","darkgray"), 
-    lty=c("solid","solid","dashed","dotted"),bty="n")
+    legend("top",c("Control (obs.)","Control (baseline pred.)","Removal (obs.)","Removal (baseline pred.)","Removal (removal pred.)"),
+    col=c(color1,color2,color1,color2,color3),
+          pch=c(15,15,0,0,0),cex=0.9,
+          lty=c("solid","dotted","solid","dotted","dotted"),bty="n")
   }
 }
 
-mtext("Year",side=1,line=0.5,outer=T,cex=1)
-mtext("Cover (%)",side=2,line=0.5,outer=T,cex=1)
+mtext("Year",side=1,line=0.5,outer=T,cex=1.1)
+mtext("Cover (%)",side=2,line=0.5,outer=T,cex=1.1)
 
 dev.off()
 
@@ -100,12 +106,10 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
                  pred.trt.pgr.mean[pred.trt.pgr.mean$Treatment=="Removal",2+doSpp])                               # removal pred (with TRT effect)
   names(newD)=c("year","control.obs","control.pred","remove.obs","remove.pred","remove.predTRT")
   
-  color1=rgb(0,100,255,alpha=175,maxColorValue = 255)
-  color2=rgb(153,0,0,alpha=175,maxColorValue = 255)
   my.y <- c(-1.2,1.1) # hard wire ylims
   matplot(newD$year,newD[,2:6],type="o",xlab="",ylab="",ylim=my.y,
-    col=c(rep(color1,2),rep(color2,3)),xaxt="n",
-    pch=c(16,21,16,21,24),bg="white",
+    col=c(color1,color2,color1,color2,color3),xaxt="n",
+    pch=c(15,15,0,0,0), cex=1.1, #bg="white",
     lty=c("solid","dotted","solid","dotted","dotted"))
   axis(1,at=c(2011:2015))
   abline(h=0,lty="solid",col="darkgray")
@@ -116,24 +120,25 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
 #          x1=mysd2$year,y1=c(mydata2[,1+doSpp]+mysd2[,1+doSpp]/sqrt(8)),length=0.05,angle=90,code=3,col=color2)  
   title(main=mytitle,adj=0,font.main=4)  
   if(doLegend==T){
-    legend("bottomleft",c("Control (observed)","Removal (observed)","Baseline (predicted)","Removal (predicted)"),
-    col=c(color1,color2,"darkgray","darkgray"), 
-    lty=c("solid","solid","dashed","dotted"),bty="n")
+    legend("topright",c("Control (obs.)","Control (baseline pred.)","Removal (obs.)","Removal (baseline pred.)","Removal (removal pred.)"),
+    col=c(color1,color2,color1,color2,color3),
+    pch=c(15,15,0,0,0), #,bg="white",
+    lty=c("solid","dotted","solid","dotted","dotted"),bty="n")
   }
 }
 
 figName <- ifelse(max.CI==F,"cover_change_chrono.png","cover_change_chrono_maxCI.png" )
-png(figName,units="in",height=3,width=8.5,res=600)
+png(figName,units="in",height=6,width=8.5,res=600)
   
-  par(mfrow=c(1,4),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+  par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
   
-  plotObsPred(1,sppNames[1],doLegend=T)
+  plotObsPred(1,sppNames[1])
   plotObsPred(2,sppNames[2])
-  plotObsPred(3,sppNames[3])
+  plotObsPred(3,sppNames[3],doLegend=T)
   plotObsPred(4,sppNames[4])
   
-  mtext(side=1,"Year",line=0.5, outer=T)
-  mtext(side=2,expression(paste("Mean ",log(Cover[t+1]/Cover[t]))),line=0, outer=T)
+  mtext(side=1,"Year",line=0.5, outer=T,cex=1.1)
+  mtext(side=2,expression(paste("Mean ",log(Cover[t+1]/Cover[t]))),line=0, outer=T,cex=1.1)
 
 dev.off()
 
