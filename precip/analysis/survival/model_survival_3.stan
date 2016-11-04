@@ -13,6 +13,17 @@ data{
   int<lower=0> Covs;          // climate effects 
   matrix[N, Covs] C;          // climate matrix 
   real<lower=0> tau_beta;     // prior sd for climate effects 
+  
+  // holdout datalist, modern observations 
+  int<lower=0> Nhold;
+  int<lower=0,upper=1> Yhold[Nhold];
+  int<lower=0> nyrshold;            // years out
+  int<lower=0> yidhold[Nhold];      //year out id
+  matrix[Nhold, G] gmhold;          // group dummy variable matrix 
+  vector[Nhold] Xhold;
+  matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
+  matrix[Nhold, Covs] Chold;        // climate matrix 
+  
 }
 parameters{
   vector[G] bg;                     // varying group effects with first group as intercept 
@@ -54,18 +65,42 @@ model{
   sig_b1 ~ cauchy(0,4);
   a_raw ~ normal(0,1);
   b1_raw ~ normal(0,1);
-  w ~ normal(0,10);
+  w ~ normal(0,tau_beta);
   b2 ~ normal(0,tau_beta); 
   
   // Likelihood
   Y ~ binomial(1,mu);
 }
 generated quantities {
-  // Section for calculating log_lik of fitted data 
+  // hold out predictions
+  vector[N] log_lik;                          // for fitted data
+  vector[Nhold] log_lik2;                     // for heldout data 
   
-  vector[N] log_lik; 
+  // hold out predictions 
+  vector[nyrshold] a_out;
+  vector[nyrshold] b1_out;
+  vector[Nhold] gint_out;
+  real muhat[Nhold];
+  vector[Nhold] crowdhat;
+  vector[Nhold] climhat;
   
   for(n in 1:N){
     log_lik[n] <- bernoulli_log(Y[n], mu[n]); 
   }
+  
+  // 1. Holdout data predictions 
+  gint_out  <- gmhold*bg;
+  crowdhat <- Whold*w;
+  climhat  <- Chold*b2; 
+  
+  for( i in 1:nyrshold){
+    a_out[i] <- normal_rng(0, sig_a);         // draw random year intercept 
+    b1_out[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect 
+  }
+  
+  for(n in 1:Nhold){
+    muhat[n] <- inv_logit(gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n] + climhat[n]);
+    log_lik2[n] <- bernoulli_log(Yhold[n], muhat[n]);
+  }
 }
+

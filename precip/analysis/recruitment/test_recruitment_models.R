@@ -1,26 +1,6 @@
 rm(list  = ls())
 library(rstan)
 
-# simulate recruitment model ----------------------------------------------------------------------------- # 
-N <- 1000
-X <- seq(1, 10, length.out = N)
-beta0 <- 1 
-beta1 <- 0.5
-phi <- 0.5
-mu <- exp( beta0 + beta1*X)
-Y <- rnbinom(N, mu = mu, size = phi )
-plot(X, Y)
-
-test_dat <- list(Y = Y, N = N, X =X )
-
-fit <- stan('analysis/recruitment/model_recruitment_simple.stan', data = test_dat, chains = 4)
-
-summary(fit, c('beta1', 'beta0', 'phi'))$summary
-
-traceplot(fit, 'phi' )
-
-# with my data 
-
 # simulate climate, competition, year and group effects ------------------------------------- # 
 rm(list = ls())
 
@@ -90,7 +70,5 @@ plot ( pars$b2, estimates[grep('b2', names(estimates)) ])
 plot ( pars$bg, estimates[grep('bg', names(estimates))])
 plot(pars$a, estimates[grep('^a', names(estimates))])
 
-estimates['sig_a']
-sig_a
 
 

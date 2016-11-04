@@ -47,13 +47,7 @@ transformed parameters{
   vector[Nspp] sdc;
   matrix[N, Nspp] trueP2_scaled;
   
-  // for prediction 
-  vector[Nhold] coverEff_pred;
-  matrix[Nhold, Nspp] trueP1_pred;
-  matrix[Nhold, Nspp] trueP2_pred;
-  vector[Nhold] gint_pred; 
-  vector[Nhold] climEff_pred; 
-  matrix[Nhold, Nspp] trueP2_pred_scaled;
+
   
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
@@ -87,21 +81,6 @@ transformed parameters{
   }
   
 
-  // 1. Holdout data predictions 
-
-  climEff_pred <- Chold*b2;
-  gint_pred   <- gmhold*bg;
-  trueP1_pred <- parents1hold*u + parents2hold*(1-u);
-
-  for(n in 1:Nhold)
-    for(j in 1:Nspp)
-      trueP2_pred[n, j] <- sqrt(trueP1_pred[n, j]);
-  
-  for(j in 1:Nspp)
-    for(n in 1:Nhold)
-      trueP2_pred_scaled[n, j] <- (trueP2_pred[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
-
-  coverEff_pred <- trueP2_pred_scaled*w;
 
 }
 
@@ -125,11 +104,33 @@ generated quantities{
   vector[Nhold] mu_pred;
   vector[Nhold] lambda_pred;
 
+  // for prediction 
+  vector[Nhold] coverEff_pred;
+  matrix[Nhold, Nspp] trueP1_pred;
+  matrix[Nhold, Nspp] trueP2_pred;
+  vector[Nhold] gint_pred; 
+  vector[Nhold] climEff_pred; 
+  matrix[Nhold, Nspp] trueP2_pred_scaled;
+
   for(n in 1:N){ 
     log_lik[n] <- neg_binomial_2_log(Y[n], lambda[n], theta); 
   }
   
   // 1. Holdout data predictions 
+
+  climEff_pred <- Chold*b2;
+  gint_pred   <- gmhold*bg;
+  trueP1_pred <- parents1hold*u + parents2hold*(1-u);
+
+  for(n in 1:Nhold)
+    for(j in 1:Nspp)
+      trueP2_pred[n, j] <- sqrt(trueP1_pred[n, j]);
+  
+  for(j in 1:Nspp)
+    for(n in 1:Nhold)
+      trueP2_pred_scaled[n, j] <- (trueP2_pred[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
+
+  coverEff_pred <- trueP2_pred_scaled*w;
 
   for( i in 1:nyrshold)
     a_pred[i] <- normal_rng(0, sig_a); // draw random year intercept
