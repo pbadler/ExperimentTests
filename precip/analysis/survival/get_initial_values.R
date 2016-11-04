@@ -22,64 +22,52 @@ get_init_vals_survival_models <- function( spp, df, ... ) {
   nyrs2 <- length(unique(df$treat_year))
   nyrs <- length(unique(df_old$yid))
   G <- length(unique(df$gid))
-  Covs <- length(df[, grep('^[PT]\\.', names(df))])
+  Covs <- length(df[, grep('^[T]\\.|^(VWC)\\.', names(df))])
   
   if(spp == 'ARTR'){
     a_raw <- rep(0,nyrs)
     b1_mu <- 1
-    b1_mu2 <- 0.9
     b1 <- rep(b1_mu, nyrs)
     b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 0.5
-    sig_b1 <- sig_b12 <- 0.18
-    bg <- bg2 <- c(-2.3, rep(0, G - 1))
-    w <- w2 <- -1.5
+    sig_a <- 0.5
+    sig_b1 <- 0.18
+    bg <- c(-2.3, rep(0, G - 1))
+    w <- -1.5
     b2 <- rep(0, Covs)
     w_all <-c(w, 0, 0, 0)
-    a_raw2 <- rep(0, nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
   }else if ( spp == 'HECO'){
     a_raw <- rep(0,nyrs)
     b1_mu <- 1
-    b1_mu2 <- 0.9
     b1 <- rep(b1_mu, nyrs)
     b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 0.5
-    sig_b1 <- sig_b12 <- 0.18
-    bg <- bg2 <- c(-2.3, rep(0, G - 1))
-    w <- w2 <- -1.5
+    sig_a <- 0.5
+    sig_b1 <- 0.18
+    bg <- c(-2.3, rep(0, G - 1))
+    w <- -1.5
     b2 <- rep(0, Covs)
     w_all <-c(0, w, 0, 0)
-    a_raw2 <- rep(0, nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
   }else if ( spp == 'POSE'){
     a_raw <- rep(0,nyrs)
     b1_mu <- 1
-    b1_mu2 <- 0.9
     b1 <- rep(b1_mu, nyrs)
     b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 0.5
-    sig_b1 <- sig_b12 <- 0.18
-    bg <- bg2 <- c(-2.3, rep(0, G - 1))
-    w <- w2 <- -1.5
+    sig_a <- 0.5
+    sig_b1 <- 0.18
+    bg <- c(-2.3, rep(0, G - 1))
+    w <- -1.5
     b2 <- rep(0, Covs)
     w_all <-c(0, 0, w, 0)
-    a_raw2 <- rep(0, nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
   }else if ( spp == 'PSSP'){
     a_raw <- rep(0,nyrs)
     b1_mu <- 1
-    b1_mu2 <- 0.9
     b1 <- rep(b1_mu, nyrs)
     b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 0.5
-    sig_b1 <- sig_b12 <- 0.18
+    sig_a <- 0.5
+    sig_b1 <- 0.18
     bg <- bg2 <- c(-2.3, rep(0, G - 1))
-    w <- w2 <- -1.5
+    w <- -1.5
     b2 <- rep(0, Covs)
     w_all <-c(0, 0, 0, w)
-    a_raw2 <- rep(0, nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
   }
   
   rm(df, df_old)
@@ -88,17 +76,14 @@ get_init_vals_survival_models <- function( spp, df, ... ) {
   init_vals <-  lapply( ls(), function(x) eval(parse( text = x) ))  # collect inits 
   names( init_vals) <- ls()[-which(ls() == 'init_vals')]
   
-  inits <- rep( list(init_vals), 3 ) 
+  init_vals$w <- init_vals$w_all
   
-  inits[[3]]$w <- init_vals$w_all
-  inits[[3]]$w2 <- init_vals$w_all
-  
-  return(inits)
+  return(init_vals)
 }
 
 # input files ----------------------------------------------------------------------#
 
-dfs <- lapply( dir( 'data/temp_data/', '*scaled_growth_dataframe.RDS', full.names = T), readRDS)
+dfs <- lapply( dir( 'data/temp_data/', '*_survival_cleaned_dataframe.RDS', full.names = T), readRDS)
 spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
 
 # run functions---------------------------------------------------------------------# 

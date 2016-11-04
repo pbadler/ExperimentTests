@@ -50,16 +50,6 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   # # select only intraspecific w's for models with intraspecific crowding only 
   # #
   
-  if( !do_vr == 'recruitment') {
-      if( do_model < 3 ) {  ## intraspecific effects only 
-        
-        data_list$W <- data_list$W[ ,  data_list$spp ]
-        data_list$Whold <- data_list$Whold[ , data_list$spp ]
-        data_list$W2 <- data_list$W2[ , data_list$spp ]
-        data_list$W3 <- data_list$W3[ , data_list$spp ]
-      }
-  }
-  
   # get initial values for proper species and model --------------------------------------------------------------# 
   
   init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)

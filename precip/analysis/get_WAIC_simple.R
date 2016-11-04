@@ -9,7 +9,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'survival', 123)
+args <- c('/home/andy/Documents/ExperimentTests/precip/', 'survival', 1)
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 3){ 
@@ -58,7 +58,9 @@ output_path <- file.path(getwd(),  'output/stan_fits/WAIC_scores/')
 
 save_file <- file.path( output_path, paste(species, vital_rate, model, lambda, nchains, 'WAIC.csv', sep = '_'))
 
-temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, pars = 'log_lik', predict = FALSE)
+temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, pars = c('log_lik', 'log_lik2'), predict = FALSE)
+
+waic_df <- rbind( waic(temp_fit, llname = 'log_lik'), waic(temp_fit, llname = 'log_lik2'))
+waic_df$type <- c('in_sample', 'out_of_sample')
 
 write.csv(waic(temp_fit), file = save_file, row.names = FALSE)
-

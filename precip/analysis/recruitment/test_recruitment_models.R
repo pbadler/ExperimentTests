@@ -55,7 +55,13 @@ simulate_recruitment <- function( pars , test_dat ){
 test_dat$Y <- simulate_recruitment(pars, test_dat)
 
 test_dat$tau_beta <- 7
-myfit <- stan('analysis/recruitment/model_recruitment_3.stan', data = test_dat, iter = 1000, cores = 4 ) 
+
+test_inits <- readRDS('data/temp_data/recruitment_init_vals.RDS')[['ARTR']]
+
+inits <- rep( list ( test_inits), 4)
+
+myfit <- stan('analysis/recruitment/model_recruitment_1.stan', init = inits, data = test_dat, iter = 1000, cores = 4 ) 
+
 
 estimates <- summary(myfit, c('u', 'theta', 'sig_a', 'w', 'bg', 'a'))$summary[, 1]
 

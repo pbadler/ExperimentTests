@@ -2,7 +2,7 @@ rm(list  = ls())
 library(rstan)
 # simulate climate, competition, year and group effects ------------------------------------- # 
 
-test_dat <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')[['POSE']]
+test_dat <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')[['ARTR']]
 
 sig_a <- 1
 sig_b1 <- 0.2
@@ -48,7 +48,11 @@ test_dat$Y <- simulate_survival(pars, test_dat)
 
 test_dat$tau_beta <- 7
 
-myfit1 <- stan('analysis/survival/model_survival_3.stan', data = test_dat, chains = 4, cores = 4, iter = 1000)
+test_inits <- readRDS('data/temp_data/survival_init_vals.RDS')[['ARTR']]
+
+inits <- rep( list ( test_inits), 4)
+
+myfit1 <- stan('analysis/survival/model_survival_1.stan', init = inits, data = test_dat, chains = 4, cores = 4, iter = 1000)
 
 ests1 <- summary(myfit1, c('b1_mu', 'w', 'b2', 'sig_a', 'sig_b1'))$summary[, 1]
 

@@ -19,7 +19,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'output/best_WAIC_scores.csv', 4, 4, 'TRUE')
+args <- c('/home/andy/Documents/ExperimentTests/precip/', 'data/temp_data/short_model_table.csv', 1, 4, 'FALSE')
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 5){ 
@@ -72,7 +72,7 @@ if( predict ) {
 }else{ 
   output_path <- file.path(getwd(), 'output/stan_fits/')
   ending <- '.RDS'
-  use_pars <- 'log_lik'
+  use_pars <- c('log_lik', 'log_lik2')
 }
 
 temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, predict = predict, pars = use_pars)

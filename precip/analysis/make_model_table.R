@@ -35,7 +35,6 @@ models <- models %>% arrange( vital_rate, species, model, lambda )
 full_table <- 
   models %>% 
   arrange( vital_rate, species, model, lambda ) %>% 
-  filter( !(model == 1 & lambda != 1 )) %>% 
   mutate( nlambda = master_list$nlambda, 
           index = row_number())
 

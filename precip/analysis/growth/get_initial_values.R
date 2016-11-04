@@ -19,71 +19,62 @@ library(parallel)
 get_init_vals_growth_models <- function( spp, df, ... ) {
   
   df_old <- subset(df, Period == 'Historical')
-  nyrs2 <- length(unique(df$treat_year))
   nyrs <- length(unique(df_old$yid))
   G <- length(unique(df$gid))
-  Covs <- length(df[, grep('^[PT]\\.', names(df))])
+  Covs <- length(df[, grep('^[T]\\.|^(VWC)\\.', names(df))])
   
   if(spp == 'ARTR'){
-    sigma <- sigma2 <- 0.75
+    tau <- 0.16
+    tauSize <- 0.003
     a_raw <- rep(0,nyrs)
     b1_mu <- 1
-    b1_mu2 <- 0.9
     b1 <- rep(b1_mu, nyrs)
     b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 1
-    sig_b1 <- sig_b12 <- 0.18
-    bg <- bg2 <- c(0.7, rep(0, G - 1))
-    w <- w2 <- -0.15
+    sig_a <- 0.15
+    sig_b1 <- 0.3    
+    bg <- c(0, rep(0, G - 1))
+    w <- -0.005
     b2 <- rep( 0, Covs)
     w_all <-c(w, 0, 0, 0)
-    a_raw2 <- rep(0,nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
   }else if ( spp == 'HECO'){
-    sigma <- sigma2 <- 0.8
-    a_raw <- rep(0,nyrs)
-    b1_mu <- 0.9
-    b1_mu2 <- 0.8
-    b1 <- rep(b1_mu, nyrs)
-    b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 0.4
-    sig_b1 <- sig_b12 <- 0.1
-    bg <- bg2 <- c(0.35, rep(0, G - 1))
-    w <- w2 <-  -0.05
-    b2 <- rep( 0, Covs)
-    w_all <-c(0, w, 0, 0)
-    a_raw2 <- rep(0,nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
-  }else if ( spp == 'POSE'){
-    sigma <- sigma2 <- 1.02
-    a_raw <- rep(0,nyrs)
-    b1_mu <- 0.35
-    b1_mu2 <- 0.67
-    b1 <- rep(b1_mu, nyrs)
-    b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 0.4
-    sig_b1 <- sig_b12 <- 0.09
-    bg <- bg2 <- c(0.7, rep(0, G - 1))
-    w <- w2 <-  -0.4
-    b2 <- rep( 0, Covs)
-    w_all <-c(0, 0, w, 0)
-    a_raw2 <- rep(0,nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
-  }else if ( spp == 'PSSP'){
-    sigma <- sigma2 <- 0.85
+    tau <- 0.16
+    tauSize <- 0.003
     a_raw <- rep(0,nyrs)
     b1_mu <- 1
-    b1_mu2 <- 0.8
     b1 <- rep(b1_mu, nyrs)
     b1_raw <- rep(0, nyrs)
-    sig_a <- sig_a2 <- 0.35
-    sig_b1 <- sig_b12 <- 0.1
-    bg <- bg2 <- c(0.3, rep(0, G - 1))
-    w <- w2 <-  -0.5
+    sig_a <- 0.15
+    sig_b1 <- 0.3    
+    bg <- c(0, rep(0, G - 1))
+    w <- -0.005
     b2 <- rep( 0, Covs)
-    w_all <-c(0, 0, 0, w)
-    a_raw2 <- rep(0,nyrs2)
-    b1_raw2 <- rep(0, nyrs2)
+    w_all <-c(w, 0, 0, 0)
+  }else if ( spp == 'POSE'){
+    tau <- 0.16
+    tauSize <- 0.003
+    a_raw <- rep(0,nyrs)
+    b1_mu <- 1
+    b1 <- rep(b1_mu, nyrs)
+    b1_raw <- rep(0, nyrs)
+    sig_a <- 0.15
+    sig_b1 <- 0.3    
+    bg <- c(0, rep(0, G - 1))
+    w <- -0.005
+    b2 <- rep( 0, Covs)
+    w_all <-c(w, 0, 0, 0)
+  }else if ( spp == 'PSSP'){
+    tau <- 0.16
+    tauSize <- 0.003
+    a_raw <- rep(0,nyrs)
+    b1_mu <- 1
+    b1 <- rep(b1_mu, nyrs)
+    b1_raw <- rep(0, nyrs)
+    sig_a <- 0.15
+    sig_b1 <- 0.3    
+    bg <- c(0, rep(0, G - 1))
+    w <- -0.005
+    b2 <- rep( 0, Covs)
+    w_all <-c(w, 0, 0, 0)
   }
   
   rm(df, df_old)
@@ -92,17 +83,14 @@ get_init_vals_growth_models <- function( spp, df, ... ) {
   init_vals <-  lapply( ls(), function(x) eval(parse( text = x) ))  # collect inits 
   names( init_vals) <- ls()[-which(ls() == 'init_vals')]
 
-  inits <- rep( list(init_vals), 3 ) 
-  
-  inits[[3]]$w <- init_vals$w_all
-  inits[[3]]$w2 <- init_vals$w_all
-  
-  return(inits)
+  init_vals$w <- init_vals$w_all
+
+  return(init_vals)
 }
 
 # input files ----------------------------------------------------------------------#
 
-dfs <- lapply( dir( 'data/temp_data/', '*scaled_growth_dataframe.RDS', full.names = T), readRDS)
+dfs <- lapply( dir( 'data/temp_data/', '*_growth_cleaned_dataframe.RDS', full.names = T), readRDS)
 spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
 
 # run functions---------------------------------------------------------------------# 

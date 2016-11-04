@@ -22,63 +22,44 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   nyrs2 <- length(unique(df$treat_year))
   nyrs <- length(unique(df_old$yid))
   G <- length(unique(df$gid))
-  Covs <- length(df[, grep('^[PT]\\.', names(df))])
+  Covs <- length(df[, grep('^[T]\\.|^(VWC)\\.', names(df))])
   
   if(spp == 'ARTR'){
-    bg  <- bg2 <- c(-2, rep(0, G - 1))
+    bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
-    sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -2
+    sig_a  <- 1.3
+    w <- -0.2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
-    a_raw2 <- rep(0,nyrs2)
     u <- 0.9
-    u2 <- 0.9
     theta <- 1.2
-    theta2 <- 1.2
-    
-    
   }else if ( spp == 'HECO'){
-    bg  <- bg2  <- c(-2, rep(0, G - 1))
+    bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
-    sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -2
+    sig_a  <- 1.3
+    w <- -0.2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
-    a_raw2 <- rep(0,nyrs2)
     u <- 0.9
-    u2 <- 0.9
     theta <- 1.2
-    theta2 <- 1.2
-    
-    
   }else if ( spp == 'POSE'){
-    bg  <- bg2 <- c(-2, rep(0, G - 1))
+    bg <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
-    sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -2
+    sig_a  <- 1.3
+    w <-  -0.2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
-    a_raw2 <- rep(0,nyrs2)
     u <- 0.9
-    u2 <- 0.9
     theta <- 1.2
-    theta2 <- 1.2
-    
-    
   }else if ( spp == 'PSSP'){
-    bg  <- bg2  <- c(-2, rep(0, G - 1))
+    bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
-    sig_a <- sig_a2 <- 1.3
-    w <- w2 <-  -2
+    sig_a <- 1.3
+    w <-  -0.2
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
-    a_raw2 <- rep(0,nyrs2)
     u <- 0.9
-    u2 <- 0.9
     theta <- 1.2
-    theta2 <- 1.2
-    
   }
   
   rm(df, df_old)
@@ -87,17 +68,14 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
   init_vals <-  lapply( ls(), function(x) eval(parse( text = x) ))  # collect inits 
   names( init_vals) <- ls()[-which(ls() == 'init_vals')]
   
-  inits <- rep( list(init_vals), 3 ) 
+  init_vals$w <- init_vals$w_all
   
-  inits[[3]]$w <- init_vals$w_all
-  inits[[3]]$w2 <- init_vals$w_all
-  
-  return(inits)
+  return(init_vals)
 }
 
 # input files ----------------------------------------------------------------------#
 
-dfs <- lapply( dir( 'data/temp_data/', '*scaled_recruitment_dataframe.RDS', full.names = T), readRDS)
+dfs <- lapply( dir( 'data/temp_data/', '*_recruitment_cleaned_dataframe.RDS', full.names = T), readRDS)
 spp <- unlist( lapply( dfs, function(x) unique(x$species)) ) 
 
 # run functions---------------------------------------------------------------------# 
