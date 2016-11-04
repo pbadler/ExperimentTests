@@ -1,9 +1,12 @@
 rm(list  = ls())
 library(rstan)
-
+library(ggmcmc)
 # simulate climate, competition, year and group effects ------------------------------------- # 
 
 test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['ARTR']]
+
+test_dat$X <- scale( cbind( test_dat$X, test_dat$X^2))
+test_dat$Xhold <- scale(cbind(test_dat$Xhold, test_dat$Xhold^2))
 
 sig_a <- 1
 sig_b1 <- 0.2
@@ -11,11 +14,12 @@ b1_mu  <- 0.8
 
 pars <- list( 
   bg = c(1.5, runif(5, -1, 1)),
-  b2 = c(1, rep(0, 13)),
-  a  = rnorm(22, 0, sd = sig_a),
-  b1 = rnorm(22, b1_mu, sd = sig_b1),
-  w  = seq(0, 0, length.out = 4),
-  sigma = 1.1)
+  b2 = c(2, rep(0, 7)),
+  a  = rnorm(test_dat$nyrs, 0, sd = sig_a),
+  b1 = rnorm(test_dat$nyrs, b1_mu, sd = sig_b1),
+  w  = c(1, 0, 0, 0),
+  tau = 0.2, 
+  tauSize = -0.1)
 
 simulate_growth <- function( pars , test_dat ){ 
   
@@ -33,81 +37,102 @@ simulate_growth <- function( pars , test_dat ){
   coverEff <- W%*%w
   
   mu <- coverEff
+  sigma <- coverEff
+  
   for(n in 1:N){
     mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + coverEff[n] + climEff[n]
+    sigma[n] <- sqrt(max(tau*exp(tauSize*mu[n]), 1e-7))
   }
-  
+
   Y <- rnorm(N, mu, sigma)
   rm(pars)
   detach(pars )   
   return(Y)
 }
 
-#test_dat$Y <- simulate_growth(pars, test_dat)
-#test_dat$W <- test_dat$W[, test_dat$spp]
+test_dat$Y <- simulate_growth(pars, test_dat)
 
 test_dat$tau_beta <- 7
 
-myfit <- stan('analysis/growth/model_growth_3.stan', data = test_dat, chains = 1, cores = 4, iter = 100)
-myfit <- stan('analysis/growth/model_growth_3.stan', data = test_dat, chains = 1, cores = 4, iter = 1000)
+myfit1 <- stan('analysis/growth/model_growth_3v2p.stan', data = test_dat, chains = 4, cores = 4, iter = 1000)
 
-b1 <- summary(myfit, c('b1'))$summary[,1]
-b1_mu <- summary(myfit, c('b1_mu'))$summary[, 1]
-w  <- summary(myfit, c('w'))$summary[, 1]
-bg  <- summary(myfit, c('bg'))$summary[, 1]
-a   <- summary(myfit, c('a'))$summary[, 1]
-b2  <- summary(myfit, c('b2'))$summary[, 1]
-#mu <- test_dat$gm%*%bg + test_dat$W*w + a[test_dat$yid] + b1[test_dat$yid]*test_dat$X + test_dat$C%*%b2
+ests1 <- summary(myfit1, c('b1_mu', 'w', 'b2', 'tau', 'tauSize', 'sig_a', 'sig_b1'))$summary[, 1]
 
-# plot ( test_dat$Y, mu) 
-# abline( 0, 1)
+a <- summary(myfit1, c('a'))$summary[, 1]
+a
+b1 <- summary( myfit1, c('b1'))$summary[, 1]
+b1
+traceplot( myfit1, 'b1_mu')
+
+
+tau <- summary(myfit1, c('tau'))$summary
+tauSize <- summary(myfit1, c('tauSize'))$summary
+
+tau
+tauSize
+
+mu <- summary( myfit1, 'mu')$summary[, 1]
+
+plot( mu, test_dat$Y )
+abline(0,1)
+traceplot( myfit1, 'b1_mu')
 
 # fit same with lmer 
 library(lme4)
-df <- readRDS('data/temp_data/ARTR_scaled_growth_dataframe.RDS')
-df <- subset(df, Period == 'Historical')
 
-names(df) <- gsub( ':', '.' , names(df))
+df <- data.frame( X = test_dat$X, Y = test_dat$Y)
+df$C <- test_dat$C
+df$W <- test_dat$W
+df$Group <- factor(test_dat$gid)
+df$yid <- test_dat$yid
 
-cnames <- colnames( test_dat$C ) 
-cnames <- gsub(':', '.',cnames)
-
-f <- as.formula( paste( c( expression(Y ~ Group + X + (X|yid) + W.ARTR), paste(cnames,collapse = ' + ')), collapse = ' + '  )  ) 
+f <- as.formula( Y ~ Group + X + (X|yid) + W + C)
 m1 <- lmer(data = df, f )
-summary(m1)
-m1.b2 <- fixef(m1)[grep('^[PT]\\.', names(fixef(m1)))]
-b2
-m1.b2
-plot( b2, m1.b2) 
-abline(0,1)
 
-X <- fixef(m1)['X']
-ranef(m1)
-ranef(m1)$yid[, 1] 
+data.frame( summary(m1)$coefficients) 
 
-plot( ranef(m1)$yid[, 1], a ) 
-abline(0, 1)
-plot( ranef(m1)$yid[, 2], b1 - b1_mu )
-abline(0, 1)
+Ceffects <- summary(myfit1, c('b2'))$summary[, 1]
 
+cbind(fixef(m1)[grep( '^C' , names( fixef(m1)))], Ceffects, real = pars$b2)
 
-yhat <- predict(m1)
-plot(df$Y, yhat)
-abline(0, 1)
-plot(yhat, mu)
+# estimates table 
 
+trueVals <- data.frame( type = 'true_val' , b1_mu = b1_mu, sig_b1 = sig_b1, sig_a = sig_a, 
+                        tau = pars$tau, tauSize = pars$tauSize, 
+                        Int = pars$bg[1], 
+                        w_1 = pars$w[1], w_2 = pars$w[2], w_3 =pars$w[3], w_4 = pars$w[4], 
+                        b2_1 = pars$b2[1], b2_2 = pars$b2[2], b2_3 = pars$b2[3], b2_4 = pars$b2[4], 
+                        b2_5 = pars$b2[5], b2_6 = pars$b2[6], b2_7 = pars$b2[7]) %>% 
+  gather(par , set_val , b1_mu:b2_7)
 
-estimates <- summary(myfit, c('sig_a', 'w', 'bg', 'a', 'sigma', 'sig_b1', 'b2'))$summary[, 1]
+stanVals <- data.frame( summary(myfit1, c('bg[1]', 'b1_mu', 'sig_b1', 'sig_a', 'tau', 'tauSize', 'w', 'b2'))$summary[ , c(1,2)] )
+stanVals$par <- row.names(stanVals) 
 
-plot ( pars$b2, estimates[grep('b2', names(estimates)) ])
-plot ( pars$bg, estimates[grep('bg', names(estimates))])
-plot(pars$a, estimates[grep('^a', names(estimates))])
+stanVals$par[ stanVals$par == "bg[1]" ] <- 'Int'
+library(stringr)
+stanVals$par <- str_replace_all( stanVals$par, pattern = '\\[', replacement = '_')
+stanVals$par <- str_replace_all( stanVals$par, pattern = '\\]', replacement = '')
 
-estimates['b2[1]']
-pars$b2
-estimates['sigma']
-pars$sigma 
-estimates['sig_b1']
-sig_b1
-estimates['sig_a']
-sig_a
+lmer_vals <- data.frame( summary(m1)$coefficients ) 
+lmer_vals$par <- row.names(lmer_vals)
+
+lmer_vals$par[ lmer_vals$par == 'X' ]  <- 'b1_mu'
+lmer_vals$par[ grep('^WW',  lmer_vals$par) ]  <- paste0( 'w_', c(1:4))
+lmer_vals$par[ grep( '^C', lmer_vals$par ) ] <- paste0('b2_', c(1:7))
+
+lmer_vals$par[lmer_vals$par == '(Intercept)'] <- 'Int'
+
+merge( merge(trueVals, stanVals), lmer_vals, all.x = TRUE)
+
+plot( data = merge( lmer_vals,  stanVals )[-1, ], Estimate ~ mean ) 
+
+# test correlation 
+
+test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['ARTR']]
+
+test_dat$tau_beta <- 7
+
+myfit1 <- stan('analysis/growth/model_growth_3v2p.stan', data = test_dat, chains = 4, cores = 4, iter = 1000)
+
+ests1 <- summary(myfit1, c('b11', 'b1_mu', 'sig_a', 'sig_b1'))$summary[, 1]
+summary(myfit1, c('b1_mu', 'sig_a', 'b2'))$summary

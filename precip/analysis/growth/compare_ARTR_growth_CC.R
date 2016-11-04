@@ -16,6 +16,24 @@ ccout <- lmer(logarea.t1~logarea.t0 + W + pptLag + ppt1 + TmeanSpr1 +
 
 summary(ccout)
 
+# re-scale 
+ccdat_scaled <- ccdat
+ccdat_scaled[ ,c('ppt1', 'ppt2', 'pptLag', 'TmeanSpr1', 'TmeanSpr2')] <- scale( ccdat[ ,c('ppt1', 'ppt2', 'pptLag', 'TmeanSpr1', 'TmeanSpr2')] ) 
+
+ccscaled_out <- lmer(logarea.t1~logarea.t0 + W + pptLag + ppt1 + TmeanSpr1 + 
+                          ppt2 + TmeanSpr2 + logarea.t0:pptLag + logarea.t0:ppt1 + 
+                          logarea.t0:TmeanSpr1 + logarea.t0:ppt2 + ppt1:TmeanSpr1 + 
+                          ppt2:TmeanSpr2 + logarea.t0:ppt1:TmeanSpr1 +
+                          (1|Group)+(logarea.t0|year),data=ccdat_scaled)      ##full model
+
+summary(ccout)
+summary(ccscaled_out)  # intercept changes and tmean spr 2 effect goes away with rescaled climate data 
+
+
+# 
+
+
+
 # -------------my data ----------------------------------------------------- # 
 
 ccdat_raw <- read.csv('data/temp_data/cc_ARTR_growth.csv') 
