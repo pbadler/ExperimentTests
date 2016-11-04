@@ -30,8 +30,8 @@ sig_a <- 1
 
 pars <- list( 
   bg = c(1.5, runif(5, -1, 1)),
-  b2 = c(0, 0, 0, 0, 0, 0, 0),
-  a  = rnorm(22, 0, sd = sig_a),
+  b2 = c(1, rep(0, 7)),
+  a  = rnorm(21, 0, sd = sig_a),
   u  = 0.8,
   w  = seq(0, 0, length.out = 4),
   theta = 1.1)
@@ -55,9 +55,11 @@ simulate_recruitment <- function( pars , test_dat ){
     for( j in 1:Nspp)
       trueP2[n, j] <- sqrt(trueP1[n, j])
   
+  trueP2_scaled <- scale(trueP2)
+  
   climEff  <- C%*%b2
   gint     <- gm%*%bg
-  coverEff <- trueP2%*%w
+  coverEff <- trueP2_scaled%*%w
 
   mu <- coverEff
   lambda <- coverEff
@@ -72,10 +74,16 @@ simulate_recruitment <- function( pars , test_dat ){
 
 test_dat$Y <- simulate_recruitment(pars, test_dat)
 
-test_dat$tau_beta <- 10
-myfit <- stan('analysis/recruitment/model_recruitment_3.stan', data = test_dat, iter = 2000, cores = 4 ) 
+test_dat$tau_beta <- 7
+myfit <- stan('analysis/recruitment/model_recruitment_3.stan', data = test_dat, iter = 1000, cores = 4 ) 
 
 estimates <- summary(myfit, c('u', 'theta', 'sig_a', 'w', 'bg', 'a'))$summary[, 1]
+
+traceplot( myfit, 'w')
+traceplot( myfit, 'b2')
+
+mu_pred <- summary(myfit, 'mu_pred')$summary
+
 
 estimates[grep('b2', names(estimates))]
 plot ( pars$b2, estimates[grep('b2', names(estimates)) ])
