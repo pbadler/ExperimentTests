@@ -27,6 +27,10 @@ loess_predict <-
 
 all_waics <- read.csv('output/WAIC_scores.csv')
 
+all_waics <- all_waics %>% filter( type == 'in_sample') %>% dplyr::select(-type)
+
+all_waics$waic[ is.nan( all_waics$waic )  ] <- NA
+
 load('data/temp_data/master_list.Rdata')
 model_table <- read.csv('data/temp_data/model_table.csv')
 
@@ -38,14 +42,15 @@ all_waics <-
   separate(clean_fn , into = c('species', 'vital_rate', 'model', 'lambda', 'chains'), sep = '_') %>% 
   mutate( model = as.numeric(model), lambda = as.numeric( lambda))
 
+
 waics <- 
   merge(all_waics, model_table, by = c('model', 'species', 'vital_rate', 'lambda')) %>% 
   group_by(species, vital_rate, model) %>% 
   arrange( vital_rate, species, model , lambda) %>% 
-  filter( n() > 1 ) %>% 
-  mutate( mean_WAIC = mean(waic), 
-          sd_WAIC = sd(waic), 
-          outlier = ifelse(abs(waic - mean_WAIC) > 400 , TRUE, FALSE ), 
+  filter( n() > 1) %>% 
+  mutate( mean_WAIC = mean(waic, na.rm = TRUE), 
+          sd_WAIC = sd(waic, na.rm = TRUE), 
+          outlier = ifelse( is.na(waic) | abs(waic - mean_WAIC) > 400 , TRUE, FALSE ), 
           min_waic = min(waic[!outlier])) %>% 
   group_by( species, vital_rate, model, outlier) %>% 
   mutate( lfit = ifelse( outlier, NA, loess_predict(waic , lambda )), 
@@ -93,10 +98,11 @@ print( gg$gg )
 dev.off()
 
 # save outliers to be re-run ----------------------------------------------------------------------# 
-
+waics[ is.na(waics$waic), ]
+waics[ waics$outlier, ]
 outliers <- 
   waics %>% 
-  filter( outlier ) 
+  filter( is.na(waic) | outlier ) 
 
 write.csv(outliers, 'output/outlier_runs.csv', row.names = FALSE)
 

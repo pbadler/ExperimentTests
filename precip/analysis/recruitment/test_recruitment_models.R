@@ -4,7 +4,7 @@ library(rstan)
 # simulate climate, competition, year and group effects ------------------------------------- # 
 rm(list = ls())
 
-test_dat <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['ARTR']]
+test_dat <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['PSSP']]
 
 sig_a <- 1
 
@@ -54,19 +54,18 @@ simulate_recruitment <- function( pars , test_dat ){
 
 test_dat$Y <- simulate_recruitment(pars, test_dat)
 
-test_dat$tau_beta <- 7
+test_dat$tau_beta <- 0.009
 
 test_inits <- readRDS('data/temp_data/recruitment_init_vals.RDS')[['ARTR']]
 
 inits <- rep( list ( test_inits), 4)
 
-myfit <- stan('analysis/recruitment/model_recruitment_1.stan', init = inits, data = test_dat, iter = 1000, cores = 4 ) 
-
+myfit <- stan('analysis/recruitment/model_recruitment_1.stan', data = test_dat, iter = 1000, cores = 4 ) 
 
 estimates <- summary(myfit, c('u', 'theta', 'sig_a', 'w', 'bg', 'a'))$summary[, 1]
 
 traceplot( myfit, 'w')
-traceplot( myfit, 'b2')
+traceplot( myfit, 'lambda')
 
 mu_pred <- summary(myfit, 'mu_pred')$summary
 

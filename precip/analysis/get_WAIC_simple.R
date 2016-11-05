@@ -9,7 +9,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'growth', 39)
+#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'growth', 16)
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 3){ 
@@ -66,3 +66,4 @@ waic_df$type <- c('in_sample', 'out_of_sample')
 waic_df$fn <- basename(save_file)
   
 write.csv(waic_df, file = save_file, row.names = FALSE)
+

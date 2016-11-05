@@ -9,4 +9,4 @@
 . /rc/tools/utils/dkinit
 reuse -q R
 
-R CMD BATCH "--args /projects/A01633220/precip/ output/best_WAIC_scores.csv $SLURM_ARRAY_TASK_ID 4 TRUE" run_stan_models_simple.R
+R CMD BATCH "--args /projects/A01633220/precip/ output/best_WAIC_scores.csv $SLURM_ARRAY_TASK_ID 4 TRUE" run_stan_models_simple.R "./slurm-out/run_stan_models_simple.Rout$SLURM_ARRAY_TASK_ID"

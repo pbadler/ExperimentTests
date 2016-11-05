@@ -2,7 +2,7 @@ rm(list  = ls())
 library(rstan)
 # simulate climate, competition, year and group effects ------------------------------------- # 
 
-test_dat <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')[['ARTR']]
+test_dat <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')[['POSE']]
 
 sig_a <- 1
 sig_b1 <- 0.2
@@ -48,13 +48,16 @@ test_dat$Y <- simulate_survival(pars, test_dat)
 
 test_dat$tau_beta <- 7
 
-test_inits <- readRDS('data/temp_data/survival_init_vals.RDS')[['ARTR']]
+test_inits <- readRDS('data/temp_data/survival_init_vals.RDS')[['PSSP']]
 
 inits <- rep( list ( test_inits), 4)
 
-myfit1 <- stan('analysis/survival/model_survival_1.stan', init = inits, data = test_dat, chains = 4, cores = 4, iter = 1000)
+myfit1 <- stan('analysis/survival/model_survival_1.stan', data = test_dat, chains = 4, cores = 4, iter = 1000)
+
+traceplot(myfit1, 'b1_mu')
 
 ests1 <- summary(myfit1, c('b1_mu', 'w', 'b2', 'sig_a', 'sig_b1'))$summary[, 1]
+ests1
 
 mu <- summary( myfit1, 'mu')$summary[, 1]
 muhat <- summary(myfit1, 'muhat')$summary[, 1]
@@ -83,6 +86,8 @@ df$yid <- test_dat$yid
 
 f <- as.formula( Y ~ Group + X + (X|yid) + W + C)
 m1 <- glmer(data = df, f , family = 'binomial')
+
+summary(m1)
 
 data.frame( summary(m1)$coefficients) 
 

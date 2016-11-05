@@ -91,7 +91,7 @@ model{
   sig_a ~ cauchy(0,2);
   a_raw ~ normal(0, 1);
   bg ~ normal(0, 10);
-  w ~ normal(0, tau_beta);
+  w ~ normal(0, 10);
   b2 ~ normal(0, tau_beta);
 
   // Likelihood

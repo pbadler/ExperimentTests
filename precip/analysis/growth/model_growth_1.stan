@@ -73,7 +73,7 @@ model{
   b1_raw ~ normal(0,1);
   tau ~ normal( 0, 1); 
   tauSize ~ normal(0,1);
-  w ~ normal(0,tau_beta);
+  w ~ normal(0,10);
   b2 ~ normal(0,tau_beta); 
     
   // Likelihood
