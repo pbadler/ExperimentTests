@@ -1,0 +1,55 @@
+# calculate treatment effects compared to control soil moisture 
+
+rm(list = ls()) 
+
+library( ggplot2 ) 
+library(tidyr)
+library(dplyr)
+library(lme4)
+library(zoo)
+library(MASS)
+
+myVWC <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/decagon_data_with_station_data.RDS')
+swVWC <- read.csv('data/temp_data/daily_VWC.csv')
+daily_clim <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/daily_station_dat_rainfall.RDS')
+seasons <- read.csv('~/driversdata/data/idaho_modern/soil_moisture_data/data/season_table.csv')
+spotVWC <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/spring_spot_measurements.RDS')
+
+spotVWC <- 
+  spotVWC %>% 
+  mutate( month = as.numeric( strftime( date, '%m'))) %>% 
+  left_join(seasons, by = 'month')
+
+spot_weights <- 
+  spotVWC %>% 
+  group_by( date, PrecipGroup ) %>% 
+  summarise( weight = n())
+
+spotVWC <- merge( spotVWC, daily_clim [ , c('date', 'rainfall')])
+
+spotVWC <- 
+  spotVWC %>% 
+  group_by( season, date, PrecipGroup,rainfall, Treatment ) %>% 
+  summarise( avg_VWC = mean(VWC, na.rm = TRUE)) %>% 
+  group_by(PrecipGroup) %>% 
+  mutate( avg_VWC = scale(avg_VWC)) %>%  # scale within Precip Group and Depth 
+  spread( Treatment, avg_VWC) %>%
+  mutate( Drought = Drought - Control, Irrigation = Irrigation - Control ) %>% 
+  arrange( PrecipGroup, date) 
+
+spotVWC <- merge( spotVWC, spot_weights)
+
+spotVWC <- spotVWC %>% mutate( simple_date = date ) 
+
+saveRDS(spotVWC, 'data/temp_data/spotVWC.RDS')
+
+# fit models 
+mDrought <- lm( data = spotVWC, Drought ~ season, weights = spotVWC$weights)
+mIrrigation <- lm(data = spotVWC, Irrigation ~ season, weights = spotVWC$weight)
+
+mDrought <- stepAIC(mDrought)
+mIrrigation <- stepAIC(mIrrigation)
+
+summary(mDrought)
+summary(mIrrigation)
+

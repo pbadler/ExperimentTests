@@ -16,8 +16,6 @@ files <- dir('../output/stan_fits/WAIC_scores/', pattern = '*WAIC.csv', full.nam
 
 WAIC_scores <- do.call( rbind , lapply( files, read.csv)  ) 
 
-WAIC_scores$fn <- basename( files ) 
-
 # output ------------------------------------------------------------------------------------
 
 write.csv(WAIC_scores , '../output/WAIC_scores.csv', row.names = FALSE)

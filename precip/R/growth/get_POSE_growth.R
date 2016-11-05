@@ -66,6 +66,7 @@ if(doSpp=="ARTR"){
 allD <- allD[keep,]
 
 # remove outliers (large plants that obviously do not turn into tiny plants)
+allD <- subset(allD, ! ( quad == 'Q11' & trackID == '26' & year %in% c(1931,1932, 1938, 1939) )) # drop these observations 
 
 # set up indicator variables
 allD$Treatment2 <- allD$Treatment

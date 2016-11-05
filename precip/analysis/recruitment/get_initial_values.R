@@ -28,34 +28,34 @@ get_init_vals_recruitment_models <- function( spp, df, ... ) {
     bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a  <- 1.3
-    w <- -0.2
+    w <- -0.02
     b2 <- rep( 0, Covs)
-    w_all <-c(0, 0, 0, w)
+    w_all <-c(w, 0, 0, 0)
     u <- 0.9
     theta <- 1.2
   }else if ( spp == 'HECO'){
     bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a  <- 1.3
-    w <- -0.2
+    w <- -0.02
     b2 <- rep( 0, Covs)
-    w_all <-c(0, 0, 0, w)
+    w_all <-c(0, w, 0, 0)
     u <- 0.9
     theta <- 1.2
   }else if ( spp == 'POSE'){
     bg <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a  <- 1.3
-    w <-  -0.2
+    w <-  -0.02
     b2 <- rep( 0, Covs)
-    w_all <-c(0, 0, 0, w)
+    w_all <-c(0, 0, w, 0)
     u <- 0.9
     theta <- 1.2
   }else if ( spp == 'PSSP'){
     bg  <- c(-2, rep(0, G - 1))
     a_raw <- rep(0,nyrs)
     sig_a <- 1.3
-    w <-  -0.2
+    w <-  -0.02
     b2 <- rep( 0, Covs)
     w_all <-c(0, 0, 0, w)
     u <- 0.9

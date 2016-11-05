@@ -11,18 +11,18 @@ library(Rsoilwat31) # Install from GitHub :
 #                             tools::Rcmd(args = paste("INSTALL Rsoilwat"))
 
 #Step 1 - Set working directory
-dir.prj <- "~/Desktop/Results2/1_SheepStation_SheepStation1/"
+dir.prj <- "~/Desktop/Results/"
 
 #Step 2- load and save files
 #Input
-load(file.path(dir.prj, "sw_input.RData"),verbose=TRUE)
-swInput<-swRunScenariosData[[1]]
-swInput@soils
+#load(file.path('~/Desktop/Results2/1_SheepStation_SheepStation1', "sw_input.RData"),verbose=TRUE)
+#swInput<-swRunScenariosData[[1]]
+#swInput@soils
 
 #Structure of Data
 #Input
-slotNames(swInput)
-swInput@cloud
+# slotNames(swInput)
+# swInput@cloud
 
 #Output
 load(file.path(dir.prj,"sw_output.RData"),verbose=T)
@@ -45,6 +45,7 @@ swOutputCurrent <- runData[[1]]
 # 
 
 VWC <-data.frame(swOutputCurrent@VWCMATRIC@Day)
-View(VWC)
+
+VWC <- subset(VWC, !(Year == 2016 & DOY >= 270))
 
 write.csv(VWC, 'data/temp_data/daily_VWC.csv', row.names = FALSE)

@@ -32,7 +32,7 @@ get_init_vals_survival_models <- function( spp, df, ... ) {
     sig_a <- 0.5
     sig_b1 <- 0.18
     bg <- c(-2.3, rep(0, G - 1))
-    w <- -1.5
+    w <- -0.05
     b2 <- rep(0, Covs)
     w_all <-c(w, 0, 0, 0)
   }else if ( spp == 'HECO'){
@@ -43,7 +43,7 @@ get_init_vals_survival_models <- function( spp, df, ... ) {
     sig_a <- 0.5
     sig_b1 <- 0.18
     bg <- c(-2.3, rep(0, G - 1))
-    w <- -1.5
+    w <- -0.05
     b2 <- rep(0, Covs)
     w_all <-c(0, w, 0, 0)
   }else if ( spp == 'POSE'){
@@ -54,7 +54,7 @@ get_init_vals_survival_models <- function( spp, df, ... ) {
     sig_a <- 0.5
     sig_b1 <- 0.18
     bg <- c(-2.3, rep(0, G - 1))
-    w <- -1.5
+    w <- -0.05
     b2 <- rep(0, Covs)
     w_all <-c(0, 0, w, 0)
   }else if ( spp == 'PSSP'){
@@ -65,7 +65,7 @@ get_init_vals_survival_models <- function( spp, df, ... ) {
     sig_a <- 0.5
     sig_b1 <- 0.18
     bg <- bg2 <- c(-2.3, rep(0, G - 1))
-    w <- -1.5
+    w <- -0.05
     b2 <- rep(0, Covs)
     w_all <-c(0, 0, 0, w)
   }

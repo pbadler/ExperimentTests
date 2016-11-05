@@ -187,9 +187,7 @@ seasonal_clim <- seasonal_clim %>%
 station_dat <- read.csv('~/driversdata/data/idaho_modern/climateData/USSES_climate.csv')
 station_dat$date <- as.POSIXct( strptime( station_dat$DATE, format = '%Y%m%d', tz = 'MST')    )
 
-station_dat <- station_dat %>% dplyr::select( date, STATION, STATION_NAME, LATITUDE, LONGITUDE, ELEVATION, PRCP, TMAX, TMIN )  
-
-station_dat <- station_dat %>% mutate( LONGITUDE = LONGITUDE[which.max(date)], LATITUDE = LATITUDE[ which.max(date )], ELEVATION = ELEVATION[ which.max(date )] )
+station_dat <- station_dat %>% dplyr::select( date, STATION, STATION_NAME, PRCP, TMAX, TMIN )  
 
 station_dat$year <- strftime(station_dat$date, '%Y')
 station_dat$DOY <- as.numeric( strftime( station_dat$date, '%j'))

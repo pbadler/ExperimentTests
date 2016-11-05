@@ -48,7 +48,7 @@ get_init_vals_growth_models <- function( spp, df, ... ) {
     bg <- c(0, rep(0, G - 1))
     w <- -0.005
     b2 <- rep( 0, Covs)
-    w_all <-c(w, 0, 0, 0)
+    w_all <-c(0, w, 0, 0)
   }else if ( spp == 'POSE'){
     tau <- 0.16
     tauSize <- 0.003
@@ -61,7 +61,7 @@ get_init_vals_growth_models <- function( spp, df, ... ) {
     bg <- c(0, rep(0, G - 1))
     w <- -0.005
     b2 <- rep( 0, Covs)
-    w_all <-c(w, 0, 0, 0)
+    w_all <-c(0, 0, w, 0)
   }else if ( spp == 'PSSP'){
     tau <- 0.16
     tauSize <- 0.003
@@ -74,7 +74,7 @@ get_init_vals_growth_models <- function( spp, df, ... ) {
     bg <- c(0, rep(0, G - 1))
     w <- -0.005
     b2 <- rep( 0, Covs)
-    w_all <-c(w, 0, 0, 0)
+    w_all <-c(0, 0, 0, w)
   }
   
   rm(df, df_old)

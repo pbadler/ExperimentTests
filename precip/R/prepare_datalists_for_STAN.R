@@ -6,15 +6,33 @@
 
 rm(list = ls() )
 
+detachAllPackages <- function() {
+  
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+  
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+  
+  package.list <- setdiff(package.list,basic.packages)
+  
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+  
+}
+
+detachAllPackages()
+
+source('R/ExtractData_3Runs.R')
+source('R/aggregate_spot_VWC.R')
+source('R/soilMoistureTreatmentEffects.R')
+source('R/climate/aggregate_VWC_data.R')
+source('R/get_all_demographic_data.R')
+source('R/climate/make_climate_variables.R')
+source('R/climate/prepare_climate_covariates.R')
+
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(zoo)
 library(stringr)
-
-source('R/get_all_demographic_data.R')
-source('R/climate/make_climate_variables.R')
-source('R/climate/prepare_climate_covariates.R')
 
 split_df <- function(df, train, hold){ 
   
@@ -27,6 +45,56 @@ split_df <- function(df, train, hold){
   
   return( list(training_df, holding_df) ) 
 } 
+
+scale_covariates <- function( datalist) { 
+  
+  datalist$C      <- scale(datalist$C)
+  Ccenter         <- attr(datalist$C, 'scaled:center')
+  Cscale          <- attr(datalist$C, 'scaled:scale')
+
+  datalist$Chold  <- scale(datalist$Chold, Ccenter, Cscale )
+  datalist$C2     <- scale(datalist$C2, Ccenter, Cscale ) 
+
+  datalist$W      <- scale(datalist$W)
+  Wcenter         <- attr(datalist$W, 'scaled:center')
+  Wscale          <- attr(datalist$W, 'scaled:scale')
+  
+  datalist$Whold  <- scale(datalist$Whold, Wcenter, Wscale )
+  datalist$W2     <- scale(datalist$W2, Wcenter, Wscale ) 
+  
+  if(!is.null( datalist$X)){
+      
+    X               <- scale(datalist$X)
+    datalist$X      <- as.numeric(X)
+    Xcenter         <- attr(X, 'scaled:center')
+    Xscale          <- attr(X, 'scaled:scale')
+  
+    datalist$Xhold  <- as.numeric(scale(datalist$Xhold, Xcenter, Xscale))
+    datalist$X2     <- as.numeric(scale(datalist$X2, Xcenter, Xscale))
+  }
+    
+  if(!is.null( datalist$C3)){
+    datalist$C3 <- scale(datalist$C3, Ccenter, Cscale)
+    datalist$W3 <- scale(datalist$W3, Wcenter, Wscale)
+    datalist$X3 <- as.numeric(scale(datalist$X3, Xcenter, Xscale))
+
+    Y  <- scale(datalist$Y)
+    datalist$Y  <- as.numeric(Y)
+    Ycenter     <- attr(Y, 'scaled:center')
+    Yscale      <- attr(Y, 'scaled:scale') 
+    
+    datalist$Yhold <- as.numeric(scale(datalist$Yhold, Ycenter, Yscale))
+    datalist$Y2 <- as.numeric(scale(datalist$Y2, Ycenter, Yscale))
+  
+  }
+
+  class_list    <-  unlist( lapply( datalist, function(x) class(x)))
+   
+  datalist <- datalist[ which(class_list != 'character')]  
+    
+  return( datalist )
+}
+
 
 df2list <- function(df, covars, vr, type) { 
   
@@ -67,12 +135,14 @@ df2list <- function(df, covars, vr, type) {
     spp_list       <- factor( str_extract( colnames(W), '[A-Z]+$')) # get species names 
     spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
   }    
+  
+  rm(vr, species_name, spp_list)
 
   out <- lapply( ls(), function(x) eval(parse(text = x)))
   lnames <- ls()[- grep('out', ls()) ]
   names(out) <- paste0(lnames, type)  
   out <- out[- grep('df', names(out))]
-  
+
   return(out)
 }
 
@@ -116,7 +186,7 @@ compile_datalists <- function( df, train, hold, vr ) {
   
   out_df           <- rbind(out[[1]], out[[2]])
   
-  saveRDS(out_df, paste0( 'data/temp_data/', species, '_scaled_', vr, '_dataframe.RDS'))
+  saveRDS(out_df, paste0( 'data/temp_data/', species,'_', vr, '_cleaned_dataframe.RDS'))
   
   #---------full dataset for estimating year effects ---------------------------------------------------
   full_list <- df2list(out_df, covars, vr = vr, type = '2')
@@ -125,11 +195,11 @@ compile_datalists <- function( df, train, hold, vr ) {
     
     #--------use survival dataframe for growth cover predictions ------------------------------# 
 
-    survival_df <- readRDS(paste0('data/temp_data/', species , '_scaled_survival_dataframe.RDS' ))
+    survival_df <- readRDS(paste0('data/temp_data/', species , '_survival_cleaned_dataframe.RDS' ))
     survival_df <- survival_df[ survival_df$yid %in% c(full_list$yid2), ] # only use years that are in the growth dataframe  
     survival_df <- subset(survival_df, Period == 'Modern')
-    
-    covars <- grep( '^[PT]\\.', names(survival_df))     
+    covars <- grep( '^[PT]\\.|^(VWC)\\.', names(survival_df)) 
+
     cover_list  <- df2list(survival_df, covars, vr = vr, type = '3')
     
     out_list <-   c(training_list, holding_list, full_list, cover_list)
@@ -140,6 +210,8 @@ compile_datalists <- function( df, train, hold, vr ) {
   
   }
   
+  out_list <-  scale_covariates(out_list)
+
   return(out_list)
 
 } 
@@ -163,27 +235,29 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
   
   all_data <- lapply(all_data, merge, y = clim_covs[, c('Treatment', 'Period', 'year', clim_vars)], by = c('Treatment', 'Period', 'year')) 
   
+  all_data <- lapply( all_data, function( x ) x[complete.cases(x), ] ) # remove rows with NAs
+  
   if(vr == 'survival'){ 
     all_data <- lapply( all_data, function(x) { names(x)[names(x) == 'logarea'] <- 'logarea.t0'; x } )
   } 
   
   # -- make size by interaction effects -------------------------------------------------------------# 
   
-  if( vr != 'recruitment') {
-    all_data <-
-      lapply( all_data, function( x ) {
-          ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
-          names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
-          cbind(x, ifx)
-        }
-      )
-  #   # all_data <-
+  # if( vr != 'recruitment') {
+  #   all_data <-
+  #     lapply( all_data, function( x ) {
+  #         ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
+  #         names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
+  #         cbind(x, ifx)
+  #       }
+  #     )
+  # #   # all_data <-
   #   #   lapply( all_data, function( x ) {
   #   #     ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions
   #   #     names(ifx ) <- paste0(names(ifx)[grep('W.[A-Z]+', names(ifx))] , ':', 'logarea.t0')
   #   #     cbind(x, ifx)
   #   #   })
-  }
+  # }
 
   # -- make training and holding indeces ----------------------------------------------------# 
   
@@ -204,10 +278,14 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
 
 
 # -- select covariates -------------------------------------------------------------------#
-clim_vars <- c('VWC.sp.l_layer1', 'VWC.sp.l_layer2', 
-               'VWC.sp.0_layer1', 'VWC.sp.0_layer2', 
-               'VWC.sp.1_layer2', 'VWC.sp.1_layer2', 
-               'T.sp.0', 'T.sp.1')                     
+clim_vars <- c('VWC.sp.l', 
+               'VWC.sp.0', 
+               'VWC.sp.1',
+               'VWC.su.0', 
+               'VWC.su.l', 
+               'T.sp.0', 
+               'T.sp.1', 
+               'T.sp.l')                     
 
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'
