@@ -49,9 +49,25 @@ sd_vec <- cbind( lambda = 1:nlambda, sd = sd_vec )
 
 # ----------------------------------------------------------------------------------------------------------------# 
 
+ff <- dir('data/temp_data', '*_*_cleaned_dataframe.RDS', full.names = T)
+
+yrs <- lapply(ff,  function(x) unique( readRDS(x)$year )) 
+sps <- str_extract(basename(ff), '^[A-Z]+')
+vrs <- str_extract(basename(ff), '(growth)|(recruitment)|(survival)')
+
+dfyrs <- list(NA)
+for( i in 1:length(sps)) { 
+   dfyrs[[i]] <- data.frame( species = sps[i], vital_rate = vrs[i], year_oos = yrs[[i]] )
+}
+dfyrs <- do.call(rbind, dfyrs)
+
+dfyrs$year_oos[ dfyrs$year_oos > 2006 ] <- 'c(2007:2015)'
+
+dfyrs <- unique(dfyrs)
+
 vital_rates <- data.frame( vital_rate = vital_rates, niter = niter)
 
-master_list <- list(species = species, vital_rates = vital_rates, smodels = smodels, gmodels = gmodels, rmodels = rmodels, nlambda = nlambda, sd_vec = sd_vec)
+master_list <- list(species = species, vital_rates = vital_rates, smodels = smodels, gmodels = gmodels, rmodels = rmodels, nlambda = nlambda, sd_vec = sd_vec, dfyrs = dfyrs)
 
 save(master_list, file = 'data/temp_data/master_list.Rdata')
 

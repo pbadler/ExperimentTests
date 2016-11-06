@@ -107,7 +107,7 @@ generated quantities {
   }
 
   for(n in 1:Nhold){
-      muhat[n]    <- gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n] + climhat[n];
+      muhat[n]    <- gint_out[n] + a_out[yidhold[n]] + b1_out[yidhold[n]]*Xhold[n] + crowdhat[n] + climhat[n];
       sigmahat[n] <- sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001)));
       y_hat[n]    <- normal_rng(muhat[n], sigmahat[n]);
       log_lik2[n]  <- normal_log(Yhold[n], muhat[n], sigmahat[n]);

@@ -1,7 +1,7 @@
 data{
   // training datalist, historical observations 
   int<lower=0> N;             // observations
-  vector[N] Y;  // observation vector
+  vector[N] Y;                // observation vector
   vector[N] X;                // size vector
   int<lower=0> G;             // groups
   matrix[N, G] gm;            // group dummy variable matrix 
@@ -12,9 +12,9 @@ data{
   int<lower=0> spp;           // focal species 
   int<lower=0> Covs;          // climate effects 
   matrix[N, Covs] C;          // climate matrix 
-  real<lower=0> tau_beta;    // prior sd for climate effects
+  real<lower=0> tau_beta;     // prior sd for climate effects
   
-  // // holdout datalist, modern observations 
+  // holdout datalist, modern observations 
   int<lower=0> Nhold;
   vector[Nhold] Yhold;
   int<lower=0> nyrshold;            // years out
@@ -25,13 +25,13 @@ data{
   matrix[Nhold, Covs] Chold;        // climate matrix
 
   // survival data for cover predictions
-  int<lower=0> N3;              // observations
-  vector[N3] X3;                // size vector
-  matrix[N3, G] gm3;            // group dummy variable matrix
-  int<lower=0> nyrs3;           // years
-  int<lower=0> yid3[N3];        // year id
-  matrix[N3, Wcovs] W3;         // crowding matrix
-  matrix[N3, Covs] C3;          // climate matrix
+  int<lower=0> N3;                  // observations
+  vector[N3] X3;                    // size vector
+  matrix[N3, G] gm3;                // group dummy variable matrix
+  int<lower=0> nyrs3;               // years
+  int<lower=0> yid3[N3];            // year id
+  matrix[N3, Wcovs] W3;             // crowding matrix
+  matrix[N3, Covs] C3;              // climate matrix
 }
 parameters{
   // for training data model  
@@ -57,16 +57,16 @@ transformed parameters{
   vector[N] sigma;
   
   // for training data model -----------------------------------
-  gint <- gm*bg;
-  crowdEff <- W*w;
-  climEff  <- C*b2;
+  gint      <- gm*bg;
+  crowdEff  <- W*w;
+  climEff   <- C*b2;
   
   b1 <- b1_mu + sig_b1*b1_raw;
   a  <- 0 + sig_a*a_raw; 
   
   for(n in 1:N){
-    mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
-    sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
+    mu[n]     <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
+    sigma[n]  <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
 }
 model{
@@ -111,7 +111,7 @@ generated quantities {
   climhat   <- Chold*b2;
 
   for( i in 1:nyrshold){
-    a_out[i] <- normal_rng(0, sig_a);         // draw random year intercept
+    a_out[i]  <- normal_rng(0, sig_a);         // draw random year intercept
     b1_out[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect
   }
 

@@ -29,7 +29,9 @@ all_waics <- read.csv('output/WAIC_scores.csv')
 
 all_waics <- all_waics %>% filter( type == 'in_sample') %>% dplyr::select(-type)
 
-all_waics$waic[ is.nan( all_waics$waic )  ] <- NA
+any(is.na(all_waics$waic))
+any(is.nan(all_waics$waic))
+any( all_waics$waic > 1e15)
 
 load('data/temp_data/master_list.Rdata')
 model_table <- read.csv('data/temp_data/model_table.csv')
@@ -42,17 +44,20 @@ all_waics <-
   separate(clean_fn , into = c('species', 'vital_rate', 'model', 'lambda', 'chains'), sep = '_') %>% 
   mutate( model = as.numeric(model), lambda = as.numeric( lambda))
 
-
 waics <- 
   merge(all_waics, model_table, by = c('model', 'species', 'vital_rate', 'lambda')) %>% 
   group_by(species, vital_rate, model) %>% 
   arrange( vital_rate, species, model , lambda) %>% 
   filter( n() > 1) %>% 
-  mutate( mean_WAIC = mean(waic, na.rm = TRUE), 
-          sd_WAIC = sd(waic, na.rm = TRUE), 
-          outlier = ifelse( is.na(waic) | abs(waic - mean_WAIC) > 400 , TRUE, FALSE ), 
-          min_waic = min(waic[!outlier])) %>% 
+  mutate( outlier = ifelse( waic > 1e9 , TRUE, FALSE ), 
+          mean_WAIC = mean(waic[!outlier], na.rm = TRUE), 
+          outlier = ifelse( !outlier & abs(waic - mean_WAIC) > 1000, TRUE, outlier),
+          mean_WAIC = mean(waic[!outlier], na.rm = TRUE), 
+          outlier = ifelse( !outlier & abs(waic - mean_WAIC) > 50, TRUE, outlier),
+          min_waic = min( waic[!outlier] ), 
+          min_waic = ifelse(is.finite( min_waic), min_waic, NA)) %>% 
   group_by( species, vital_rate, model, outlier) %>% 
+  filter( !any(is.na(min_waic))) %>% 
   mutate( lfit = ifelse( outlier, NA, loess_predict(waic , lambda )), 
           lfit.se = ifelse( outlier, NA, loess_predict(waic, lambda, TRUE)), 
           waic_diff = waic - min_waic )

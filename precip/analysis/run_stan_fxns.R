@@ -79,3 +79,84 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   return(temp_fit)
   
 }
+
+
+run_stan_model_oos <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, year_oos, pars = NULL, nchains = 1, niter = 1, predict = FALSE) { 
+  
+  require(rstan)
+  source( 'R/prepare_datalists_for_STAN_oos.R')
+  
+  data_path <- file.path(getwd(), 'data/temp_data')
+  model_path <- file.path(getwd(), 'analysis')
+  
+  if( predict )  { 
+    output_path <- file.path(getwd(),  'output/stan_fits/predictions')
+  }else{ 
+    output_path <- file.path( getwd(), 'output/stan_fits')
+  }
+  
+  # read in data and models ---------------------------------------------------------------------------------------#
+  do_stan_file <- do_model
+  
+  if ( predict ){ 
+    initial_fit <- dir(output_path, pattern = paste(do_vr, do_model, '[0-9]+', 0, 'predict_oos.RDS', sep = '_'), full.names = TRUE) # check pre-fit models
+  }else{ 
+    initial_fit <- dir(output_path, pattern = paste(do_vr, do_model, '[0-9]+', 0, 'oos.RDS', sep = '_'), full.names = TRUE) # check pre-fit models
+  }
+  
+  #data_list <- readRDS( data_file )[[do_spp]]
+  
+  #if(length(data_list) == 0) { stop('No data!!!')}
+  
+  if(predict) { 
+    models <- dir(file.path(model_path, do_vr), '[0-9]_oos_predict.stan', full.names = TRUE)
+  } else { 
+    models <- dir(file.path(model_path, do_vr), '[0-9]_oos.stan', full.names = TRUE)
+  }
+  
+  
+  # -- select model and initial vals -----------------------------------------------------------------------------# 
+  
+  m <- models [do_stan_file]
+  
+  # modify data list for model ------------------------------------------------------------------------------------#
+  
+  data_list <- make_stan_datalist(vr = do_vr, data_path = data_path, clim_vars = clim_vars, clim_file = clim_file,
+                     year_oos = eval(parse(text = year_oos))) 
+  
+  data_list <-  data_list[[do_spp]]
+  data_list$tau_beta <- do_prior_sd  # modify prior for regularization 
+  
+  # #
+  # # select only intraspecific w's for models with intraspecific crowding only 
+  # #
+  
+  # get initial values for proper species and model --------------------------------------------------------------# 
+  
+  #init_file <- dir(data_path, pattern = paste0(do_vr, '_init_vals.RDS'), full.names = TRUE)
+  #init_vals <- readRDS(init_file)[[do_spp]]
+  #temp_inits <- init_vals[[do_model]]
+  #temp_inits <- rep(list(temp_inits), max(1, nchains) )
+  #temp_inits <- lapply(temp_inits, lapply, tweak_inits)
+  
+  #if(length(temp_inits) == 0 ) { stop('No initial values found!')}
+  
+  # -- run stan ---------------------------------------------------------------------------------------------------#  
+  
+  save_file <- file.path( output_path, paste(do_spp, do_vr, do_model, do_lambda,  nchains, sep = '_'))
+  
+  print(paste('data list has', length(data_list), 'variables'))
+  
+  if ( length(initial_fit) > 0 ) { 
+    print(paste('initial fit being used', initial_fit ))
+    initial_fit <- readRDS(head( initial_fit ) )
+    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter, pars = pars)
+  }else{   
+    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars)
+  }
+  
+  # -- output -----------------------------------------------------------------------------------------------------#
+  
+  return(temp_fit)
+  
+}

@@ -1,7 +1,7 @@
 data{
   // training datalist, historical observations 
   int<lower=0> N;             // observations
-  vector[N] Y;  // observation vector
+  int<lower=0,upper=1> Y[N];  // observation vector
   vector[N] X;                // size vector
   int<lower=0> G;             // groups
   matrix[N, G] gm;            // group dummy variable matrix 
@@ -12,20 +12,20 @@ data{
   int<lower=0> spp;           // focal species 
   int<lower=0> Covs;          // climate effects 
   matrix[N, Covs] C;          // climate matrix 
-  real<lower=0> tau_beta;    // prior sd for climate effects
+  real<lower=0> tau_beta;     // prior sd for climate effects 
   
   // holdout datalist, modern observations 
   int<lower=0> Nhold;
-  vector[Nhold] Yhold;
+  int<lower=0,upper=1> Yhold[Nhold];
   int<lower=0> nyrshold;            // years out
   int<lower=0> yidhold[Nhold];      //year out id
-  matrix[Nhold, G] gmhold;          // group dummy variable matrix
+  matrix[Nhold, G] gmhold;          // group dummy variable matrix 
   vector[Nhold] Xhold;
   matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
-  matrix[Nhold, Covs] Chold;        // climate matrix
+  matrix[Nhold, Covs] Chold;        // climate matrix 
+  
 }
 parameters{
-  // for training data model  
   vector[G] bg;                     // varying group effects with first group as intercept 
   vector[nyrs] a_raw;
   real b1_mu;
@@ -34,8 +34,6 @@ parameters{
   real<lower=0> sig_b1;
   vector[Wcovs] w;
   vector[Covs]  b2; 
-  real<lower=0> tau; 
-  real<lower=0> tauSize; 
 }
 transformed parameters{
   // for training data model  
@@ -45,72 +43,64 @@ transformed parameters{
   real mu[N];
   vector[N] crowdEff;
   vector[N] climEff; 
-  vector[N] sigma;
   
-  // for training data model -----------------------------------
   gint <- gm*bg;
   crowdEff <- W*w;
   climEff  <- C*b2;
   
+  // reparamaterize the year effects parameters  
+  a <- 0 + sig_a*a_raw;
   b1 <- b1_mu + sig_b1*b1_raw;
-  a  <- 0 + sig_a*a_raw; 
-  
+
   for(n in 1:N){
-    mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
-    sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
+    mu[n] <- inv_logit(gint[n] + a[yid[n]]  + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n]);
   }
-  
+
 }
 model{
   // Priors
   bg ~ normal(0,10);
   b1_mu ~ normal(0,10);
   sig_a ~ cauchy(0,5);
-  sig_b1 ~ cauchy(0,5);
+  sig_b1 ~ cauchy(0,4);
   a_raw ~ normal(0,1);
   b1_raw ~ normal(0,1);
-  tau ~ normal( 0, 1); 
-  tauSize ~ normal(0,1);
   w ~ normal(0,10);
   b2 ~ normal(0,tau_beta); 
-    
+  
   // Likelihood
-  Y ~ normal(mu, sigma);
+  Y ~ binomial(1,mu);
 }
 generated quantities {
   // hold out predictions
   vector[N] log_lik;                          // for fitted data
   vector[Nhold] log_lik2;                     // for heldout data 
-
+  
+  // hold out predictions 
   vector[nyrshold] a_out;
   vector[nyrshold] b1_out;
-  real muhat[Nhold];
   vector[Nhold] gint_out;
-  vector[Nhold] y_hat;                        // pointwise predictions
+  real muhat[Nhold];
   vector[Nhold] crowdhat;
   vector[Nhold] climhat;
-  vector[Nhold] sigmahat;
-
-  # fitted data log_lik 
+  
   for(n in 1:N){
-      log_lik[n] <- normal_log(Y[n], mu[n], sigma[n]);
+    log_lik[n] <- bernoulli_log(Y[n], mu[n]); 
   }
-    
-  // 1. Holdout data predictions
+  
+  // 1. Holdout data predictions 
   gint_out  <- gmhold*bg;
-  crowdhat  <- Whold*w;
-  climhat   <- Chold*b2;
-
+  crowdhat <- Whold*w;
+  climhat  <- Chold*b2; 
+  
   for( i in 1:nyrshold){
-    a_out[i] <- normal_rng(0, sig_a);         // draw random year intercept
-    b1_out[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect
+    a_out[i] <- normal_rng(0, sig_a);         // draw random year intercept 
+    b1_out[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect 
   }
-
+  
   for(n in 1:Nhold){
-      muhat[n]    <- gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n] + climhat[n];
-      sigmahat[n] <- sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001)));
-      y_hat[n]    <- normal_rng(muhat[n], sigmahat[n]);
-      log_lik2[n]  <- normal_log(Yhold[n], muhat[n], sigmahat[n]);
+    muhat[n] <- inv_logit(gint_out[n] + a_out[yidhold[n]] + b1_out[yidhold[n]]*Xhold[n] + crowdhat[n] + climhat[n]);
+    log_lik2[n] <- bernoulli_log(Yhold[n], muhat[n]);
   }
-
 }
+
