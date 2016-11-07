@@ -48,3 +48,6 @@ data/temp_data/POSE_survival.RDS
 data/temp_data/PSSP_growth.RDS
 analysis/gather_WAIC_scores_oos.R
 analysis/submit_gather_WAIC_scores_oos.sh
+output/missing_runs_oos.csv
+analysis/run_missing_stan_runs_oos.R
+analysis/submit_missing_WAIC_oos.sh

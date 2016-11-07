@@ -18,4 +18,4 @@ WAIC_scores <- do.call( rbind , lapply( files, read.csv)  )
 
 # output ------------------------------------------------------------------------------------
 
-write.csv(WAIC_scores , '../output/WAIC_scores.csv', row.names = FALSE)
+write.csv(WAIC_scores , '../output/WAIC_scores_oos.csv', row.names = FALSE)

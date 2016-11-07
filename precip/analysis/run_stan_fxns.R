@@ -31,11 +31,11 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   
   if(length(data_list) == 0) { stop('No data!!!')}
 
-  if(predict) { 
-    models <- dir(file.path(model_path, do_vr), '[0-9]_predict.stan', full.names = TRUE)
-  } else { 
+  # if(predict) { 
+  #   models <- dir(file.path(model_path, do_vr), '[0-9]_predict.stan', full.names = TRUE)
+  # } else { 
     models <- dir(file.path(model_path, do_vr), '[0-9].stan', full.names = TRUE)
-  }
+  # }
   
   
   # -- select model and initial vals -----------------------------------------------------------------------------# 
@@ -69,9 +69,9 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   if ( length(initial_fit) > 0 ) { 
     print(paste('initial fit being used', initial_fit ))
     initial_fit <- readRDS(head( initial_fit ) )
-    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter, pars = pars)
+    temp_fit <- stan (fit = initial_fit, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter, pars = pars, seed = 1)
   }else{   
-    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars)
+    temp_fit <- stan (file = m, model_name = basename(save_file), data = data_list, chains = nchains, iter = niter , pars = pars, seed = 1, cores = 4)
   }
   
   # -- output -----------------------------------------------------------------------------------------------------#

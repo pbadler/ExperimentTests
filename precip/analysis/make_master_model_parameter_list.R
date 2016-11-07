@@ -23,8 +23,8 @@ make_pars_string <- function( x ) {
 }
 
 survparms1 <- c('a','b1_mu','b1','w','b2', 'mu','muhat','log_lik','log_lik2', 'bg','sig_a','sig_b1')
-growparms1 <- c('a','b1_mu','b1','w','b2', 'mu','muhat','log_lik','log_lik2','bg','sig_a','sig_b1','sigma', 'sigmahat')
-recparms1 <- c('a','theta','u','w', 'b2','log_lik','log_lik2', 'lambda_pred', 'bg', 'sig_a')
+growparms1 <- c('a','b1_mu','b1','w','b2', 'mu','muhat','log_lik','log_lik2','bg','sig_a','sig_b1','sigma', 'sigmahat', 'tau', 'tauSize')
+recparms1 <- c('a','theta','u','w', 'b2','log_lik','log_lik2','lambda', 'lambda_pred', 'bg', 'sig_a')
 
 smodels <- data.frame(model = 1, 
                       vital_rate = 'survival',
