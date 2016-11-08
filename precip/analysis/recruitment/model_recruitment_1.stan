@@ -45,7 +45,7 @@ transformed parameters{
   vector[nyrs] a; 
   vector[Nspp] mc;
   vector[Nspp] sdc;
-  matrix[N, Nspp] trueP2_scaled;
+  //matrix[N, Nspp] trueP2_scaled;
   
 
   
@@ -56,23 +56,23 @@ transformed parameters{
     for( j in 1:Nspp)
       trueP2[n, j] <- sqrt(trueP1[n, j]);
   
-  for(j in 1:Nspp){
-    {
-      vector[N] temp;
-      for(n in 1:N){ 
-        temp[n] <- trueP2[n, j];
-      }
-      mc[j] <- mean(temp);
-      sdc[j] <- sd(temp );
-    }
-  }
+  // for(j in 1:Nspp){
+  //   {
+  //     vector[N] temp;
+  //     for(n in 1:N){ 
+  //       temp[n] <- trueP2[n, j];
+  //     }
+  //     mc[j] <- mean(temp);
+  //     sdc[j] <- sd(temp );
+  //   }
+  // }
   
-  for(j in 1:Nspp)
-    for(n in 1:N)
-      trueP2_scaled[n, j] <- (trueP2[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
+  // for(j in 1:Nspp)
+  //   for(n in 1:N)
+  //     trueP2_scaled[n, j] <- (trueP2[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
   
   gint     <- gm*bg;
-  coverEff <- trueP2_scaled*w;
+  coverEff <- trueP2*w;
   a  <- 0 + a_raw*sig_a; 
 
   for(n in 1:N){
@@ -110,7 +110,7 @@ generated quantities{
   matrix[Nhold, Nspp] trueP2_pred;
   vector[Nhold] gint_pred; 
   vector[Nhold] climEff_pred; 
-  matrix[Nhold, Nspp] trueP2_pred_scaled;
+  //matrix[Nhold, Nspp] trueP2_pred_scaled;
 
   for(n in 1:N){ 
     log_lik[n] <- neg_binomial_2_log(Y[n], lambda[n], theta); 
@@ -126,11 +126,11 @@ generated quantities{
     for(j in 1:Nspp)
       trueP2_pred[n, j] <- sqrt(trueP1_pred[n, j]);
   
-  for(j in 1:Nspp)
-    for(n in 1:Nhold)
-      trueP2_pred_scaled[n, j] <- (trueP2_pred[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
+  // for(j in 1:Nspp)
+  //   for(n in 1:Nhold)
+  //     trueP2_pred_scaled[n, j] <- (trueP2_pred[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
 
-  coverEff_pred <- trueP2_pred_scaled*w;
+  coverEff_pred <- trueP2_pred*w;
 
   for( i in 1:nyrshold)
     a_pred[i] <- normal_rng(0, sig_a); // draw random year intercept
