@@ -75,7 +75,7 @@ for(i in 1:4){
   matplot(covMeans$year[1:6],cbind(covMeans[1:6,2+i],covMeans[1:6,6+i], # control plots
           covMeans[doRows,2+i],covMeans[doRows,6+i],covMeans[doRows,10+i]),
           xlab="",ylab="",type="o",
-          col=c(color1,color2,color1,color2,color3),xaxt="n",
+          col=c(color1,color2,color1,color2,color3),
           pch=c(15,15,0,0,0), cex=1.1, 
           lty=c("solid","dotted","solid","dotted","dotted"))   # removal plots
   title(main=sppNames[i],adj=0,font.main=4) 
@@ -93,7 +93,7 @@ mtext("Cover (%)",side=2,line=0.5,outer=T,cex=1.1)
 dev.off()
 
 ###
-### plot growth rates chronologically 
+### plot growth rates chronologically
 ###
 
 plotObsPred<-function(doSpp,mytitle,doLegend=F){
@@ -141,6 +141,43 @@ png(figName,units="in",height=6,width=8.5,res=600)
   mtext(side=2,expression(paste("Mean ",log(Cover[t+1]/Cover[t]))),line=0, outer=T,cex=1.1)
 
 dev.off()
+
+
+
+###
+### plot observations vs predictions 1:1
+###
+
+
+myCols=c("black","dodgerblue3","firebrick4","darkorange")
+myPch=c(15:18)
+myPch2=c(0,1,2,5)
+myLims=c(-1.5,1.25)
+
+figName <- ifelse(max.CI==F,"cover_change_1to1.png","cover_change_1to1_maxCI.png" )
+png(figName,units="in",height=4,width=8,res=600)
+
+par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+matplot(obs.pgr.mean[1:5,3:6],pred.pgr.mean[1:5,3:6],ylim=myLims,xlim=myLims,
+        xlab="",ylab="",
+        type="p",pch=myPch,col=myCols,pty="s")
+abline(0,1)
+mtext("(A)",side=3,adj=0,line=0.5)
+legend("topleft",sppNames,pch=myPch,col=myCols,bty="n")
+matplot(obs.pgr.mean[6:10,3:6],pred.pgr.mean[6:10,3:6],ylim=myLims,xlim=myLims,
+        xlab="",ylab="",
+        type="p",pch=myPch,col=myCols,pty="s")
+for(i in 1:4){
+  points(obs.pgr.mean[6:10,2+i],pred.trt.pgr.mean[6:10,2+i],pch=myPch2[i],col=myCols[i])
+}
+abline(0,1)
+mtext("(B)",side=3,adj=0, line=0.5)
+
+mtext("Observed",side=1,outer=T,line=0.5,cex=1.2)
+mtext("Predicted",side=2,outer=T,line=0.5,cex=1.2)
+
+dev.off()
+
 
 setwd("..")
  
