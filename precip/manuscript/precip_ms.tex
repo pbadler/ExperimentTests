@@ -1,0 +1,962 @@
+%---------------------------------------------
+% This document is for pdflatex
+%---------------------------------------------
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amsfonts,amssymb,graphicx,natbib,setspace,authblk}
+\usepackage{float}
+\usepackage[running]{lineno}
+\usepackage[vmargin=1in,hmargin=1in]{geometry}
+
+\usepackage{enumitem}
+\setlist{topsep=.125em,itemsep=-0.15em,leftmargin=0.75cm}
+
+\usepackage{gensymb}
+
+\usepackage[compact]{titlesec} 
+
+\usepackage{bm,mathrsfs}
+
+\usepackage{ifpdf}
+\ifpdf
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\usepackage{epstopdf}
+\else
+\DeclareGraphicsExtensions{.eps}
+\fi
+
+\renewcommand{\floatpagefraction}{0.98}
+\renewcommand{\topfraction}{0.99}
+\renewcommand{\textfraction}{0.05}
+
+\clubpenalty = 10000
+\widowpenalty = 10000
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%% Just for commenting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[usenames]{color}
+\newcommand{\new}{\textcolor{red}}
+\newcommand{\comment}{\textcolor{blue}}
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\ba}{\begin{equation} \begin{aligned}}
+\newcommand{\ea}{\end{aligned} \end{equation}}
+
+\def\X{\mathbf{X}}
+
+\floatstyle{boxed}
+\newfloat{Box}{tbph}{box}
+
+\title{Weak interspecific interactions in a sagebrush steppe: Evidence from observational data, population models, and a removal experiment}
+
+\author[a]{Andrew R. Kleinhesselink\thanks{Corresponding author. Department of Wildland Resources and the Ecology Center, Utah State University, Logan, Utah Email: arklein@aggiemail.usu.edu}}
+\author[a]{Peter B. Adler}
+\author[a]{Andrew Tredennick}
+\affil[a]{Department of Wildland Resources and the Ecology Center, Utah State University, Logan, Utah}
+
+
+\renewcommand\Authands{ and }
+
+\date{Last compile: \today} 
+
+\sloppy
+
+\renewcommand{\baselinestretch}{1.25}
+
+\begin{document}
+
+\maketitle
+
+\textbf{\large{Keywords:}} Coexistence, competition, integral projection model. 
+
+\bigskip \textbf{Running title:} Weak interspecific interactions
+
+\smallskip \textbf{Article type:} Letter
+
+\smallskip \textbf{Authorship statement:} ARK and PBA designed the experiment and supervised data collection. AT helped with the design of the data analysis.
+\smallskip 
+
+\setlength{\parindent}{8ex}
+
+\newpage
+
+\begin{doublespacing} 
+
+\linenumbers
+
+\section*{Summary}
+
+\begin{enumerate}
+\item Climate is thought to be an important driver of population ecology however it can be difficult to determine exactly which aspects of climate affect populations and at what vital rates.  Tests of whether statistical models fit to climate and population data can accurately predict population responses to natural and experimental climate manipulations have rarely been conducted.   
+\item Using long-term observational data collected from the 1920's to the 1950's from a sagebrush steppe plant community, previous research has reported a wide variety of climate effects on four dominant plant species. We tested whether statistical models fit to the historical data could predict the population response of plants in these original plots to natural and experimentally imposed climate variation some 60 years after the historical data collection ended. New plots in the same location where the historical data were collected were assigned to either drought or irrigation treatments imposed using rainfall shelters and automated sprinklers. The original plots were also monitored and served as a control. We modeled survival, growth and recruitment as functions of spring temperature and spring and summer soil moisture. We then used statistical models fitted to the historical data to predict the year and treatment effects observed in contemporary data.  
+\item  For survival and recruitment, the treatment effects were never significantly positive, indicating that competitive release was not underestimated by the interspecific effects included in the baseline model. For  \textit{Poa secunda} recruitment, the removal treatment was actually negative, indicating that our baseline model overestimated competitive release.
+\item For growth, the removal treatment effect was significant and positive for two species, \textit{Poa secunda} and \textit{Pseudoroegneria spicata}, indicating that the baseline model underestimated competitive release. However, including information about the location of these grass individuals with respect to removed \textit{Artemisia} failed to improve the growth regressions, raising questions about the mechanisms driving the positive response to removal.
+\item For three of the four species, individual based models and integral projections models based on the vital rate regressions showed that removal treatment effects had little impact on population growth rates or simulated equilibrium cover following a species removal. For \textit{P. spicata}, the population models that included effects of \textit{Artemisia} removal projected greater competitive release than the baseline models. 
+\item \emph{Synthesis}: Although models based on observational data did not perfectly predict species responses to removal, overall the results increase our confidence that competitive release is in fact small for at least three of our four study species. The implication is that interspecific resource competition is not the primary factor determining the dynamics of this community.
+
+\end{enumerate}
+
+
+\section*{Introduction}
+
+Climate is widely considered one of the most powerful external forces driving changes in species abundance across space and time \citep{teller_linking_2016}.  The effects of climate on populations and ecosystems are most apparent at the largest scales in space and time: climate determines the distribution of ecosystems, treelines and the the range limits of many species \citep{}.  The paleoecological record shows that long-term climate change lead to changes in species abundance and changes in species' ranges. Nevertheless, for many species it is difficult to determine how annual climate variation affects their populations and demographic rates \citep{ehrlen_advancing_2016}. Observational data on species performance across many different years can provide some information on how climate might affect population abundance \citep{dalgleish_climate_2010,ehrlen_advancing_2016}. But many years of data are needed to reliably detect climate effects, especially when climate effects are weak and often correlated amongst themselves \citep{teller_linking_2016,gerber_optimal_2015}. Understanding the effects of climate on populations is increasingly important, however, if we are to understand and predict the effects of climate change on populations. If models fit to historical data can be used to accurately predict the effects of contemporary climate variation on populations, as well as the effects of experimental climate manipulations, it would be strong confirmation that the climate effects they describe are real.  
+
+To test whether our models, which are based on observational data, accurately predict the effects of natural climate variation, we conducted a precipitation manipulation experiment in a sagebrush steppe. We studied the responses of three perennial grass species and a shrub species to natural climate variation over 10 years and experimental drought and irrigation treatments over four years. We addressed two research questions: First, how much do the  survival, growth or recruitment of our target species differ between the precipitation manipulation treatments? If our experiment does affect species vital rates we interpret that as strong evidence that variation in precipitation should have an effect on populations. Our second question is whether statistical models parameterized from historical observational data can accurately predict the effects of modern climate variation and precipitation manipulation on species performance? If models based on observational effectively capture the effects of climate on species performance, they should also predict the effects of natural climate variation in the contemporary dataset as well as the effects of precipitation treatments in the experiment. 
+
+\section*{Methods}
+
+\subsection*{Study site and data set description}
+
+The U.S. Sheep Experiment Station (USSES) is located 9.6 km north of Dubois, Idaho (44.2\degree N, 112.1\degree W), 1500 m above sea level. During the period of data collection (1926 – 1957), mean annual precipitation was 270 mm and mean temperatures ranged from -8\degree C (January) to 21\degree C (July). The vegetation is dominated by the shrub, \textit{Artemisia tripartita}, and the C3  perennial bunchgrasses \textit{Pseudoroegneria spicata}, \textit{Hesperostipa comata}, and \textit{Poa secunda}. These four species, the focus of our models, accounted for over 70\% of basal cover (grasses) and 60\% of canopy cover (shrubs and forbs). 
+
+Scientists at the USSES established 26 1-m$^2$ quadrats between 1926 and 1932. Eighteen quadrats were distributed among four ungrazed exclosures, and eight were distributed in two paddocks grazed at medium intensity spring through fall. All quadrats were located on similar topography and soils. In most years until 1957, all individual plants in each quadrat were mapped using a pantograph (Blaisdell 1958). The historical data set is public and available online \citep{zachmann_mapped_2010}. In 2007, we located 14 of the original quadrats, all of which are inside permanent livestock exclosures, and resumed annual mapped censusing using the traditional pantograph method. 
+
+We extracted data on survival, growth, and recruitment from the mapped quadrats based on plants' spatial locations. Our approach tracks genets, which may be composed of multiple polygons, as they fragment and/or coalesce. Each mapped polygon is classified as a surviving genet or a new recruit based on its spatial location relative to genets present in previous years \citep{lauenroth_demography_2008}. We modeled vital rates using data from 22 year-to-year transitions between 1926 and 1957, and nine year-to-year transitions from 2007 to 2016. Only four quadrats were observed for the first two transitions in the 1920's, while at least 14 quadrats were observed for all subsequent transitions. 
+
+\subsection*{Precipitation experiment}
+In spring 2011, in a large exclosure containing six of the historical permanent quadrats, we selected locations for an additional 16 quadrats for the precipitation experiment. We avoided plots falling on hill slopes, areas with greater than 20\% bare rock, or with over 10\% cover of the woody shrubs \textit{Purshia tridentata} or \textit{Amelanchier utahensis}. New plots were established in pairs, and one plot per pair was randomly assigned to either the precipitation reduction or the precipitation addition treatment. We mapped the quadrats in June, 2011 and then built the rainfall shelters and set-up the irrigation systems in the fall of 2011. We used a rain-out shelter and automatic irrigation design described in \citep{gherardi, yahdjian_rainout_2002}. Each rain-out shelter covered an area of 2.5 by 2 m and consisted of transparent acrylic shingles held up over the plot to channel 50\% of incoming rainfall off of the plot and into 75 l reservoirs. The collected water was automatically pumped out of the reservoirs and sprayed onto paired irrigation treatment plots. Pumping was initiated automatically with float switches that were triggered when water levels in the reservoirs were approximately 20 l, or equivalently irrigation was triggered once for every 6 mm of rainfall collected. We disconnected the irrigation pumps in late fall each year and re-connected them in April.  The drought shelters remained in place throughout the year.  
+
+We monitored soil moisture and air temperature in four of the precipitation experiment plot pairs using Decagon Devices (Pulman Washington) 5TM and EC-5 soil moisture sensors and 5TE temperature sensors.  We installed two soil moisture sensors in each monitored plot at 5 cm and two at 25 cm deep in the soil.  Air temperature was measured underneath the roofing of the shelter at 30 cm above ground. Data were logged automatically every four hours. 
+
+We conducted a simple statistical analysis to determine the effect of the rain-out shelters and irrigation on the observed soil moisture.  
+
+We conducted a simple statistical analysis of differences in cover trends on treatment plots. The response variable for this analysis was year-to-year change in cover at the quadrat scale, calculated as $log(Cover_{t+1}/Cover_t)$. We tested for the effect of precipitation treatment on this measure of cover change with a linear mixed effects model in the \textit{lme4} package \citep{Bates2015} of \textit{R}, including year and quadrat as random effects. We considered the precipitation treatment effects to be significant when the 95\% confidence interval on the estimated coefficient did not overlap zero.
+
+
+\subsection*{Soil moisture modeling}
+
+We expected that our precipitation manipulation experiment would have effects on plants through the mechanism of altering available soil moisture during the growing season.  Because we do not have direct measurements of soil moisture for each year of observed plant cover, we used the SOILWAT soil moisture model to estimate daily soil moisture at the USSES from 1925 to the present \citep{Parton 1978}. We used an enhanced version of soilwat that has recently been developed for use in semi-arid shrubland ecosystems \citep{Bradford}. SOILWAT uses daily weather data, ecosystem specific vegetation properties and site specific soil properties to estimate water balance processes. SOILWAT specifically estimates rainfall interception by vegetation, evaporation of intercepted water, snow melt and snow redistribution, infiltration into the soil, percolation through the soil, bare-soil evaporation, transpiration from each soil layer, and drainage. We parameterized SOILWAT with the generic sagebrush steppe vegetation parameters and site specific soil texture and bulk density data. We used daily weather data collected at the USSES from 1925 until the present as weather forcing data for the SOILWAT predictions. The USSES climate station (station id: GHCND:USC00102707) is located within 2 km of the research plots.  We downloaded daily and monthly tmin, tmax, and precipitation data from the National Climate Data Centers online database. 
+
+Because the 
+
+We averaged daily soil moisture predictions for 5, 25 and 30 cm soil layers, and daily mean temperature, and then aggregated these quarterly.    
+
+
+\subsection*{Statistical models of vital rates}
+
+Our regression models for survival, growth and recruitment follow previous work \citep{adler_coexistence_2010,chu_large_2015}. We model the survival probability of an individual genet as a function of genet size, the neighborhood-scale crowding experienced by the genet from both conspecific and heterospecific genets, temporal variation among years, and permanent spatial variation among groups of quadrats (`group'; here means a set of nearby quadrats located within one pasture or grazing exclosure). In this analysis we only include crowding from the four main focal species. We incorporated eight climate effects in each of our vital rate regressions: the 
+
+
+
+Formally, we modeled the survival probability, $S$, of genet $i$ in species $j$, group $g$, and removal treatment $h$, from time $t$ to $t+1$  as
+\begin{equation}
+\mbox{logit}(S_{ijgh,t}) = \gamma_{j,t}^S + \varphi_{jg}^S+  \chi_{jh}^S  + \beta_{j,t}^S u_{ij,t} +  
+\left \langle \boldsymbol{\omega}_{j,t}^S, \boldsymbol{W}_{ij,t} \right \rangle 
+\label{eqn:survReg}
+\end{equation}
+where $\gamma$ is a time-dependent intercept, $\varphi$ is the coefficient for the effect of spatial location group, $\chi$ is the removal treatment effect, $\beta$ is the coefficient that represents the effect of log genet size, $u$, on survival. $\boldsymbol{\omega}$ is a vector of interaction coefficients which determine the impact of crowding, $\boldsymbol{W}$, by each species on the focal species. The vector $\boldsymbol{W}$ includes crowding from the four dominant species,  \textit{A. tripartita}, \textit{P. spicata}, \textit{H. comata}, and \textit{Poa secunda}, as well as two covariates representing total crowding from (1) all other perennial grasses and shrubs, which were mapped as polygons, and (2) all forb species, which were mapped as points. 
+$\left \langle \boldsymbol{x, y} \right \rangle$ denotes the inner product of vectors $\boldsymbol{x}$ and $\boldsymbol{y}$, 
+calculated as \texttt{sum(x*y)} in R.
+
+Our growth model has a similar structure. The change in genet size from time $t$ to $t+1$ , conditional on survival, is given by:
+\begin{equation}
+u_{ijgh,t+1} = \gamma_{j,t}^G + \varphi_{jg}^G+  \chi_{jh}^G  + \beta_{j,t}^G u_{ij,t} + 
+\left \langle  \boldsymbol{\omega}_{j,t}^G, \boldsymbol{W}_{ij,t} \right \rangle + \varepsilon_{ij,t}^G .
+\label{eqn:growReg}
+\end{equation}
+To capture non-constant error variance in growth, we modeled the variance $\varepsilon$  about the growth curve (\ref{eqn:growReg})  as a nonlinear function of predicted genet size:
+\begin{equation}
+Var(\varepsilon_{ij,t}^G) = a \exp ^{(bu_{ij,t+1})} .
+\label{eqn:growVar}
+\end{equation}
+
+We model the crowding experienced by a focal genet as a function of the distance to and size of neighbor genets. In previous work, we assumed that the decay of crowding with neighbor distance followed a Gaussian function \citep{chu_large_2015}, but here we use a data-driven approach \citep{teller_linking_2016}. We model the crowding experienced by genet $i$ of species $j$ from neighbors of species $m$ as the sum of neighbor areas across a set of concentric annuli, $k$, centered at the plant,
+\begin{equation}
+w_{ijm,k} = F_{jm}(d_{k})A_{i,k}     
+\label{eqn:wik}
+\end{equation}
+where $F_{jm}$ is the competition kernel (described below) for effects of species $m$ on species $j$, 
+$d_{k}$ is the average of the inner and outer radii of annulus $k$, 
+and $A_{im,k}$ is the total area of genets of species $m$ in annulus $k$ around genet $i$. The total crowding on 
+genet $i$ exerted by species $m$ is
+\begin{equation}
+W_{ijm}  =\sum_k {w_{ijm,k}} .
+\label{eqn:wijm}
+\end{equation} 
+Note that $W_{ijj}$ gives intraspecific crowding. The $W$'s are then the components of the $\boldsymbol{W}$ vectors 
+introduced as covariates in the survival (\ref{eqn:survReg}) and growth (\ref{eqn:growReg}) regressions.
+
+We assume that competition kernels $F_{jm}(d)$ are non-negative and decreasing, so that distant plants have less effect 
+than close plants. Otherwise, we let the data dictate the shape of the kernel by fitting a spline model 
+using the methods of Teller et al. (2016). The shape of $F_{jm}$ is determined by a set of spline basis coefficients $\vec{b}_{jm}$
+and a smoothing parameter $\eta$ that controls the complexity of the fitted kernel. 
+Demographic models such as \eqref{eqn:survReg} then have $\gamma$, $\varphi$, $\chi$ , 
+$\beta$, $\boldsymbol{\omega}$, $\vec{b}$ and $\eta$ as parameters to be fitted. We implemented this in the statistical computing environment, \texttt{R}, 
+by making the spline coefficients and $\eta$ the arguments of an objective function that computes $\boldsymbol{W}$ using the input spline coefficients, 
+calls the model-fitting functions \texttt{lmer} and/or \texttt{glmer} to fit the other parameters in the survival and growth regressions, 
+and returns an approximate AIC value and model degrees of freedom ($df$) for survival and growth combined. We used the $\vec{b}$ values at the smoothest 
+local minimum of AIC as a function of $df$, as in \cite{teller_linking_2016}. This approach assumes that one measure of crowding affects 
+survival and growth. In addition, for fitting the kernels we assumed that survival and growth depended only on intraspecific crowding, and thus only fitted the
+within-species competition kernels $F_{jj}$. Based on previous work \citep{adler_coexistence_2010}, we set all $F_{mj}$ equal to $F_{jj}$, meaning that 
+the within-species competition kernel for species $j$ is also used to determine the effect of all other species on species $j$. We used data from all historical plots and contemporary control-treatment plots to estimate the competition kernels, which are shown in Fig. \ref{fig:CompKernels}. 
+
+Once we had estimated the competitions kernels, we used them to calculate the values of $\boldsymbol{W}$ for each individual, 
+and fit the full survival and growth regressions, which include the interspecific interaction coefficients, $\boldsymbol{\omega}$. 
+All genets in a quadrat were included in calculating $W$, but plants located within 5 cm of quadrat edges were not used in fitting. 
+We fit the models using the \textit{R-INLA} package for R \citep{rue_approximate_2009}. To explore variations on the growth regressions, such as the addition of a year-by-treatment interaction or information about the locations of individual grasses relative to removed \textit{Artemisia} shrubs, we fit models using the \textit{lmer} function in the \textit{lme4} package for R
+
+We model recruitment at the quadrat level rather than at the individual genet level because the mapped data do not allow us to determine which recruits were produced by which potential parent genets. We assume that the number of individuals, $y$, of species $j$ recruiting at time $t+1$ in the location $q$ follows a negative binomial distribution:
+\begin{equation}
+y_{jq,t+1}= NegBin(\lambda_{jq,t+1},\theta) 	   
+\label{eqn:recrDataModel}
+\end{equation}
+where $\lambda$ is the mean intensity and $\theta$ is the size parameter. In turn, $\lambda$ depends on the composition of the quadrat in the previous year:
+\begin{equation}
+\lambda_{jq,t+1} = C'_{jq,t} \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jm}^R + 
+\left \langle \boldsymbol{\omega}^R , \boldsymbol{\sqrt{C'}_{q,t}} \right \rangle \right) }
+\label{eqn:recrProcessModel}
+\end{equation}
+where the superscript $R$ refers to Recruitment, $C'_{jq,t}$ is the `effective cover' (cm$^2$) of species $j$ in quadrat $q$ at time $t$, $\gamma$ is a time-dependent intercept, $\varphi$ is a coefficient for the effect of spatial location,
+$\chi$ is the removal treatment effect, $\boldsymbol{\omega}$ is a vector of coefficients that determine the strength of intra- and interspecific density-dependence, and $\boldsymbol{C'}$ is the vector of ``effective'' cover of each species in the community. Eqn (\ref{eqn:recrProcessModel}) is essentially the Ricker model for discrete time population growth \citep{ricker_stock_1954}, except that we use the square root of cover in the density-dependent term. We previously used a Ricker equation \citep{adler_coexistence_2010}, but using the square-root transformation instead gave a lower Deviance Information Criterion (DIC) value \citep{spiegelhalter_bayesian_2002} for the recruitment model. Following previous work \citep{adler_coexistence_2010}, we treated year and spatial group variables as random factors, allowing intercepts to vary among years and spatial locations. 
+
+Due to the possibility that plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location, $g$, in which the quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
+
+We ran Hamiltonian-Markov Chain Monte Carlo (HMCMC) simulations in STAN 6.4 \citep{stan} to estimate the recruitment model parameters. Each model was run for 2,000 iterations and four independent chains with different initial values for parameters. We discarded the initial 1,000 samples. Convergence was observed graphically for all parameters, and confirmed by the Brooks-Gelman statistic \citep{brooks_general_1998}. 
+
+For all three vital rate models, we considered the effect of climate covariates to be significant when 95\% posterior
+intervals did not overlap zero. 
+
+All data and R code necessary to reproduce our analysis will be deposited in the Dryad Digital Repository once the manuscript is accepted. The current version of the computer code is available at https://github.com/pbadler/ExperimentTests/tree/master/removals and the data are available at https://bitbucket.org/ellner/driversdata. 
+
+\subsection*{Individual-based models}
+
+The vital rate regressions provide a qualitative test of removal treatment effects: Does removal have an effect on a vital rate that goes above and beyond the effects of species interactions that are explicit in the model? However, the population-level response by each species integrates the effects of the removal treatment on all three vital rates. We used an individual-based model (IBM) to compare observed and predicted changes 
+in population size (cover) from one year to the next. 
+
+To simulate changes in cover in each quadrat from year $t$ to year $t+1$, we initialized the IBM with the actual configuration of the four focal species (genet sizes and locations) observed in year $t$. We then projected the model forward one year, applying the random year effects corresponding to year $t$ and the spatial random effects corresponding to the quadrat of interest. Because we were interested in comparing model predictions to observations, and were not interested in the effects of demographic stochasticity, we used a deterministic version of the model (e.g., recruitment is the $\lambda$ of (\ref{eqn:recrProcessModel}), rather than a random draw from a Poisson distribution with a mean of $\lambda$).
+We first applied the recruitment regression to determine the expected number of new recruits at time $t+1$, which we then multiplied by the mean size of recruits observed for the focal species to get expected cover of new recruits. We then used the survival regression to predict the survival probability of each genet, and the growth regression to predict the change in size of each genet. Expected cover at $t+1$ is expected area of new recruits, plus the sum of the survival probabilities multiplied by the expected sizes. 
+
+For control plots, we used a version of the model with all removal treatment effects set to zero. For removal treatment plots, we generated predictions from two versions of the model, with and without treatment effects set to zero.  We calculated the mean across quadrats of observed log cover change, $log(Cover_{t+1}/Cover_t)$ and compared it to the mean across quadrats of the predicted cover change.
+
+One reason we might observe small effects of the removal treatment is the limited power of our experiment. Perhaps large uncertainty in the estimates of these effects makes it difficult to reject the null hypothesis represented by our baseline model. To address this possibility, we also simulated a version of the model in which we replaced the mean estimate of each removal treatment effect with the parameter value at either the 5\% or 95\% confidence interval, whichever was farthest from zero. This version of the model shows the population-level changes we would expect given maximum removal effects.
+
+\subsection*{Integral projection models}
+
+To quantify the long-term, population-level consequences of the removal effects, we built and then simulated an integral projection model (IPM). In our IPM, the population of species $j$ is represented by a density function $n(u_{j,t})$ which gives the density of genets of size $u$ at time $t$, with genet size on a natural-log scale, i.e. $n(u_{j,t})du$ is the number of genets whose log area is between $u$ and $u+du$, hence their area 
+(on arithmetic scale) is between $exp(u_j)$ and $exp(u_j+du)$. The size distribution function at time $t+1$ is given by
+\begin{equation}
+n(v_{j,t+1})=\int_{L_j}^{U_j} k_j (v_j,u_j,{\vec{n}})n(u_{j,t})   
+\label{eqn:IPM}
+\end{equation}
+where the kernel $k_j (v_j,u_j,\vec{n}_j)$ describes all possible transitions from size $u$ to $v$ and $\vec{n}$ 
+is the set of size-distribution functions for all species in the community. The integral is evaluated over all possible sizes from a 
+lower size limit $L$ to an upper size limit $U$ that extends past the range of observed sizes.   
+
+The kernel is constructed from the fitted survival ($S$), growth ($G$), and recruitment ($R$) models, 
+\begin{equation}
+k_j(v_j,u_j,\vec{n})=S_j(u_j,\vec{n})G_j(v_j,u_j,\vec{n})+R_j(v_j,u_j,\vec{n}) du_j
+\label{eqn:IPM} 
+\end{equation}
+$S$ is given by (Eqn. \ref{eqn:survReg}) and $G$ is given by (Eqn. \ref{eqn:growReg}), using an expected neighborhood crowding
+index calculated from the size distributions of the competing species. In the vital rate regressions and in the IBM, each 
+individual has a unique neighborhood crowding index based on the spatial locations and sizes of neighboring plants. This 
+measure cannot be extended to the IPM, which tracks individual size but not location. Instead we used a 
+mean-field approximation that captures the essential features of spatially-explicit neighborhood interactions \citep{adler_coexistence_2010}. 
+We found that in both the observed data and IBM simulations, heterospecific individuals were approximately randomly distributed with respect to each other, 
+but conspecific individuals displayed a non-random, size-dependent patterns: small genets were randomly distributed, while large genets 
+were segregated from each other. The overdispersion of large conspecific genets was introduced into the IPM 
+with a 'no-overlap' rule \citep{adler_coexistence_2010}. In \ref{suppMethods} we explain how the spline competition kernels with the no-overlap rule kernels were used to compute neigbhorhood crowding index as a function of individual size for the IPM.  
+
+For recruitment in the IPM, the factor $ \Phi_j  = \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jm}^R + 
+\left \langle \boldsymbol{\omega}^R , \boldsymbol{\sqrt{C'_{q,t}}} \right \rangle \right) }$
+in eqn. (\ref{eqn:recrDataModel}) gives the expected 
+area of new recruits per quadrat, per unit area of parents. To incorporate this recruitment function into the IPM, we assumed that individual fecundity increases linearly with individual area (equal to $e^u$ for a size-$u$ individual). The recruitment kernel is thus
+$R_j(v_j,u_j,\vec{n})=c_{0,j}(v_j)e^{u_j}\Phi_j$ \citep{adler_coexistence_2010} where $c_{0,j}$ is the
+size distribution of new recruits. $\Phi_j$ is calculated from eqn. (\ref{eqn:recrDataModel}) with total cover values computed from the population densities as $C'_{j,t} = \int e^u n_j(u,t) du$. 
+
+We simulated the IPM to estimate equilibrium abundances under three different scenarios. For all IPM simulations, we set the spatial random effects to zero, meaning that we are simulating dynamics on a hypothetical, average site. The first scenario featured all four species and our ``baseline'' model for control plots (no removal effects). We initialized all species with arbitrarily low cover and ran the model for 500 time steps (years) to allow the community to reach an equilibrium. To incorporate temporal environmental variation, at each time step we randomly selected one of the 30 sets of random year effects for the survival, growth and recruitment models (``kernel selection'' in the terminology of \citealt{metcalf_statistical_2015}). We calculated the equilibrium cover for each species by simulating an additional 2000 time steps and averaging each species' cover over this period. For the second scenario, we set the cover of \textit{A. tripartita} to zero and then repeated the procedure. This simulation estimates the competitive release of grasses following \textit{A. tripartita} removal according to the baseline model (no removal effects). For the third scenario, we again set  \textit{A. triparitia} to zero, but this time we projected the model using the vital rate regressions that include removal effects. If our baseline model successfully predicts competitive release observed in the removal experiment, then the results of the second and third scenarios should be similar. However, to the extent that the baseline model underestimates (or overestimates) the actual competitive release, the results of the second and third scenarios will differ. As with the IBM, we repeated these simulations using maximum removal treatment effects represented by parameters values at the 5\% or 95\% confidence limit farthest from zero. We did not simulate long-term \textit{A. tripartita} response to grass removal because the vital rate regressions for \textit{A. tripartita} showed that the baseline model effectively predicted removal effects.
+
+
+\section*{Results}
+
+During the period of our experiment, annual water-year (October-September) precipitation fell within the 5\% - 95\% quantiles of the long-term mean, although more years fell below the mean than above it (\ref{fig:climate}a). However, annual mean temperatures were consistently warm relative to the long-term mean, and two years were warmer than the 95\% quantile (\ref{fig:climate}b).  
+
+\subsection*{Cover trends}
+
+Trends in cover by species and removal treatment were variable. For example, grass removal had little effect on the cover of \textit{A. tripartita} 
+(Fig. \ref{fig:CoverTrends}), but shrub removal did appear to cause an increase in the cover of \textit{P. spicata}. 
+We tested the effects of removal on cover by analyzing year-to-year changes in (log) cover, a measure of population growth rate (Fig. \ref{fig:CoverChange}). The removal treatments had no significant effect on 
+\textit{A. tripartita} (95\% confidence interval on removal treatment effect: -0.75, 0.56) or 
+\textit{Poa secunda} (95\% CI: -0.41, 0.25) population growth, but did increase 
+\textit{H. comata} (95\% CI: 0.01, 0.65) and
+ \textit{P. spicata} (95\% CI: 0.01, 0.40) population growth 
+(Table \ref{table:coefficients}). However, these treatment comparisons do not address our questions about whether responses to removal were 
+adequately predicted by models fit to observational data on non-removal plots. 
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=1\textwidth]{treatment_trends_cover}
+\caption{Cover trends by treatment for the four dominant species.  Note the difference in y-axis scale between the canopy cover of \textit{A. tripartita} and the basal cover of the dominant grasses. ``Shrub removal'' refers to removal of \textit{A. tripartita}, and ``Grass removal'' refers to removal of all perennial grasses. The cover of species in treatments from which they are removed (e.g. \textit{A. tripartita} cover in shrub removal plots) is included to show values at the start of the experiment in 2011 and the efficacy of the removal treatments.}
+\label{fig:CoverTrends}
+\end{figure}
+
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=1\textwidth]{cover_change_chrono}
+\caption{Observed and predicted year-to-year changes in cover for the four dominant species. Mean observed changes (averaged across quadrats) are shown in solid symbols, mean predicted changes are shown in open symbols. Values for control and removal plots are blue and red, respectively. Predictions from the ``Baseline'' model do account for effects of local species composition on vital rates, but do not include additional effects of removals. Predictions from the ``Removal'' model include additional treatment effects on vital rates. }
+\label{fig:CoverChange}
+\end{figure}
+
+\subsection*{Vital rates}
+
+Our vital rate models take into account the effects of local species composition and should therefore be able to predict the effect of removals on survival, growth and recruitment without any additional parameters. If the removal treatment effects that we added to these models are statistically significant, it would indicate an effect of removals that goes above and beyond the response predicted by a model based on data from the control plots. For the survival models, the 95\% confidence intervals on the removal effects overlapped zero for all four species (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRsurvival} to \ref{PSSPsurvival}), meaning that the survival probabilities of plants in removal plots can be predicted based on data from control plots. However, for the growth models, the 95\% confidence intervals on the removal effects were positive for \textit{Poa secunda}  and \textit{P. spicata}, meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). In contrast, \textit{Poa secunda} had lower recruitment in removal than controls plots (upper limit of 95\% CI $<0$; Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}).
+
+ \begin{figure}[tbp]
+ \centering
+ \includegraphics[width=1\textwidth]{treatment_tests}
+ \caption{Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% confidence intervals. The removal effect shows response of \textit{A. tripartita} ("ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. }
+ \label{fig:VitalRateTest}
+ \end{figure}
+
+The positive removal effects on \textit{Poa secunda}  and \textit{P. spicata} growth are particularly interesting, because they suggest that models based on observational data may underestimate competitive release. We conducted additional analyses to further explore removal effects on the growth of these two species. First, we classified all individuals of these species as located either inside or outside the limits of \textit{A. tripartita} canopies present in 2011 (before removal). If removal is releasing grasses from \textit{A. tripartita} competition, we would expect individuals located under the shrub canopies to experience a greater effect of removal. However, the location of individuals with respect to \textit{A. tripartita} canopies had no effect on growth of either species (Tables \ref{table:POSEgrowth-inARTR} and \ref{table:PSSPgrowth-inARTR}), meaning that individuals located outside \textit{A. tripartita} canopies responded to removals as much as individuals underneath (removed) canopies. 
+
+Second, we evaluated the possibility that removal effects might be transient. We removed aboveground plant material, but roots of the removed plants remain in the ground and decompose, potentially creating a flush of mineral nutrients. We tested for a transient removal effect by adding a year-by-treatment interaction. For both  \textit{Poa secunda}  and \textit{P. spicata} , we found no sign of a decrease in the removal effect over time (Tables \ref{table:POSEgrowth-byYr} and \ref{table:PSSPgrowth-byYr}).
+
+Third, responses to removals might be poorly predicted by models based on observational data if the removals create local crowding outside the range of historical variation or if the removals break covariances in crowding among species. However, the distribution of crowding observed within control plots easily spans the crowding values observed in removal plots (Fig. \ref{fig:Wscatters}), and we failed to find evidence for strong interspecific covariances in crowding (\ref{suppMethods}).
+
+Finally, we evaluated pre-existing differences in community composition in removal and control plots. In selecting removal plots, our criteria required candidate plots to include a certain amount of our target removal species. Because we adopted the historical plots as our controls, the same criteria were not applied (a control plot might not contain any \textit{A. tripartita}). To quantify resulting differences in pre-treatment (2011) composition, we compared neighborhood crowding at the individual plant level (the $\boldsymbol{W}$ of the growth regression) across treatments. \textit{A. tripartita} crowding and crowding by all subdominant shrub and grass species appeared greater than in the controls, whereas crowding by \textit{H. comata} was lower in removal plots than controls, though it was absent from most \textit{P. spicata} neighborhood in both treatments (Fig. \ref{fig:W-by-treatment}). These pre-existing differences in composition raise the possibility that plots selected for the removal treatments might differ from the control plots in some unobserved covariate that could influence plant performance.
+
+\subsection*{Population-level responses}
+
+To quantify the short-term population-level consequences of removals, we used an IBM to project the cover of each species in each quadrat one year ahead using versions of the model with and without removal treatment effects. Our models tended to under-predict population growth (Fig. \ref{fig:CoverChange}) and population size (Fig. \ref{fig:IBM1step}) for all species, but the difference between predictions from the baseline and removal models varied among species. For \textit{A. tripartita}, both observed and predicted population growth rates were close to zero, and differences in model predictions were small. \textit{H. comata} experienced greater variation in growth rates, but the inclusion of removal treatment effects had little effect on population growth rates. For \textit{Poa secunda} and especially \textit{P. spicata}, the model with removal effects consistently predicted higher population growth than the baseline model (Fig. \ref{fig:CoverChange}), and reduced the underestimates of cover (Fig. \ref{fig:IBM1step}). The version of the model with maximum removal treatment effects (removal coefficients set to the 95\% confidence limit furthest from zero), were qualitatively similar, but further amplified the contrast between predictions of the baseline and removal models for and \textit{P. spicata} (Fig. \ref{fig:IBM1step-maxCI}).
+
+ \begin{figure}[tbp]
+ \centering
+ \includegraphics[width=1\textwidth]{cover_projections_1step}
+ \caption{Observed and predicted cover for each of the four modeled species. Solid lines show mean observed cover averaged across control (blue) and removal treatment (red) quadrats. Dashed lines show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Dotted lines show one-step-ahead predictions from an IBM that includes removal treatment coefficients. }
+ \label{fig:IBM1step}
+ \end{figure}
+
+To quantify the long-term population-level consequences of removals, we used an IPM to project stochastic equilibrium cover. We concentrated on grass species' responses to \textit{A. tripartita} removal, since the growth regressions indicated our baseline model might underestimate competitive release in this situation (our baseline vital rate models worked well in predicting \textit{A. tripartita} responses to grass removal). Using the baseline model, with no removal treatment coeffiicients, the IPM predicts little effect of \textit{A. tripartita} removal on the cover of any grass species (compare gray and brown boxes in Fig. \ref{fig:IPMresults}). Using a model with removal treatment coefficients, the IPM predicts little effect of shrub removal on \textit{Poa secunda} and \textit{H. comata}, but a 2-fold increase in the cover of \textit{P. spicata} (Fig. \ref{fig:IPMresults}). Running a version of the model with maximum removal treatment effects (removal coefficients set to the 95\% confidence limit furthest from zero), resulted in the same qualitative outcome, but a larger increase in \textit{P. spicata} (Fig. \ref{fig:IPMresults-maxCI}). 
+
+ \begin{figure}[tbp]
+ \centering
+ \includegraphics[width=1\textwidth]{boxplots}
+ \caption{Equilibrium cover of the four dominant species simulated by the IPM. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), and green boxes show results from a model with  \textit{A. tripartita} set to zero and removal treatment coefficients included.  }
+ \label{fig:IPMresults}
+ \end{figure}
+ 
+ The equilibrium cover of \text{Artemisia} simulated by the IPM (6.0\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%,\ref{fig:CoverTrends}). Could the small competitive release following simulated \text{Artemisia} removal simply reflect the low \text{Artemisia} cover? To explore this possibility, we increased \text{Artemisia} cover in the baseline simulation by increasing average \text{Artemisia} fecundity. The increased fecundity led to a doubling of \text{Artemisia} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover). 
+
+\section*{Discussion}
+
+Our population models based on historical, observational data reveal weak interspecific interactions \citep{adler_coexistence_2010,chu_large_2015} and, as a result, predict very little competitive release among the four dominant species in a sagebrush steppe. Despite the fact that previous removal studies have reported variable results, ranging from negative effects of removal on remaining species to complete competitive release, we were suspicious of our model's predictions and conducted a removal experiment to test them. The results provide substantial support for our model's predictions.
+
+For three of the four species, we find little or no evidence that models based on observational data underestimate the intensity of interspecific competition. Removal treatment effects were never significant for \textit{A. tripartita} or \textit{H. comata}; our baseline model, which accounts for local neighborhood composition, adequately explained vital rate responses to  removal.  \textit{Poa secunda} showed mixed responses to \textit{Artemisia} removal: removal effects were not significant at the survival stage, were positive at the growth stage, and negative at the recruitment stage (where the estimated effect of \textit{Artemisia} on \textit{Poa} is positive). At the population level, models with and without removal effects projected similar patterns of short (Fig. \ref{fig:IBM1step}) and long-term (Fig. \ref{fig:IPMresults}) dynamics for \textit{H. comata} and \textit{A. tripartita}. For \textit{Poa secunda}, the model with removal effects predicted higher population growth over the short but not the long-term, perhaps because the short-term projections mostly reflect the positive effect of \textit{Artemisia} removal on growth, while the long-term equilibrium are also sensitive to the negative effects of removal on recruitment. Although the baseline model did not always successfully predict removal effects on vital rates, it does appear to successfully capture the population-level consequences of removals on these three species and did not severely underestimate the magnitude of competitive release.
+
+The story is different for the fourth species, \textit{P. spicata}. Both individual growth and short- and long-term population growth were higher in the sagebrush removal treatments than in the control plots, suggesting that our analyses of observational data may underestimate the competitive release that \textit{P. spicata} experiences following \textit{Artemisia} removal. However, the mechanism by which \textit{Artemisia} removal promotes \textit{P. spicata} remains unclear. If  \textit{Artemisia} removal is releasing \textit{P. spicata} from competition, we should expect \textit{P. spicata} individuals that were located beneath \textit{Artemisia} shrubs that we removed to respond more than individuals located away from any shrubs. Yet we found no evidence for such a difference. An alternative explanation involves pre-treatment differences in composition between control plots and  the \textit{Artemisia} removal  plots, which had higher cover of \textit{Artemisia} (see 2011 means in Fig. \ref{fig:CoverTrends}) and higher cover of subdominant grasses and shrubs (Fig. \ref{fig:W-by-treatment}). Perhaps these pre-treatment differences reflect subtle differences in edaphic and environmental factors which could promote \textit{P. spicata} growth. While \textit{P. spicata} appears to show stronger competitive release than our baseline model predicted, the evidence is not conclusive. 
+
+The small competitive release of many species in our system implies that each of the four dominant species we studied are limited by quite different factors. This low niche overlap could reflect strong resource partitioning (Tilman 1982), perhaps combined with variation in the times and locations at which species are taking up those resources. Species-specific responses to spatial and temporal variation in non-resource environmental variables can also weaken interspecific interactions \citep{chesson_mechanisms_2000}, though in a previous study we failed to find evidence of a temporal storage effect in this community \citep{adler_weak_2009}. Interactions with above- or belowground enemies can regulate populations and, given enough species-specificity in the effects of these enemies, decouple interspecific dynamics \citep{hersh_evaluating_2011,janzen_herbivores_1970,connell_role_1971}.  More likely, plants may alter the environment, and even resource availability, in ways that facilitate their neighbors. For example, shade cast by \textit{Artemisia} canopies may reduce evapotranspiration (e.g. \citealt{Barbier2008}). \textit{Artemisia} removal might offest this facilitative effect by reducing resource uptake, resulting in little net change in water balance following removal.  Unfortunately, we did not monitor soil moisture at the fine spatial and temporal resolution necessary to test this hypothesis.
+
+Evidence for weak interspecific interactions and limited competitive release carries interesting implications. If most interspecific interactions are weak, then single-species models may be adequate for forecasting population responses to environmental change \citep{adler_forecasting_2012,kleinhesselink_indirect_2015}. Similarly, differences among species in relative abundance should reflect variation in the strength of intraspecific density dependence more than variation in the strength of interspecific interactions \citep{yenni_strong_2012}. In such a system, effective management and conservation requires understanding the sources and species-specificity of intraspecific density dependence. In fact, an experiment to test our model's skill at predicting release from intraspecific competition could be more important than the test of interspecific competitive release described here.
+
+Our results have given us more confidence that competitive release is quite small for the dominant species in our study system. But for many species in other communities, interspecific competition may still be an important driver. In closed-canopy forests where competition for light is intense, we might have found different results than in our system, in which competition for a number of belowground resources is more important than competition for light. However, a number of recent studies from forests have also found that heterospecific competitive effects are dramatically weaker than conspecific effects \citep{comita_asymmetric_2010,kunstler_plant_2015,johnson_conspecific_2012}. We also expect stronger competitive release in successional systems, or communities in the early stages of community assembly where the process of competitive exclusion is still underway \citep{kokkoris_patterns_1999}. Finally, we might have found stronger competitive release if we could have studied rare species in our system, as long as those species are rare because of niche overlap with stronger competitors. If they are rare because they occupy unique, but narrow, niches, interspecific interactions would still be weak. Determining why interspecific interactions and competitive release are strong in some ecological contexts but weak in others remains a fascinating research problem. 
+  
+\section*{Acknowledgements}
+
+Funding was provided by NSF grants DEB-1353078,and  DEB-1054040 to PBA and DEB 1353039 to SPE, and by the Utah Agricultural Experiment Station (get journal paper number). The USDA-ARS Sheep Experiment Station generously provided access to historical data and the field experiment site.  We thank Robin Snyder for suggestions that improved the manuscript.
+
+\newpage
+\bibliographystyle{Ecology}
+\bibliography{precip_experiment}
+
+
+\end{doublespacing} 
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% APPENDICES !
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\clearpage 
+\newpage 
+
+\setcounter{page}{1}
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{section}{0}
+\setcounter{table}{0}
+\renewcommand{\theequation}{SI.\arabic{equation}}
+\renewcommand{\thetable}{SI-\arabic{table}}
+\renewcommand{\thefigure}{SI-\arabic{figure}}
+\renewcommand{\thesection}{Section SI.\arabic{section}}
+
+\centerline{\Large \textbf{Supporting Information }}
+\centerline{Adler et al., ``Weak interspecific interactions''} 
+
+\vspace{0.4in} 
+
+\section{Supplementary Methods} \label{suppMethods}
+
+\subsection{Interspecific covariance in local crowding} 
+We explored interspecific covariance in local crowding experienced by individual plants, by regressing the $W$ values exerted by one neighbor species, the response variable, against the $W$ values of all other species, the independent variables. Because some $W=0$, we conducted two separate regressions. First, using all $W$'s, we fitted a generalized linear model with a logit link function to evaluate whether the probability that the focal species' $W=0$ is influenced by the value of other species' $W$'s. In this model, the dependent variable is a Bernoulli variate coding for the zero or non-zero value of the focal species' crowding, and the independent variables are the $W$'s for all other species. Second, for the set of records in which the focal species has $W>0$, we performed a linear regression, where the focal species' $W$ is the dependent variable, and the other species' $W$'s are the independent variables. We repeated these regressions for each focal species. Due to large samples size, interspecific $W$ values were often statistically significant predictors of intraspecific. However, they explained very little variance. The maximum reduction in deviance for the generalized linear regressions and $R^2$ for the linear regressions were both less than 8\%. The \texttt{R} code for this analysis is included as ..\texttt{\textbackslash Wdistrib\textbackslash exploreSurvivalWs.r}.
+
+\subsection{Mean field approximation of local crowding for the IPM} 
+\citet{adler_coexistence_2010} developed a mean field approximation for local crowding when the
+competition kernels are all Gaussian functions, $F_{jm}(d) = e^{-\alpha_{jm} d^2}$. The approximation is explained in 
+the online SI to \citet{adler_coexistence_2010} and in section 5.3 of \citet{Ellner2016}. 
+Here we explain how that approximation was modified for the IPMs in this paper, which
+used fitted nonparametric competition kernels. 
+
+For $j \ne m$ (between-species competition), overlap between individuals is allowed. The mean field approximation is 
+that from the perspective of any focal plant in species $j$, individuals of species $m$ are distributed at random in space, 
+independent of each other and of their size.
+
+Consider the region between the circles of radius $x$ and $x+dx$ centered on a focal genet of species $j$. The area of this annulus
+is $2 \pi x \; dx$  to leading order for $dx \approx 0$. A species $m$ genet 
+in the annulus puts competitive pressure $F_{jm}(x)$ times its area on
+the focal genet. The expected total competitive pressure from all such genets 
+is therefore is $F_{jm}(x) 2 \pi x \; dx$ times the expected fractional cover of species $m$ in the annulus 
+(fractional cover is the total area of species $m$ genets, as a fraction of the total area). The excepted fractional cover $C_m$ of species $m$
+in the annulus equals its fractional cover in the habitat as a whole, because of the assumption of random distribution
+spatial distributions. We therefore have $C_m  = \int e^u n_m(u,t) du/A$ where $A$ is the total area of the habitat. 
+The total expected competitive pressure on a species-$j$ genet due to species $m$ is then 
+\begin{equation}
+W_{jm} = \int_0^\infty{C_m F_{jm}(x) 2 \pi x \; dx}  = C_m \left [2 \pi \int_0^{\infty} x F(x) \, dx \right ].
+\label{eqn:wbarm}
+\end{equation} 
+The quantity in square brackets is a constant (that is, it only depends on what the kernel function
+is) so it can be computed once and for all for each kernel used in the IPM. The integral is finite because
+all fitted kernels fall to zero at a finite distance from the focal plant. 
+
+Our kernel fitting method only uses competition kernel values at the ``mid-ring'' distances
+halfway between the inner and outer radii of a series of annuli around each focal
+plant, scaled so that the value at the innermost mid-ring distance equals 1. 
+In the IPM we defined the kernel at other distances by linear interpolation between values at 
+mid-ring distances, except that for the innermost ring a kernel value of 1 was specified at the
+outer radius of the ring and at distance $x=0$. 
+
+Now consider within-species competition. We assume that conspecifics cannot overlap. Genet shapes are irregular, but we 
+nonetheless implement the no-overlap rule by assuming that a genet of log area $u_i$ is a 
+circle of radius $r_i$ where $\pi r_i^2 = e^{u_i}$. The no-overlap rule is then that the centroids of two conspecific individuals 
+must be separated by at least the sum of their radii. 
+
+For any one focal genet, the no-overlap restriction on its neighbors' locations affects 
+only a negligibly small part of the habitat. The expected cover of individuals in the places
+where they can occur (relative to one focal plant) is thus assumed to equal their expected locations
+in the habitat as a whole. 
+ 
+Let $C_m(u)$ be the total cover of species $m$ genets of radius $r$ or smaller, 
+\begin{equation}
+C_m(r) = \int_L^{\log(\pi r^2)}{\! \! \! e^z n_m(z,t) \, dz} .
+\label{eqn:cm}
+\end{equation}
+A focal genet of radius $r$ cannot have any conspecific neighbors centered 
+at distances less than $r$. It can have a neighbor centered at distance $x>r$ if that neighbor's
+radius is no more than $x-r$. Adding up the expected cover of all such possible neighbors
+for a focal genet of radius $r$,    
+\begin{equation}
+W_{mm}(r) = 2 \pi \int_r^{\infty}F_{mm}(x) x C_m(x-r) \, dx
+\label{eqn:wbarmr} 
+\end{equation}
+This integral is again finite and computable because the kernels $F$ fall to 0 at finite $x$. 
+
+\clearpage 
+\newpage  
+\section{Additional Tables} 
+
+% supplementary tables
+
+\begin{table}[h]
+\caption{Cover change models}
+\centering
+%\begin{center}
+\begin{tabular}{l c c c c }
+\hline
+Species & ARTR & HECO & POSE & PSSP \\
+\hline
+(Intercept)           & $0.00$           & $-0.05$          & $0.01$           & $-0.10$          \\
+                      & $[-0.41;\ 0.42]$ & $[-0.21;\ 0.10]$ & $[-0.26;\ 0.28]$ & $[-0.28;\ 0.08]$ \\
+TreatmentNo\_grass    & $-0.09$          &                  &                  &                  \\
+                      & $[-0.75;\ 0.56]$ &                  &                  &                  \\
+TreatmentNo\_shrub    &                  & $0.33^{*}$       & $-0.08$          & $0.21^{*}$       \\
+                      &                  & $[0.01;\ 0.65]$  & $[-0.41;\ 0.25]$ & $[0.01;\ 0.40]$  \\
+\hline
+AIC                   & 284.97           & 160.41           & 337.77           & 253.15           \\
+BIC                   & 298.99           & 172.62           & 352.65           & 268.46           \\
+Log Likelihood        & -137.49          & -75.20           & -163.88          & -121.57          \\
+Num. obs.             & 122              & 85               & 145              & 158              \\
+Num. groups: quad     & 19               & 11               & 21               & 22               \\
+Num. groups: year     & 9                & 9                & 9                & 9                \\
+Var: quad (Intercept) & 0.43             & 0.00             & 0.02             & 0.00             \\
+Var: year (Intercept) & 0.00             & 0.02             & 0.12             & 0.06             \\
+Var: Residual         & 0.41             & 0.32             & 0.48             & 0.24             \\
+\hline
+\multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:coefficients}
+%\end{center}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:32:17 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{A. tripartita} survival model} 
+\label{ARTRsurvival}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & -0.0207 & 0.2261 & -0.4554 & -0.0246 & 0.4367 & -0.0321 & 0.0000 \\ 
+  logarea & 0.7208 & 0.0575 & 0.6109 & 0.7195 & 0.8378 & 0.7171 & 0.0000 \\ 
+  TreatmentNo\_grass & -1.3218 & 0.7343 & -2.7293 & -1.3340 & 0.1563 & -1.3591 & 0.0000 \\ 
+  W.ARTR & -1.5214 & 0.2075 & -1.9391 & -1.5179 & -1.1237 & -1.5107 & 0.0000 \\ 
+  W.HECO & -0.0694 & 0.0423 & -0.1485 & -0.0708 & 0.0178 & -0.0738 & 0.0000 \\ 
+  W.POSE & -0.0049 & 0.0761 & -0.1469 & -0.0077 & 0.1525 & -0.0134 & 0.0000 \\ 
+  W.PSSP & 0.0281 & 0.0275 & -0.0235 & 0.0271 & 0.0849 & 0.0252 & 0.0000 \\ 
+  W.allcov & -0.0055 & 0.0083 & -0.0219 & -0.0054 & 0.0109 & -0.0054 & 0.0000 \\ 
+  W.allpts & 0.1694 & 0.1579 & -0.1386 & 0.1686 & 0.4812 & 0.1672 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:33:00 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{H. comata} survival model} 
+\label{HECOsurvival}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 1.4189 & 0.2115 & 0.9991 & 1.4190 & 1.8371 & 1.4192 & 0.0000 \\ 
+  logarea & 1.2885 & 0.0813 & 1.1399 & 1.2843 & 1.4601 & 1.2758 & 0.0000 \\ 
+  TreatmentNo\_shrub & 0.3958 & 0.4175 & -0.4193 & 0.3942 & 1.2190 & 0.3909 & 0.0000 \\ 
+  W.ARTR & -0.0064 & 0.0028 & -0.0120 & -0.0064 & -0.0009 & -0.0064 & 0.0000 \\ 
+  W.HECO & -0.6647 & 0.0673 & -0.7996 & -0.6638 & -0.5351 & -0.6619 & 0.0000 \\ 
+  W.POSE & 0.0732 & 0.0534 & -0.0304 & 0.0728 & 0.1790 & 0.0720 & 0.0000 \\ 
+  W.PSSP & 0.0190 & 0.0184 & -0.0167 & 0.0188 & 0.0554 & 0.0185 & 0.0000 \\ 
+  W.allcov & 0.0021 & 0.0047 & -0.0072 & 0.0021 & 0.0113 & 0.0021 & 0.0000 \\ 
+  W.allpts & -0.1185 & 0.0919 & -0.2998 & -0.1183 & 0.0610 & -0.1177 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:34:30 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{Poa secunda} survival model} 
+\label{POSEsurvival}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 1.3162 & 0.1965 & 0.9242 & 1.3171 & 1.7024 & 1.3186 & 0.0000 \\ 
+  logarea & 1.0585 & 0.0640 & 0.9365 & 1.0569 & 1.1902 & 1.0537 & 0.0000 \\ 
+  TreatmentNo\_shrub & -0.2572 & 0.1723 & -0.5949 & -0.2573 & 0.0811 & -0.2576 & 0.0000 \\ 
+  W.ARTR & 0.0001 & 0.0019 & -0.0036 & 0.0001 & 0.0038 & 0.0001 & 0.0000 \\ 
+  W.HECO & -0.0153 & 0.0138 & -0.0424 & -0.0154 & 0.0119 & -0.0154 & 0.0000 \\ 
+  W.POSE & -1.2632 & 0.0816 & -1.4260 & -1.2623 & -1.1053 & -1.2605 & 0.0000 \\ 
+  W.PSSP & 0.0249 & 0.0122 & 0.0011 & 0.0249 & 0.0490 & 0.0247 & 0.0000 \\ 
+  W.allcov & -0.0024 & 0.0026 & -0.0075 & -0.0024 & 0.0029 & -0.0024 & 0.0000 \\ 
+  W.allpts & 0.0018 & 0.0524 & -0.1009 & 0.0018 & 0.1048 & 0.0017 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:35:48 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{P. spicata} survival model} 
+\label{PSSPsurvival}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 1.2121 & 0.1699 & 0.8815 & 1.2103 & 1.5533 & 1.2066 & 0.0000 \\ 
+  logarea & 1.5492 & 0.0976 & 1.3612 & 1.5474 & 1.7473 & 1.5437 & 0.0000 \\ 
+  TreatmentNo\_shrub & -0.1885 & 0.2208 & -0.6237 & -0.1879 & 0.2431 & -0.1867 & 0.0000 \\ 
+  W.ARTR & 0.0101 & 0.0021 & 0.0061 & 0.0101 & 0.0142 & 0.0101 & 0.0000 \\ 
+  W.HECO & 0.0046 & 0.0185 & -0.0319 & 0.0046 & 0.0406 & 0.0047 & 0.0000 \\ 
+  W.POSE & 0.0245 & 0.0384 & -0.0502 & 0.0242 & 0.1007 & 0.0236 & 0.0000 \\ 
+  W.PSSP & -0.4430 & 0.0291 & -0.5010 & -0.4427 & -0.3867 & -0.4420 & 0.0000 \\ 
+  W.allcov & 0.0100 & 0.0028 & 0.0046 & 0.0100 & 0.0155 & 0.0100 & 0.0000 \\ 
+  W.allpts & 0.0943 & 0.0605 & -0.0246 & 0.0944 & 0.2129 & 0.0944 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:36:00 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{A. tripartita} growth model} 
+\label{ARTRgrowth}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.7378 & 0.2437 & 0.2591 & 0.7378 & 1.2161 & 0.7377 & 0.0000 \\ 
+  logarea.t0 & 0.8663 & 0.0393 & 0.7892 & 0.8663 & 0.9434 & 0.8663 & 0.0000 \\ 
+  TreatmentNo\_grass & 0.1037 & 0.1436 & -0.1783 & 0.1037 & 0.3854 & 0.1037 & 0.0000 \\ 
+  W.ARTR & -0.0364 & 0.0892 & -0.2116 & -0.0364 & 0.1387 & -0.0364 & 0.0000 \\ 
+  W.HECO & 0.0033 & 0.0136 & -0.0233 & 0.0033 & 0.0299 & 0.0033 & 0.0000 \\ 
+  W.POSE & -0.0573 & 0.0268 & -0.1100 & -0.0573 & -0.0047 & -0.0573 & 0.0000 \\ 
+  W.PSSP & 0.0062 & 0.0084 & -0.0102 & 0.0062 & 0.0226 & 0.0062 & 0.0000 \\ 
+  W.allcov & -0.0055 & 0.0030 & -0.0114 & -0.0055 & 0.0004 & -0.0055 & 0.0000 \\ 
+  W.allpts & 0.0029 & 0.0477 & -0.0908 & 0.0029 & 0.0965 & 0.0029 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:36:24 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{H. comata} growth model} 
+\label{HECOgrowth}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.3782 & 0.0797 & 0.2212 & 0.3783 & 0.5343 & 0.3784 & 0.0000 \\ 
+  logarea.t0 & 0.8272 & 0.0205 & 0.7869 & 0.8272 & 0.8674 & 0.8272 & 0.0000 \\ 
+  TreatmentNo\_shrub & -0.0162 & 0.1336 & -0.2785 & -0.0162 & 0.2460 & -0.0162 & 0.0000 \\ 
+  W.ARTR & -0.0031 & 0.0010 & -0.0051 & -0.0031 & -0.0010 & -0.0031 & 0.0000 \\ 
+  W.HECO & -0.0479 & 0.0195 & -0.0862 & -0.0479 & -0.0098 & -0.0479 & 0.0000 \\ 
+  W.POSE & 0.0242 & 0.0162 & -0.0077 & 0.0242 & 0.0560 & 0.0242 & 0.0000 \\ 
+  W.PSSP & -0.0151 & 0.0065 & -0.0279 & -0.0151 & -0.0023 & -0.0151 & 0.0000 \\ 
+  W.allcov & -0.0038 & 0.0019 & -0.0076 & -0.0038 & 0.0000 & -0.0038 & 0.0000 \\ 
+  W.allpts & -0.0513 & 0.0380 & -0.1258 & -0.0513 & 0.0232 & -0.0513 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:36:58 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{Poa secunda} growth model} 
+\label{POSEgrowth}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.4923 & 0.0681 & 0.3581 & 0.4923 & 0.6259 & 0.4924 & 0.0000 \\ 
+  logarea.t0 & 0.6750 & 0.0232 & 0.6292 & 0.6750 & 0.7203 & 0.6751 & 0.0000 \\ 
+  TreatmentNo\_shrub & 0.2161 & 0.0644 & 0.0897 & 0.2161 & 0.3425 & 0.2161 & 0.0000 \\ 
+  W.ARTR & -0.0002 & 0.0008 & -0.0019 & -0.0002 & 0.0014 & -0.0002 & 0.0000 \\ 
+  W.HECO & 0.0039 & 0.0063 & -0.0084 & 0.0039 & 0.0161 & 0.0039 & 0.0000 \\ 
+  W.POSE & -0.2641 & 0.0387 & -0.3400 & -0.2641 & -0.1883 & -0.2641 & 0.0000 \\ 
+  W.PSSP & -0.0073 & 0.0056 & -0.0183 & -0.0073 & 0.0038 & -0.0073 & 0.0000 \\ 
+  W.allcov & -0.0003 & 0.0012 & -0.0026 & -0.0003 & 0.0020 & -0.0003 & 0.0000 \\ 
+  W.allpts & -0.0254 & 0.0231 & -0.0709 & -0.0254 & 0.0200 & -0.0254 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:37:48 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the \textit{P. spicata} growth model} 
+\label{PSSPgrowth}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.3987 & 0.0660 & 0.2690 & 0.3987 & 0.5281 & 0.3988 & 0.0000 \\ 
+  logarea.t0 & 0.8249 & 0.0149 & 0.7956 & 0.8249 & 0.8543 & 0.8249 & 0.0000 \\ 
+  TreatmentNo\_shrub & 0.1948 & 0.0714 & 0.0546 & 0.1948 & 0.3349 & 0.1948 & 0.0000 \\ 
+  W.ARTR & -0.0025 & 0.0008 & -0.0041 & -0.0025 & -0.0010 & -0.0025 & 0.0000 \\ 
+  W.HECO & -0.0118 & 0.0072 & -0.0260 & -0.0118 & 0.0023 & -0.0118 & 0.0000 \\ 
+  W.POSE & -0.0067 & 0.0130 & -0.0323 & -0.0067 & 0.0189 & -0.0067 & 0.0000 \\ 
+  W.PSSP & -0.1480 & 0.0133 & -0.1740 & -0.1480 & -0.1220 & -0.1480 & 0.0000 \\ 
+  W.allcov & -0.0036 & 0.0011 & -0.0057 & -0.0036 & -0.0015 & -0.0036 & 0.0000 \\ 
+  W.allpts & -0.0522 & 0.0236 & -0.0984 & -0.0522 & -0.0060 & -0.0522 & 0.0000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\caption{\textit{Poa secunda} growth with \textit{Artemisia} canopy effect}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.49^{*}$        \\
+                                 & $[0.36;\ 0.62]$   \\
+logarea.t0                       & $0.68^{*}$        \\
+                                 & $[0.63;\ 0.72]$   \\
+TreatmentNo\_shrub               & $0.24^{*}$        \\
+                                 & $[0.09;\ 0.38]$   \\
+W.ARTR                           & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.HECO                           & $0.00$            \\
+                                 & $[-0.01;\ 0.02]$  \\
+W.POSE                           & $-0.26^{*}$       \\
+                                 & $[-0.34;\ -0.19]$ \\
+W.PSSP                           & $-0.01$           \\
+                                 & $[-0.02;\ 0.00]$  \\
+W.allcov                         & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.allpts                         & $-0.02$           \\
+                                 & $[-0.07;\ 0.02]$  \\
+inARTR                           & $-0.06$           \\
+                                 & $[-0.28;\ 0.16]$  \\
+\hline
+AIC                              & 15641.80          \\
+BIC                              & 15734.29          \\
+Log Likelihood                   & -7806.90          \\
+Num. obs.                        & 5469              \\
+Num. groups: year                & 31                \\
+Var: year (Intercept)            & 0.11              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.02             \\
+Var: Residual                    & 0.98              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:POSEgrowth-inARTR}
+\end{center}
+\end{table}
+
+
+\begin{table}
+\caption{\textit{P. spicata} growth with \textit{Artemisia} canopy effect}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.42^{*}$        \\
+                                 & $[0.29;\ 0.56]$   \\
+logarea.t0                       & $0.82^{*}$        \\
+                                 & $[0.79;\ 0.86]$   \\
+TreatmentNo\_shrub               & $0.24^{*}$        \\
+                                 & $[0.09;\ 0.40]$   \\
+W.ARTR                           & $-0.00^{*}$       \\
+                                 & $[-0.00;\ -0.00]$ \\
+W.HECO                           & $-0.01^{*}$       \\
+                                 & $[-0.03;\ -0.00]$ \\
+W.POSE                           & $-0.01$           \\
+                                 & $[-0.03;\ 0.02]$  \\
+W.PSSP                           & $-0.14^{*}$       \\
+                                 & $[-0.16;\ -0.11]$ \\
+W.allcov                         & $-0.00^{*}$       \\
+                                 & $[-0.01;\ -0.00]$ \\
+W.allpts                         & $-0.06^{*}$       \\
+                                 & $[-0.10;\ -0.01]$ \\
+inARTR                           & $-0.14$           \\
+                                 & $[-0.35;\ 0.08]$  \\
+\hline
+AIC                              & 15282.37          \\
+BIC                              & 15376.25          \\
+Log Likelihood                   & -7627.18          \\
+Num. obs.                        & 6039              \\
+Num. groups: year                & 31                \\
+Var: year (Intercept)            & 0.12              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.03             \\
+Var: Residual                    & 0.71              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:PSSPgrowth-inARTR}
+\end{center}
+\end{table}
+
+
+\begin{table}
+\caption{\textit{Poa secunda} growth with year-by-treatment interaction}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.49^{*}$        \\
+                                 & $[0.37;\ 0.62]$   \\
+trtYears1                        & $0.06$            \\
+                                 & $[-0.17;\ 0.29]$  \\
+trtYears2                        & $0.24$            \\
+                                 & $[-0.01;\ 0.49]$  \\
+trtYears3                        & $0.23$            \\
+                                 & $[-0.05;\ 0.51]$  \\
+trtYears4                        & $0.25$            \\
+                                 & $[-0.07;\ 0.56]$  \\
+trtYears5                        & $0.45^{*}$        \\
+                                 & $[0.11;\ 0.79]$   \\
+logarea.t0                       & $0.68^{*}$        \\
+                                 & $[0.63;\ 0.72]$   \\
+W.ARTR                           & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.HECO                           & $0.00$            \\
+                                 & $[-0.01;\ 0.02]$  \\
+W.POSE                           & $-0.26^{*}$       \\
+                                 & $[-0.34;\ -0.19]$ \\
+W.PSSP                           & $-0.01$           \\
+                                 & $[-0.02;\ 0.00]$  \\
+W.allcov                         & $-0.00$           \\
+                                 & $[-0.00;\ 0.00]$  \\
+W.allpts                         & $-0.03$           \\
+                                 & $[-0.07;\ 0.02]$  \\
+\hline
+AIC                              & 15648.62          \\
+BIC                              & 15760.94          \\
+Log Likelihood                   & -7807.31          \\
+Num. obs.                        & 5469              \\
+Num. groups: year                & 31                \\
+Var: year (Intercept)            & 0.11              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.02             \\
+Var: Residual                    & 0.98              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:POSEgrowth-byYr}
+\end{center}
+\end{table}
+
+\begin{table}
+\caption{\textit{P. spicata} growth with year-by-treatment interaction}
+\begin{center}
+\begin{tabular}{l c }
+\hline
+ & Model 1 \\
+\hline
+(Intercept)                      & $0.42^{*}$        \\
+                                 & $[0.28;\ 0.55]$   \\
+trtYears1                        & $0.26$            \\
+                                 & $[-0.01;\ 0.54]$  \\
+trtYears2                        & $-0.05$           \\
+                                 & $[-0.32;\ 0.22]$  \\
+trtYears3                        & $0.44^{*}$        \\
+                                 & $[0.14;\ 0.73]$   \\
+trtYears4                        & $0.42^{*}$        \\
+                                 & $[0.12;\ 0.72]$   \\
+trtYears5                        & $-0.11$           \\
+                                 & $[-0.42;\ 0.20]$  \\
+logarea.t0                       & $0.82^{*}$        \\
+                                 & $[0.79;\ 0.86]$   \\
+W.ARTR                           & $-0.00^{*}$       \\
+                                 & $[-0.00;\ -0.00]$ \\
+W.HECO                           & $-0.01^{*}$       \\
+                                 & $[-0.03;\ -0.00]$ \\
+W.POSE                           & $-0.01$           \\
+                                 & $[-0.03;\ 0.02]$  \\
+W.PSSP                           & $-0.14^{*}$       \\
+                                 & $[-0.16;\ -0.11]$ \\
+W.allcov                         & $-0.00^{*}$       \\
+                                 & $[-0.01;\ -0.00]$ \\
+W.allpts                         & $-0.06^{*}$       \\
+                                 & $[-0.10;\ -0.01]$ \\
+\hline
+AIC                              & 15281.67          \\
+BIC                              & 15395.67          \\
+Log Likelihood                   & -7623.83          \\
+Num. obs.                        & 6039              \\
+Num. groups: year                & 31                \\
+Var: year (Intercept)            & 0.12              \\
+Var: year logarea.t0             & 0.01              \\
+Cov: year (Intercept) logarea.t0 & -0.03             \\
+Var: Residual                    & 0.71              \\
+\hline
+\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\end{tabular}
+\label{table:PSSPgrowth-byYr}
+\end{center}
+\end{table}
+
+
+% latex table generated in R 3.2.2 by xtable 1.8-2 package
+% Mon Sep 19 08:37:48 2016
+\begin{table}[ht]
+\centering
+\caption{Summary of fixed effects for the recruitment model (symbols correspond to Eqns. \ref{eqn:recrDataModel} and \ref{eqn:recrProcessModel})} 
+\label{table:recruitment}
+\begin{tabular}{rrrrrrr}
+  \hline
+ & mean & sd & X2.5. & X97.5. & Rhat & n.eff \\ 
+  \hline
+ $\gamma$[1] & 0.3341 & 0.7071 & -1.1262 & 1.6391 & 1.0018 &  1100 \\ 
+  $\gamma$[2] & 3.4488 & 0.4468 & 2.5010 & 4.3401 & 1.0904 &    25 \\ 
+  $\gamma$[3] & 3.2440 & 0.3650 & 2.4840 & 3.9190 & 1.0536 &    34 \\ 
+ $\gamma$[4] & 2.9054 & 0.3689 & 2.1820 & 3.6160 & 1.0149 &   110 \\ 
+  $\chi$[2,2] & -0.0953 & 0.4093 & -0.8854 & 0.7570 & 1.0010 &  2000 \\ 
+ $\chi$[2,3] & -1.2787 & 0.3325 & -1.9370 & -0.6392 & 1.0041 &   420 \\ 
+   $\chi$[2,4] & 0.0951 & 0.2617 & -0.4121 & 0.6063 & 1.0023 &   810 \\ 
+  $\chi$[3,1] & -1.4366 & 0.8544 & -3.1491 & 0.1132 & 1.0006 &  2000 \\ 
+  $\omega$[1,1] & -0.5881 & 0.1018 & -0.7639 & -0.3720 & 1.0197 &    82 \\ 
+  $\omega$[1,2] & 0.0635 & 0.0651 & -0.0528 & 0.1997 & 1.0329 &    59 \\ 
+  $\omega$[1,3] & 0.0220 & 0.0422 & -0.0610 & 0.1040 & 1.0036 &   920 \\ 
+  $\omega$[1,4] & 0.1164 & 0.0456 & 0.0347 & 0.2123 & 1.0197 &    96 \\ 
+  $\omega$[2,1] & -0.4800 & 0.1522 & -0.7746 & -0.1906 & 1.0029 &  2000 \\ 
+  $\omega$[2,2] & -1.7368 & 0.1297 & -1.9841 & -1.4819 & 1.0006 &  2000 \\ 
+  $\omega$[2,3] & 0.0388 & 0.0865 & -0.1287 & 0.2138 & 1.0152 &   100 \\ 
+  $\omega$[2,4] & -0.3682 & 0.0926 & -0.5434 & -0.1881 & 1.0005 &  2000 \\ 
+  $\omega$[3,1] & -0.6589 & 0.3342 & -1.3131 & -0.0155 & 1.0096 &   280 \\ 
+  $\omega$[3,2] & -0.1021 & 0.1981 & -0.4828 & 0.2936 & 1.0089 &   210 \\ 
+  $\omega$[3,3] & -1.8943 & 0.1611 & -2.2060 & -1.5850 & 1.0084 &  2000 \\ 
+  $\omega$[3,4] & -0.1953 & 0.1508 & -0.4968 & 0.0995 & 1.0074 &  2000 \\ 
+  $\omega$[4,1] & -0.1867 & 0.3000 & -0.7608 & 0.4486 & 1.0099 &   190 \\ 
+  $\omega$[4,2] & -0.3746 & 0.1896 & -0.7224 & -0.0115 & 1.0453 &    55 \\ 
+  $\omega$[4,3] & 0.1131 & 0.1437 & -0.1583 & 0.4170 & 1.0321 &    55 \\ 
+  $\omega$[4,4] & -1.7379 & 0.1549 & -2.0400 & -1.4409 & 1.0116 &  1400 \\ 
+   $\theta$[1] & 0.6198 & 0.0740 & 0.4835 & 0.7766 & 1.0008 &  2000 \\ 
+   $\theta$[2] & 1.1197 & 0.1428 & 0.8666 & 1.4450 & 1.0008 &  2000 \\ 
+   $\theta$[3] & 1.1718 & 0.1068 & 0.9685 & 1.3890 & 1.0008 &  2000 \\ 
+  $\theta$[4] & 1.0961 & 0.1060 & 0.9009 & 1.3280 & 1.0022 &   890 \\ 
+  $p$[1] & 0.8137 & 0.1228 & 0.4813 & 0.9525 & 1.0399 &    60 \\ 
+  $p$[2] & 0.9996 & 0.0005 & 0.9984 & 1.0000 & 1.0007 &  2000 \\ 
+  $p$[3] & 0.7906 & 0.1288 & 0.4273 & 0.9382 & 1.0176 &  2000 \\ 
+  $p$[4] & 0.7502 & 0.1480 & 0.3920 & 0.9453 & 1.0150 &  2000 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+\clearpage
+
+\section{Additional Figures} 
+
+ \begin{figure}[h]
+ \centering
+ \includegraphics[width=0.7\textwidth]{CompKernels}
+ \caption{Competition kernels for the four dominant species.  }
+ \label{fig:CompKernels}
+ \end{figure}
+ 
+  \begin{figure}[h]
+  \centering
+  \includegraphics[width=1\textwidth]{climate}
+  \caption{Annual precipitation (a) and mean temperature (b) during the period of the experiment, shown against the long-term (1927-2016) means (solid blue and red lines) and 5\% and 95\% quantiles (dashed lines).  }
+  \label{fig:climate}
+  \end{figure}
+ 
+  \begin{figure}[tbp]
+  \centering
+  \includegraphics[width=1\textwidth]{PSSP_W_scatters}
+  \caption{Bivariate scatter plots comparing crowding exerted by each neighbor species on \textit{P. spicata}. Blue symbols show values from controls plots, red symbols show values from \textit{Artemisia} removal plots.``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  }
+  \label{fig:Wscatters}
+  \end{figure}
+  
+  \begin{figure}[tbp]
+ \centering
+ \includegraphics[width=1\textwidth]{PSSP_W_byTrt}
+ \caption{Distribution of crowding exerted by each neighbor species on \textit{P. spicata} individuals in controls plots (blue) and removal quadrats (red) in 2011, before \textit{Artemisia}  removals were conducted. Inset bar graphs show the probability that a particular neighbor species was present ($W>0$) in a focal plant's local neighborhood in control (blue) and removal (red) quadrats. ``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  }
+ \label{fig:W-by-treatment}
+ \end{figure}
+
+ \begin{figure}[tbp]
+ \centering
+ \includegraphics[width=1\textwidth]{cover_projections_1step_maxCI}
+ \caption{Observed and predicted cover for each of the four modeled species assuming maximum effects of removal. Solid lines show mean observed cover averaged across control (blue) and removal treatment (red) quadrats. Dashed lines show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Dotted lines show one-step-ahead predictions from an IBM that includes removal treatment coefficients representing the outermost values of the 95\% confidence intervals. }
+ \label{fig:IBM1step-maxCI}
+ \end{figure}
+ 
+  \begin{figure}[tbp]
+  \centering
+  \includegraphics[width=1\textwidth]{boxplots-maxCI}
+  \caption{Equilibrium cover of the four dominant species simulated by the IPM with maximum removal treatment effects. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), green boxes show results from a model with  \textit{A. tripartita} set to zero and (mean) removal treatment coefficients included, and blue boxes show results with removal treatments coefficients assigned the outermost value of the 95\% confidence intervals.  }
+  \label{fig:IPMresults-maxCI}
+  \end{figure}
+
+\end{document}
+
