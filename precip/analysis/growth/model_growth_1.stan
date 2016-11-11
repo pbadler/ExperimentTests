@@ -34,8 +34,7 @@ parameters{
   real<lower=0> sig_b1;
   vector[Wcovs] w;
   vector[Covs]  b2; 
-  real<lower=0> tau; 
-  real<lower=0> tauSize; 
+  real sigma; 
 }
 transformed parameters{
   // for training data model  
@@ -45,8 +44,7 @@ transformed parameters{
   real mu[N];
   vector[N] crowdEff;
   vector[N] climEff; 
-  vector[N] sigma;
-  
+
   // for training data model -----------------------------------
   gint <- gm*bg;
   crowdEff <- W*w;
@@ -57,7 +55,6 @@ transformed parameters{
   
   for(n in 1:N){
     mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
-    sigma[n] <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
   
 }
@@ -69,8 +66,7 @@ model{
   sig_b1 ~ cauchy(0,5);
   a_raw ~ normal(0,1);
   b1_raw ~ normal(0,1);
-  tau ~ normal( 0, 1); 
-  tauSize ~ normal(0,1);
+  sigma ~ cauchy(0, 5);
   w ~ normal(0,10);
   b2 ~ normal(0,tau_beta); 
     
@@ -86,14 +82,12 @@ generated quantities {
   vector[nyrshold] b1_out;
   real muhat[Nhold];
   vector[Nhold] gint_out;
-  vector[Nhold] y_hat;                        // pointwise predictions
   vector[Nhold] crowdhat;
   vector[Nhold] climhat;
-  vector[Nhold] sigmahat;
 
   # fitted data log_lik 
   for(n in 1:N){
-      log_lik[n] <- normal_log(Y[n], mu[n], sigma[n]);
+      log_lik[n] <- normal_log(Y[n], mu[n], sigma);
   }
     
   // 1. Holdout data predictions
@@ -108,9 +102,7 @@ generated quantities {
 
   for(n in 1:Nhold){
       muhat[n]    <- gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n] + climhat[n];
-      sigmahat[n] <- sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001)));
-      y_hat[n]    <- normal_rng(muhat[n], sigmahat[n]);
-      log_lik2[n]  <- normal_log(Yhold[n], muhat[n], sigmahat[n]);
+      log_lik2[n]  <- normal_log(Yhold[n], muhat[n], sigma);
   }
 
 }
