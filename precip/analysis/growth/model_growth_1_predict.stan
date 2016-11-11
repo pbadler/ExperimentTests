@@ -23,15 +23,6 @@ data{
   vector[Nhold] Xhold;
   matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
   matrix[Nhold, Covs] Chold;        // climate matrix
-
-  // survival data for cover predictions
-  int<lower=0> N3;                  // observations
-  vector[N3] X3;                    // size vector
-  matrix[N3, G] gm3;                // group dummy variable matrix
-  int<lower=0> nyrs3;               // years
-  int<lower=0> yid3[N3];            // year id
-  matrix[N3, Wcovs] W3;             // crowding matrix
-  matrix[N3, Covs] C3;              // climate matrix
 }
 parameters{
   // for training data model  
@@ -43,8 +34,7 @@ parameters{
   real<lower=0> sig_b1;
   vector[Wcovs] w;
   vector[Covs]  b2; 
-  real<lower=0> tau; 
-  real<lower=0> tauSize; 
+  real<lower=0> sigma; 
 }
 transformed parameters{
   // for training data model  
@@ -54,8 +44,7 @@ transformed parameters{
   real mu[N];
   vector[N] crowdEff;
   vector[N] climEff; 
-  vector[N] sigma;
-  
+
   // for training data model -----------------------------------
   gint      <- gm*bg;
   crowdEff  <- W*w;
@@ -66,7 +55,6 @@ transformed parameters{
   
   for(n in 1:N){
     mu[n]     <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
-    sigma[n]  <- sqrt((fmax(tau*exp(tauSize*mu[n]), 0.0000001)));  
   }
 }
 model{
@@ -75,10 +63,9 @@ model{
   b1_mu ~ normal(0,10);
   sig_a ~ cauchy(0,5);
   sig_b1 ~ cauchy(0,5);
+  sigma ~ cauchy(0,5);
   a_raw ~ normal(0,1);
   b1_raw ~ normal(0,1);
-  tau ~ normal( 0, 1); 
-  tauSize ~ normal(0,1);
   w ~ normal(0,tau_beta);
   b2 ~ normal(0,tau_beta); 
     
@@ -91,19 +78,9 @@ generated quantities {
   vector[nyrshold] b1_out;
   real muhat[Nhold];
   vector[Nhold] gint_out;
-  vector[Nhold] y_hat;                        // pointwise predictions
   vector[Nhold] log_lik;                      // vector for computing log pointwise predictive density
   vector[Nhold] crowdhat;
   vector[Nhold] climhat;
-  vector[Nhold] sigmahat;
-
-  // for cover predictions
-  vector[N3] crowdhat3;
-  vector[N3] climhat3;
-  vector[N3] gint3;
-  real muhat3[N3];
-  vector[N3] y_hat3;                          // pointwise predictions
-  vector[N3] sigmahat3;
 
   // 1. Holdout data predictions
   gint_out  <- gmhold*bg;
@@ -117,19 +94,6 @@ generated quantities {
 
   for(n in 1:Nhold){
       muhat[n]    <- gint_out[n] + a[yidhold[n]-nyrs] + b1[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n] + climhat[n];
-      sigmahat[n] <- sqrt((fmax(tau*exp(tauSize*muhat[n]), 0.0000001)));
-      y_hat[n]    <- normal_rng(muhat[n], sigmahat[n]);
-      log_lik[n]  <- normal_log(Yhold[n], muhat[n], sigmahat[n]);
-  }
-
-  // 3. Holdout survival data for predicting cover
-  gint3     <- gm3*bg;
-  crowdhat3 <- W3*w;
-  climhat3  <- C3*b2;
-
-  for(n in 1:N3){
-      muhat3[n] <- gint3[n] + a_out[yid3[n]-nyrs] + b1_out[yid3[n]-nyrs]*X3[n] + crowdhat3[n] + climhat3[n];
-      sigmahat3[n] <- sqrt((fmax(tau*exp(tauSize*muhat3[n]), 0.0000001)));
-      y_hat3[n] <- normal_rng(muhat3[n], sigmahat3[n]);
+      log_lik[n]  <- normal_log(Yhold[n], muhat[n], sigma);
   }
 }
