@@ -23,6 +23,8 @@ dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
 
 source("R/survival/fetchSurvData.R")
 
+
+
 D1 <- fetchSdat(doSpp=doSpp,speciesList=sppList,datadir=dataDir1,distWts=dists)
 D1$Treatment <- "Control"
 D1$Period <- "Historical"
@@ -59,19 +61,20 @@ if(doSpp=="ARTR"){
 }
 allD <- allD[keep,]
 
-# # remove outliers (large plants that obviously do not turn into tiny plants)
-# tmp=which(allD$quad=="Q23" & allD$year==1945 & allD$trackID==67)
-# tmp=c(tmp,which(allD$quad=="Q12" & allD$year==1955 & allD$trackID==25))
-# tmp=c(tmp,which(allD$quad=="Q26" & allD$year==1945 & allD$trackID==73))
-# allD=allD[-tmp,]
-# 
+# remove outliers 
+tmp=which(allD$quad=="Q23" & allD$year==1945 & allD$trackID==67)
+tmp=c(tmp,which(allD$quad=="Q12" & allD$year==1955 & allD$trackID==25))
+tmp=c(tmp,which(allD$quad=="Q26" & allD$year==1945 & allD$trackID==73))
+tmp=c(tmp, which(allD$Grazing == 'G'))                                   # remove grazing 
+allD=allD[-tmp,]
+
 
 # set up indicator variables 
 allD$Treatment2 <- allD$Treatment
 allD$Treatment2[allD$year>2000] <- "Modern"
 allD$Treatment3 <- allD$Treatment
 allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
-allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
+#allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
 
 # ----------- use this data for prediction ------------------------------------------------------------------------------
 

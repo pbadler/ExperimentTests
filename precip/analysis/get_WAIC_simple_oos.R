@@ -9,7 +9,7 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'ARTR', 'recruitment', 10)
+#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'PSSP', 'survival', 1)
 
 # test if there is at least one argument: if not, return an error
 if (length(args) != 4){ 

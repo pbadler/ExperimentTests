@@ -101,11 +101,7 @@ best_fits <-
   group_by( vital_rate, species, model ) %>% 
   filter( lfit == max(lfit[!is.na(lfit)] )) 
 
-no_reg_fits <- 
-  all_lppds %>% 
-  filter( model == 1 ) 
 
-best_fits <- bind_rows ( best_fits %>% select_(.dots = names( all_lppds)), no_reg_fits )
 best_fits <- left_join( best_fits, model_table)
 
 best_fits <- best_fits %>% arrange(vital_rate, species, model )

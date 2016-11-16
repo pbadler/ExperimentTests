@@ -9,28 +9,50 @@ library(rstan)
 library(gridExtra)
 
 # input ------------------------------------------------------------------------------------# 
-model_table <- read.csv('output/WAIC_selected_models.csv')
-lppd <- read.csv('output/lppd_scores.csv')
+#lppd <- read.csv('output/lppd_scores.csv')
 
-lppd_table <- merge(lppd, model_table, by = c('species', 'vital_rate' , 'model') )
+# lppd_table <- merge(lppd, model_table, by = c('species', 'vital_rate' , 'model') )
+# 
+# lppd_table <- 
+#   lppd_table %>% 
+#   group_by( vital_rate, species, model ) %>% 
+#   mutate( diff = X50. - Y)
+# 
+# lppd_table %>% 
+#   group_by( vital_rate, species, model ) %>% 
+#   summarise( n())
 
-lppd_table <- 
-  lppd_table %>% 
-  group_by( vital_rate, species, model ) %>% 
-  mutate( diff = X50. - Y)
+# g1 <-
+#   ggplot(lppd_table, aes(x = diff, fill = Period)) +
+#   geom_density(alpha = 0.6, color = NA) +
+#   geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.8) +
+#   xlab( 'Predicted - observed') + 
+#   facet_wrap( ~ Period, ncol = 1) 
+# 
+# plot1 <- lppd_table %>% do(gg = g1 %+% . + ggtitle( paste( .$species, .$vital_rate, 'model', .$model)))
 
-lppd_table %>% 
-  group_by( vital_rate, species, model ) %>% 
-  summarise( n())
+setwd('~/Documents/ExperimentTests/precip/')
 
-g1 <-
-  ggplot(lppd_table, aes(x = diff, fill = Period)) +
-  geom_density(alpha = 0.6, color = NA) +
-  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.8) +
-  xlab( 'Predicted - observed') + 
-  facet_wrap( ~ Period, ncol = 1) 
+mfiles <- dir('output/stan_fits/predictions', '4_predict.RDS', full.names = TRUE)
 
-plot1 <- lppd_table %>% do(gg = g1 %+% . + ggtitle( paste( .$species, .$vital_rate, 'model', .$model)))
+for( i in 1:length(mfiles)){ 
+  
+  bname <- basename(mfiles[i])
+  mpars <- unlist( str_split(bname, '_') ) 
+  
+  spp <- mpars[1]
+  vr <- mpars[2]
+  m <- mpars[3]
+  lambda <- mpars[4]
+  
+  temp_fit <- readRDS(mfiles[i])
+  
+  df <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[spp]]
+
+
+
+
+
 
 my_colors <- c('#66c2a5','#fc8d62','#8da0cb')
 

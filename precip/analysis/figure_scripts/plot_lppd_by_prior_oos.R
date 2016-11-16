@@ -24,52 +24,71 @@ loess_predict <-
     
   }
 
-
 all_lppds <- read.csv('output/WAIC_scores_oos.csv')
 
 model_table <- read.csv('data/temp_data/model_table_oos.csv')
 
+load('data/temp_data/master_list.Rdata')
+
 lppd_scores <- 
   all_lppds %>% 
-  filter( type == 'out_of_sample') %>%
+  filter( type == 'out_of_sample' ) %>%
   mutate( clean_fn = str_replace(fn, pattern = '_WAIC\\.csv$', replacement = '')) %>%
   separate(clean_fn , into = c('species', 'vital_rate', 'model', 'lambda', 'chains', 'year_oos'), sep = '_')  
 
+model_table <- model_table %>% filter( vital_rate == 'growth')
+
 lppd_scores <- merge(model_table, lppd_scores , by = c('model' , 'species', 'vital_rate', 'lambda', 'year_oos'), all.x = TRUE) 
 
-lppd_scores <- 
+leave_one_out <- 
   lppd_scores %>% 
   filter( year_oos != 'c(2007:2015)') %>% 
+  arrange( species, vital_rate, lambda, year_oos ) %>% 
+  select( lppd, model, species, vital_rate, lambda, year_oos) %>% 
+  group_by( species, vital_rate, model, lambda ) %>% 
+  summarise(lppd = mean(lppd)) 
+
+true_hold_out <- 
+  lppd_scores %>% 
+  filter( year_oos == 'c(2007:2015)') %>% 
   group_by( species, vital_rate, model, lambda ) %>% 
   summarise(lppd = sum(lppd) , n = n() )
 
-load('data/temp_data/master_list.Rdata')
+leave_one_out <- 
+  leave_one_out %>% 
+  group_by(species, vital_rate, model) %>% 
+  arrange( vital_rate, species, model , lambda) 
+
+
+lo <- split(leave_one_out, paste0(leave_one_out$species, leave_one_out$vital_rate))
+
+for(i in 1:length(lo)){
+  plot(data = lo[[i]], lppd ~ lambda) 
+}
+
+plot(data = leave_one_out %>% filter( species == 'PSSP', vital_rate == 'growth'), lppd ~ lambda)
+plot(data = lppd_scores %>% filter(species == 'PSSP', vital_rate == 'growth' , year_oos != 'c(2007:2015)'), lppd ~ lambda)
+
+lppd_scores %>% filter( species == 'PSSP', vital_rate == 'growth', year_oos != 'c(2007:2015)' , lppd < -300) %>% group_by(lambda) %>% summarise( mlppd = mean(lppd), n = n())
+
+test <- lppd_scores %>% filter (species == 'POSE', vital_rate == 'growth', year_oos != 'c(2007:2015)')
+
+test <- readRDS('data/temp_data/PSSP_growth.RDS')
+table(test$year, test$Grazing)
+
 # ----------------------------------------------------------------------------------------------------------------# 
 
-# lppds <- 
-#   merge(all_lppds, model_table, by = c('model', 'species', 'vital_rate', 'lambda')) %>% 
-#   group_by(species, vital_rate, model) %>% 
-#   arrange( vital_rate, species, model , lambda) %>% 
-#   filter( n() > 1) %>% 
-#   mutate( mean_lppd = mean(lppd, na.rm = TRUE), 
-#           sd_lppd = sd(lppd, na.rm = TRUE), 
-#           outlier = ifelse( is.na(lppd) | abs(lppd - mean_lppd) > 400 , TRUE, FALSE ), 
-#           max_lppd = max(lppd[!outlier])) %>% 
-#   group_by( species, vital_rate, model, outlier) %>% 
-#   mutate( lfit = ifelse( outlier, NA, loess_predict(lppd , lambda )), 
-#           lfit.se = ifelse( outlier, NA, loess_predict(lppd, lambda, TRUE)), 
-#           lppd_diff = lppd - max_lppd )
-
 gg_lppd_base <- 
-  ggplot( lppd_scores, aes( x = lambda, y = lppd )) + 
+  ggplot( leave_one_out, aes( x = lambda, y = lppd )) + 
   geom_text( aes( x = lambda, y = lppd, label = lambda))  
 
 gg_lppd <- 
   gg_lppd_base +  
-  geom_smooth(aes(x = lambda, y = lppd, group = 1), se = FALSE)
+  geom_line(aes(x = lambda, y = lfit - max_lppd, group = 1))
+
 
 # gg_no_outlier <- 
-#   lppd_scores %>% 
+#   lppds %>% 
 #   filter (!outlier ) %>% 
 #   group_by(species, vital_rate, model) %>% 
 #   filter( n() > 1 ) %>% 
@@ -78,40 +97,40 @@ gg_lppd <-
 #        ggtitle(paste('out of sample lppd by regularization plot for', unique(.$species), unique(.$vital_rate), 'model', unique(.$model)) ))
 
 gg <- 
-  lppd_scores %>% 
-  group_by(species, vital_rate) %>% 
+  leave_one_out %>% 
+  group_by(species, vital_rate, model) %>% 
   filter( n() > 1 ) %>% 
-  do(gg = gg_lppd %+% . + 
-       ggtitle(paste('out of sample lppd by regularization plot for', unique(.$species), unique(.$vital_rate), 'model', unique(.$model)) ))
-
-#gg_lppd %+% (lppd_scores %>% filter( species == 'ARTR', vital_rate == 'growth'))
-
-gg$gg[[12]]
-
-#gg_lppd %+% subset( lppd_scores, species == 'ARTR'  & vital_rate == 'growth')
-
-#dev.off()
-
+  do(gg = gg_lppd_base %+% . + 
+       ggtitle(paste('leave one out, lppd by regularization plot for', unique(.$species), unique(.$vital_rate), 'model', unique(.$model)) ))
 
 # output ----------------------------------------------------------------------------------------
 
-pdf('figures/plot_lppd_by_lambda_no_outliers.pdf', height = 8 , width = 8 )
+dfs <- split( leave_one_out, paste0(leave_one_out$species, leave_one_out$vital_rate) )
+length(dfs)
+dfs
+dfs[[1]]
+plot( dfs[[1]]$lambda , dfs[[1]]$lppd ) 
 
-print( gg_no_outlier$gg ) 
 
-dev.off()
-
-
-pdf('figures/plot_lppd_by_lambda.pdf', height = 8 , width = 8 )
+pdf('figures/plot_lppd_by_lambda_leave_one_out.pdf', height = 8 , width = 8 )
 
 print( gg$gg ) 
 
 dev.off()
 
+# ----------------------------------------------------------------------------------------------- 
+
+gg_out <- 
+  true_hold_out %>% 
+  group_by(species, vital_rate) %>% 
+  filter( n() > 1 ) %>% 
+  do(gg = gg_lppd %+% . + 
+       ggtitle(paste('out of sample lppd by regularization plot for', unique(.$species), unique(.$vital_rate), 'model', unique(.$model)) ))
+
 # save highest lppd models 
 
 best_fits <- 
-  lppds %>% 
+  leave_one_out %>% 
   group_by( vital_rate, species, model ) %>% 
   filter( lfit == max(lfit[!is.na(lfit)] )) 
 
@@ -124,4 +143,4 @@ best_fits <- left_join( best_fits, model_table)
 
 best_fits <- best_fits %>% arrange(vital_rate, species, model )
 
-write.csv(best_fits , 'output/best_lppd_scores.csv')
+write.csv(best_fits , 'output/best_lppd_scores_oos.csv')

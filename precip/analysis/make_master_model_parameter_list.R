@@ -11,6 +11,7 @@
 
 rm(list = ls())
 options("useFancyQuotes" = FALSE)
+library(stringr)
 library(tidyr)
 library(dplyr)
 
@@ -22,9 +23,9 @@ make_pars_string <- function( x ) {
   paste0( 'c(', toString(sQuote( x )), ')')
 }
 
-survparms1 <- c('a','b1_mu','b1','w','b2', 'mu','muhat','log_lik','log_lik2', 'bg','sig_a','sig_b1')
-growparms1 <- c('a','b1_mu','b1','w','b2', 'mu','muhat','log_lik','log_lik2','bg','sig_a','sig_b1','sigma', 'sigmahat', 'tau', 'tauSize')
-recparms1 <- c('a','theta','u','w', 'b2','log_lik','log_lik2','lambda', 'lambda_pred', 'bg', 'sig_a')
+survparms1 <- c('a','b1_mu','b1','w','b2', 'mu','muhat','log_lik','log_lik2', 'bg','sig_a','sig_b1', 'gint_out', 'climhat')
+growparms1 <- c('a','b1_mu','b1','w','b2', 'mu','muhat','log_lik','log_lik2','bg','sig_a','sig_b1','sigma', 'gint_out', 'climhat')
+recparms1 <- c('a','theta','u','w', 'b2','log_lik','log_lik2','lambda', 'lambda_pred', 'bg', 'sig_a', 'gint_out', 'climhat')
 
 smodels <- data.frame(model = 1, 
                       vital_rate = 'survival',

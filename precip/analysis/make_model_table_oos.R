@@ -6,7 +6,7 @@
 source('analysis/make_master_model_parameter_list.R')
 
 rm(list = ls())
-
+library(stringr)
 library(dplyr)
 library(tidyr)
 
@@ -50,6 +50,6 @@ write.csv( full_table, 'data/temp_data/model_table_oos.csv', row.names = FALSE)
 
 write.csv( short_table, 'data/temp_data/short_model_table_oos.csv', row.names = FALSE )
 
-full_table %>% 
-  filter( vital_rate == 'recruitment' & species == 'ARTR') %>% n_distinct()
+# full_table %>% 
+#   filter( vital_rate == 'recruitment' & species == 'ARTR') %>% n_distinct()
 

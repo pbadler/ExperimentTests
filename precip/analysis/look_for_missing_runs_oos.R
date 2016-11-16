@@ -17,9 +17,8 @@ waics <-
   mutate( clean_fn = str_replace(fn, pattern = '_WAIC\\.csv$', replacement = '')) %>%
   separate(clean_fn , into = c('species', 'vital_rate', 'model', 'lambda', 'chains', 'year_oos'), sep = '_')  
 
-
-models_missing <- merge(model_table, waics , by = c('model' , 'species', 'vital_rate', 'lambda', 'year_oos'), all.x = TRUE) %>% filter( is.na(lppd))
-
+models_missing <- 
+    merge(model_table, waics , by = c('model' , 'species', 'vital_rate', 'lambda', 'year_oos'), all.x = TRUE) %>% filter( is.na(lppd))
 
 models_missing$d <- 1:nrow(models_missing)
 

@@ -3,49 +3,350 @@ library(stringr)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(boot)
 
-#true_dat <- read.csv('~/driversdata/data/idaho_modern/allrecords_cover.csv')
-#true_dat <- read.csv('~/driversdata/data/idaho_modern/speciesData/ARTR/quadratCover.csv')
+# functions ---------------------------------------------------------------------------- 
 
-#true_dat$species <- toupper( lapply( lapply( str_split( true_dat$species, ' ' ), substr, 1,2 ) , paste0, collapse = '') ) 
+get_survival_size_covariates <- function( sdl, gdl ) {
+ 
+  return( 
+    list(  
+      id_table = data.frame( year = sdl$year2, Treatment = sdl$treat2, yid = sdl$yid2, quad = sdl$quad2, trackID = sdl$trackid2),
+      yid      = sdl$yid2,
+      nyrs     = sdl$nyrs2,
+      X        = sdl$X2, 
+      C        = sdl$C2,
+      W        = sdl$W2,
+      gm       = sdl$gm2,
+      N        = sdl$N2,
+      Ycenter  = gdl$Ycenter,  # use growth Yscale and Ycenter 
+      Yscale   = gdl$Yscale 
+      )
+  )
+} 
 
-g <- readRDS('output/prediction_tables/HECO_growth_3_for_cover.RDS')
-s <- readRDS('output/prediction_tables/HECO_survival_2.RDS')
 
-s <- s[ s$yid %in% g$yid, ] 
+get_recruitment_covariates <- function( rdl ) {
+  
+  return( 
+    list( 
+      id_table = data.frame( year = rdl$year2, Treatment = rdl$treat2, yid = rdl$yid2, quad = rdl$quad2), 
+      yid      = rdl$yid2, 
+      nyrs     = rdl$nyrs2,
+      spp_id   = rdl$spp,
+      C        = rdl$C2,
+      parents1 = rdl$parents12,
+      parents2 = rdl$parents22,
+      gm       = rdl$gm2,
+      N        = rdl$N2
+    )
+  )
+} 
 
-true_dat <- 
-  s %>% 
-  group_by( Treatment, year, quad ) %>% 
-  summarise( cover = 100*(sum(exp( logarea.t0 ))/10000))
 
-df <- data.frame( g[, c('Treatment', 'Period', 'year', 'quad', 'trackID', 'var', 'species')], logarea = as.numeric(levels(g$mean)[g$mean]), survives = as.numeric(levels(s$mean)[s$mean]))
+simulate_survival <- function( pars , test_dat ){ 
+  
+  nyrs  <- test_dat$nyrs
+  N <- test_dat$N
+  C <- test_dat$C
+  W <- test_dat$W
+  X <- test_dat$X
+  gm <- test_dat$gm
+  yid <- test_dat$yid
+  
+  attach(pars )
+  Y <- matrix( NA, nsims, N)
+  
+  for( j in 1:nsims){ 
+    climEff  <- C%*%b2[j, ]
+    gint     <- gm%*%bg[j, ]
+    coverEff <- W%*%w[j, ]
+    
+    # draw random year effects 
+    a  <- rnorm(nyrs, 0, sd = sig_a[j])
+    b1 <- rnorm(nyrs, b1_mu[j], sd = sig_b1[j])
+    
+    mu <- coverEff
+    
+    for(n in 1:N){
+      mu[n] <- inv.logit(gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + coverEff[n] + climEff[n])
+    }
+    
+    Y[j, ] <- rbinom(N, 1, mu)
+  }
+  rm(pars)
+  detach(pars )   
+  return(Y)
+}
 
-hist( 100*(exp(df$logarea )/10000) ) 
-hist( 100*(exp( s$logarea.t0)/10000))
 
-df <- 
-  df %>% 
-  mutate( year = year + 1 ) %>%  # shift year up one to represent logarea.t0 to match the survival frame 
-  group_by(Treatment, year, quad, var) %>% 
-  summarise( cover = 100*(sum(exp(logarea)*survives))/10000)
+simulate_growth <- function( pars , test_dat ){ 
+  
+  nyrs  <- test_dat$nyrs
+  N <- test_dat$N
+  C <- test_dat$C
+  W <- test_dat$W
+  X <- test_dat$X
+  gm <- test_dat$gm
+  yid <- test_dat$yid
+  Ycenter <- test_dat$Ycenter
+  Yscale   <- test_dat$Yscale
+  
+  attach(pars )
+  Y <- matrix( NA, nsims, N)
+  
+  for( j in 1:nsims){ 
+    climEff  <- C%*%b2[j, ]
+    gint     <- gm%*%bg[j, ]
+    coverEff <- W%*%w[j, ]
+    
+    # draw random year effects 
+    a  <- rnorm(nyrs, 0, sd = sig_a[j])
+    b1 <- rnorm(nyrs, b1_mu[j], sd = sig_b1[j])
+    
+    mu <- coverEff
+    sigma <- coverEff
+    
+    for(n in 1:N){
+      mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + coverEff[n] + climEff[n]
+      sigma[n] <- sqrt(max(tau*exp(tauSize*mu[n]), 1e-7))
+    }
+    
+    Y[j, ] <- rnorm(N, mu, sigma)
+  }
+  
+  Y <- exp( Y*Yscale + Ycenter) # re-scale by the observed mean and standard deviation in growth data
+  
+  rm(pars)
+  detach(pars )   
+  return(Y)
+}
 
-cover <- 
-  left_join(true_dat, df, by = c('Treatment', 'quad', 'year')) 
 
-cover <- 
-  cover %>% 
-  gather(type, cover, cover.x, cover.y )
+simulate_recruitment <- function( pars , test_dat ){ 
+  
+  nyrs  <- test_dat$nyrs
+  N <- test_dat$N
+  C <- test_dat$C
+  parents1 <- test_dat$parents1
+  parents2 <- test_dat$parents2
+  gm <- test_dat$gm
+  yid <- test_dat$yid
+  spp_id <- test_dat$spp_id
+  
+  attach(pars )
+  
+  Y <- matrix( NA, nsims, N)
+  
+  for( j in 1:nsims){ 
+    
+    trueP1 <- parents1*u[j] + parents2*(1-u[j])
+    trueP2 <- trueP1
+    
+    trueP2 <- sqrt(trueP1)
+    
+    climEff  <- C%*%b2[j, ]
+    gint     <- gm%*%bg[j, ]
+    coverEff <- trueP2%*%w[j, ]
+    
+    # draw random year effects 
+    a  <- rnorm(nyrs, 0, sd = pars$sig_a[j])
+    
+    mu <- coverEff
+    lambda <- coverEff
+    
+    for(n in 1:N){
+      mu[n] <- exp(gint[n] + a[yid[n]] + coverEff[n] + climEff[n]);
+      lambda[n] <- trueP1[n, spp_id]*mu[n];  
+    }
+    
+    Y[j, ] <- rnbinom(N, mu = lambda, size = theta[j] )
+  }
+  rm(pars)
+  detach(pars )  
+  return(Y)
+}
 
-ggplot( subset( cover, type == 'cover.x'), aes( x = year, y = cover, color = Treatment ) ) + 
-  stat_summary(fun.y = 'mean', geom = 'line') + 
-  stat_summary(data = subset(cover, var == 'muhat4' & type == 'cover.y'), fun.y = 'mean', geom = 'line', linetype = 2) + 
-  facet_wrap( ~ Treatment )
+simulate_recruit_size <- function( recruits , spp ) { 
+  
+  dat <- read.csv(paste0('~/driversdata/data/idaho/speciesData/', as.character(spp), '/recSize.csv'))
+  msize <- mean(log(dat$area))
+  sdsize <- sd(log(dat$area))
+  
+  out <- recruits 
+  
+  for(i in 1:length(recruits)){ 
+    n <- recruits[i]
+    out[i] <- sum ( exp(rnorm ( n, msize, sdsize) ) ) # sum recruit size to get total size per plot 
+  }
+  return(out )
+}
+  
+#
 
-g_pred <- g
-g_pred$year <- g$year + 1 
+setwd('~/Documents/ExperimentTests/precip/')
 
-test <- left_join(s, g_pred , c('year', 'Treatment', 'quad', 'trackID') )
+best_table <- read.csv('output/best_lppd_scores.csv')
 
-plot( test$logarea.t0.x,  as.numeric(levels(test$mean.y)[test$mean.y]))  
-abline(0 , 1)
+my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
+
+thin <- 10
+years <- expand.grid(year = 1925:2017, Treatment = c(1:3), stat = c('true_cov', 'pred_cover'))
+years$Period[ years$year > 2006 ] <- 'Modern'
+years$Period[ years$year <= 1960 ] <- 'Historical'
+
+# output lists 
+survives <- list(NA)
+size     <- list(NA)
+recruits <- list(NA)
+rec_area <- list(NA)
+k        <- list(NA)
+cover    <- list(NA)
+pred_cover <- list(NA)
+plot_cover <- list(NA)
+
+species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
+
+ylims <- list( c(0,40), c(0,7.5), c(0,7.5), c(0,7.5))
+
+for( i in 1:4) {  
+  spp   <- species_list[i]  
+  
+  sdl   <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')[[i]]
+  rdl   <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[[i]]
+  gdl   <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[i]]
+  
+  bname <- basename( as.character(best_table$fn[ best_table$species == spp ]) ) 
+  mpars <- str_split(bname, '_') 
+  
+  models <- lapply( mpars, function(x) paste0( 'output/stan_fits/predictions/', paste(  c( x[1:5], 'predict.RDS') , collapse = '_')))
+  
+  spars <- rstan::extract(readRDS(models[[3]]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg'))
+  spars[c('sig_a', 'b1_mu', 'sig_b1')] <- lapply( spars[c('sig_a', 'b1_mu', 'sig_b1')], function( x, thin ) x[ seq(1, nrow(x), thin) ], thin = thin )  
+  spars[c('w', 'b2', 'bg')] <- lapply( spars[c('w', 'b2', 'bg')], function( x, thin ) x[ seq(1, nrow(x), thin), ], thin = thin )  
+  
+  gpars <- rstan::extract(readRDS(models[[1]]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg', 'tau', 'tauSize'))
+  gpars[c('sig_a', 'b1_mu', 'sig_b1', 'tau', 'tauSize')] <- lapply( gpars[c('sig_a', 'b1_mu', 'sig_b1', 'tau', 'tauSize')], function( x, thin ) x[ seq(1, nrow(x), thin) ], thin = thin )  
+  gpars[c('w', 'b2', 'bg')] <- lapply( gpars[c('w', 'b2', 'bg')], function( x, thin ) x[ seq(1, nrow(x), thin), ], thin = thin )  
+  
+  rpars <- rstan::extract(readRDS(models[[2]]), c('sig_a', 'w', 'b2', 'bg', 'theta', 'u'))
+  rpars[c('sig_a','theta', 'u')] <- lapply( rpars[c('sig_a', 'theta', 'u')], function( x, thin ) x[ seq(1, nrow(x), thin) ], thin = thin )  
+  rpars[c('w', 'b2', 'bg')] <- lapply( rpars[c('w', 'b2', 'bg')], function( x, thin ) x[ seq(1, nrow(x), thin), ], thin = thin )  
+  
+  nsims <- length(spars$sig_a)
+  rpars$nsims <- gpars$nsims <- spars$nsims <- nsims
+  
+  sdl <-  get_survival_size_covariates(sdl, gdl)
+  rdl <-  get_recruitment_covariates(rdl)
+  
+  survives[[i]] <- simulate_survival( spars, sdl )
+  size[[i]]     <- simulate_growth(gpars, sdl )
+  recruits[[i]] <- simulate_recruitment(rpars, rdl)
+  rec_area[[i]] <- simulate_recruit_size(recruits[[i]], spp )
+  
+  k[[i]]        <- survives[[i]]*size[[i]]  # survival by size 
+  
+  survives[[i]] <- data.frame(sdl$id_table , t(survives[[i]]))
+  size[[i]]     <- data.frame(sdl$id_table , t(size[[i]]))
+  recruits[[i]] <- data.frame(rdl$id_table , t(recruits[[i]]))
+  rec_area[[i]] <- data.frame(rdl$id_table , t(rec_area[[i]]))
+  k[[i]]        <- data.frame(sdl$id_table , t(k[[i]]))      
+  
+  k[[i]] <-   
+    k[[i]] %>% 
+    gather( simulation, size , starts_with('X')) %>% 
+    group_by( year, Treatment, simulation, quad ) %>% 
+    summarize( total_size = sum( size )) %>% 
+    group_by( year, Treatment, simulation ) %>% 
+    summarise( total_size = mean(total_size ))
+  
+  rec_area[[i]] <- 
+    rec_area[[i]] %>% 
+    gather( simulation, rec_area, starts_with('X')) %>% 
+    group_by( year, Treatment, simulation, quad ) %>% 
+    summarize( total_rec_area = sum(rec_area )) %>% 
+    group_by( year, Treatment, simulation) %>% 
+    summarise( total_rec_area = mean(total_rec_area ))
+  
+  cover[[i]] <- 
+    merge( k[[i]], rec_area[[i]], all.y = TRUE) %>%  # use all recruitment years  
+    mutate( total_size = ifelse(is.na(total_size), 0, total_size))  %>%  # years without observed plants get 0
+    mutate( cover = 100*((total_size + total_rec_area)/10000) )
+  
+  pred_cover[[i]] <- 
+    cover[[i]] %>% 
+    mutate( year = year + 1 ) %>% # cover predictions the "Y's" are for the next year 
+    group_by(Treatment, year ) %>% 
+    summarise( pred_cover = median(cover), 
+               ucl = quantile( cover, 0.95), 
+               lcl = quantile(cover , 0.05))
+  
+  # get last year of cover which is not in the survival dataframe ------------------------------------- #   
+  oldCover <- read.csv(paste0( '~/driversdata/data/idaho/speciesData/', spp, '/quadratCover.csv'))
+  newCover <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/quadratCover.csv'))
+  oldCover$Period <- "Historical"
+  newCover$Period <- "Modern"
+  last_cover  <- rbind(oldCover, newCover)
+  quad <- read.csv('~/driversdata/data/idaho_modern/quad_info.csv')
+  
+  last_cover <-
+    last_cover %>%
+    left_join(quad) %>%
+    filter( Treatment %in% c('Control', 'Drought', 'Irrigation')) %>%
+    mutate( Treatment = as.numeric(factor(Treatment))) %>%
+    mutate( year = ifelse(year < 100, year + 1900, year)) %>%
+    group_by(Period, Treatment, year) %>%
+    summarise( true_cov = 100*(mean(totCover )/10000)) %>% 
+    group_by( Treatment, Period ) %>% 
+    filter( year == max(year))
+  
+  # ------------------------------------------------------------------------------------------------------ #
+  
+  sdf <- data.frame(sdl$id_table, X  = sdl$X, Ycenter =  sdl$Ycenter, Yscale = sdl$Yscale)
+  sdf$Period[sdf$year < 2000 ] <- 'Historical'
+  sdf$Period[sdf$year >= 2000 ] <- 'Modern'
+  
+  trueCov <- 
+    sdf %>% 
+    group_by( Period, year, Treatment, quad ) %>% 
+    summarise( totCover  = sum( exp( X*Yscale + Ycenter))) %>% 
+    group_by( Period, year, Treatment) %>% 
+    summarise( true_cov  = 100*(mean(totCover )/10000))
+  
+  rm(sdl, rdl)
+  
+  trueCov <- rbind(trueCov, last_cover)
+  
+  plot_cover[[i]] <-
+    merge( pred_cover[[i]], trueCov , all.y = TRUE) %>%
+    mutate( pred_cover = ifelse(Treatment != 1 & year == 2011, true_cov, pred_cover )) %>%
+    mutate( pred_cover = ifelse(Treatment == 1 & year == 2007, true_cov, pred_cover )) %>%
+    gather( stat, val,  pred_cover, true_cov) 
+  
+  plot_cover[[i]] <- merge( years, plot_cover[[i]], all.x = TRUE)
+
+  plot_cover[[i]]$Treatment <- factor(plot_cover[[i]]$Treatment, labels = c('Control', 'Drought', 'Irrigation'))  
+  
+  pdf( paste0( 'figures/predictions/', spp  , 'lppd_predicted_cover.pdf' ), height = 8, width = 8) 
+  
+  print( 
+    ggplot( subset( plot_cover[[i]], Period == "Historical"), aes( x = year, y =  val, color = Treatment, linetype = stat)) +
+      geom_line() +
+      scale_color_manual(values = my_colors ) + 
+      ylim( ylims[[i]]) + 
+      scale_x_continuous()
+  )
+  
+  print( 
+    ggplot( subset( plot_cover[[i]], Period == "Modern"), aes( x = year, y =  val, color = Treatment, linetype = stat)) +
+      geom_line() +
+      scale_color_manual(values = my_colors ) + 
+      ylim( ylims[[i]] ) + 
+      scale_x_continuous()
+  )
+  
+  dev.off()
+} 
+
+
+

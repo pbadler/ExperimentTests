@@ -18,13 +18,12 @@ rm(list = ls() )
 
 library(rstan)
 
-
 setwd('/home/andy/Documents/ExperimentTests/precip/')  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
-models <- read.csv( 'output/best_WAIC_scores.csv')
+models <- read.csv( 'output/best_lppd_scores.csv')
 nchains <- 4
 predict <- TRUE  
 
-for( i in 1:nrow( models )){ 
+for( i in 1:5){ 
   
   do_line <- i 
   
@@ -47,7 +46,7 @@ for( i in 1:nrow( models )){
   }else{ stop('line number is greater than number of models')}
 
   if( predict ) { 
-    output_path <- file.path(getwd(),  'output/stan_fits/predictions/')
+    output_path <- file.path(getwd(),  'output/stan_fits/predictions/best_lppd')
     ending <- 'predict.RDS'
     use_pars <- pars_list 
     
@@ -59,9 +58,9 @@ for( i in 1:nrow( models )){
   
   temp_fit <- run_stan_model(species, vital_rate, model, do_lambda = lambda, do_prior_sd = sd, nchains = nchains, niter = niter, predict = predict, pars = use_pars)
   
-  save_file <- file.path( output_path, paste(species, vital_rate, model, lambda, nchains, ending, sep = '_'))
+  save_file <- file.path( output_path, paste(species, vital_rate, model, lambda, nchains,  ending, sep = '_'))
   
   saveRDS( temp_fit , file = save_file )
-  
+  rm(temp_fit)
 }    
   

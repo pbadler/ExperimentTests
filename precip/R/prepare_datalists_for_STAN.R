@@ -15,7 +15,6 @@ detachAllPackages <- function() {
   package.list <- setdiff(package.list,basic.packages)
   
   if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
-  
 }
 
 detachAllPackages()
@@ -62,6 +61,11 @@ scale_covariates <- function( datalist) {
   datalist$Whold  <- scale(datalist$Whold, Wcenter, Wscale )
   datalist$W2     <- scale(datalist$W2, Wcenter, Wscale ) 
   
+  datalist$Ccenter <- Ccenter 
+  datalist$Cscale  <- Cscale 
+  datalist$Wcenter <- Wcenter
+  datalist$Wscale  <- Wscale 
+  
   if(!is.null( datalist$X)){
       
     X               <- scale(datalist$X)
@@ -71,13 +75,17 @@ scale_covariates <- function( datalist) {
   
     datalist$Xhold  <- as.numeric(scale(datalist$Xhold, Xcenter, Xscale))
     datalist$X2     <- as.numeric(scale(datalist$X2, Xcenter, Xscale))
+    
+    datalist$Xcenter <- Xcenter
+    datalist$Xscale  <- Xscale 
+    
   }
     
   if(!is.null( datalist$C3)){
     datalist$C3 <- scale(datalist$C3, Ccenter, Cscale)
     datalist$W3 <- scale(datalist$W3, Wcenter, Wscale)
-    datalist$X3 <- as.numeric(scale(datalist$X3, Xcenter, Xscale))
-
+    datalist$X3 <- scale(datalist$X3, Xcenter, Xscale)
+    
     Y  <- scale(datalist$Y)
     datalist$Y  <- as.numeric(Y)
     Ycenter     <- attr(Y, 'scaled:center')
@@ -85,6 +93,9 @@ scale_covariates <- function( datalist) {
     
     datalist$Yhold <- as.numeric(scale(datalist$Yhold, Ycenter, Yscale))
     datalist$Y2 <- as.numeric(scale(datalist$Y2, Ycenter, Yscale))
+    
+    datalist$Ycenter <- Ycenter
+    datalist$Yscale  <- Yscale 
   
   }
 
@@ -107,7 +118,7 @@ df2list <- function(df, covars, vr, type) {
   nyrs      <- length(unique(df$yid))                             # number of years 
 
   W         <- as.matrix(df[, grep('W.[A-Z]+', names(df)) ])      # crowding matrix 
-  Wcovs     <- ncol(W)                                             # number of species in crowding matrix 
+  Wcovs     <- ncol(W)                                            # number of species in crowding matrix 
   
   C         <- as.matrix(df[, covars])                            # all climate covariates 
   Covs      <- ncol(C)                                            # number of climate covariates 
@@ -117,10 +128,15 @@ df2list <- function(df, covars, vr, type) {
   quad      <- as.numeric(factor(df$quad))
   treat     <- as.numeric(factor(df$Treatment))
 
+  if( type %in% c('2', 'hold')) { 
+    tm        <- model.matrix.lm(~ df$Treatment)                  # Treatment matrix, no intercept
+    nT        <- ncol(tm)                                         # number of treatments 
+  }
+  
   if(vr == 'recruitment'){
-    Y         <- df$Y
-    parents1  <- as.matrix(df[ , grep('^cov\\.[A-Z]+', names(df))])/100
-    parents2  <- as.matrix(df[ , grep('^Gcov\\.[A-Z]+', names(df))])/100
+    Y              <- df$Y
+    parents1       <- as.matrix(df[ , grep('^cov\\.[A-Z]+', names(df))])/100
+    parents2       <- as.matrix(df[ , grep('^Gcov\\.[A-Z]+', names(df))])/100
     
     species_name   <- unique(df$species )
     spp_list       <- factor( str_extract( colnames(parents1), '[A-Z]+$')) # get species names 
@@ -196,8 +212,10 @@ compile_datalists <- function( df, train, hold, vr ) {
     #--------use survival dataframe for growth cover predictions ------------------------------# 
 
     survival_df <- readRDS(paste0('data/temp_data/', species , '_survival_cleaned_dataframe.RDS' ))
+
     survival_df <- survival_df[ survival_df$yid %in% c(full_list$yid2), ] # only use years that are in the growth dataframe  
-    survival_df <- subset(survival_df, Period == 'Modern')
+    
+    #survival_df <- subset(survival_df, Period == 'Modern')
     covars <- grep( '^[PT]\\.|^(VWC)\\.', names(survival_df)) 
 
     cover_list  <- df2list(survival_df, covars, vr = vr, type = '3')

@@ -85,7 +85,7 @@ D$Treatment2 <- D$Treatment
 D$Treatment2[D$year>2000] <- "Modern"
 D$Treatment3 <- D$Treatment
 D$Treatment3[D$Treatment=="Control" & D$year>2000] <- "ControlModern"
-D$Treatment[ D$year < 2012 & D$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
+#D$Treatment[ D$year < 2012 & D$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
 
 # assign group level zeros to smallest non-zero value 
 historical_Gcov <- D[ D$Period == 'Historical', grep ( '^Gcov\\.', names(D) ) ]

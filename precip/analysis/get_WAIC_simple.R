@@ -9,33 +9,32 @@ rm(list = ls() )
 library(rstan)
 
 args <- commandArgs(trailingOnly=TRUE)
-#args <- c('/home/andy/Documents/ExperimentTests/precip/', 'survival', 60)
+#args <- c('/home/andy/Documents/ExperimentTests/precip/', 60)
 
 # test if there is at least one argument: if not, return an error
-if (length(args) != 3){ 
+if (length(args) != 2){ 
   stop('####### Incorrect number of arguments supplied ####### \n
        ####### Arguments required:
        #######  working directory 
        #######  vital rate "growth", "recruitment" or "survival"
        #######  line number : 1 - total combination of models in')
   
-}else if (length(args) == 3){
+}else if (length(args) == 2){
   
   # ---Set working directory, species, vital rate, model number, and number of chains -----------------------------#
 
-  
   setwd(args[1])  # set to directory with the "data", "analysis" and "output" folders '/projects/A01633220/precip_experiment/'
   
-  do_vr <- as.character(args[2])
+  #do_vr <- as.character(args[2])
   
-  do_line <- as.numeric(eval(parse(text = args[3])))
+  do_line <- as.numeric(eval(parse(text = args[2])))
   
 }
 
 nchains <- 4
 
 models <- read.csv('data/temp_data/model_table.csv')
-models <- subset( models, vital_rate == do_vr)
+#models <- subset( models, vital_rate == do_vr)
 
 source( 'analysis/run_stan_fxns.R')
 source( 'analysis/waic_fxns.R')
@@ -66,4 +65,3 @@ waic_df$type <- c('in_sample', 'out_of_sample')
 waic_df$fn <- basename(save_file)
   
 write.csv(waic_df, file = save_file, row.names = FALSE)
-

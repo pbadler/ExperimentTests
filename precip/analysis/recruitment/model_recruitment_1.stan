@@ -108,8 +108,8 @@ generated quantities{
   vector[Nhold] coverEff_pred;
   matrix[Nhold, Nspp] trueP1_pred;
   matrix[Nhold, Nspp] trueP2_pred;
-  vector[Nhold] gint_pred; 
-  vector[Nhold] climEff_pred; 
+  vector[Nhold] gint_out; 
+  vector[Nhold] climhat; 
   //matrix[Nhold, Nspp] trueP2_pred_scaled;
 
   for(n in 1:N){ 
@@ -118,8 +118,8 @@ generated quantities{
   
   // 1. Holdout data predictions 
 
-  climEff_pred <- Chold*b2;
-  gint_pred   <- gmhold*bg;
+  climhat <- Chold*b2;
+  gint_out   <- gmhold*bg;
   trueP1_pred <- parents1hold*u + parents2hold*(1-u);
 
   for(n in 1:Nhold)
@@ -136,7 +136,7 @@ generated quantities{
     a_pred[i] <- normal_rng(0, sig_a); // draw random year intercept
 
   for(n in 1:Nhold){
-    mu_pred[n] <- exp(gint_pred[n] + a_pred[yidhold[n] - nyrs ] + coverEff_pred[n] + climEff_pred[n]);
+    mu_pred[n] <- exp(gint_out[n] + a_pred[yidhold[n] - nyrs ] + coverEff_pred[n] + climhat[n]);
     lambda_pred[n] <- trueP1_pred[n, spp]*mu_pred[n];
   }
 

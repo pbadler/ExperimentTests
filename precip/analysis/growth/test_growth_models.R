@@ -3,7 +3,7 @@ library(rstan)
 library(ggmcmc)
 # simulate climate, competition, year and group effects ------------------------------------- # 
 
-test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['PSSP']]
+test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['POSE']]
 
 sig_a <- 1
 sig_b1 <- 0.2
@@ -49,11 +49,19 @@ simulate_growth <- function( pars , test_dat ){
 
 test_dat$Y <- simulate_growth(pars, test_dat)
 
-test_dat$tau_beta <- 0.024
+test_dat$tau_beta <- 10
 
 t1 <- system.time(
-  myfit1 <- stan('analysis/growth/model_growth_1.stan', data = test_dat, chains = 1, cores = 4, iter = 500)
+  myfit1 <- stan('analysis/growth/model_growth_1_predict.stan', data = test_dat, chains = 4, cores = 4, iter = 100)
 )
+
+source('analysis/waic_fxns.R')
+waic(myfit1)
+
+myfit2 <- stan('analysis/growth/model_growth_1_no_tauSize.stan', data =test_dat, chains = 4, cores = 4, iter = 2000) 
+waic(myfit2)
+
+traceplot( myfit2, 'b1')
 
 ests1 <- summary(myfit1, c('b1_mu', 'w', 'b2', 'bg', 'tau', 'tauSize', 'sig_a', 'sig_b1'))$summary[, 1]
 ests1

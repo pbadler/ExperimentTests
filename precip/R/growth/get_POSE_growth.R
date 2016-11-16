@@ -68,12 +68,26 @@ allD <- allD[keep,]
 # remove outliers (large plants that obviously do not turn into tiny plants)
 allD <- subset(allD, ! ( quad == 'Q11' & trackID == '26' & year %in% c(1931,1932, 1938, 1939) )) # drop these observations 
 
+
+tmp <- which( allD$Grazing == 'G')
+plot(data = allD[-tmp, ], logarea.t1 ~ logarea.t0)
+plot(data = allD[tmp, ], logarea.t1 ~ logarea.t0)
+
+summary(lm(data=allD[-tmp, ], logarea.t1 ~ logarea.t0))
+summary(lm(data=allD[tmp, ], logarea.t1 ~ logarea.t0))
+
+plot(resid(lm(data=allD[-tmp, ], logarea.t1 ~ logarea.t0)))
+plot(resid(lm(data=allD[tmp, ], logarea.t1 ~ logarea.t0)))
+
+
+
+
 # set up indicator variables
 allD$Treatment2 <- allD$Treatment
 allD$Treatment2[allD$year>2000] <- "Modern"
 allD$Treatment3 <- allD$Treatment
 allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
-allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
+#allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
 
 # ----------- use this data for prediction ------------------------------------------------------------------------------
 

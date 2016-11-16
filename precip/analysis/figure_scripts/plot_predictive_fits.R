@@ -11,7 +11,7 @@ library(gridExtra)
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 
-mfiles <- dir('output/stan_fits/predictions', '4_predict.RDS', full.names = TRUE)
+mfiles <- dir('output/stan_fits/predictions/best_lppd', '4_predict.RDS', full.names = TRUE)
 
 for( i in 1:length(mfiles)){ 
   
@@ -43,18 +43,28 @@ for( i in 1:length(mfiles)){
   
   pdf(file.path( 'figures', 'stan_fits',  paste(spp, vr, m, 'traceplots.pdf', sep = '_')), height = 8, width = 11)  
   
-  ggs_traceplot(fit_ggs, 'a_mu') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m))
+  if( sum(str_detect(fit_ggs$Parameter, 'sig_a')) > 0 ){
+    print( traceplot(temp_fit, c('sig_a', 'a')))
+  }
   
-  if( sum(str_detect(fit_ggs$Parameter, 'b1_mu')) > 0 ){
-    print( ggs_traceplot(fit_ggs, 'b1_mu') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m)))
+  if( sum(str_detect(fit_ggs$Parameter, 'sig_b1')) > 0 ){
+    print( traceplot(temp_fit, c('sig_b1', 'b1', 'b1_mu')))
+  }
+
+  if( sum(str_detect(fit_ggs$Parameter, 'theta')) > 0 ){
+    print( traceplot(temp_fit, c('theta')))
+  }
+  
+  if( sum(str_detect(fit_ggs$Parameter, 'tau')) > 0 ){
+    print( traceplot(temp_fit, c('tau', 'tauSize')))
   }
   
   if( sum( str_detect( fit_ggs$Parameter, 'b2')) > 0  ) { 
-    print( ggs_traceplot(fit_ggs, 'b2') + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m)) )
+    print( traceplot(temp_fit, c('b2')))
   }
   
   if( sum( str_detect(fit_ggs$Parameter, 'w')) > 0 ) {
-    print( ggs_traceplot(fit_ggs, 'w')  + ggtitle( paste( 'Traceplot for', spp, vr, 'model', m)))
+    print( traceplot(temp_fit, c('w')))
   }
   
   dev.off()
@@ -84,7 +94,7 @@ for( i in 1:length(mfiles)){
   
   
   if (sum(str_detect(fit_ggs$Parameter, 'w')) > 0 ) { 
-    w <- data.frame(extract(temp_fit, 'w'))
+    w <- data.frame(rstan::extract(temp_fit, 'w'))
     
     names(w) <- climate_vars[1:ncol(w)]
   

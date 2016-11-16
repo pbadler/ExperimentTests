@@ -66,7 +66,7 @@ allD$Treatment2 <- allD$Treatment
 allD$Treatment2[allD$year>2000] <- "Modern"
 allD$Treatment3 <- allD$Treatment
 allD$Treatment3[allD$Treatment=="Control" & allD$year>2000] <- "ControlModern"
-allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
+#allD$Treatment[ allD$year < 2012 & allD$Treatment %in% c('Drought', 'Irrigation') ] <- 'Control'  # set initial treatment to control
 
 
 # ----------- use this data for prediction ------------------------------------------------------------------------------

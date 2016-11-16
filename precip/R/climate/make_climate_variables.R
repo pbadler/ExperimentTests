@@ -175,7 +175,7 @@ annual_clim <- left_join( annual_clim, periods )
 
 # ------ filter out treatments ----------------------------------------------------------------# 
 seasonal_clim <- seasonal_clim %>% 
-  filter( !(year < 2012 & Treatment != 'Control')) # remove all Drought and Irrigation treatments prior to 2012 
+  filter( !(year < 2011 & Treatment != 'Control')) # remove all Drought and Irrigation treatments prior to 2011 
 
 # quarterly_clim <- quarterly_clim %>% 
 #   filter( !(year < 2012 & Treatment != 'Control'))
