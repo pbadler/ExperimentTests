@@ -45,9 +45,9 @@ data/temp_data/PSSP_recruitment.RDS
 data/temp_data/ARTR_survival.RDS
 data/temp_data/HECO_survival.RDS
 data/temp_data/POSE_survival.RDS
-data/temp_data/PSSP_growth.RDS
+data/temp_data/PSSP_survival.RDS
 analysis/gather_WAIC_scores_oos.R
 analysis/submit_gather_WAIC_scores_oos.sh
-output/missing_runs_oos.csv
+output/missing_runs_oos1.csv
 analysis/run_missing_stan_runs_oos.R
 analysis/submit_missing_WAIC_oos.sh

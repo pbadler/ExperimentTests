@@ -1,13 +1,13 @@
 "vital_rate","lambda","model","species","pars","sd","niter","nlambda","index"
-"growth",1,1,"ARTR","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'sigmahat', 'tau', 'tauSize')",9.48773583635853,2000,40,1
-"growth",1,1,"HECO","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'sigmahat', 'tau', 'tauSize')",9.48773583635853,2000,40,41
-"growth",1,1,"POSE","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'sigmahat', 'tau', 'tauSize')",9.48773583635853,2000,40,81
-"growth",1,1,"PSSP","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'sigmahat', 'tau', 'tauSize')",9.48773583635853,2000,40,121
-"recruitment",1,1,"ARTR","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a')",9.48773583635853,2000,40,161
-"recruitment",1,1,"HECO","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a')",9.48773583635853,2000,40,201
-"recruitment",1,1,"POSE","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a')",9.48773583635853,2000,40,241
-"recruitment",1,1,"PSSP","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a')",9.48773583635853,2000,40,281
-"survival",1,1,"ARTR","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1')",9.48773583635853,2000,40,321
-"survival",1,1,"HECO","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1')",9.48773583635853,2000,40,361
-"survival",1,1,"POSE","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1')",9.48773583635853,2000,40,401
-"survival",1,1,"PSSP","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1')",9.48773583635853,2000,40,441
+"growth",1,1,"ARTR","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'gint_out', 'climhat')",9.48773583635853,2000,40,1
+"growth",1,1,"HECO","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'gint_out', 'climhat')",9.48773583635853,2000,40,41
+"growth",1,1,"POSE","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'gint_out', 'climhat')",9.48773583635853,2000,40,81
+"growth",1,1,"PSSP","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'sigma', 'gint_out', 'climhat')",9.48773583635853,2000,40,121
+"recruitment",1,1,"ARTR","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a', 'gint_out', 'climhat')",9.48773583635853,2000,40,161
+"recruitment",1,1,"HECO","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a', 'gint_out', 'climhat')",9.48773583635853,2000,40,201
+"recruitment",1,1,"POSE","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a', 'gint_out', 'climhat')",9.48773583635853,2000,40,241
+"recruitment",1,1,"PSSP","c('a', 'theta', 'u', 'w', 'b2', 'log_lik', 'log_lik2', 'lambda', 'lambda_pred', 'bg', 'sig_a', 'gint_out', 'climhat')",9.48773583635853,2000,40,281
+"survival",1,1,"ARTR","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'gint_out', 'climhat')",9.48773583635853,2000,40,321
+"survival",1,1,"HECO","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'gint_out', 'climhat')",9.48773583635853,2000,40,361
+"survival",1,1,"POSE","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'gint_out', 'climhat')",9.48773583635853,2000,40,401
+"survival",1,1,"PSSP","c('a', 'b1_mu', 'b1', 'w', 'b2', 'mu', 'muhat', 'log_lik', 'log_lik2', 'bg', 'sig_a', 'sig_b1', 'gint_out', 'climhat')",9.48773583635853,2000,40,441
