@@ -68,34 +68,34 @@ scale_covariates <- function( datalist) {
   
   if(!is.null( datalist$X)){
       
-    X               <- scale(datalist$X)
-    datalist$X      <- as.numeric(X)
-    Xcenter         <- attr(X, 'scaled:center')
-    Xscale          <- attr(X, 'scaled:scale')
-  
-    datalist$Xhold  <- as.numeric(scale(datalist$Xhold, Xcenter, Xscale))
-    datalist$X2     <- as.numeric(scale(datalist$X2, Xcenter, Xscale))
-    
-    datalist$Xcenter <- Xcenter
-    datalist$Xscale  <- Xscale 
+    # X               <- scale(datalist$X)
+    # datalist$X      <- as.numeric(X)
+    # Xcenter         <- attr(X, 'scaled:center')
+    # Xscale          <- attr(X, 'scaled:scale')
+    # 
+    # datalist$Xhold  <- as.numeric(scale(datalist$Xhold, Xcenter, Xscale))
+    # datalist$X2     <- as.numeric(scale(datalist$X2, Xcenter, Xscale))
+    # 
+    # datalist$Xcenter <- Xcenter
+    # datalist$Xscale  <- Xscale 
     
   }
     
   if(!is.null( datalist$C3)){
     datalist$C3 <- scale(datalist$C3, Ccenter, Cscale)
     datalist$W3 <- scale(datalist$W3, Wcenter, Wscale)
-    datalist$X3 <- scale(datalist$X3, Xcenter, Xscale)
+    # datalist$X3 <- scale(datalist$X3, Xcenter, Xscale)
     
-    Y  <- scale(datalist$Y)
-    datalist$Y  <- as.numeric(Y)
-    Ycenter     <- attr(Y, 'scaled:center')
-    Yscale      <- attr(Y, 'scaled:scale') 
-    
-    datalist$Yhold <- as.numeric(scale(datalist$Yhold, Ycenter, Yscale))
-    datalist$Y2 <- as.numeric(scale(datalist$Y2, Ycenter, Yscale))
-    
-    datalist$Ycenter <- Ycenter
-    datalist$Yscale  <- Yscale 
+    # Y  <- scale(datalist$Y)
+    # datalist$Y  <- as.numeric(Y)
+    # Ycenter     <- attr(Y, 'scaled:center')
+    # Yscale      <- attr(Y, 'scaled:scale') 
+    # 
+    # datalist$Yhold <- as.numeric(scale(datalist$Yhold, Ycenter, Yscale))
+    # datalist$Y2 <- as.numeric(scale(datalist$Y2, Ycenter, Yscale))
+    # 
+    # datalist$Ycenter <- Ycenter
+    # datalist$Yscale  <- Yscale 
   
   }
 
@@ -299,11 +299,17 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
 clim_vars <- c('VWC.sp.l', 
                'VWC.sp.0', 
                'VWC.sp.1',
-               'VWC.su.0', 
-               'VWC.su.l', 
-               'T.sp.0', 
+               'VWC.su.1', 
+               'VWC.su.0',
+               'VWC.f.1', 
+               'VWC.f.0', 
                'T.sp.1', 
-               'T.sp.l')                     
+               'T.sp.0', 
+               'T.sp.l', 
+               'T.su.1', 
+               'T.su.0', 
+               'T.f.1', 
+               'T.f.0')                     
 
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'

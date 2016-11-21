@@ -6,7 +6,8 @@ library(stringr)
 mydf <- dir( 'data/temp_data/', '[A-Z]{4}_growth_cleaned_dataframe.RDS' , full.names = T)
 
 growth_f <- as.formula(Y ~ X + (X|year) + Group + W.ARTR + W.HECO + W.POSE + W.PSSP + 
-                         T.sp.0 + T.sp.1 + T.sp.l + VWC.sp.0 + VWC.sp.1 + VWC.sp.l + VWC.su.0 + VWC.su.l )
+                         T.sp.0 + T.sp.1 + VWC.sp.0 + VWC.sp.1 + VWC.f.1 + VWC.f.0 + T.f.1 + T.f.0 )
+
 
 fit <- list(NA)
 x   <- list(NA)
@@ -53,3 +54,6 @@ for(i in 1:length(mydf) ){
 
 saveRDS(x, 'output/lmer_predictions/lmer_growth.RDS')
 saveRDS(cover_df, 'output/lmer_predictions/lmer_growth_cover.RDS')
+
+
+lapply( fit, summary)

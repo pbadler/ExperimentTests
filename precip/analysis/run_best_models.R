@@ -23,7 +23,7 @@ models <- read.csv( 'output/best_lppd_scores.csv')
 nchains <- 4
 predict <- TRUE  
 
-for( i in 1:5){ 
+for( i in 1:4){ 
   
   do_line <- i 
   
@@ -42,7 +42,8 @@ for( i in 1:5){
   print(pars_list)
   niter <- line$niter 
   nlambda <- line$nlambda
-  
+  lambda <- 1 
+  sd <- 10
   }else{ stop('line number is greater than number of models')}
 
   if( predict ) { 

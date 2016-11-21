@@ -5,8 +5,12 @@ library(stringr)
 
 mydf <- dir( 'data/temp_data/', '[A-Z]{4}_survival_cleaned_dataframe.RDS' , full.names = T)
 
-survival_f <- as.formula(Y ~ X + (X|year) + Group + W.ARTR + W.HECO + W.POSE + W.PSSP + 
-                         T.sp.0 + T.sp.1 + T.sp.l + VWC.sp.0 + VWC.sp.1 + VWC.sp.l + VWC.su.0 + VWC.su.l )
+survival_f <- as.formula(Y ~ X + (X|year) + Group + W.ARTR + W.HECO + W.POSE + W.PSSP) 
+
+#                            T.sp.0 + T.sp.1 + VWC.sp.0 + VWC.sp.1 + VWC.f.1 + VWC.f.0 + T.f.1 + T.f.0 )
+
+
+
 
 fit <- list(NA)
 x   <- list(NA)
@@ -14,6 +18,9 @@ cover_df <- list(NA)
 for(i in 1:length(mydf) ){  
   x[[i]] <- readRDS(mydf[i])
   species <- str_extract(basename(mydf[i]), '[A-Z]{4}')
+  
+  x[[i]][, grep('(^T\\.)|(^VWC\\.)', names(x[[i]]))] <- scale( x[[i]][, grep('(^T\\.)|(^VWC\\.)', names(x[[i]]))] ) 
+  
   fit[[i]] <- glmer( data = subset(x[[i]], Period == 'Historical'), survival_f, family = 'binomial')
   
   x[[i]]$predicted <- predict( fit[[i]], newdata = x[[i]], re.form = NA)
@@ -45,3 +52,6 @@ for(i in 1:length(mydf) ){
 }
 
 saveRDS(x, 'output/lmer_predictions/lmer_survival.RDS')
+
+
+lapply(fit,  summary)

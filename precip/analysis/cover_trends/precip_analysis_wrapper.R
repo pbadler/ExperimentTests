@@ -5,7 +5,8 @@ rm(list=ls(all=TRUE))
 graphics.off();
 
 root=ifelse(.Platform$OS.type=="windows","c:/Repos","~"); # modify as needed
-setwd(paste(root,"/Documents/precip_experiment/",sep="")); # modify as needed 
+
+setwd(paste(root,"/Documents/ExperimentTests/precip/",sep="")); # modify as needed 
 
 ###
 ### 1. get treatment trends #################################
@@ -15,7 +16,7 @@ library(texreg) # to save output
 library(lme4)
 
 statsOutput <- paste0(getwd(),"/output/stats_tables.tex")
-source("R/treatment_trends_precip.r")
+source("analysis/cover_trends/treatment_trends_precip.r")
 
 # clean up
 
@@ -39,28 +40,28 @@ dists <- read.csv(file.path(root, 'driversdata/data/idaho_modern/speciesData/Ida
 
 # ###
 # ### fit survival models (takes ~ 10 minutes)
-# ###
+# # ###
 # setwd("survival")
 # source("write_params.r") # get function to format and output parameters
 # for(iSpp in c("ARTR","HECO","POSE","PSSP")){
-#   
+# 
 #   source(paste0(iSpp,"survival.r"))
-#   
+# 
 #   # save fixed effects summary to file
 #   cat("",file=statsOutput,sep="\n",append=T)
 #   cat(capture.output(print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"survival model"),
 #         label=paste0(iSpp,"survival")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
-#   
+# 
 #   # save treatment test
 #   irow <- dim(trtTests)[1]
 #   trtTests[irow+1,] <- NA
 #   trtTests[irow+1,1:2] <- c(iSpp,"survival")
 #   tmp <- grep("Treatment",row.names(m1$summary.fixed))
 #   trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
-#   
+# 
 #   # write parameters
-#   formatSurvPars(m1,paste0(iSpp,"_surv.csv")) 
-#   
+#   formatSurvPars(m1,paste0(iSpp,"_surv.csv"))
+# 
 # }
 # setwd("..")
 

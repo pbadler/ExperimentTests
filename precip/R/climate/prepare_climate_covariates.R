@@ -72,8 +72,10 @@ q_VWC <-
          VWC.sp.su.1 = rollapply(avg, 2, 'mean', na.rm = TRUE, align = 'right', fill = NA),
          VWC.sp.su.0 = lag(VWC.sp.su.1, 4),
          VWC.sp.su.l = lag(VWC.sp.su.0, 4),
-         VWC.su.0 = lag(avg, 3),
-         VWC.su.l = lag(VWC.su.0, 4)) %>%
+         VWC.su.1 = lag(avg, 3),
+         VWC.su.0 = lag(VWC.su.1, 4), 
+         VWC.f.1  = lag(avg, 2), 
+         VWC.f.0  = lag(VWC.f.1, 4)) %>%
   filter( quarter == 'Q2') %>% # plants are measured at the end of Q2 each year 
   select( Treatment, Period, year, quarter, starts_with("VWC")) %>%
   ungroup() %>% 
@@ -105,7 +107,11 @@ q_temp <-
   arrange(Treatment, year, quarter) %>% 
   mutate( T.sp.1 = val, 
           T.sp.0 = lag(T.sp.1, 4),
-          T.sp.l = lag(T.sp.0, 4)) %>% 
+          T.sp.l = lag(T.sp.0, 4), 
+          T.su.1 = lag(val, 3), 
+          T.su.0 = lag(T.su.1, 4), 
+          T.f.1 = lag(val, 2), 
+          T.f.0 = lag(T.f.1, 4)) %>% 
   filter( quarter == 'Q2') %>% 
   select( Treatment, Period, year, quarter, starts_with("T"))
 
