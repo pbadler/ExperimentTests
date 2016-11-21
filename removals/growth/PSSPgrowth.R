@@ -94,34 +94,69 @@ m1 <- inla(logarea.t1 ~ logarea.t0 + Treatment + W.ARTR + W.HECO + W.POSE + W.PS
   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-# additional model exploration
+# explore additional models
 
 # add individual level removal info to best model
-m2.lmer <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +inARTR+
-              (logarea.t0|year),data=allD) 
-#summary(m2.lmer)
-output<-capture.output(texreg(m2.lmer, ci.force=TRUE,label="table:PSSPgrowth-inARTR",
-      caption="\textit{P. spicata} growth with \textit{Artemisia} canopy effect",
-      caption.above=TRUE))
-cat(output,file=statsOutput,sep="\n",append=T)
+m2 <- inla(logarea.t1 ~ logarea.t0 + Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts + inARTR +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+#  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
+
+# save fixed effects summary to file
 cat("",file=statsOutput,sep="\n",append=T)
+cat(capture.output(print(xtable(m2$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the Ps. spicata model with individual-level A. tripartita removal data"),
+        label=paste0(iSpp,"growth-inARTR")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
+rm(m2)
 
 # does effect diminish with time?
 allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
                        as.numeric(as.character(allD$year))-2010,0))
-m1.time <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-output<-capture.output(texreg(m1.time, ci.force=TRUE,label="table:PSSPgrowth-byYr",
-      caption="\textit{P. spicata} growth with year-by-treatment interaction",
-      caption.above=TRUE))
-cat(output,file=statsOutput,sep="\n",append=T)
-cat("",file=statsOutput,sep="\n",append=T)
+m3 <- inla(logarea.t1 ~ trtYears + logarea.t0  + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts + inARTR +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+#  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
-# does result change if we filter out low ARTR control quadrats?
-# first identify control quads with low ARTR cover
-source("../filter_lowARTR_quads.r")
-keep <- which(!is.element(allD$quad,exclude.quads))
-# put indicators on intercept only
-m1.lowARTR <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts+
-             (1|Group)+(logarea.t0|year),data=allD,subset=keep) 
-summary(m1.lowARTR) # very little change in parameters
+# save fixed effects summary to file
+cat("",file=statsOutput,sep="\n",append=T)
+cat(capture.output(print(xtable(m3$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the Ps. spicata model with treatment*year effects"),
+        label=paste0(iSpp,"growth-trtYears")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
+rm(m3)
+
+
+# LMER models-------------------------
+
+# # add individual level removal info to best model
+# m2.lmer <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +inARTR+
+#               (logarea.t0|year),data=allD) 
+# #summary(m2.lmer)
+# output<-capture.output(texreg(m2.lmer, ci.force=TRUE,label="table:PSSPgrowth-inARTR",
+#       caption="\textit{P. spicata} growth with \textit{Artemisia} canopy effect",
+#       caption.above=TRUE))
+# cat(output,file=statsOutput,sep="\n",append=T)
+# cat("",file=statsOutput,sep="\n",append=T)
+# 
+# # does effect diminish with time?
+# allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
+#                        as.numeric(as.character(allD$year))-2010,0))
+# m1.time <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+#              (logarea.t0|year),data=allD) 
+# output<-capture.output(texreg(m1.time, ci.force=TRUE,label="table:PSSPgrowth-byYr",
+#       caption="\textit{P. spicata} growth with year-by-treatment interaction",
+#       caption.above=TRUE))
+# cat(output,file=statsOutput,sep="\n",append=T)
+# cat("",file=statsOutput,sep="\n",append=T)
+# 
+# # does result change if we filter out low ARTR control quadrats?
+# # first identify control quads with low ARTR cover
+# source("../filter_lowARTR_quads.r")
+# keep <- which(!is.element(allD$quad,exclude.quads))
+# # put indicators on intercept only
+# m1.lowARTR <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts+
+#              (1|Group)+(logarea.t0|year),data=allD,subset=keep) 
+# summary(m1.lowARTR) # very little change in parameters

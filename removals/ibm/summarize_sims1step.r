@@ -58,8 +58,8 @@ pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 ### plot observed and predicted cover chronologically
 ###
 color1="black"
-color2=rgb(0,100,255,alpha=175,maxColorValue = 255)
-color3=rgb(153,0,0,alpha=175,maxColorValue = 255)
+color2="dodgerblue3" #rgb(0,100,255,alpha=175,maxColorValue = 255)
+color3="firebrick4" #rgb(153,0,0,alpha=175,maxColorValue = 255)
 
 figName <- ifelse(max.CI==F,"cover_projections_1step.png","cover_projections_1step_maxCI.png" )
 png(figName,res=400,width=8.5,height=6,units="in")
@@ -76,13 +76,13 @@ for(i in 1:4){
           covMeans[doRows,2+i],covMeans[doRows,6+i],covMeans[doRows,10+i]),
           xlab="",ylab="",type="o",
           col=c(color1,color2,color1,color2,color3),
-          pch=c(15,15,0,0,0), cex=1.1, 
+          pch=c(15,15,21,21,21),bg="white", cex=1.1, 
           lty=c("solid","dotted","solid","dotted","dotted"))   # removal plots
   title(main=sppNames[i],adj=0,font.main=4) 
   if(i==1){
     legend("top",c("Control (obs.)","Control (baseline pred.)","Removal (obs.)","Removal (baseline pred.)","Removal (removal pred.)"),
     col=c(color1,color2,color1,color2,color3),
-          pch=c(15,15,0,0,0),cex=0.9,
+          pch=c(15,15,21,21,21),pt.bg="white",cex=0.9,
           lty=c("solid","dotted","solid","dotted","dotted"),bty="n")
   }
 }
@@ -109,7 +109,7 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
   my.y <- c(-1.2,1.1) # hard wire ylims
   matplot(newD$year,newD[,2:6],type="o",xlab="",ylab="",ylim=my.y,
     col=c(color1,color2,color1,color2,color3),xaxt="n",
-    pch=c(15,15,0,0,0), cex=1.1, #bg="white",
+    pch=c(15,15,21,21,21), cex=1.1, bg="white",
     lty=c("solid","dotted","solid","dotted","dotted"))
   axis(1,at=c(2011:2015))
   abline(h=0,lty="solid",col="darkgray")
@@ -122,7 +122,7 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
   if(doLegend==T){
     legend("topright",c("Control (obs.)","Control (baseline pred.)","Removal (obs.)","Removal (baseline pred.)","Removal (removal pred.)"),
     col=c(color1,color2,color1,color2,color3),
-    pch=c(15,15,0,0,0), #,bg="white",
+    pch=c(15,15,21,21,21), pt.bg="white",
     lty=c("solid","dotted","solid","dotted","dotted"),bty="n")
   }
 }
