@@ -34,7 +34,7 @@ parameters{
   real<lower=0> sig_b1;
   vector[Wcovs] w;
   vector[Covs]  b2; 
-  real sigma; 
+  real<lower=0> sigma; 
 }
 transformed parameters{
   // for training data model  

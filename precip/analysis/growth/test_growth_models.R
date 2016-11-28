@@ -5,8 +5,6 @@ library(rstan)
 
 test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['POSE']]
 
-head( test_dat$C ) 
-
 m1 <- lmer( test_dat$Y ~ test_dat$X + test_dat$C + (1|test_dat$yid))
 m2 <- lmer(test_dat$Y ~ test_dat$X + test_dat$C + (test_dat$X|test_dat$yid))
 m3 <- lmer(test_dat$Y ~ test_dat$X + test_dat$C + (test_dat$X|test_dat$yid) + (1|test_dat$quad) + (1|test_dat$gid))
