@@ -294,22 +294,15 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
   
 }
 
-
 # -- select covariates -------------------------------------------------------------------#
 clim_vars <- c('VWC.sp.l', 
                'VWC.sp.0', 
                'VWC.sp.1',
-               'VWC.su.1', 
-               'VWC.su.0',
-               'VWC.f.1', 
-               'VWC.f.0', 
                'T.sp.1', 
                'T.sp.0', 
-               'T.sp.l', 
-               'T.su.1', 
-               'T.su.0', 
-               'T.f.1', 
-               'T.f.0')                     
+               'P.f.w.sp.0', 
+               'P.f.w.sp.1', 
+               'P.f.w.sp.l')                     
 
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'

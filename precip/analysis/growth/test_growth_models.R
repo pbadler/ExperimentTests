@@ -1,9 +1,17 @@
 rm(list  = ls())
 library(rstan)
-library(ggmcmc)
+
 # simulate climate, competition, year and group effects ------------------------------------- # 
 
 test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['POSE']]
+
+head( test_dat$C ) 
+
+m1 <- lmer( test_dat$Y ~ test_dat$X + test_dat$C + (1|test_dat$yid))
+m2 <- lmer(test_dat$Y ~ test_dat$X + test_dat$C + (test_dat$X|test_dat$yid))
+m3 <- lmer(test_dat$Y ~ test_dat$X + test_dat$C + (test_dat$X|test_dat$yid) + (1|test_dat$quad) + (1|test_dat$gid))
+
+summary(m1)
 
 sig_a <- 1
 sig_b1 <- 0.2
@@ -52,8 +60,11 @@ test_dat$Y <- simulate_growth(pars, test_dat)
 test_dat$tau_beta <- 10
 
 t1 <- system.time(
-  myfit1 <- stan('analysis/growth/model_growth_1_predict.stan', data = test_dat, chains = 4, cores = 4, iter = 100)
+  myfit1 <- stan('analysis/growth/model_growth_1_predict.stan', data = test_dat, chains = 4, cores = 4, iter = 2000)
 )
+
+traceplot(myfit1, 'b2')
+dev.off()
 
 source('analysis/waic_fxns.R')
 waic(myfit1)
