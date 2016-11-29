@@ -4,7 +4,7 @@ library(rstan)
 # simulate climate, competition, year and group effects ------------------------------------- # 
 rm(list = ls())
 
-test_dat <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['PSSP']]
+test_dat <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[['ARTR']]
 
 #pars <- rstan::extract(readRDS('output/stan_fits/predictions/PSSP_recruitment_1_19_4_predict.RDS'), c('bg', 'b2', 'sig_a', 'u', 'w', 'theta'))
 sig_a <- 0.2

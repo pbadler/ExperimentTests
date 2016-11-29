@@ -19,13 +19,13 @@ detachAllPackages <- function() {
 
 detachAllPackages()
 
-source('R/ExtractData_3Runs.R')
-source('R/aggregate_spot_VWC.R')
-source('R/soilMoistureTreatmentEffects.R')
-source('R/climate/aggregate_VWC_data.R')
-source('R/get_all_demographic_data.R')
-source('R/climate/make_climate_variables.R')
-source('R/climate/prepare_climate_covariates.R')
+# source('R/ExtractData_3Runs.R')
+# source('R/aggregate_spot_VWC.R')
+# source('R/soilMoistureTreatmentEffects.R')
+# source('R/climate/aggregate_VWC_data.R')
+# source('R/get_all_demographic_data.R')
+# source('R/climate/make_climate_variables.R')
+# source('R/climate/prepare_climate_covariates.R')
 
 library(dplyr)
 library(tidyr)
@@ -67,7 +67,20 @@ scale_covariates <- function( datalist) {
   datalist$Wscale  <- Wscale 
   
   if(!is.null( datalist$X)){
-      
+    
+    # ifx <- datalist$C*datalist$X
+    # 
+    # names(ifx) <- paste0(colnames(datalist$C), 'x', 'logarea.t0')
+    # datalist$C <- cbind(datalist$C, ifx)
+    #       
+    # ifx2 <- datalist$C2*datalist$X2
+    # names(ifx2) <- paste0(colnames(datalist$C2), 'x', 'logarea.t0')
+    # datalist$C2 <- cbind(datalist$C2, ifx2)
+    # 
+    # ifxh <- datalist$Chold*datalist$Xhold
+    # names(ifxh) <- paste0(colnames(datalist$Chold), 'x', 'logarea.t0')
+    # datalist$Chold <- cbind(datalist$Chold, ifxh)
+    
     # X               <- scale(datalist$X)
     # datalist$X      <- as.numeric(X)
     # Xcenter         <- attr(X, 'scaled:center')
@@ -86,6 +99,10 @@ scale_covariates <- function( datalist) {
     datalist$W3 <- scale(datalist$W3, Wcenter, Wscale)
     # datalist$X3 <- scale(datalist$X3, Xcenter, Xscale)
     
+    # ifx3 <- datalist$C3*datalist$X3
+    # names(ifx3) <- paste0(colnames(datalist$C3), 'x', 'logarea.t0')
+    # datalist$C3 <- cbind(datalist$C3, ifx3)
+    # 
     # Y  <- scale(datalist$Y)
     # datalist$Y  <- as.numeric(Y)
     # Ycenter     <- attr(Y, 'scaled:center')
@@ -259,23 +276,7 @@ make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) {
     all_data <- lapply( all_data, function(x) { names(x)[names(x) == 'logarea'] <- 'logarea.t0'; x } )
   } 
   
-  # -- make size by interaction effects -------------------------------------------------------------# 
-  
-  # if( vr != 'recruitment') {
-  #   all_data <-
-  #     lapply( all_data, function( x ) {
-  #         ifx <- x[, clim_vars]*x[, 'logarea.t0']   ##### climate by size interactions
-  #         names(ifx ) <- paste0(clim_vars , ':', 'logarea.t0')
-  #         cbind(x, ifx)
-  #       }
-  #     )
-  # #   # all_data <-
-  #   #   lapply( all_data, function( x ) {
-  #   #     ifx <- x[, grep('W.', names(x))]*x[, 'logarea.t0']   ##### competition by size interactions
-  #   #     names(ifx ) <- paste0(names(ifx)[grep('W.[A-Z]+', names(ifx))] , ':', 'logarea.t0')
-  #   #     cbind(x, ifx)
-  #   #   })
-  # }
+
 
   # -- make training and holding indeces ----------------------------------------------------# 
   
