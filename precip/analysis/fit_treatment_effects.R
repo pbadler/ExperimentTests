@@ -23,4 +23,3 @@ for(i in 1:nrow(df)){
   saveRDS(myfit, paste0('output/stan_fits/treatment_effects_', spp, '_', vr, '_.RDS'))
 }
 
-
