@@ -12,7 +12,6 @@ data{
   matrix[N, Nspp] parents2;   // parents in group
   int<lower=0> Covs;          // climate covariates
   matrix[N,Covs] C;           // climate matrix
-  real tau_beta;              // prior standard deviation
   matrix[N, G] gm;
   
   // for out of sample prediction
@@ -45,9 +44,6 @@ transformed parameters{
   vector[nyrs] a; 
   vector[Nspp] mc;
   vector[Nspp] sdc;
-  //matrix[N, Nspp] trueP2_scaled;
-  
-
   
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
@@ -55,21 +51,6 @@ transformed parameters{
   for(n in 1:N)
     for( j in 1:Nspp)
       trueP2[n, j] <- sqrt(trueP1[n, j]);
-  
-  // for(j in 1:Nspp){
-  //   {
-  //     vector[N] temp;
-  //     for(n in 1:N){ 
-  //       temp[n] <- trueP2[n, j];
-  //     }
-  //     mc[j] <- mean(temp);
-  //     sdc[j] <- sd(temp );
-  //   }
-  // }
-  
-  // for(j in 1:Nspp)
-  //   for(n in 1:N)
-  //     trueP2_scaled[n, j] <- (trueP2[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
   
   gint     <- gm*bg;
   coverEff <- trueP2*w;
@@ -92,7 +73,7 @@ model{
   a_raw ~ normal(0, 1);
   bg ~ normal(0, 10);
   w ~ normal(0, 10);
-  b2 ~ normal(0, tau_beta);
+  b2 ~ normal(0, 10);
 
   // Likelihood
   Y ~ neg_binomial_2(lambda, theta);

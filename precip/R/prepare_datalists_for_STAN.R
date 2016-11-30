@@ -81,23 +81,23 @@ scale_covariates <- function( datalist) {
     # names(ifxh) <- paste0(colnames(datalist$Chold), 'x', 'logarea.t0')
     # datalist$Chold <- cbind(datalist$Chold, ifxh)
     
-    # X               <- scale(datalist$X)
-    # datalist$X      <- as.numeric(X)
-    # Xcenter         <- attr(X, 'scaled:center')
-    # Xscale          <- attr(X, 'scaled:scale')
-    # 
-    # datalist$Xhold  <- as.numeric(scale(datalist$Xhold, Xcenter, Xscale))
-    # datalist$X2     <- as.numeric(scale(datalist$X2, Xcenter, Xscale))
-    # 
-    # datalist$Xcenter <- Xcenter
-    # datalist$Xscale  <- Xscale 
+    X               <- scale(datalist$X)
+    datalist$X      <- as.numeric(X)
+    Xcenter         <- attr(X, 'scaled:center')
+    Xscale          <- attr(X, 'scaled:scale')
+
+    datalist$Xhold  <- as.numeric(scale(datalist$Xhold, Xcenter, Xscale))
+    datalist$X2     <- as.numeric(scale(datalist$X2, Xcenter, Xscale))
+
+    datalist$Xcenter <- Xcenter
+    datalist$Xscale  <- Xscale
     
   }
     
   if(!is.null( datalist$C3)){
     datalist$C3 <- scale(datalist$C3, Ccenter, Cscale)
     datalist$W3 <- scale(datalist$W3, Wcenter, Wscale)
-    # datalist$X3 <- scale(datalist$X3, Xcenter, Xscale)
+    datalist$X3 <- as.numeric(scale(datalist$X3, Xcenter, Xscale))
     
     # ifx3 <- datalist$C3*datalist$X3
     # names(ifx3) <- paste0(colnames(datalist$C3), 'x', 'logarea.t0')
