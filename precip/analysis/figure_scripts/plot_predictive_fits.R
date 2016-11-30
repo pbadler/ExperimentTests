@@ -24,8 +24,8 @@ plot_posterior <- function( df ) {
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '_climate_fit.RDS', full.names = TRUE)
-
-for( i in 1:length(mfiles)){ 
+mfiles
+for( i in 10:length(mfiles)){ 
   
   bname <- basename(mfiles[i])
   mpars <- unlist( str_split(bname, '_') ) 
@@ -95,7 +95,7 @@ for( i in 1:length(mfiles)){
   
   if (sum(str_detect(fit_ggs$Parameter, 'w')) > 0 ) { 
     w <- data.frame(rstan::extract(temp_fit, 'w'))
-    
+    rm(temp_fit)
     colnames(w) <- crowding_vars[1:ncol(w)]
     
     crowding_vars[1:ncol(w)] 
@@ -119,4 +119,5 @@ for( i in 1:length(mfiles)){
     dev.off()
   
   }
+  rm(w_long, b2_long)
 }
