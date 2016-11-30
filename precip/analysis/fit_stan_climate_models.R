@@ -17,7 +17,7 @@ for( i in 1:length(dl_files)){
   for( j in 1:length(dl)){ 
     
     if(is.null( ncol(dl[[j]]$C)) ){ 
-      fit <- stan(str_replace(m_files[i], '.stan', '_special.stan'), data  = dl[[j]], thin = 2, cores = 4, iter = 2000)
+      fit <- stan(str_replace(m_files[i], '.stan', '_special.stan'), data  = dl[[j]], thin = 2, cores = 4, iter = 2000, seed = 1)
     }else{
       fit <- stan(m_files[i], data  = dl[[j]], thin = 2, cores = 4, iter = 2000)
     }

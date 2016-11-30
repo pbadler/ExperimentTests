@@ -1,5 +1,6 @@
 rm(list = ls())
 library(stringr)
+library(rstan)
 # fit year effects ------------------------------------- 
 
 dl_files <- dir('data/temp_data', '*_data_lists_for_stan.RDS', full.names = T)
