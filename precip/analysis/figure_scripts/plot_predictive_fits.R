@@ -34,7 +34,6 @@ for( i in 1:length(mfiles)){
   vr <- mpars[2]
     
   temp_fit <- readRDS(mfiles[i])
-  
   df <- readRDS(paste0( 'data/temp_data/modified_', vr, '_data_lists_for_stan.RDS'))[[spp]]
   
   # make traceplots---------------------------------------------------------------------------------# 
@@ -67,7 +66,7 @@ for( i in 1:length(mfiles)){
   # plot posterior of parameter estimates for climate and crowding ----------------------------# 
   
   if( is.null(colnames(df$C))){ 
-    climate_vars <- df$Ccenter
+    climate_vars <- names( df$Ccenter ) 
   }else{ 
     climate_vars <- colnames(df$C)
     crowding_vars <- colnames(df$W)
