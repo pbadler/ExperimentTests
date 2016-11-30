@@ -24,9 +24,8 @@ plot_posterior <- function( df ) {
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '_climate_fit.RDS', full.names = TRUE)
-i = 2
 
-for( i in 2:length(mfiles)){ 
+for( i in 1:length(mfiles)){ 
   
   bname <- basename(mfiles[i])
   mpars <- unlist( str_split(bname, '_') ) 

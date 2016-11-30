@@ -146,7 +146,7 @@ df2list <- function(df, covars, vr, type) {
   treat     <- as.numeric(factor(df$Treatment))
 
   if( type %in% c('2', 'hold')) { 
-    tm        <- model.matrix.lm(~ df$Treatment)                  # Treatment matrix, no intercept
+    tm        <- model.matrix.lm(~ df$Treatment)[, -1]                  # Treatment matrix, no intercept
     nT        <- ncol(tm)                                         # number of treatments 
   }
   
@@ -163,7 +163,12 @@ df2list <- function(df, covars, vr, type) {
   }else { 
     Y         <- df$Y
     X         <- df$X
-
+    
+    if( type %in% c('2', 'hold')) { 
+      tm        <- cbind( tm , tm*X ) # treatment by size interaction 
+      nT        <- ncol(tm)
+    }
+    
     species_name   <- unique(df$species)
     spp_list       <- factor( str_extract( colnames(W), '[A-Z]+$')) # get species names 
     spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
