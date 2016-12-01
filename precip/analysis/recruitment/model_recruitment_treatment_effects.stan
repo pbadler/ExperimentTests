@@ -63,4 +63,11 @@ model{
   // Likelihood
   Yhold ~ neg_binomial_2(lambda, theta);
 }
-
+generated quantities{
+  
+  vector[Nhold] log_lik2; 
+  
+  for(n in 1:Nhold){ 
+    log_lik2[n] <- neg_binomial_2_log(Yhold[n], lambda[n], theta); 
+  }
+}

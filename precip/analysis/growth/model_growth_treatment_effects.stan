@@ -4,11 +4,11 @@ data{
   vector[Nhold] Yhold;
   int<lower=0> nyrs;                // training data years 
   int<lower=0> nyrshold;            // years out
-  int<lower=0> yidhold[Nhold];      //year out id
+  int<lower=0> yidhold[Nhold];      // year out id
   int<lower=0> G;                   // Groups 
   matrix[Nhold, G] gmhold;          // group dummy variable matrix
   int<lower=0> nThold;              // number of treatments 
-  matrix[Nhold, nThold] tmhold;           // treatment dummy matrix  
+  matrix[Nhold, nThold] tmhold;     // treatment dummy matrix  
   int<lower=0> Wcovs;               // number of crowding effects 
   vector[Nhold] Xhold;
   matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
@@ -61,4 +61,13 @@ model{
 
   // Likelihood
   Yhold ~ normal(mu, sigma);
+}
+generated quantities {
+  
+  vector[Nhold] log_lik2;                     // for heldout data 
+
+  # fitted data log_lik 
+  for(n in 1:Nhold){
+      log_lik2[n] <- normal_log(Yhold[n], mu[n], sigma);
+  }
 }

@@ -45,9 +45,9 @@ transformed parameters{
   vector[N] climEff; 
 
   // for training data model -----------------------------------
-  gint <- gm*bg;
-  crowdEff <- W*w;
-  climEff  <- C*b2;
+  gint      <- gm*bg;
+  crowdEff  <- W*w;
+  climEff   <- C*b2;
   
   b1 <- b1_mu + sig_b1*b1_raw;
   a  <- 0 + sig_a*a_raw; 

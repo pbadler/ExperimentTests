@@ -7,7 +7,7 @@ data{
   int<lower=0> yidhold[Nhold];      //year out id
   int<lower=0> G;                   // Groups 
   matrix[Nhold, G] gmhold;          // group dummy variable matrix
-  int<lower=0> nThold;             // treatment groups
+  int<lower=0> nThold;              // treatment groups
   matrix[Nhold, nThold] tmhold;     // group dummy variable matrix
   int<lower=0> Wcovs;               // number of crowding effects 
   vector[Nhold] Xhold;
@@ -61,3 +61,12 @@ model{
   // Likelihood
   Yhold ~ bernoulli_log(mu);
 }
+generated quantities {
+  // hold out predictions
+  vector[Nhold] log_lik2;                     // for heldout data 
+  
+  for(n in 1:Nhold){
+    log_lik2[n] <- bernoulli_log(Yhold[n], mu[n]); 
+  }
+}
+

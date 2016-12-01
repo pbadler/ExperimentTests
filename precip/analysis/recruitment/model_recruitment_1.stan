@@ -107,10 +107,6 @@ generated quantities{
     for(j in 1:Nspp)
       trueP2_pred[n, j] <- sqrt(trueP1_pred[n, j]);
   
-  // for(j in 1:Nspp)
-  //   for(n in 1:Nhold)
-  //     trueP2_pred_scaled[n, j] <- (trueP2_pred[n, j] - mc[j])/sdc[j];  // standardize competitive neighborhood 
-
   coverEff_pred <- trueP2_pred*w;
 
   for( i in 1:nyrshold)

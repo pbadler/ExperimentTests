@@ -10,7 +10,7 @@ data{
   int<lower=0> Wcovs;         // number of crowding effects 
   matrix[N,Wcovs] W;          // crowding matrix
   int<lower=0> spp;           // focal species 
-  vector[N] C;          // climate vector for species with only one climate effect  
+  vector[N] C;                // climate vector for species with only one climate effect  
 
   // holdout datalist, modern observations 
   int<lower=0> Nhold;
@@ -20,7 +20,7 @@ data{
   matrix[Nhold, G] gmhold;          // group dummy variable matrix 
   vector[Nhold] Xhold;
   matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
-  vector[Nhold] Chold;        // climate matrix 
+  vector[Nhold] Chold;              // climate matrix 
   
 }
 parameters{

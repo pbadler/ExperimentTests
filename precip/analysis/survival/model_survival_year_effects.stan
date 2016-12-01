@@ -1,13 +1,22 @@
 data{
   int<lower=0> N;
   int<lower=0, upper=1> Y[N];
-  int<lower=0> nyrs;            // years out
-  int<lower=0> yid[N];      //year out id
+  int<lower=0> nyrs;                // years out
+  int<lower=0> yid[N];              //year out id
   int<lower=0> G;                   // Groups 
-  matrix[N, G] gm;          // group dummy variable matrix
+  matrix[N, G] gm;                  // group dummy variable matrix
   int<lower=0> Wcovs;               // number of crowding effects 
   vector[N] X;
-  matrix[N,Wcovs] W;        // crowding matrix for holdout data
+  matrix[N,Wcovs] W;                // crowding matrix for holdout data
+  
+  // holdout datalist, modern observations 
+  int<lower=0> Nhold;
+  int<lower=0,upper=1> Yhold[Nhold];
+  int<lower=0> nyrshold;            // years out
+  int<lower=0> yidhold[Nhold];      //year out id
+  matrix[Nhold, G] gmhold;          // group dummy variable matrix 
+  vector[Nhold] Xhold;
+  matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
 }
 parameters{
   // for training data model  
@@ -52,4 +61,34 @@ model{
 
   // Likelihood
   Y ~ bernoulli_log(mu);
+}
+generated quantities {
+  // hold out predictions
+  vector[N] log_lik;                          // for fitted data
+  vector[Nhold] log_lik2;                     // for heldout data 
+  
+  // hold out predictions 
+  vector[nyrshold] a_out;
+  vector[nyrshold] b1_out;
+  vector[Nhold] gint_out;
+  real muhat[Nhold];
+  vector[Nhold] crowdhat;
+
+  for(n in 1:N){
+    log_lik[n] <- bernoulli_log(Y[n], mu[n]); 
+  }
+  
+  // 1. Holdout data predictions 
+  gint_out  <- gmhold*bg;
+  crowdhat <- Whold*w;
+
+  for( i in 1:nyrshold){
+    a_out[i] <- normal_rng(0, sig_a);         // draw random year intercept 
+    b1_out[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect 
+  }
+  
+  for(n in 1:Nhold){
+    muhat[n] <- inv_logit(gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n]);
+    log_lik2[n] <- bernoulli_log(Yhold[n], muhat[n]);
+  }
 }

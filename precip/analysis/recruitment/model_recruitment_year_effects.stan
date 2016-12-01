@@ -10,6 +10,15 @@ data{
   matrix[N, Nspp] parents1;       // parents in plot
   matrix[N, Nspp] parents2;       // parents in group
   
+  // for out of sample prediction
+  int<lower=0> Nhold;
+  int<lower=0> nyrshold;              // years out
+  int<lower=0> yidhold[Nhold];        // year out id
+  int<lower=0> Yhold[Nhold];          // observation vector
+  matrix[Nhold, Nspp] parents1hold;   // hold out parents in plot
+  matrix[Nhold, Nspp] parents2hold;   // hold out parents in group
+  matrix[Nhold, G] gmhold;
+  
 }parameters{
   vector[nyrs] a_raw;
   vector[Nspp] w;
@@ -55,5 +64,47 @@ model{
   
   // Likelihood
   Y ~ neg_binomial_2(lambda, theta);
+}
+generated quantities{
+  vector[N] log_lik; 
+  vector[Nhold] log_lik2; 
+  vector[nyrshold] a_pred;
+  vector[Nhold] mu_pred;
+  vector[Nhold] lambda_pred;
+
+  // for prediction 
+  vector[Nhold] coverEff_pred;
+  matrix[Nhold, Nspp] trueP1_pred;
+  matrix[Nhold, Nspp] trueP2_pred;
+  vector[Nhold] gint_out; 
+  vector[Nhold] climhat; 
+  //matrix[Nhold, Nspp] trueP2_pred_scaled;
+
+  for(n in 1:N){ 
+    log_lik[n] <- neg_binomial_2_log(Y[n], lambda[n], theta); 
+  }
+  
+  // 1. Holdout data predictions 
+  gint_out   <- gmhold*bg;
+  trueP1_pred <- parents1hold*u + parents2hold*(1-u);
+
+  for(n in 1:Nhold)
+    for(j in 1:Nspp)
+      trueP2_pred[n, j] <- sqrt(trueP1_pred[n, j]);
+  
+  coverEff_pred <- trueP2_pred*w;
+
+  for( i in 1:nyrshold)
+    a_pred[i] <- normal_rng(0, sig_a); // draw random year intercept
+
+  for(n in 1:Nhold){
+    mu_pred[n] <- exp(gint_out[n] + a_pred[yidhold[n] - nyrs ] + coverEff_pred[n]);
+    lambda_pred[n] <- trueP1_pred[n, spp]*mu_pred[n];
+  }
+
+  for(n in 1:Nhold){
+    log_lik2[n] <- neg_binomial_2_log(Yhold[n], lambda_pred[n], theta);
+  }
+  
 }
 
