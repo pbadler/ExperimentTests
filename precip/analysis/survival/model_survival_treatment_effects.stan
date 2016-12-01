@@ -33,17 +33,21 @@ transformed parameters{
   vector[Nhold] crowdEff;
   vector[Nhold] climEff; 
   vector[Nhold] gint;
-
+  vector[Nhold] year_effect;
+  
   // for training data model -----------------------------------
   crowdEff <- Whold*w;
   treatEff <- tmhold*bt;
   gint     <- gmhold*bg;
   
-  b1 <- b1_mu + sig_b1*b1_raw;
   a  <- 0 + sig_a*a_raw; 
+  b1 <- 0 + sig_b1*b1_raw; 
   
   for(n in 1:Nhold){
-    mu[n] <- inv_logit(gint[n] + treatEff[n] + a[yidhold[n] - nyrs] + b1[yidhold[n] - nyrs]*Xhold[n] + crowdEff[n]);
+    
+    year_effect[n] <- a[yidhold[n] - nyrs] + b1[yidhold[n] - nyrs]*Xhold[n];
+    
+    mu[n] <- inv_logit(gint[n] + treatEff[n] + year_effect[n] + b1_mu*Xhold[n] + crowdEff[n]);
   }
   
 }
@@ -62,7 +66,6 @@ model{
   Yhold ~ bernoulli_log(mu);
 }
 generated quantities {
-  // hold out predictions
   vector[Nhold] log_lik2;                     // for heldout data 
   
   for(n in 1:Nhold){
