@@ -17,28 +17,31 @@ for( i in 1:length(fit_files)){
   spp <- mpars[1]
   vr <- mpars[2]
 
-  gint_out <- rstan::extract(readRDS(fit_files[i]), 'gint_out')$gint_out
-  climhat  <- rstan::extract(readRDS(fit_files[i]), 'climhat')$climhat
-  
-  thin <- 5
-  gint_out <- gint_out[seq(1,nrow(gint_out), thin), ]
-  climhat  <- climhat[seq(1,nrow(climhat), thin), ]
-  
   dat <- readRDS( dat_files[grep( vr, dat_files)] )[[spp]]
   
   # make dataframe for predictions ------------------------------------
-  pred_df <- data.frame(year = dat$yearhold, Group = dat$gidhold, yid = dat$yidhold, Treatment = dat$treathold, t(climhat) ) 
+  pred_df <- data.frame(species = spp, vital_rate = vr, year = dat$yearhold, yid = dat$yidhold, Group = dat$gidhold, quad = dat$quadhold, trackid = dat$trackidhold, Treatment = dat$treathold)
+  
+  climhat  <- rstan::extract(readRDS(fit_files[i]), 'climhat')$climhat
+  thin <- 2
+  climhat  <- climhat[seq(1,nrow(climhat), thin), ]
+  
+  pred_df <- data.frame( pred_df,  t(climhat) ) 
   
   pred_df <- 
     pred_df %>% 
     mutate( type = 'predicted_effect') %>% 
-    gather( iteration, val , starts_with('X')) 
+    gather( iteration, val , starts_with('X'))  
+  
+  pred_treatment_effects <- 
+    pred_df %>% 
+    group_by (species, vital_rate, year, Group , Treatment ) %>% 
+    summarise(mean = mean(val), sd = sd( val ) , ucl95 = quantile ( val , 0.975), lcl95 = quantile ( val , 0.025 ) )
   
   # get observed treatment effects ---------------------------------------- # 
-  gint <- rstan::extract(readRDS(treatment_stan_fit[i]), 'gint')$gint
   treatEff <- rstan::extract(readRDS(treatment_stan_fit[i]), 'treatEff')$treatEff
-  gint <- gint[seq(1,nrow(gint), thin), ]
   treatEff  <- treatEff[seq(1,nrow(treatEff), thin), ]
+  
   
   obs_df <- data.frame(year = dat$yearhold, Group = dat$gidhold, yid = dat$yidhold, Treatment = dat$treathold, t(treatEff) ) 
   

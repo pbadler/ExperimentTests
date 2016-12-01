@@ -1,6 +1,6 @@
 rm(list  = ls())
 library(rstan)
-
+library(lme4)
 # simulate climate, competition, year and group effects ------------------------------------- # 
 
 test_dat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[['POSE']]
@@ -55,14 +55,43 @@ simulate_growth <- function( pars , test_dat ){
 
 test_dat$Y <- simulate_growth(pars, test_dat)
 
-test_dat$tau_beta <- 10
 
 t1 <- system.time(
   myfit1 <- stan('analysis/growth/model_growth_1_predict.stan', data = test_dat, chains = 4, cores = 4, iter = 2000)
 )
 
-traceplot(myfit1, 'b2')
-dev.off()
+myfit1 <- stan('analysis/growth/model_growth_treatment_effects.stan', data = test_dat, chains = 4, cores = 4, iter = 2000 )
+
+myfit2 <- stan( 'analysis/growth/model_growth_treatment_effects2.stan', data = test_dat, chains = 4, cores = 4, iter = 2000 )
+
+fit1 <- summary(myfit1, c('a', 'b1_mu', 'b1'))$summary[, c(1,3,5,7)]
+
+fit2 <- summary(myfit2, c('a', 'b1_mu', 'b1'))$summary[, c(1,3,5,7)]
+
+plot( fit1[1:19, 1] ) 
+points( fit2[1:19, 1], col = 'red' )
+
+fit1[20, 1]
+fit2[20, 1]
+
+plot( fit1[21:39, 1 ] - fit1[20, 1] )
+points( fit2[21:39, 1 ], col = 'red' )
+
+traceplot( myfit1, 'w')
+traceplot( myfit2, 'w')
+
+w1 <- summary(myfit1, 'w')$summary
+w2 <- summary(myfit2, 'w')$summary
+
+w1[, 1]
+w2[ , 1]
+
+bt1 <- summary(myfit1, 'bt')$summary
+bt2 <- summary(myfit2, 'bt')$summary
+plot( bt1[ ,1 ] )
+points(bt2[, 1] , col = 'red')
+
+
 
 source('analysis/waic_fxns.R')
 waic(myfit1)

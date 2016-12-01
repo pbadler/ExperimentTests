@@ -32,6 +32,7 @@ transformed parameters{
   vector[Nhold] treatEff;
   vector[nyrshold] a; 
   vector[Nhold] gint; 
+  vector[Nhold] year_effect;
   
   trueP1 <- parents1hold*u + parents2hold*(1-u);
   
@@ -45,7 +46,9 @@ transformed parameters{
   a  <- 0 + a_raw*sig_a; 
 
   for(n in 1:Nhold){
-    mu[n] <- exp(treatEff[n] + a[yidhold[n]-nyrs] + coverEff[n]);
+    year_effect[n] <- a[yidhold[n] - nyrs]; 
+    
+    mu[n] <- exp(treatEff[n] + year_effect[n] + coverEff[n]);
     lambda[n] <- trueP1[n, spp]*mu[n];  
   }
 }
