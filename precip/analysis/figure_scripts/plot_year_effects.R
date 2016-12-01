@@ -113,7 +113,7 @@ for( i in 1:length(fit_files)){
 
   my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
   
-  pdf( paste( 'figures/predictions/predicted_', spp, '_', vr, '_year_effects.pdf' ))
+  pdf( paste0( 'figures/predictions/predicted_', spp, '_', vr, '_year_effects.pdf' ))
     
     print( 
       ggplot( subset( mean_pred_eff, Treatment == 'Control'), aes( x = val, fill = type ) ) + 
@@ -128,14 +128,13 @@ for( i in 1:length(fit_files)){
   
   mean_error <- 
     mean_pred_eff %>% 
-    filter( Treatment == 'Control') %>% 
     spread(type, val ) %>% 
     mutate( prediction_error = predicted_effect - observed_effect ) 
   
-  pdf( paste( 'figures/predictions/prediction_error_', spp, '_', vr, '_year_effects.pdf' ))
+  pdf( paste0( 'figures/predictions/prediction_error_', spp, '_', vr, '_year_effects.pdf' ))
   
   print( 
-    ggplot( mean_error, aes( x = prediction_error, fill = Treatment ) ) + 
+    ggplot( subset( mean_error, Treatment == 'Control'), aes( x = prediction_error, fill = Treatment ) ) + 
       geom_density(  alpha = 0.4) + 
       geom_vline( aes(xintercept = 0), linetype = 2) +
       facet_grid( year ~  .  )  + 
@@ -144,5 +143,7 @@ for( i in 1:length(fit_files)){
   )
   
   dev.off()  
+  
+  write.csv(mean_error, paste0('output/mean_climate_error_', spp, '_', vr, '.csv'), row.names = FALSE)
   
 }

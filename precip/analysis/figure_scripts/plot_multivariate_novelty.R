@@ -1,8 +1,15 @@
 rm(list = ls())
-
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 climate <- readRDS('data/temp_data/all_clim_covs.RDS')
 
-lppd_scores <- read.csv('output/lppd_scores.csv')
+#lppd_scores <- read.csv('output/lppd_scores.csv')
+errors  <- dir('output', 'mean_climate_error', full.names = T)
+
+
+head( read.csv(errors[1]) ) 
+
 
 datlist <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')
 
@@ -10,8 +17,8 @@ make_gg_PCA <-
   function( spp , dl ) { 
 
   historical <- unique( data.frame( dl[[spp]]$C, Period = 'Historical', treatment = 'Control', year = dl[[spp]]$yid))
-  modern <- unique( data.frame( dl[[spp]]$Chold, Period = 'Modern', treatment = dl[[spp]]$treat_out, year = dl[[spp]]$yid_out) ) 
-
+  modern <- unique( data.frame( dl[[spp]]$Chold, Period = 'Modern', treatment = dl[[spp]]$treathold, year = dl[[spp]]$yidhold) ) 
+  
   cvs_in <- historical[ colnames(dl[[spp]]$C)]
   cvs_out <- modern [ colnames(dl[[spp]]$Chold) ] 
 

@@ -15,7 +15,7 @@ for( i in 1:length(dl_files)){
 
   for( j in 1:length(dl)){ 
     
-    fit <- stan(m_files[i], data  = dl[[j]], thin = 8, cores = 4)
+    fit <- stan(m_files[i], data  = dl[[j]], thin = 4, cores = 4)
 
     saveRDS(fit, paste0('output/stan_fits/', spp[j], '_', vr, '_year_effects.RDS'))
     
