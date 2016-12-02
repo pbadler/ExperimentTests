@@ -190,7 +190,7 @@ compile_datalists <- function( df, train, hold, vr ) {
   
   # -------- make year by treatment labels ------------------------------------------------------------ 
   df$treat_year_label <- paste(df$Treatment, df$year, sep = '_')
-  df$yid              <- as.numeric(factor(df$treat_year_label)) # each year by treatment gets unique id
+  df$yid              <- as.numeric(factor(df$year)) 
   
   # set factors for whole dataset 
   df$gid        <- factor(df$Group)
