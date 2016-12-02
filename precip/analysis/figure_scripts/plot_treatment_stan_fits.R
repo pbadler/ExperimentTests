@@ -29,9 +29,8 @@ plot_posterior_year_effects <- function(df){
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 
-mfiles <- dir('output/stan_fits', 'treatment_effects.*.RDS', full.names = TRUE)
+mfiles <- dir('output/stan_fits', '.*_treatment_fit.RDS', full.names = TRUE)
 
-i = 1
 for( i in 1:length(mfiles)){ 
   
   bname <- basename(mfiles[i])
