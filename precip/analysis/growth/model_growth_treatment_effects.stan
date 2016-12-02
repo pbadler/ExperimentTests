@@ -33,7 +33,6 @@ transformed parameters{
   vector[Nhold] gint;
   real mu[Nhold];
   vector[Nhold] crowdEff;
-  vector[Nhold] climEff; 
   vector[Nhold] year_effect; 
   
   // for training data model -----------------------------------

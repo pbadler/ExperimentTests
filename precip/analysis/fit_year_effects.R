@@ -17,7 +17,7 @@ for( i in 1:length(dl_files)){
     
     fit <- stan(m_files[i], data  = dl[[j]], thin = 4, cores = 4)
 
-    saveRDS(fit, paste0('output/stan_fits/', spp[j], '_', vr, '_year_effects.RDS'))
+    saveRDS(fit, paste0('output/stan_fits/', spp[j], '_', vr, '_year_effects_fit.RDS'))
     
     if(vr == 'recruitment'){
       write.csv(summary(fit, c('a', 'sig_a'))$summary, paste0('output/', spp[j], '_', vr, '_year_effects_table.csv'))

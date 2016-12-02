@@ -1,4 +1,3 @@
-// Full multi-species model with climate: includes climate + competition effects
 data{
   int<lower=0> Nhold;                 // observations
   int<lower=0> Yhold[Nhold];          // observation vector

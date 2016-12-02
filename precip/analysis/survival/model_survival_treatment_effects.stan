@@ -31,7 +31,6 @@ transformed parameters{
   vector[Nhold] treatEff;
   real mu[Nhold];
   vector[Nhold] crowdEff;
-  vector[Nhold] climEff; 
   vector[Nhold] gint;
   vector[Nhold] year_effect;
   

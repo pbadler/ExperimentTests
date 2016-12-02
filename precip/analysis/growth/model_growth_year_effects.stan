@@ -36,7 +36,6 @@ transformed parameters{
   vector[nyrs] b1;
   real mu[N];
   vector[N] crowdEff;
-  vector[N] climEff; 
   vector[N] gint; 
 
   // for training data model -----------------------------------

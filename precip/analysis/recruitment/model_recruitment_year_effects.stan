@@ -78,7 +78,6 @@ generated quantities{
   matrix[Nhold, Nspp] trueP2_pred;
   vector[Nhold] gint_out; 
   vector[Nhold] climhat; 
-  //matrix[Nhold, Nspp] trueP2_pred_scaled;
 
   for(n in 1:N){ 
     log_lik[n] <- neg_binomial_2_log(Y[n], lambda[n], theta); 

@@ -20,30 +20,24 @@ for( i in 1:length(fit_files)){
   dat <- readRDS( dat_files[grep( vr, dat_files)] )[[spp]]
   
   # make dataframe for predictions ------------------------------------
-  pred_df <- data.frame(species = spp, vital_rate = vr, year = dat$yearhold, yid = dat$yidhold, Group = dat$gidhold, quad = dat$quadhold, trackid = dat$trackidhold, Treatment = dat$treathold)
+  base_df <- data.frame(species = spp, vital_rate = vr, year = dat$yearhold, yid = dat$yidhold, Group = dat$gidhold, Treatment = dat$treathold, obs = 1:length(dat$treathold))
   
   climhat  <- rstan::extract(readRDS(fit_files[i]), 'climhat')$climhat
-  thin <- 2
-  climhat  <- climhat[seq(1,nrow(climhat), thin), ]
-  
-  pred_df <- data.frame( pred_df,  t(climhat) ) 
+
+  pred_df <- data.frame( base_df,  t(climhat) ) 
   
   pred_df <- 
     pred_df %>% 
     mutate( type = 'predicted_effect') %>% 
     gather( iteration, val , starts_with('X'))  
   
-  pred_treatment_effects <- 
-    pred_df %>% 
-    group_by (species, vital_rate, year, Group , Treatment ) %>% 
-    summarise(mean = mean(val), sd = sd( val ) , ucl95 = quantile ( val , 0.975), lcl95 = quantile ( val , 0.025 ) )
-  
   # get observed treatment effects ---------------------------------------- # 
   treatEff <- rstan::extract(readRDS(treatment_stan_fit[i]), 'treatEff')$treatEff
-  treatEff  <- treatEff[seq(1,nrow(treatEff), thin), ]
+  yearEff <- rstan::extract(readRDS(treatment_stan_fit[i]), 'year_effect')$year_effect
   
+  obsEff <- treatEff + yearEff 
   
-  obs_df <- data.frame(year = dat$yearhold, Group = dat$gidhold, yid = dat$yidhold, Treatment = dat$treathold, t(treatEff) ) 
+  obs_df <- data.frame( base_df, t(obsEff))  
   
   obs_df <- 
     obs_df %>% 
@@ -51,29 +45,27 @@ for( i in 1:length(fit_files)){
     gather( iteration, val, starts_with('X'))
   
   # ------------------------------------------------------------------------ # 
-  
   pred_df <- rbind(obs_df, pred_df )
+  
   pred_df$Treatment <- factor(pred_df$Treatment, labels = c('Control', 'Drought', 'Irrigation'))  
   
-  mean_pred_eff <-
+  treatment_contrasts <-
     pred_df %>% 
     filter (year > 2010 & Group == 1) %>%
-    group_by(Treatment, type, iteration ) %>% 
-    summarise( val = mean( val) )
-
-  mean_pred_eff <- 
-    mean_pred_eff %>% 
+    group_by(Treatment, type, iteration) %>% 
+    summarise( val = mean( val) ) %>% 
     spread(Treatment, val ) %>% 
     mutate( Drought  = Drought - Control, Irrigation = Irrigation - Control) %>%
-    gather( Treatment, val , Control:Irrigation )
+    gather( Treatment, val , Control:Irrigation ) %>% 
+    filter( Treatment != 'Control')
 
   my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
   
   pdf( paste( 'figures/predictions/predicted_', spp, '_', vr, '_overall_treatment_effects.pdf' ))
     
     print( 
-      ggplot( mean_pred_eff %>% filter(Treatment != 'Control'), aes( x = val, fill = type ) ) + 
-        geom_density(  alpha = 0.4) + 
+      ggplot( treatment_contrasts, aes( x = val, fill = type ) ) + 
+        geom_density(  alpha = 0.4, position = 'dodge') + 
         geom_vline( aes(xintercept = 0), linetype = 2) +
         facet_grid( Treatment ~  .  )  + 
         scale_fill_manual(values = my_colors) + 

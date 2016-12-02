@@ -20,6 +20,6 @@ for(i in 1:nrow(df)){
                   control = list(adapt_delta = 0.95, stepsize = 0.4, max_treedepth = 20))
   } 
   
-  saveRDS(myfit, paste0('output/stan_fits/treatment_effects_', spp, '_', vr, '_.RDS'))
+  saveRDS(myfit, paste0('output/stan_fits/', spp, '_', vr, '_treatment_fit.RDS'))
 }
 
