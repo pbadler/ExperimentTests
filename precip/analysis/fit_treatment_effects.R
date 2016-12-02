@@ -2,7 +2,8 @@ rm(list = ls())
 library(rstan)
 
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
-for(i in 1:nrow(df)){ 
+
+for(i in 9:nrow(df)){ 
   
   spp <- df$species[i]
   vr  <- df$vital_rate[i]
@@ -19,7 +20,10 @@ for(i in 1:nrow(df)){
     myfit <- stan(paste0('analysis/', vr, '/model_', vr, '_treatment_effects.stan'), data = test, cores = 4, iter = 2000, thin = 4, 
                   control = list(adapt_delta = 0.95, stepsize = 0.4, max_treedepth = 20))
   } 
-  
+
   saveRDS(myfit, paste0('output/stan_fits/', spp, '_', vr, '_treatment_fit.RDS'))
+  
+  rm(myfit)
+
 }
 
