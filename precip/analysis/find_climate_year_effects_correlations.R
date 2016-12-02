@@ -1,9 +1,12 @@
 rm(list = ls())
+library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(stringr)
 
 ye_files <- dir('output', 'year_effects_table.csv', full.names = T)
 dat_files <- dir('data/temp_data', 'data_lists_for_stan.RDS', full.names = T, recursive = T)
+dat_files <- dat_files[ - grep('modified', dat_files)]
 
 Cdat <- readRDS('data/temp_data/all_clim_covs.RDS')
 Cdat <- subset(Cdat, Period == 'Historical' & Treatment == 'Control')
@@ -21,9 +24,9 @@ for( i in 1:length(ye_files)){
   ye <-  subset( ye , parameter %in% c('a', 'b1'))  
   
   dl <- readRDS( dat_files [ str_detect(dat_files, vr) ] )[[spp]]
-
+  
   years <- unique(dl$year)
-
+  
   ye_df <- data.frame( year = years, parameter = ye$parameter, year_effect = ye$mean )
   
   ye_df <- ye_df[order(ye_df$parameter, ye_df$year), ]
@@ -35,9 +38,6 @@ for( i in 1:length(ye_files)){
       geom_line() + 
       ggtitle(paste0('Year effects for ', spp, ' ', vr))
   )
-  
-  ggplot( ye_df, aes( x = year, y = year))
-  
   dev.off()
   
   ye_df <- ye_df %>% spread(parameter, year_effect)
@@ -81,9 +81,9 @@ for( i in 1:length(ye_files)){
       out [ j, 4] <- temp$p.value
     }
     
-    out <- subset(out, Int_pval < 0.1 | size_pval < 0.1)
+    out <- subset(out, Int_pval < 0.05 | size_pval < 0.05)
     out <-  out[order(out$Intercept), ]
-    write.csv(out, paste0( 'output/', spp, '_', vr, '_correlations.csv'))  
+    write.csv(out, paste0( 'output/', spp, '_', vr, '_correlations.csv')) 
   } 
 } 
   

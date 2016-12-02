@@ -5,7 +5,8 @@ library(rstan)
 
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
-mfiles <- dir('output/stan_fits', '.*year_effects.RDS', full.names = TRUE)
+mfiles <- dir('output/stan_fits', '.*year_effects_fit.RDS', full.names = TRUE)
+
 
 for(i in 1:length(mfiles)){ 
   

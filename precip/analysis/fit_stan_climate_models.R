@@ -1,7 +1,6 @@
 rm(list = ls())
 library(rstan)
 library(stringr)
-# fit year effects ------------------------------------- 
 
 dl_files <- dir('data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 m_files  <- dir('analysis', 'model.*_1.stan', recursive = T, full.names = T)
@@ -24,5 +23,7 @@ for( i in 1:length(dl_files)){
     saveRDS(fit, paste0('output/stan_fits/', spp[j], '_', vr, '_climate_fit.RDS'))
     
   }
+  
+  rm( fit )
 }
 
