@@ -33,44 +33,39 @@ get_parameter_estimates <- function( fit_file, treatment_fit_file, dat_files) {
     colnames(Chold) <- names( dat$Ccenter )
   }
    
-  VWC_vars <- grep ('VWC', colnames(Chold))
+  IFX_vars <- grep ('logarea.t0', colnames(Chold))
   
-  VWC <- Chold[, VWC_vars, drop = F]
-  IFX_vars <- grep ('logarea.t0', colnames(VWC))
-  
-  b2VWC <- b2[, VWC_vars, drop = F]
-  
-  VWC1 <- VWC[, -IFX_vars, drop = F]
-  VWC2 <- VWC[, IFX_vars, drop = F]
-  b2VWC1 <- b2VWC[, -IFX_vars, drop = F]
-  b2VWC2 <- b2VWC[, IFX_vars, drop = F]
+  C1  <- Chold[, -IFX_vars, drop = F]
+  C2  <- Chold[, IFX_vars, drop = F]
+  a   <- b2[, -IFX_vars, drop = F]
+  b1  <- b2[, IFX_vars, drop = F]
   
   if (length(IFX_vars) == 0) {
-    VWC1 <- VWC
-    b2VWC1 <- b2VWC
+    C1 <- Chold
+    a  <- b2
   }
   
-  TE1 <- matrix(NA, ncol = nrow(VWC1), nrow = nrow(b2))
-  TE2 <- matrix(NA, ncol = nrow(VWC2), nrow = nrow(b2))
+  YE1 <- matrix(NA, ncol = nrow(C1), nrow = nrow(b2))
+  YE2 <- matrix(NA, ncol = nrow(C2), nrow = nrow(b2))
   
-  for (j in 1:nrow(TE1)) {
-    TE1[j,] <- VWC1 %*% b2VWC1[j,]
-    TE2[j,] <- VWC2 %*% b2VWC2[j,]
+  for (j in 1:nrow(YE1)) {
+    YE1[j,] <- C1 %*% a[j,]
+    YE2[j,] <- C2 %*% b1[j,]
   }
   
   if (vr != 'recruitment') {
     X <- dat$Xhold
-    TE2 <-
-      sweep(TE2, 2, X, '/') # divide TREATMENT EFFECT by size to isolate the climate effects
+    YE2 <-
+      sweep(YE2, 2, X, '/') # divide TREATMENT EFFECT by size to isolate the climate effects
   }
   
-  TE1_df <- data.frame( base_df,  parameter = 'a (intercept)', t(TE1) ) 
-  TE2_df <- data.frame( base_df, parameter = 'b1 (size)', t(TE2))
+  YE1_df <- data.frame( base_df,  parameter = 'a (intercept)', t(YE1) ) 
+  YE2_df <- data.frame( base_df,  parameter = 'b1 (size)', t(YE2))
   
-  TE_df <- rbind(TE1_df, TE2_df)
+  YE_df <- rbind(YE1_df, YE2_df)
   
   pred_df <- 
-    TE_df %>% 
+    YE_df %>% 
     mutate( type = 'predicted_effect') %>% 
     gather( iteration, val , starts_with('X'))  
   
@@ -79,24 +74,32 @@ get_parameter_estimates <- function( fit_file, treatment_fit_file, dat_files) {
   avg_pred <- 
     pred_df %>% 
     filter( year > 2010 & Group == 1) %>% 
-    group_by(species, vital_rate, Treatment, parameter, type , iteration ) %>% 
-    summarise( val = mean(val)) %>% 
-    spread(Treatment, val ) %>% 
-    mutate( Drought = Drought - Control, Irrigation  = Irrigation - Control ) %>%
-    gather( Treatment, val ,  Control:Irrigation ) %>% 
-    filter( Treatment !=  'Control' ) 
+    group_by(species, vital_rate, year, Treatment, parameter, type , iteration ) %>% 
+    summarise( val = mean(val)) 
 
   # get observed treatment effects ---------------------------------------- # 
+  tm <- rstan::extract(readRDS(treatment_fit_file), 'tm')$
   bt <- rstan::extract(readRDS(treatment_fit_file), 'bt')$bt 
+  a  <- rstan::extract(readRDS(treatment_fit_file), 'a')$a
+  
+  df1 <- data.frame( base_df, parameter = 'a (intercept)',  t(a) )
+
   
   if(vr != 'recruitment' ) {
-    obs_effect <-  
+    b1 <- rstan::extract(readRDS(treatment_fit_file), 'b1')$b1
+    df2 <- data.frame( base_df, parameter = 'b1 (size)', t(b1))
+    
+    treatment_pars <-  
       data.frame( species = spp, 
                   vital_rate = vr, 
                   type = 'observed_effect',
+                  type2 = 'treatment_parameter', 
                   parameter = c('a (intercept)','a (intercept)', 'b1 (size)', 'b1 (size)') ,  
                   Treatment = c('Drought', 'Irrigation', 'Drought', 'Irrigation'), 
-                  t(bt) )
+                  t(bt))
+    
+    
+  
   }else{ 
     obs_effect <-  
       data.frame( species = spp, 

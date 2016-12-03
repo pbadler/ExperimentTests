@@ -30,6 +30,7 @@ plot_posterior_year_effects <- function(df){
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '.*_treatment_fit.RDS', full.names = TRUE)
+i = 1
 
 for( i in 1:length(mfiles)){ 
   
@@ -131,7 +132,6 @@ for( i in 1:length(mfiles)){
     
     dev.off()
   } 
-  
   
   if ('w' %in% model_pars ) { 
     w <- data.frame(rstan::extract(temp_fit, 'w'))
