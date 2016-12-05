@@ -6,7 +6,7 @@ library(rstan)
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 
-mfiles <- dir('output/stan_fits/predictions', '4_predict.RDS', full.names = TRUE)
+mfiles <- dir('output/stan_fits', 'fit.RDS', full.names = TRUE)
 
 # log-pointwise predictive density -------------------------------------------------------# 
 
@@ -17,7 +17,7 @@ compute_lppd <- function( stan_fit, ll = 'log_lik' ) {
 } 
 
 # ---------------------------------------------------------------------------------------------------------------------
-
+i = 1
 for( i in 1:length(mfiles)){ 
   
   bname <- basename(mfiles[i])
@@ -26,25 +26,25 @@ for( i in 1:length(mfiles)){
   spp <- mpars[1]
   vr <- mpars[2]
   m <- mpars[3]
-  lambda <- mpars[4]
   
   temp_fit <- readRDS(mfiles[i])
-
+  dat      <- readRDS(paste0('data/temp_data/modified_', vr, '_data_lists_for_stan.RDS'))[[spp]]
+  
   # log-pointwise predictive density ------------------------------------------------------------------------------------# 
-
-  lppd1 <- compute_lppd(temp_fit)
+  #lppd1 <- compute_lppd(temp_fit)
   lppd2 <- compute_lppd(temp_fit, 'log_lik2')  
   
   rm(temp_fit)
   
-  y_out <- data.frame(species = spp, vital_rate = vr, model = m, lambda = lambda , lppd1 = lppd1 , lppd2 = lppd2 )
+  y_out <- data.frame(species = spp, vital_rate = vr, model = m, year = dat$yearhold, Treatment = dat$treathold, lppd2 = lppd2 )
+  
+  y_out$Treatment <- factor(y_out$Treatment, labels = c('Control', 'Drought', 'Irrigation'))
   
   if( i == 1 ) { 
     write.table( y_out, file = file.path('output', 'lppd_scores.csv'), sep = ',', row.names = FALSE, append = FALSE )
   }else { 
     write.table( y_out, file = file.path('output', 'lppd_scores.csv'), sep = ',', col.names = FALSE, row.names = FALSE, append = TRUE )
   }
-  rm(y_out, lppd1, lppd2)
+  rm(y_out, lppd2)
 }
-
 

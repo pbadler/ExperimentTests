@@ -6,28 +6,26 @@ library(dplyr)
 library(tidyr)
 
 # input ------------------------------------------------------------------------------------# 
-waics <- read.csv('output/best_WAIC_scores.csv')
 lppd_table  <- read.csv('output/lppd_scores.csv')
 
 total_lppd <- 
   lppd_table %>% 
   group_by( species, vital_rate , model ) %>% 
-  summarise( lppd_out = sum(lppd1), lppd_out2 = sum(lppd2)) %>% 
-  group_by( species, vital_rate) %>% 
-  mutate( rank_lppd = lppd_out/sum(lppd_out))
+  summarise( lppd = sum(lppd2))
 
-model_scores <- merge( total_lppd, waics, by = c('species', 'vital_rate', 'model')  )
+overall_rank <- 
+  total_lppd %>% 
+  arrange( species, vital_rate, lppd )
 
-best_models <- 
-  model_scores %>% 
-  group_by(species, vital_rate) %>% 
-  filter( lppd_out == max(lppd_out))
+rank_by_exp <- 
+  lppd_table %>% 
+  mutate( Exp = ifelse (Treatment != 'Control', 'Experiment', 'Control')) %>% 
+  group_by( species, vital_rate, Exp, model ) %>%
+  summarise( lppd = sum(lppd2)) %>% 
+  spread( model, lppd ) %>% 
+  mutate( score =  climate - year ) %>% 
+  arrange( desc( score ) )
 
-best_WAIC_models <- 
-  waics %>% 
-  group_by( species, vital_rate ) %>% 
-  filter( waic == min(waic))
 
-write.csv(best_WAIC_models, 'output/WAIC_selected_models.csv', row.names = FALSE)
-write.csv(model_scores, 'output/model_scores.csv', row.names = FALSE)
+write.csv(overall_rank, 'output/model_scores.csv', row.names = FALSE)
 write.csv(best_models, 'output/lppd_selected_models.csv', row.names = FALSE)
