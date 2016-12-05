@@ -4,9 +4,8 @@ library(stringr)
 
 dl_files <- dir('data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 m_files  <- dir('analysis', 'model.*_1.stan', recursive = T, full.names = T)
-
 best_models <- read.csv('output/best_lppd_scores.csv')
-i = 1
+
 for( i in 1:nrow(best_models)){ 
   
   temp_row <- best_models[i, ]
@@ -21,7 +20,7 @@ for( i in 1:nrow(best_models)){
   dat$tau_beta <- sd 
   model <- m_files[ grep(vr, m_files )]  
   
-  if(is.null( ncol(dl[[j]]$C)) ){ 
+  if(is.null( ncol(dat$C)) ){ 
     fit <- stan(str_replace(model, '.stan', '_special.stan'), data  = dat, thin = 4, cores = 4, iter = 2000, seed = 1)
   }else{
     fit <- stan(model, data = dat, thin = 4, cores = 4, iter = 2000, seed = 1)
