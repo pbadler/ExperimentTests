@@ -186,17 +186,17 @@ pdf( 'figures/compare_predicted_vs_observed_year_parameters.pdf', width = 8, hei
   
 ggplot( compare_plot_df, aes( x = predicted_effect, y = observed_effect))  + 
   geom_point() + 
-  facet_wrap( ~ species ) + 
+  facet_wrap(  ~ species ) + 
   geom_smooth(aes(group = 1), se = F, method = 'lm')
   
 ggplot( compare_plot_df, aes( x = predicted_effect, y = observed_effect))  + 
   geom_point() + 
-  facet_wrap( ~ vital_rate ) + 
+  facet_grid( parameter ~  vital_rate ) + 
   geom_smooth(aes(group = 1), se = F, method = 'lm')
 
 ggplot( compare_plot_df, aes( x = predicted_effect, y = observed_effect))  + 
   geom_point() + 
-  facet_wrap( ~ Treatment ) + 
+  facet_grid( parameter ~ Treatment ) + 
   geom_smooth(aes(group = 1), se = F, method = 'lm')
 
 ggplot( compare_plot_df, aes( x = predicted_effect, y = observed_effect))  + 
@@ -204,6 +204,10 @@ ggplot( compare_plot_df, aes( x = predicted_effect, y = observed_effect))  +
   facet_grid( Treatment ~ year ) + 
   geom_smooth(aes(group = 1), se = F, method = 'lm')
 
-dev.off()
+ggplot( compare_plot_df, aes( x = predicted_effect, y = observed_effect))  + 
+  geom_point() + 
+  facet_grid( parameter ~ year ) + 
+  geom_smooth(aes(group = 1), se = F, method = 'lm')
 
+dev.off()
 

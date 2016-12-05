@@ -11,99 +11,121 @@ library(gridExtra)
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 
-mfiles <- dir('output/stan_fits/predictions', '.*recruitment.*4_predict.RDS', full.names = TRUE)
-dffiles <- dir('data/temp_data', '.*recruitment.*cleaned_dataframe.RDS', full.names = T)
+dir('output/stan_fits/')
+climate_models    <- dir('output/stan_fits', '.*_recruitment_climate_fit.RDS', full.names = TRUE)
+treatment_models  <- dir('output/stan_fits', '.*_recruitment_treatment_fit.RDS', full.names = T)
+year_models       <- dir('output/stan_fits', '.*_recruitment_year_effects_fit.RDS', full.names = T)
 
-for( i in 1:length(mfiles)){ 
+dffile <- dir('data/temp_data', 'modified_recruitment_data_lists_for_stan.RDS', full.names = T)
+
+
+extract_predictions <- function( climate_model, treatment_model, year_model, dat ){ 
   
-  bname <- basename(mfiles[i])
+  bname <- basename(climate_model)
   mpars <- unlist( str_split(bname, '_') ) 
   
   spp <- mpars[1]
   vr <- mpars[2]
-  m <- mpars[3]
-  lambda <- mpars[4]
-  
-  temp_fit <- readRDS(mfiles[i])
-  df <- readRDS(dffiles[i])
-  
-  thin <- 10
-  mu <- rstan::extract(temp_fit, 'mu')$mu
-  mu <-  mu[ seq(1, nrow(mu), thin),  ]
-  muhat <- rstan::extract(temp_fit, 'muhat')$muhat
-  muhat <-  muhat[ seq(1, nrow(muhat), thin),  ]
-  # sigma <- rstan::extract(temp_fit, 'sigma')$sigma
-  # sigma <-  sigma[ seq(1, nrow(sigma), thin),  ]
-  # sigmahat <- rstan::extract(temp_fit, 'sigmahat')$sigmahat
-  # sigmahat <-  sigmahat[ seq(1, nrow(sigmahat), thin),  ]
-  # 
-  rm(temp_fit)
-  
-  mu <- cbind(mu, muhat)
-  # sigma <- cbind(sigma, sigmahat)
-  # pred <- matrix( rnorm(length(mu), mu, sigma), dim(mu))
-  
-  diff <- sweep( t(mu), 1, df$Y, '-')
-  
-  rm(mu)
-  
-  diff_long <- 
-    data.frame(df, diff) %>% 
-    gather( observation, val , X1:X100) 
-  
-  rm(df, diff)
-  
-  diff_long_period <- 
-    diff_long %>% 
-    group_by( Period ) %>% 
-    mutate( ucl95 = quantile(val,  0.975), lcl95 = quantile(val, 0.025))
 
-  diff_long_treatment <- 
-    diff_long %>% 
-    group_by( Period, Treatment ) %>% 
-    mutate( ucl95 = quantile(val,  0.975), lcl95 = quantile(val, 0.025))
+  # make dataframe for predictions ------------------------------------
+  base_df <- data.frame(species = spp, 
+                        vital_rate = vr,
+                        Y = dat$Yhold,
+                        year = dat$yearhold, 
+                        Group = dat$gidhold, 
+                        quad = dat$quadhold, 
+                        Treatment = dat$treathold, 
+                        obs = 1:length(dat$treathold))
   
-  diff_long_year <- 
-    diff_long %>% 
-    group_by( year ) %>% 
-    mutate( ucl95 = quantile(val,  0.975), lcl95 = quantile(val, 0.025))
+  # extract predictions from climate model --------------------------- 
+  mu <- rstan::extract(readRDS(climate_model), 'lambda_pred')$lambda_pred # extract linear predictor for held out data 
   
-  diff_long_year_treatment <- 
-    diff_long %>% 
-    group_by( year , Treatment  ) %>% 
-    mutate( ucl95 = quantile(val,  0.975), lcl95 = quantile(val, 0.025))
+  climate_pred <- data.frame(base_df, model = 'climate_model', t(mu))
   
-  bp_hist <-  
-    ggplot( diff_long_period , aes( x = val)) + 
-      geom_histogram() + 
-      geom_vline(aes( xintercept = 0), lty = 2 , alpha = 0.7) + 
-      geom_vline(aes( xintercept = ucl95), color = 'red')+ 
-      geom_vline(aes( xintercept = lcl95), color = 'red') + 
-      xlab ( 'Surival probability predicted - survival outcome')
-    
-  # bp_dens <-  
-  #   ggplot( diff_long_period , aes( x = val)) + 
-  #   geom_density() + 
-  #   geom_vline(aes( xintercept = 0), lty = 2 , alpha = 0.7) + 
-  #   geom_vline(aes( xintercept = ucl95), color = 'red')+ 
-  #   geom_vline(aes( xintercept = lcl95), color = 'red') 
-  # 
-  #   
-  pdf(file.path( 'figures', 'stan_fits',  paste(spp, 'recruitment_predictive_accuracy.pdf', sep = '_')), height = 8, width = 11)  
+  climate_pred <- 
+    climate_pred %>% 
+    gather( 'iteration', mu, starts_with('X'))
   
+  
+  # extract predictions from treatment model -------------------------
+  
+  mu <- rstan::extract(readRDS(treatment_model), 'lambda')$lambda  # extract linear predictor 
+  
+  treatment_pred <- data.frame(base_df, model = 'treatment_model', t(mu))
+  
+  treatment_pred <- 
+    treatment_pred %>% 
+    gather( 'iteration', mu, starts_with('X'))
 
-    print(  bp_hist + facet_grid( Period ~ . ))
-    print(  bp_hist %+% subset(diff_long_year_treatment, Period == 'Modern') + facet_grid( year ~ Treatment ))
-    print(  bp_hist %+% subset(diff_long_year, Period == 'Modern') + facet_grid( year ~ . ) )
-    print(  bp_hist %+% subset(diff_long_treatment, Period == 'Modern') + facet_grid(Treatment ~  .  ))
-    
-    #rm(bp_hist)
-    
-    # print(  bp_dens + facet_grid( Period ~ . ))
-    # print(  bp_dens %+% subset(diff_long_year_treatment, Period == 'Modern') + facet_grid( year ~ Treatment ))
-    # print(  bp_dens %+% subset(diff_long_year, Period == 'Modern') + facet_grid( year ~ . ) )
-    # print(  bp_dens %+% subset(diff_long_treatment, Period == 'Modern') + facet_grid(Treatment ~  .  ))
-    # 
-  dev.off()
+  # extract predictions from year model (no treatment or climate effects )  
   
+  mu <- rstan::extract(readRDS(year_model), 'lambda_pred')$lambda_pred  # extract linear predictor 
+  
+  year_pred <- data.frame(base_df, model = 'year_model', t(mu))
+  
+  year_pred <- 
+    year_pred %>% 
+    gather( 'iteration', mu, starts_with('X'))
+  
+  # ----------------------------------------------------------------------- # 
+  
+  all_pred <- do.call( rbind , list( climate_pred, treatment_pred, year_pred ))
+  
+  all_pred$Treatment <- factor(all_pred$Treatment, labels = c('Control', 'Drought', 'Irrigation'))  
+  
+  return(all_pred)
+  
+} 
+
+
+all_df <- list()
+
+for( i in 1:length(climate_models)){ 
+  all_df[[i]] <- extract_predictions(climate_models[i] , treatment_models[i] , year_models[i], readRDS(dffile)[[i]])
 }
+
+df <- 
+  do.call(rbind, all_df) %>% 
+  mutate( error = mu - Y )
+
+avg_error_per_iteration <- 
+  df %>% 
+  group_by(Treatment, species, model, iteration ) %>% 
+  summarise(mean_error = mean(error))
+    
+gg_it <- 
+  ggplot( subset ( avg_error_per_iteration, species == 'ARTR'), aes( x = mean_error))  + 
+  geom_density(alpha = 0.5) + 
+  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.5) + 
+  facet_grid( model ~ . )
+
+p1 <- avg_error_per_iteration %>% 
+  group_by(species) %>% 
+  do(gg = gg_it %+% .  + ggtitle (paste( 'Average error per iteration for', .$species, 'recruitment')))
+
+avg_error_per_obs <- 
+  df %>%
+  group_by( Treatment, species, model, obs ) %>% 
+  summarise( mean_error = mean(error))
+
+gg_obs <- 
+  ggplot( subset( avg_error_per_obs, species == 'ARTR'), aes ( x = mean_error) ) + 
+  geom_density (alpha = 0.5) + 
+  geom_vline( aes(xintercept = 0), linetype = 2, alpha = 0.5) + 
+  facet_grid( model ~ . ) 
+
+p2 <- avg_error_per_obs %>% 
+  group_by(species) %>% 
+  do(gg = gg_obs %+% .  + ggtitle (paste( 'Average error per observation for', .$species, 'recruitment')))
+
+
+pdf(file.path( 'figures', 'predictions',  paste('error_in_recruitment_predictions.pdf', sep = '_')), height = 8, width = 11)  
+
+print( 
+p1$gg
+)
+print(
+p2$gg
+)
+
+dev.off()

@@ -2,22 +2,12 @@ rm(list = ls())
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-climate <- readRDS('data/temp_data/all_clim_covs.RDS')
-
-#lppd_scores <- read.csv('output/lppd_scores.csv')
-errors  <- dir('output', 'mean_climate_error', full.names = T)
-
-
-head( read.csv(errors[1]) ) 
-
-
-datlist <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')
 
 make_gg_PCA <- 
   function( spp , dl ) { 
 
-  historical <- unique( data.frame( dl[[spp]]$C, Period = 'Historical', treatment = 'Control', year = dl[[spp]]$yid))
-  modern <- unique( data.frame( dl[[spp]]$Chold, Period = 'Modern', treatment = dl[[spp]]$treathold, year = dl[[spp]]$yidhold) ) 
+  historical <- unique( data.frame( dl[[spp]]$C, Period = 'Historical', Treatment = 'Control', year = dl[[spp]]$year))
+  modern <- unique( data.frame( dl[[spp]]$Chold, Period = 'Modern', Treatment = dl[[spp]]$treathold, year = dl[[spp]]$yearhold) ) 
   
   cvs_in <- historical[ colnames(dl[[spp]]$C)]
   cvs_out <- modern [ colnames(dl[[spp]]$Chold) ] 
@@ -31,23 +21,25 @@ make_gg_PCA <-
   plot_df <- data.frame( temp_pca_both$scores,
             Period =c(as.character( historical$Period), 
                       as.character( modern$Period)),
-            treatment = c(historical$treatment, modern$treatment), 
-            year_id = c(historical$year, modern$year), 
+            Treatment = c(historical$Treatment, modern$Treatment), 
+            year = c(historical$year, modern$year), 
             dists = dists)
-
+  
+  plot_df$Treatment <- factor( plot_df$Treatment, labels = c('Control', 'Drought', 'Irrigation'))
+  
   biplot(temp_pca_both)
-
+  
   plot_df <- 
     plot_df %>% 
     mutate(center1 = mean(Comp.1[Period == 'Historical']), center2 = mean(Comp.2[Period == 'Historical']))
-
+  
   df_arrows  <- data.frame( temp_pca_both$loadings[ , c(1:2)], x = temp_pca_both$center[1], y = temp_pca_both$center[2])
-
+  
   names( df_arrows ) [ 1:2 ] <- c('xend', 'yend')
-
+  
   df_arrows$xend <- df_arrows$xend*max(plot_df$Comp.1)
   df_arrows$yend <- df_arrows$yend*max(plot_df$Comp.2)
-
+  
   gg_PCA <- 
     ggplot( plot_df, aes( x = Comp.1, y = Comp.2, color = Period )) + 
     geom_point(size = 2) + 
@@ -55,8 +47,13 @@ make_gg_PCA <-
     geom_text( data = df_arrows , aes( x = xend*1.5, y = yend*1.5, label = row.names(df_arrows)), color = 1) 
   
   return(gg_PCA)
-} 
+  } 
 
+climate <- readRDS('data/temp_data/all_clim_covs.RDS')
+
+#lppd_scores <- read.csv('output/lppd_scores.csv')
+error <- read.csv('output/climate_effect_prediction_error.csv')
+datlist <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')
 
 # base plot ------------------------------------------------------------- 
 
@@ -66,10 +63,35 @@ print( gg_PCA )
 dev.off()
 
 # plot lppd by distance -------------------------------------------------
-
 gg_PCA <- make_gg_PCA('ARTR', datlist)
 
 plot_df <- gg_PCA$data
+
+MEA <- 
+  error %>% 
+  filter( type == 'error') %>%
+  group_by(vital_rate, species, Treatment, year, type  ) %>% 
+  summarise( MAE = mean(abs(val)) , ME = mean(val), sd_e = sd(val))
+
+error_dist <- merge( plot_df, MEA , by = c('Treatment', 'year')) 
+
+ggplot( error_dist, aes( x = dists, y = MAE)) + 
+  geom_point() + 
+  geom_smooth( method = 'lm', group = 1, se = F)
+
+ggplot( error_dist, aes( x = dists, y = MAE)) + geom_point() + 
+  facet_grid( ~ species ) + 
+  geom_smooth( method = 'lm', group = 1, se = F)
+
+ggplot( error_dist, aes( x = dists, y = abs( ME ) )) + geom_point() + 
+  facet_grid( ~ species ) + 
+  geom_smooth( method = 'lm', group = 1, se = F)
+
+ggplot( error_dist, aes( x = dists, y = sd_e )) + geom_point() + 
+  facet_grid( ~ species ) + 
+  geom_smooth( method = 'lm', group = 1, se = F)
+
+
 
 lppd_scaled_scores <- 
   lppd_scores %>% 
