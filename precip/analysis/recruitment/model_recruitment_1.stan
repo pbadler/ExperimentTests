@@ -12,7 +12,8 @@ data{
   int<lower=0> Covs;          // climate covariates
   matrix[N,Covs] C;           // climate matrix
   matrix[N, G] gm;
-  
+  real<lower=0> tau_beta;     // climate sd for regularization
+    
   // for out of sample prediction
   int<lower=0> Nhold;
   int<lower=0> nyrshold;              // years out
@@ -72,7 +73,7 @@ model{
   a_raw ~ normal(0, 1);
   bg ~ normal(0, 10);
   w ~ normal(0, 10);
-  b2 ~ normal(0, 10);
+  b2 ~ normal(0, tau_beta);
 
   // Likelihood
   Y ~ neg_binomial_2(lambda, theta);

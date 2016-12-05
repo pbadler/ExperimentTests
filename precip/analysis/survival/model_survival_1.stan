@@ -12,7 +12,8 @@ data{
   int<lower=0> spp;           // focal species 
   int<lower=0> Covs;          // climate effects 
   matrix[N, Covs] C;          // climate matrix 
-
+  real<lower=0> tau_beta;     // climate sd for regularization
+  
   // holdout datalist, modern observations 
   int<lower=0> Nhold;
   int<lower=0,upper=1> Yhold[Nhold];
@@ -65,7 +66,7 @@ model{
   a_raw ~ normal(0,1);
   b1_raw ~ normal(0,1);
   w ~ normal(0,10);
-  b2 ~ normal(0,10); 
+  b2 ~ normal(0,tau_beta); 
   
   // Likelihood
   Y ~ binomial(1,mu);
