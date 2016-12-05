@@ -66,6 +66,8 @@ scale_covariates <- function( datalist) {
   datalist$Wcenter <- Wcenter
   datalist$Wscale  <- Wscale 
   
+  datalist$tau_beta <- 10 # default standard deviation for climate effects 
+  
   if(!is.null( datalist$X)){
     
     # ifx <- datalist$C*datalist$X
