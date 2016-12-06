@@ -186,11 +186,8 @@ simulate_recruit_size <- function( recruits , spp ) {
 
 setwd('~/Documents/ExperimentTests/precip/')
 
-best_table <- read.csv('output/best_lppd_scores.csv')
-
 my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
 
-thin <- 10
 years <- expand.grid(year = 1925:2017, Treatment = c(1:3), stat = c('true_cov', 'pred_cover'))
 years$Period[ years$year > 2006 ] <- 'Modern'
 years$Period[ years$year <= 1960 ] <- 'Historical'
@@ -212,26 +209,17 @@ ylims <- list( c(0,40), c(0,7.5), c(0,7.5), c(0,7.5))
 for( i in 1:4) {  
   spp   <- species_list[i]  
   
-  sdl   <- readRDS('data/temp_data/survival_data_lists_for_stan.RDS')[[i]]
-  rdl   <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')[[i]]
-  gdl   <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')[[i]]
+  sdl   <- readRDS('data/temp_data/modified_survival_data_lists_for_stan.RDS')[[i]]
+  rdl   <- readRDS('data/temp_data/modified_recruitment_data_lists_for_stan.RDS')[[i]]
+  gdl   <- readRDS('data/temp_data/modified_growth_data_lists_for_stan.RDS')[[i]]
   
-  bname <- basename( as.character(best_table$fn[ best_table$species == spp ]) ) 
-  mpars <- str_split(bname, '_') 
+  m <- dir('output/stan_fits', paste0( spp, '.*_climate_fit.RDS'), full.names = TRUE)
   
-  models <- lapply( mpars, function(x) paste0( 'output/stan_fits/predictions/', paste(  c( x[1:5], 'predict.RDS') , collapse = '_')))
+  spars <- rstan::extract(readRDS(m[3]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg'))
   
-  spars <- rstan::extract(readRDS(models[[3]]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg'))
-  spars[c('sig_a', 'b1_mu', 'sig_b1')] <- lapply( spars[c('sig_a', 'b1_mu', 'sig_b1')], function( x, thin ) x[ seq(1, nrow(x), thin) ], thin = thin )  
-  spars[c('w', 'b2', 'bg')] <- lapply( spars[c('w', 'b2', 'bg')], function( x, thin ) x[ seq(1, nrow(x), thin), ], thin = thin )  
+  gpars <- rstan::extract(readRDS(m[1]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg', 'sigma'))
   
-  gpars <- rstan::extract(readRDS(models[[1]]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg', 'tau', 'tauSize'))
-  gpars[c('sig_a', 'b1_mu', 'sig_b1', 'tau', 'tauSize')] <- lapply( gpars[c('sig_a', 'b1_mu', 'sig_b1', 'tau', 'tauSize')], function( x, thin ) x[ seq(1, nrow(x), thin) ], thin = thin )  
-  gpars[c('w', 'b2', 'bg')] <- lapply( gpars[c('w', 'b2', 'bg')], function( x, thin ) x[ seq(1, nrow(x), thin), ], thin = thin )  
-  
-  rpars <- rstan::extract(readRDS(models[[2]]), c('sig_a', 'w', 'b2', 'bg', 'theta', 'u'))
-  rpars[c('sig_a','theta', 'u')] <- lapply( rpars[c('sig_a', 'theta', 'u')], function( x, thin ) x[ seq(1, nrow(x), thin) ], thin = thin )  
-  rpars[c('w', 'b2', 'bg')] <- lapply( rpars[c('w', 'b2', 'bg')], function( x, thin ) x[ seq(1, nrow(x), thin), ], thin = thin )  
+  rpars <- rstan::extract(readRDS(m[2]), c('sig_a', 'w', 'b2', 'bg', 'theta', 'u'))
   
   nsims <- length(spars$sig_a)
   rpars$nsims <- gpars$nsims <- spars$nsims <- nsims

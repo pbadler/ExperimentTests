@@ -62,6 +62,32 @@ png(filename = 'figures/climate_pca_comparison.png', height = 6, width = 6, unit
 print( gg_PCA ) 
 dev.off()
 
+# plot novelty of years -------------------------------------------------
+
+pca_dat <- gg_PCA$data
+
+clim <- unique( data.frame( year = datlist$ARTR$year2 , Treatment = datlist$ARTR$treat2, datlist$ARTR$C2) ) 
+clim$Treatment <- factor(clim$Treatment, labels = c('Control', 'Drought', 'Irrigation'))
+pca_dat <- merge( pca_dat, clim, by = c('year', 'Treatment') )
+
+my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
+
+ggplot(subset( pca_dat, year > 2005), aes(x = year, y = dists , color = Treatment )) + 
+  geom_point() + 
+  geom_line() + 
+  scale_color_manual(values = my_colors)
+
+ggplot(subset( pca_dat, year > 2005), aes(x = year, y = T.sp.1)) + 
+  geom_point() + 
+  geom_line() + 
+  scale_color_manual(values = my_colors)
+
+ggplot(subset( pca_dat, year > 2005), aes(x = year, y = VWC.sp.1, color = Treatment)) + 
+  geom_point() + 
+  geom_line() + 
+  scale_color_manual(values = my_colors)
+
+
 # plot lppd by distance -------------------------------------------------
 gg_PCA <- make_gg_PCA('ARTR', datlist)
 

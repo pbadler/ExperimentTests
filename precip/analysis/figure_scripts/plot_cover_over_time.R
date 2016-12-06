@@ -54,12 +54,14 @@ p2 <- cover_plot %+% subset(all_data, Period == 'Modern') +
 
 print( grid.arrange(p1, p2 , ncol = 2, widths = c(0.44, 0.56) ) ) 
 
-
 all_data_wide <- all_data %>% spread( species, totCover, fill = 0)
+library(vegan)
 
-cover_nmds <- metaMDS( all_data_wide[ , c(species)] ) 
-fit <- envfit(cover_nmds, all_data_wide [ , c('Period', species ) ])
-plot(fit)
+cover_nmds <- metaMDS( all_data_wide[ ,c('ARTR', 'HECO', 'POSE', 'PSSP') ] ) 
+
+fit <- envfit(cover_nmds, all_data_wide [ , c('Period', 'Treatment') ])
+fit
+fit
 points( cover_nmds$points[all_data_wide$Period == 'Historical', ], col = 'red')
 points( cover_nmds$points[all_data_wide$Period == 'Modern', ], col = 'black')
 fit$factors

@@ -1,6 +1,6 @@
 
 # call from removal_analysis_wrapper.r
-
+root <- "~"
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
 dataDir <- file.path(root,"/driversdata/data/idaho_modern/")
 
@@ -39,10 +39,8 @@ sample_size_quad$nquads <- sample_size_quad$x
 
 sample_size_df <- merge( sample_size_quad, sample_size_count, by = c('species', 'Treatment', 'year'))
 
-
 names(sppD.q)[NCOL(sppD.q)]<-"cover"
 write.csv(sppD.q,"data/temp_data/QuadYearCover.csv",row.names = FALSE)  # save these 
-
 
 sample_size_df <- sample_size_df[ , -grep('x', names(sample_size_df))]
 
@@ -83,38 +81,38 @@ i<-which(names(sppD.q.2011)=="year")
 sppD.q.2011<-sppD.q.2011[,-i]
 sppD.q<-subset(sppD.q,year>2006)
 sppD.q<-merge(sppD.q,sppD.q.2011)
-sppD.q$coverDiff<-sppD.q$cover-sppD.q$cover.2011
+
+sppD.q$coverDiff <- sppD.q$cover-sppD.q$cover.2011 # calculate difference 
+
 spp.mean.diff<-aggregate(sppD.q$coverDiff,by=list(species=sppD.q$species,Treatment=sppD.q$Treatment,
                   year=sppD.q$year),FUN=mean)
 names(spp.mean.diff)[NCOL(spp.mean.diff)]<-"coverDiff"
 spp.mean.diff <- reshape(spp.mean.diff,direction="wide",timevar="Treatment",idvar=c("species","year"))
 spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
 
-
 # statistical tests ####################################################
 
 #library(lme4)
 
-dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub")
+dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub" & year > 2010 )
 dARTR$year <- as.factor(dARTR$year)
-dARTR$Treatment[ dARTR$year == 2012 & dARTR$Treatment != 'Control' ] <- 'Control'
-mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
+dARTR$Treatment[ dARTR$year == 2011 & dARTR$Treatment != 'Control' ] <- 'Control'
+mARTR <- lmer(pcgr ~ Treatment + (1|year),data=dARTR)
 
-dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass")
+dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass" & year > 2010 )
 dHECO$year <- as.factor(dHECO$year)
-dHECO$Treatment[ dHECO$year == 2012 & dHECO$Treatment != 'Control' ] <- 'Control'
-mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
+dHECO$Treatment[ dHECO$year == 2011 & dHECO$Treatment != 'Control' ] <- 'Control'
+mHECO <- lmer(pcgr ~ Treatment + (1|year),data=dHECO)
 
-dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass")
+dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass" & year > 2010 )
 dPOSE$year <- as.factor(dPOSE$year)
-dPOSE$Treatment[ dPOSE$year == 2012 & dPOSE$Treatment != 'Control' ] <- 'Control'
-mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
+dPOSE$Treatment[ dPOSE$year == 2011 & dPOSE$Treatment != 'Control' ] <- 'Control'
+mPOSE <- lmer(pcgr ~ Treatment +  (1|year), data=dPOSE)
 
-dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass")
+dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass" & year > 2010 )
 dPSSP$year <- as.factor(dPSSP$year)
 dPSSP$Treatment[ dPSSP$year == 2012 & dPSSP$Treatment != 'Control' ] <- 'Control'
 mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
-
 
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 statsOutput <- paste0( "output/", species, "_stats_table.text")
@@ -129,6 +127,10 @@ summary(mARTR)
 summary(mHECO)
 summary(mPOSE)
 summary(mPSSP)
+
+
+
+
 
 # figures ########################################################################
 
@@ -205,6 +207,37 @@ mtext("Year",side=1,line=1,outer=T)
 mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)
 dev.off()
 # 
+
+# 3. Change in cover bar chart 
+
+spp <- unique( sppD$species)
+
+m1 <- m2 <- list()
+i = 1
+
+subset( sppD.q, species == 'Hesperostipa comata' & year == 2016) %>% 
+  arrange( year ) %>% 
+  filter( cover > 0 )
+
+for( i in 1:length(spp)) { 
+  
+  temp <- subset( sppD.q , year == 2016 & species == spp[i])
+
+  temp$Treatment <- factor(temp$Treatment )
+  
+  temp$lc <- log( temp$cover/temp$cover.2011 ) 
+  temp <- subset( temp , is.finite(lc))
+  plot ( data  = temp , lc ~ Treatment , main = spp[i] ) 
+  points( temp$Treatment, temp$coverDiff)
+  
+  m1[[i]] <- lm ( data = temp, coverDiff ~ Treatment )
+  m2[[i]] <- lm ( data = subset( temp, is.finite(lc)), lc ~ Treatment )    
+}
+
+summary(m2[[1]])
+summary(m2[[2]])
+summary(m2[[3]])
+summary(m2[[4]])
 
 # #3. log change
 # # hard wire ylims
