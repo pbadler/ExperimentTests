@@ -16,11 +16,31 @@ for(i in 1:nrow(df)){
   
   dv <- sum(   unlist( lapply( ss, function(x) sum( x[ (1 + ceiling(0.5*nrow(x))):nrow(x), 'divergent__']) )))
   
+  if ( dv > 0 ) { 
+    # try again if divergence 
+    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 4000, thin = 8, seed = 2)
+  }
+  
+  ss <-  get_sampler_params(myfit) 
+  
+  dv <- sum(   unlist( lapply( ss, function(x) sum( x[ (1 + ceiling(0.5*nrow(x))):nrow(x), 'divergent__']) )))
+  
   if ( dv > 0 ){ 
-    myfit <- stan(paste0('analysis/', vr, '/model_', vr, '_treatment_effects.stan'), data = test, cores = 4, iter = 2000, thin = 4, 
+    # try again if divergent 
+    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 2000, thin = 4, 
                   control = list(adapt_delta = 0.95, stepsize = 0.5, max_treedepth = 20), seed = 1 )
   } 
-
+  
+  ss <-  get_sampler_params(myfit) 
+  
+  dv <- sum(   unlist( lapply( ss, function(x) sum( x[ (1 + ceiling(0.5*nrow(x))):nrow(x), 'divergent__']) )))
+  
+  if ( dv > 0 ){ 
+    # try again if divergent 
+    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 4000, thin = 8, 
+                   control = list(adapt_delta = 0.99, stepsize = 0.2, max_treedepth = 20), seed = 1 )
+  } 
+  
   saveRDS(myfit, paste0('output/stan_fits/', spp, '_', vr, '_treatment_fit.RDS'))
   
   rm(myfit)

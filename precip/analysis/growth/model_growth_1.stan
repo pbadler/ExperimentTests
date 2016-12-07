@@ -134,7 +134,7 @@ generated quantities {
   }
 
   for(n in 1:N3){
-      muhat3[n]    <- gint_out3[n] + a_out3[yid3[n]-nyrs3] + b1_out[yid3[n]-nyrs3]*X3[n] + crowdhat3[n] + climhat3[n];
+      muhat3[n]    <- gint_out3[n] + a_out3[yid3[n]] + b1_out3[yid3[n]]*X3[n] + crowdhat3[n] + climhat3[n];
   }
 
 }

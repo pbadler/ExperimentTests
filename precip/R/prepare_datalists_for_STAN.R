@@ -68,7 +68,7 @@ make_data_list <- function( x, vr ) {
   mylist$all <- as.list( x )
   
   mylist <- lapply( mylist, function( y ) { y$nyrs = nlevels(factor(y$yid)); y } )
-  mylist <- lapply( mylist, function( y ) { y$nT = nlevels(factor(y$treat)); y } )
+  mylist <- lapply( mylist, function( y ) { y$nT = ncol(y$tm); y } )
   mylist <- lapply( mylist, function( y ) { y$G = nlevels(factor(y$gid)); y } )
   mylist <- lapply( mylist, function( y ) { y$N = length(y$Y); y})
   
@@ -155,7 +155,7 @@ make_data_list_recruitment <- function( x, vr ) {
   mylist$all <- as.list( x )
   
   mylist <- lapply( mylist, function( y ) { y$nyrs = nlevels(factor(y$yid)); y } )
-  mylist <- lapply( mylist, function( y ) { y$nT = nlevels(factor(y$treat)); y } )
+  mylist <- lapply( mylist, function( y ) { y$nT = ncol(y$tm); y } )
   mylist <- lapply( mylist, function( y ) { y$G = nlevels(factor(y$gid)); y } )
   mylist <- lapply( mylist, function( y ) { y$N = length(y$Y); y})
   
@@ -163,7 +163,7 @@ make_data_list_recruitment <- function( x, vr ) {
   names(mylist$all) <- paste( names(mylist$all), 2, sep = '')
   
   mylist <- unlist(mylist, recursive = F, use.names = T)
-  
+
   names( mylist ) <- str_replace( names(mylist) , '^.*\\.', '') # clean up names 
   
   mylist$Period <- as.numeric( factor( mylist$Period ) )

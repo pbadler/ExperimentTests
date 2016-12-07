@@ -6,7 +6,8 @@ library(rstan)
 dl_files <- dir('data/temp_data', '*_data_lists_for_stan.RDS', full.names = T)
 dl_files <- dl_files[ - grep('modified', dl_files) ] 
 m_files  <- dir('analysis', 'year_effects.stan', recursive = T, full.names = T)
-
+i  = 1
+j = 1
 for( i in 1:length(dl_files)){ 
   
   dl  <- readRDS(dl_files[i])
