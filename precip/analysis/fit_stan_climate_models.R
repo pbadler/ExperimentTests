@@ -4,8 +4,6 @@ library(stringr)
 
 dl_files <- dir('data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 m_files  <- dir('analysis', 'model.*_1.stan', recursive = T, full.names = T)
-i = 2
-j = 1
 
 for( i in 1:length(dl_files)){ 
   

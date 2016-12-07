@@ -40,17 +40,21 @@ make_data_list <- function( x, vr ) {
   Xscale  <- attr(x$X, 'scaled:scale')
   x$X <- as.numeric(x$X)
   
-  W <- scale( x[ , grep ( '^W\\.', names( x))])
+  W <- x[ , grep ( '^W\\.', names( x))]
+  W <- as.matrix( W )[,1:4] # big four competition effects
+  W <- scale(W)
+  x$W <- W
   Wcenter <- attr( W, 'scaled:center')
   Wscale  <- attr( W, 'scaled:scale' )
 
-  x$W <- as.matrix( W )
-  
   x$C <- as.matrix( x[ ,  grep( '^C\\.', names(x) ) ] )
   colnames(x$C) <- str_replace( colnames( x$C ) , '^C\\.' , '')
   
   x$treat <- as.numeric(factor( x$Treatment))
   x$tm <- model.matrix.lm( ~ x$Treatment )[, -1 ]  # drop intercept 
+  x$tm <- cbind ( x$tm , x$tm*x$X ) 
+  colnames(x$tm) <- c('Drought' , 'Irrigation', 'Droughtxlogarea.t0', 'Irrigationxlogarea.t0')
+  
   x$gm <- model.matrix.lm( ~ x$Group ) 
   x$spp <- as.numeric(factor( x$species))
   
