@@ -19,13 +19,13 @@ detachAllPackages <- function() {
 
 detachAllPackages()
 
-source('R/climate/ExtractData_3Runs.R')
-source('R/climate/aggregate_spot_VWC.R')
-source('R/climate/soilMoistureTreatmentEffects.R')
-source('R/climate/aggregate_VWC_data.R')
-source('R/get_all_demographic_data.R')
-source('R/climate/make_climate_variables.R')
-source('R/climate/prepare_climate_covariates.R')
+# source('R/climate/ExtractData_3Runs.R')
+# source('R/climate/aggregate_spot_VWC.R')
+# source('R/climate/soilMoistureTreatmentEffects.R')
+# source('R/climate/aggregate_VWC_data.R')
+# source('R/get_all_demographic_data.R')
+# source('R/climate/make_climate_variables.R')
+# source('R/climate/prepare_climate_covariates.R')
 
 library(dplyr)
 library(tidyr)
@@ -33,276 +33,159 @@ library(ggplot2)
 library(zoo)
 library(stringr)
 
-split_df <- function(df, train, hold){ 
+make_data_list <- function( x, vr ) { 
   
-  # split by training and holding 
-  training_df <- df[train, ]
-  holding_df  <- df[hold, ]
+  x$X <- scale(x$X)
+  Xcenter <- attr(x$X, 'scaled:center')
+  Xscale  <- attr(x$X, 'scaled:scale')
+  x$X <- as.numeric(x$X)
   
-  training_df <-  training_df [ order(training_df$year), ]
-  holding_df  <-  holding_df [ order(holding_df$year), ]
+  W <- scale( x[ , grep ( '^W\\.', names( x))])
+  Wcenter <- attr( W, 'scaled:center')
+  Wscale  <- attr( W, 'scaled:scale' )
+
+  x$W <- as.matrix( W )
   
-  return( list(training_df, holding_df) ) 
+  x$C <- as.matrix( x[ ,  grep( '^C\\.', names(x) ) ] )
+  colnames(x$C) <- str_replace( colnames( x$C ) , '^C\\.' , '')
+  
+  x$treat <- as.numeric(factor( x$Treatment))
+  x$tm <- model.matrix.lm( ~ x$Treatment )[, -1 ]  # drop intercept 
+  x$gm <- model.matrix.lm( ~ x$Group ) 
+  x$spp <- as.numeric(factor( x$species))
+  
+  saveRDS(x, file =  paste0( 'data/temp_data/', unique( x$species) ,'_', vr, '_cleaned_dataframe.RDS'))
+  
+  x <- 
+    x %>% 
+    dplyr::select( year, treat, Period, spp, quad, trackID, W, obs_id, C, yid, gid, X, Y, gm, tm ) %>% 
+    rename( trackid = trackID)
+
+  mylist <- split( x , x$Period)
+  
+  mylist <- lapply( mylist, as.list )
+  
+  mylist$all <- as.list( x )
+  
+  mylist <- lapply( mylist, function( y ) { y$nyrs = nlevels(factor(y$yid)); y } )
+  mylist <- lapply( mylist, function( y ) { y$nT = nlevels(factor(y$treat)); y } )
+  mylist <- lapply( mylist, function( y ) { y$G = nlevels(factor(y$gid)); y } )
+  mylist <- lapply( mylist, function( y ) { y$N = length(y$Y); y})
+  
+  names(mylist$Modern) <- paste( names(mylist$Modern) ,'hold', sep = '' ) 
+  names(mylist$all) <- paste( names(mylist$all), 2, sep = '')
+  
+  mylist <- unlist(mylist, recursive = F, use.names = T)
+  
+  names( mylist ) <- str_replace( names(mylist) , '^.*\\.', '') # clean up names 
+  
+  mylist$Period <- as.numeric( factor( mylist$Period ) )
+  mylist$Periodhold <- as.numeric( factor(mylist$Periodhold))
+  mylist$Period2 <- as.numeric( factor(mylist$Period2))
+  
+  mylist$C <- scale( mylist$C )
+  mylist$Ccenter <- attr(mylist$C, 'scaled:center')
+  mylist$Cscale  <- attr(mylist$C, 'scaled:scale')
+  mylist$Chold <- scale( mylist$Chold, mylist$Ccenter, mylist$Cscale)
+  mylist$C2    <- scale( mylist$C2, mylist$Ccenter, mylist$Cscale)
+  
+  mylist$Wcenter <- Wcenter
+  mylist$Wscale <- Wscale 
+
+  mylist$Xcenter <- Xcenter 
+  mylist$Xscale <- Xscale   
+  
+  mylist$Wcovs <- ncol ( mylist$W )
+  mylist$Covs <- ncol ( mylist$C ) 
+  mylist$spp <- unique(x$spp)
+  
+  mylist$tau_beta <- 10 
+  
+  return( mylist ) 
+  
 } 
 
-scale_covariates <- function( datalist) { 
-  
-  datalist$C      <- scale(datalist$C)
-  Ccenter         <- attr(datalist$C, 'scaled:center')
-  Cscale          <- attr(datalist$C, 'scaled:scale')
 
-  datalist$Chold  <- scale(datalist$Chold, Ccenter, Cscale )
-  datalist$C2     <- scale(datalist$C2, Ccenter, Cscale ) 
+add_survival_data <- function( growth , survival ) { 
 
-  datalist$W      <- scale(datalist$W)
-  Wcenter         <- attr(datalist$W, 'scaled:center')
-  Wscale          <- attr(datalist$W, 'scaled:scale')
+  survival$W2 <- scale( (survival$W2*survival$Wscale + survival$Wcenter), growth$Wcenter, growth$Wscale ) 
+  survival$C2 <- scale( (survival$C2*survival$Cscale + survival$Ccenter), growth$Ccenter, growth$Cscale ) 
+  survival$X2 <- scale( (survival$X2*survival$Xscale + survival$Xcenter), growth$Xcenter, growth$Xscale ) 
   
-  datalist$Whold  <- scale(datalist$Whold, Wcenter, Wscale )
-  datalist$W2     <- scale(datalist$W2, Wcenter, Wscale ) 
+  survival$X2 <- as.numeric( survival$X2 )
   
-  datalist$Ccenter <- Ccenter 
-  datalist$Cscale  <- Cscale 
-  datalist$Wcenter <- Wcenter
-  datalist$Wscale  <- Wscale 
+  cover_list <- survival [ grep ( '*.2$', names( survival ) ) ] 
+  names(cover_list )  <- str_replace(names(cover_list) , '2$', '3')
   
-  datalist$tau_beta <- 10 # default standard deviation for climate effects 
+  out <- c( growth, cover_list)
   
-  if(!is.null( datalist$X)){
-    
-    # ifx <- datalist$C*datalist$X
-    # 
-    # names(ifx) <- paste0(colnames(datalist$C), 'x', 'logarea.t0')
-    # datalist$C <- cbind(datalist$C, ifx)
-    #       
-    # ifx2 <- datalist$C2*datalist$X2
-    # names(ifx2) <- paste0(colnames(datalist$C2), 'x', 'logarea.t0')
-    # datalist$C2 <- cbind(datalist$C2, ifx2)
-    # 
-    # ifxh <- datalist$Chold*datalist$Xhold
-    # names(ifxh) <- paste0(colnames(datalist$Chold), 'x', 'logarea.t0')
-    # datalist$Chold <- cbind(datalist$Chold, ifxh)
-    
-    X               <- scale(datalist$X)
-    datalist$X      <- as.numeric(X)
-    Xcenter         <- attr(X, 'scaled:center')
-    Xscale          <- attr(X, 'scaled:scale')
-
-    datalist$Xhold  <- as.numeric(scale(datalist$Xhold, Xcenter, Xscale))
-    datalist$X2     <- as.numeric(scale(datalist$X2, Xcenter, Xscale))
-
-    datalist$Xcenter <- Xcenter
-    datalist$Xscale  <- Xscale
-    
-  }
-    
-  if(!is.null( datalist$C3)){
-    datalist$C3 <- scale(datalist$C3, Ccenter, Cscale)
-    datalist$W3 <- scale(datalist$W3, Wcenter, Wscale)
-    datalist$X3 <- as.numeric(scale(datalist$X3, Xcenter, Xscale))
-    
-    # ifx3 <- datalist$C3*datalist$X3
-    # names(ifx3) <- paste0(colnames(datalist$C3), 'x', 'logarea.t0')
-    # datalist$C3 <- cbind(datalist$C3, ifx3)
-    # 
-    # Y  <- scale(datalist$Y)
-    # datalist$Y  <- as.numeric(Y)
-    # Ycenter     <- attr(Y, 'scaled:center')
-    # Yscale      <- attr(Y, 'scaled:scale') 
-    # 
-    # datalist$Yhold <- as.numeric(scale(datalist$Yhold, Ycenter, Yscale))
-    # datalist$Y2 <- as.numeric(scale(datalist$Y2, Ycenter, Yscale))
-    # 
-    # datalist$Ycenter <- Ycenter
-    # datalist$Yscale  <- Yscale 
-  
-  }
-
-  class_list    <-  unlist( lapply( datalist, function(x) class(x)))
-   
-  datalist <- datalist[ which(class_list != 'character')]  
-    
-  return( datalist )
-}
-
-
-df2list <- function(df, covars, vr, type) { 
-  
-  N         <- nrow(df)                                           # number of data points for training data 
-  gid       <- as.numeric(df$gid)                                 # integer id for each plot area   
-  G         <- length(unique(df$gid))                             # number of groups representing exclosure areas
-  gm        <- model.matrix.lm(~ df$gid)                         # group contrast matrix 
-  
-  yid       <- df$yid                                             # integer id for each year 
-  nyrs      <- length(unique(df$yid))                             # number of years 
-
-  W         <- as.matrix(df[, grep('W.[A-Z]+', names(df)) ])      # crowding matrix 
-  Wcovs     <- ncol(W)                                            # number of species in crowding matrix 
-  
-  C         <- as.matrix(df[, covars])                            # all climate covariates 
-  Covs      <- ncol(C)                                            # number of climate covariates 
-
-  trackid   <- df$trackID
-  year      <- df$year
-  quad      <- as.numeric(factor(df$quad))
-  treat     <- as.numeric(factor(df$Treatment))
-
-  if( type %in% c('2', 'hold')) { 
-    tm        <- model.matrix.lm(~ df$Treatment)[, -1]                  # Treatment matrix, no intercept
-    nT        <- ncol(tm)                                         # number of treatments 
-  }
-  
-  if(vr == 'recruitment'){
-    Y              <- df$Y
-    parents1       <- as.matrix(df[ , grep('^cov\\.[A-Z]+', names(df))])/100
-    parents2       <- as.matrix(df[ , grep('^Gcov\\.[A-Z]+', names(df))])/100
-    
-    species_name   <- unique(df$species )
-    spp_list       <- factor( str_extract( colnames(parents1), '[A-Z]+$')) # get species names 
-    spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
-    Nspp           <- nlevels(spp_list)
-    
-  }else { 
-    Y         <- df$Y
-    X         <- df$X
-    
-    if( type %in% c('2', 'hold')) { 
-      tm        <- cbind( tm , tm*X ) # treatment by size interaction 
-      nT        <- ncol(tm)
-    }
-    
-    species_name   <- unique(df$species)
-    spp_list       <- factor( str_extract( colnames(W), '[A-Z]+$')) # get species names 
-    spp            <- grep(species_name, spp_list)                  # assign species number to datalist 
-  }    
-  
-  rm(vr, species_name, spp_list)
-
-  out <- lapply( ls(), function(x) eval(parse(text = x)))
-  lnames <- ls()[- grep('out', ls()) ]
-  names(out) <- paste0(lnames, type)  
-  out <- out[- grep('df', names(out))]
-
-  return(out)
-}
-
-compile_datalists <- function( df, train, hold, vr ) { 
-
-  species <- as.character(  unique(df$species) )
-  
-  # -------- make year by treatment labels ------------------------------------------------------------ 
-  df$treat_year_label <- paste(df$Treatment, df$year, sep = '_')
-  df$yid              <- as.numeric(factor(df$year)) 
-  
-  # set factors for whole dataset 
-  df$gid        <- factor(df$Group)
-  df$G          <- nlevels(df$gid)
-  
-  # get the climate covariates 
-  covars <- grep( '^[PT]\\.|^(VWC)\\.', names(df)) 
-
-  if(vr == 'growth'){ 
-    df$X <- df$logarea.t0
-    df$Y <- df$logarea.t1
-  }else if( vr == 'survival'){
-    df$X <- df$logarea.t0
-    df$Y <- df$survives
-  }
-  
-
-  # --------split into training and holding data and scale climate covariates -------------------------
-  out <- split_df(df, train, hold)
-  
-  training_df   <- out[[1]]
-  holding_df    <- out[[2]]
-
-  # --------training data -----------------------------------------------------------------------------
-  training_list  <- df2list(training_df, covars, vr = vr, type = '')
-  
-  #---------hold out/prediction data ------------------------------------------------------------------
-  holding_list  <- df2list(holding_df, covars, vr = vr, type = 'hold')
-  
-  # save dataframe with covariates ---------------------------------------------
-  
-  out_df           <- rbind(out[[1]], out[[2]])
-  
-  saveRDS(out_df, paste0( 'data/temp_data/', species,'_', vr, '_cleaned_dataframe.RDS'))
-  
-  #---------full dataset for estimating year effects ---------------------------------------------------
-  full_list <- df2list(out_df, covars, vr = vr, type = '2')
-  
-  if ( vr == 'growth') { 
-    
-    #--------use survival dataframe for growth cover predictions ------------------------------# 
-
-    survival_df <- readRDS(paste0('data/temp_data/', species , '_survival_cleaned_dataframe.RDS' ))
-
-    survival_df <- survival_df[ survival_df$yid %in% c(full_list$yid2), ] # only use years that are in the growth dataframe  
-    
-    #survival_df <- subset(survival_df, Period == 'Modern')
-    covars <- grep( '^[PT]\\.|^(VWC)\\.', names(survival_df)) 
-
-    cover_list  <- df2list(survival_df, covars, vr = vr, type = '3')
-    
-    out_list <-   c(training_list, holding_list, full_list, cover_list)
-    
-  } else { 
-    
-  out_list <-   c(training_list, holding_list, full_list)
-  
-  }
-  
-  out_list <-  scale_covariates(out_list)
-
-  return(out_list)
+  return( out ) 
 
 } 
-  
-  
-make_stan_datalist <- function(vr, data_path, clim_vars, clim_file ) { 
 
-  clim_vars <- sort(clim_vars ) 
-
-  # -- read data files ---------------------------------------------------------------------# 
-
-  clim_covs <- readRDS(file.path(data_path, clim_file))
+make_data_list_recruitment <- function( x, vr ) { 
   
-  dfiles <- dir( data_path, pattern = paste0(vr, '.RDS'), full.names = TRUE)
+  x$obs_id <- as.numeric(row.names(x))
+  x$yid <- as.numeric(factor(x$year))
+  x$quad <- as.numeric(factor(x$quad))
   
-  spp_names <- as.character( regmatches( dfiles, m = gregexpr( pattern = '([A-Z]{4})', dfiles )))
-  dlist <- lapply( dfiles, readRDS)
+  x$gid <- as.numeric(x$Group)
+  x$treat <- as.numeric(factor( x$Treatment))
+  x$gm <- model.matrix.lm(~ x$Group)
+  x$tm <- model.matrix.lm(~ x$Treatment)[ , -1]
   
-  # -- get indeces for training and holding data ----------------------------------------------------#
-  all_data <- lapply(dlist, function(x){ subset(x, !Treatment %in% c('No_shrub', 'No_grass'))} )
+  x$C <- as.matrix( x[ ,  grep( '^C\\.', names(x) ) ] )
+  colnames(x$C) <- str_replace( colnames( x$C ) , '^C\\.' , '')
   
-  all_data <- lapply(all_data, merge, y = clim_covs[, c('Treatment', 'Period', 'year', clim_vars)], by = c('Treatment', 'Period', 'year')) 
+  x$spp <- as.numeric(factor( x$species))
   
-  all_data <- lapply( all_data, function( x ) x[complete.cases(x), ] ) # remove rows with NAs
+  x$parents1 <- as.matrix( x[ , grep( '^cov\\.', names(x))] )
+  x$parents2 <- as.matrix( x[ , grep( '^Gcov\\.', names(x))] )
   
-  if(vr == 'survival'){ 
-    all_data <- lapply( all_data, function(x) { names(x)[names(x) == 'logarea'] <- 'logarea.t0'; x } )
-  } 
+  saveRDS(x, paste0( 'data/temp_data/', unique(x$species ) ,'_', vr, '_cleaned_dataframe.RDS'))
   
-
-
-  # -- make training and holding indeces ----------------------------------------------------# 
+  x <- 
+    x %>% 
+    dplyr::select( Y, year, treat, Period, spp, quad, obs_id, C, yid, gid, parents1, parents2, gm, tm ) 
   
-  training <- lapply( all_data, function(x) { which(x$Period == "Historical" & x$Treatment == 'Control') } ) 
-  holding  <- lapply( all_data, function(x) { which(x$Period == "Modern" )  } ) 
-
-  # -- prepare for stan ---------------------------------------------------------------------# 
-
-  all_data_list <- mapply( FUN = compile_datalists, df = all_data, train = training, hold = holding, MoreArgs = list(vr = vr), SIMPLIFY = FALSE)
+  mylist <- split( x , x$Period)
   
-  names(all_data_list) <- spp_names
+  mylist <- lapply( mylist, as.list )
   
-  # ---- output ------------------------------------------------------------------------------# 
+  mylist$all <- as.list( x )
   
-  saveRDS(all_data_list, file.path( 'data/temp_data/', paste0( vr, '_data_lists_for_stan.RDS')))
+  mylist <- lapply( mylist, function( y ) { y$nyrs = nlevels(factor(y$yid)); y } )
+  mylist <- lapply( mylist, function( y ) { y$nT = nlevels(factor(y$treat)); y } )
+  mylist <- lapply( mylist, function( y ) { y$G = nlevels(factor(y$gid)); y } )
+  mylist <- lapply( mylist, function( y ) { y$N = length(y$Y); y})
   
-}
+  names(mylist$Modern) <- paste( names(mylist$Modern) ,'hold', sep = '' ) 
+  names(mylist$all) <- paste( names(mylist$all), 2, sep = '')
+  
+  mylist <- unlist(mylist, recursive = F, use.names = T)
+  
+  names( mylist ) <- str_replace( names(mylist) , '^.*\\.', '') # clean up names 
+  
+  mylist$Period <- as.numeric( factor( mylist$Period ) )
+  mylist$Periodhold <- as.numeric( factor(mylist$Periodhold))
+  mylist$Period2 <- as.numeric( factor(mylist$Period2))
+  
+  mylist$C <- scale( mylist$C )
+  mylist$Ccenter <- attr(mylist$C, 'scaled:center')
+  mylist$Cscale  <- attr(mylist$C, 'scaled:scale')
+  mylist$Chold <- scale( mylist$Chold, mylist$Ccenter, mylist$Cscale)
+  mylist$C2    <- scale( mylist$C2, mylist$Ccenter, mylist$Cscale)
+  
+  mylist$Nspp <- ncol ( mylist$parents1 )
+  mylist$Covs <- ncol ( mylist$C ) 
+  mylist$spp <- unique( x$spp ) 
+  mylist$tau_beta <- 10 
+  
+  return( mylist ) 
+} 
 
 # -- select covariates -------------------------------------------------------------------#
+
 clim_vars <- c('VWC.sp.l', 
                'VWC.sp.0', 
                'VWC.sp.1',
@@ -325,8 +208,82 @@ clim_vars <- c('VWC.sp.l',
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'
 
-make_stan_datalist('survival', data_path, clim_vars, clim_file )
+species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
+spp_num <- as.factor(species )
 
-make_stan_datalist('growth', data_path, clim_vars, clim_file )
+clim <- readRDS(paste0( data_path, '/', clim_file ) )  
 
-make_stan_datalist('recruitment', data_path, clim_vars, clim_file )
+clim <- clim[ ,c('Treatment', 'year', clim_vars)]
+names ( clim ) [ grep( '^(P\\.)|(VWC\\.)|(T\\.)',  names( clim ) ) ] <- paste0 ( 'C.', names( clim ) [ grep( '^(P\\.)|(VWC\\.)|(T\\.)', names(clim ) ) ] )
+
+out <- list()
+i = 1
+for(i in 1:length( species )) { 
+  spp <- species[i]
+  
+  gdat <- readRDS( paste0(data_path, '/', spp, '_growth.RDS'))
+  sdat <- readRDS( paste0(data_path, '/', spp, '_survival.RDS'))
+  rdat <- readRDS( paste0( data_path, '/', spp, '_recruitment.RDS'))
+  
+  sdat$logarea.t0 <- sdat$logarea
+  sdat <- sdat [ sdat$year %in% gdat$year, ] 
+  
+  df <- merge( sdat, gdat, all.x = T)
+  
+  rm(gdat, sdat)
+  
+  df <- df %>% arrange( year, Group, quad, trackID )
+  df$obs_id <- as.numeric( row.names(df) )
+  
+  clim <- clim[ complete.cases(clim), ] 
+  
+  df <- merge(df, clim)
+  rdf <- merge( rdat, clim ) 
+  
+  df <- 
+    df %>% 
+    mutate( yid = as.numeric( factor(year)), 
+            gid = as.numeric( factor(Group)), 
+            quad = as.numeric(factor(quad)) ) 
+  
+  # split into data lists 
+  
+  df$X <- df$logarea.t0
+  
+  growth <- df[ !is.na(df$logarea.t1), ]
+  survival <- df[ !is.na(df$survives), ]
+  
+  survival$Y <- survival$survives
+  growth$Y <- growth$logarea.t1
+  
+  growth <- make_data_list( x = growth, 'growth' )  
+  survival <- make_data_list(x = survival, 'survival' )
+  recruitment <- make_data_list_recruitment( x = rdf, 'recruitment' ) 
+  
+  growth <- add_survival_data(growth, survival )
+
+  out[[i]] <-  list( growth, recruitment, survival ) 
+  
+  rm(df, growth, survival, recruitment)
+}
+
+ARTR <- out[[1]][[1]]
+HECO <- out[[2]][[1]]
+POSE <- out[[3]][[1]]
+PSSP <- out[[4]][[1]]
+
+saveRDS( list ( ARTR = ARTR, HECO = HECO, POSE = POSE, PSSP = PSSP ), 'data/temp_data/growth_data_lists_for_stan.RDS')
+
+ARTR <- out[[1]][[2]]
+HECO <- out[[2]][[2]]
+POSE <- out[[3]][[2]]
+PSSP <- out[[4]][[2]]
+
+saveRDS( list ( ARTR = ARTR, HECO = HECO, POSE = POSE, PSSP = PSSP ), 'data/temp_data/recruitment_data_lists_for_stan.RDS')
+
+ARTR <- out[[1]][[3]]
+HECO <- out[[2]][[3]]
+POSE <- out[[3]][[3]]
+PSSP <- out[[4]][[3]]
+
+saveRDS( list ( ARTR = ARTR, HECO = HECO, POSE = POSE, PSSP = PSSP ), 'data/temp_data/survival_data_lists_for_stan.RDS')

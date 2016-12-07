@@ -65,7 +65,7 @@ allD <- allD[keep,]
 tmp=which(allD$quad=="Q23" & allD$year==1945 & allD$trackID==67)
 tmp=c(tmp,which(allD$quad=="Q12" & allD$year==1955 & allD$trackID==25))
 tmp=c(tmp,which(allD$quad=="Q26" & allD$year==1945 & allD$trackID==73))
-tmp=c(tmp, which(allD$Grazing == 'G'))                                   # remove grazing 
+tmp=c(tmp, which(allD$Grazing == 'G' & allD$year == 1931))      # remove grazed plots in 1931 big decrease in size 
 allD=allD[-tmp,]
 
 

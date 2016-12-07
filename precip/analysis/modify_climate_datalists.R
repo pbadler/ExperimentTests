@@ -1,9 +1,6 @@
 rm(list = ls())
 
-library(rstan)
-
 var_table <- read.csv('output/selected_climate_covariates.csv')
-i = 1
 for( i in 1:nrow(var_table)){ 
   
   spp    <- var_table$species[i]
@@ -16,23 +13,23 @@ for( i in 1:nrow(var_table)){
   
   # make interactions --------------------------------------------- # 
   if( vr != 'recruitment') { 
-    ifx <- dat$C*dat$X
+    ifx <- dat$C*as.numeric( dat$X )
     colnames(ifx) <- paste(colnames(dat$C), 'logarea.t0', sep = 'x')
     C  <- scale( cbind( dat$C, ifx) ) 
     dat$C <- C
     dat$Ccenter <- attr(C, 'scaled:center')
     dat$Cscale  <- attr(C, 'scaled:scale')
     
-    ifx <- dat$C2*dat$X2
+    ifx <- dat$C2*as.numeric(dat$X2)
     colnames(ifx) <- paste(colnames(dat$C2), 'logarea.t0', sep = 'x')
     dat$C2  <- scale( cbind( dat$C2, ifx), dat$Ccenter, dat$Cscale )
     
-    ifx <- dat$Chold*dat$Xhold
+    ifx <- dat$Chold*as.numeric( dat$Xhold )
     colnames(ifx) <- paste(colnames(dat$Chold), 'logarea.t0', sep = 'x')
     dat$Chold  <- scale( cbind( dat$Chold, ifx), dat$Ccenter, dat$Cscale)
     
     if ( vr == 'growth' ) { 
-      ifx <- dat$C3*dat$X3
+      ifx <- dat$C3*as.numeric(dat$X3)
       colnames(ifx) <- paste(colnames(dat$C3), 'logarea.t0', sep = 'x')
       dat$C3  <- scale( cbind( dat$C3, ifx ) , dat$Ccenter, dat$Cscale)
       
