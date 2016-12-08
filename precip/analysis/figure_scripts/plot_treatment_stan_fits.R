@@ -119,7 +119,7 @@ for( i in 1:length(mfiles)){
   if( 'bt' %in% model_pars  ) { 
     bt <- data.frame( rstan::extract( temp_fit, 'bt') ) 
     names(bt) <- treatment_vars
-        
+      
     bt_long <- 
       bt %>% 
       gather( var, val, 1:ncol( bt)) %>% 

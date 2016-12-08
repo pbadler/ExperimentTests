@@ -118,7 +118,6 @@ ggplot( error_dist, aes( x = dists, y = sd_e )) + geom_point() +
   geom_smooth( method = 'lm', group = 1, se = F)
 
 
-
 lppd_scaled_scores <- 
   lppd_scores %>% 
   filter( Period == 'Modern') %>% 

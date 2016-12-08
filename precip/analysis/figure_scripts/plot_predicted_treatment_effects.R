@@ -119,6 +119,7 @@ get_parameter_estimates <- function( fit_file, treatment_fit_file, dat_files) {
 # ---------------------------------------------------------------------------------------- # 
 
 fit_files <- dir( 'output/stan_fits', '*climate_fit.RDS', full.names = T)
+fit_files <- fit_files[ -grep('best', fit_files)]
 dat_files <- dir( 'data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 treatment_stan_fit  <- dir( 'output/stan_fits', 'treatment_fit', full.names = T)
 
@@ -129,8 +130,6 @@ for( i in 1:length(fit_files)) {
   all_effects[[i]] <- get_parameter_estimates( fit_files[i], treatment_stan_fit[i], dat_files )
 
 }
-
-all_effects[[2]]
 
 all_effects <- do.call(rbind, all_effects)
 

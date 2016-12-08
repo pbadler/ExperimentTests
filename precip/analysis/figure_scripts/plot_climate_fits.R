@@ -30,9 +30,9 @@ plot_posterior_year_effects <- function(df){
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '_climate_fit.RDS', full.names = TRUE)
-mfiles
+mfiles <- mfiles[ -grep('best', mfiles)]
+
 for( i in 1:length(mfiles)){ 
-  i = 6
   bname <- basename(mfiles[i])
   mpars <- unlist( str_split(bname, '_') ) 
   
@@ -105,6 +105,7 @@ for( i in 1:length(mfiles)){
   
   if( is.null(colnames(df$C))){ 
     climate_vars <- names( df$Ccenter ) 
+    crowding_vars <- colnames(df$W)
   }else{ 
     climate_vars <- colnames(df$C)
     crowding_vars <- colnames(df$W)
