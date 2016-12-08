@@ -1,4 +1,4 @@
-
+library(lme4)
 # call from removal_analysis_wrapper.r
 root <- "~"
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
@@ -129,9 +129,6 @@ summary(mPOSE)
 summary(mPSSP)
 
 
-
-
-
 # figures ########################################################################
 
 trtLabels<-substr(x=names(spp.mean)[3:5],start=7,stop=nchar(names(spp.mean)[3:5]))
@@ -194,7 +191,7 @@ dev.off()
 
 # 
 #2. Average cover deviation (w.r.t. pretreatment year)
-pdf("figures/cover_deviation.pdf",height=3,width=8)
+png("figures/cover_deviation.png", height=3,width=8.5,units="in",res=400)
 par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
 for(doSpp in sppList){
   tmp.mean<-subset(spp.mean.diff,species==doSpp)
@@ -218,7 +215,9 @@ i = 1
 subset( sppD.q, species == 'Hesperostipa comata' & year == 2016) %>% 
   arrange( year ) %>% 
   filter( cover > 0 )
-
+png("figures/start_to_finish_cover_change.png", height=3,width=8.5,units="in",res=400)
+par(mfrow= c(1,4))
+i = 2
 for( i in 1:length(spp)) { 
   
   temp <- subset( sppD.q , year == 2016 & species == spp[i])
@@ -227,12 +226,20 @@ for( i in 1:length(spp)) {
   
   temp$lc <- log( temp$cover/temp$cover.2011 ) 
   temp <- subset( temp , is.finite(lc))
-  plot ( data  = temp , lc ~ Treatment , main = spp[i] ) 
-  points( temp$Treatment, temp$coverDiff)
+  if ( i == 1 ) { 
+    plot ( data  = temp , lc ~ Treatment , main = spp[i] , ylab = 'log change in cover 2011 to 2016') 
+  }else{ 
+    plot ( data  = temp , lc ~ Treatment , main = spp[i] , ylab = '') 
+  }
+  
+    
+  points( temp$Treatment, temp$lc)
   
   m1[[i]] <- lm ( data = temp, coverDiff ~ Treatment )
   m2[[i]] <- lm ( data = subset( temp, is.finite(lc)), lc ~ Treatment )    
+  
 }
+dev.off()
 
 summary(m2[[1]])
 summary(m2[[2]])

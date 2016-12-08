@@ -2,7 +2,7 @@ rm(list = ls())
 library(rstan)
 
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
-
+i=1
 for(i in 1:nrow(df)){ 
   
   spp <- df$species[i]
@@ -18,7 +18,7 @@ for(i in 1:nrow(df)){
   
   if ( dv > 0 ) { 
     # try again if divergence 
-    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 4000, thin = 8, seed = 2)
+    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 4000, thin = 8, seed = 1)
   }
   
   ss <-  get_sampler_params(myfit) 
@@ -28,7 +28,7 @@ for(i in 1:nrow(df)){
   if ( dv > 0 ){ 
     # try again if divergent 
     myfit <- stan( fit = myfit, data = test, cores = 4, iter = 2000, thin = 4, 
-                  control = list(adapt_delta = 0.95, stepsize = 0.5, max_treedepth = 20), seed = 1 )
+                  control = list(adapt_delta = 0.85, stepsize = 0.8, max_treedepth = 20), seed = 1 )
   } 
   
   ss <-  get_sampler_params(myfit) 
