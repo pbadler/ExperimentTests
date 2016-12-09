@@ -60,8 +60,8 @@ annual_VWC <-
 seasonal_VWC <- 
   df %>% 
   mutate(year = ifelse(month == 12 , year + 1, year  )) %>% # account for December 
-  group_by(Period, year, season_label, Treatment) %>% 
-  summarise( l0 = mean(VWC_raw, na.rm = TRUE) )
+  group_by(Period, year, season, Treatment) %>% 
+  summarise( avg = mean(VWC_raw, na.rm = TRUE) )
 
 # ------------ aggregate VWC with Treatment effects by quarter ---------------#
 

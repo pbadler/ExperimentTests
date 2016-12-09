@@ -55,19 +55,27 @@ swVWC$date <- as.POSIXct(strptime( paste( swVWC$Year, swVWC$DOY, sep = '-') , '%
 swVWC$year <- swVWC$Year
 swVWC$month <- as.numeric(strftime( swVWC$date, '%m'))
 
+lyr3 <- swVWC %>% group_by( month, year  ) %>% summarise(avg = mean(Lyr_3))
+lyr3 <- lyr3 %>% spread(month, avg )
+lyr3 <- lyr3[complete.cases(lyr3), ]
+mydata <- lyr3[,2:13]
+mydata <- scale(mydata)
+
+pca <- princomp(mydata)
+biplot(pca)
+pca$loadings
+
 # set-up aggregate seasonal variables for model ----------------------------------------#
 
 swVWC <- 
   swVWC %>% 
   gather(layer, VWC, Lyr_1:Lyr_6) %>% 
-  filter( layer %in% c('Lyr_1', 'Lyr_2', 'Lyr_3'))
+  filter( layer %in% c('Lyr_1', 'Lyr_2', 'Lyr_3', 'Lyr_4'))
 
-# ----------- aggregate layers to two layers, shallow and deep  --------------------# 
 swVWC <- swVWC %>% 
   group_by( date) %>% 
   summarise( modelVWC = mean(VWC)*100 )
 
-# ----------------- split into depth layers -----------------------------------------# 
 df_soil_moist$type <- 'logger'
 VWC_df <- df_soil_moist
 

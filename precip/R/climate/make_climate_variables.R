@@ -121,6 +121,17 @@ monthly_clim <-
   mutate( Irrigation = ifelse( year > 2011 & month %in% c(im[1]:im[2]), Control*p.treatments[2], Control) ) %>% 
   gather(Treatment, PRCP, Control, Drought, Irrigation)
 
+month_t <- 
+  monthly_clim %>% 
+  dplyr::select( year, month, TAVG ) %>% 
+  distinct() %>% 
+  spread( month , TAVG )
+
+mydata <- month_t[, 2:13]
+mydata <- mydata[complete.cases(mydata), ]
+pca <- princomp(mydata)
+biplot(pca)
+
 # ------------ aggregate monthly climate with Treatment effects by quarter ---------------#
 
 quarterly_clim <-
@@ -140,6 +151,21 @@ quarterly_clim <-
 
 # -------------------------------------------------------------------------------------------#
 # -------------- aggregate monthly climate with Treatment effects by season -----------------#
+seasonal_clim <-
+  monthly_clim %>% 
+  mutate(year = ifelse(month == 12 , year + 1, year  )) %>% # account for December 
+  gather( var, val , TAVG, PRCP ) %>% 
+  group_by(Treatment, var, month) %>% 
+  mutate( val = ifelse(is.na(val), mean(val, na.rm = TRUE), val)) %>% # !!!!!!! fill in missing monthly averages after 1925 with monthly average !!!!!!!! 
+  group_by( Treatment, var, year, season ) %>%                       # !!!!!!! note missing values TAVG  !!!!!!!!
+  summarise( avg = mean(val), ttl = sum(val) ) %>% 
+  group_by(var) %>% 
+  gather( stat, val, avg, ttl ) %>% 
+  filter( (var == 'PRCP' & stat == 'ttl')| (var == 'TAVG' & stat == 'avg')) %>% 
+  group_by( Treatment, var, stat) %>% 
+  arrange(year, season) %>%
+  ungroup() %>% 
+  unite(var, c(var, stat) , sep = '_')
 
 seasonal_precip <- 
   monthly_clim %>% 
@@ -160,7 +186,7 @@ seasonal_precip <-
 
 # -------------- join dfs for variables -------------------------------------------------------#
 
-seasonal_clim <- left_join( seasonal_tmean, seasonal_precip, by = 'year') 
+#seasonal_clim <- left_join( seasonal_tmean, seasonal_precip, by = 'year') 
 
 annual_clim <- left_join( annual_TPPT, annual_MAT)
 
@@ -174,8 +200,8 @@ quarterly_clim <- left_join( quarterly_clim, periods )
 annual_clim <- left_join( annual_clim, periods ) 
 
 # ------ filter out treatments ----------------------------------------------------------------# 
-seasonal_clim <- seasonal_clim %>% 
-  filter( !(year < 2011 & Treatment != 'Control')) # remove all Drought and Irrigation treatments prior to 2011 
+# seasonal_clim <- seasonal_clim %>% 
+#   filter( !(year < 2011 & Treatment != 'Control')) # remove all Drought and Irrigation treatments prior to 2011 
 
 # quarterly_clim <- quarterly_clim %>% 
 #   filter( !(year < 2012 & Treatment != 'Control'))

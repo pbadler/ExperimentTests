@@ -1,6 +1,6 @@
 #####################################################################################
 #
-# Make climate variables from quarterly climate 
+# Make climate variables from seasonal climate 
 #
 #####################################################################################
 
@@ -28,9 +28,10 @@ library(zoo)
 
 # ------- load files ------------------------------------------------------------------ 
 
-quarterly_clim <- readRDS('data/temp_data/quarterly_climate.RDS')
-quarterly_VWC  <- readRDS('data/temp_data/quarterly_VWC.RDS')
-# ------ calculate quarterly lags -----------------------------------------------------# 
+seasonal_clim <- readRDS('data/temp_data/seasonal_climate.RDS')
+seasonal_VWC  <- readRDS('data/temp_data/seasonal_VWC.RDS')
+
+# ------ calculate seasonal lags -----------------------------------------------------# 
 #
 #   Variable names follow these conventions: 
 #   
@@ -46,7 +47,7 @@ quarterly_VWC  <- readRDS('data/temp_data/quarterly_VWC.RDS')
 #       f  = fall   (Q4)
 #       a  = annual (Q1-4)
 #
-#     e.g. "P.sp" is the cumulative precipitation of the spring quarter and "P.w.sp" is
+#     e.g. "P.sp" is the cumulative precipitation of the spring season and "P.w.sp" is
 #     the cumulative precipitation of the winter and spring. 
 #   
 #     Number after the second period indicates the year of the transition, For example, 
@@ -58,14 +59,14 @@ quarterly_VWC  <- readRDS('data/temp_data/quarterly_VWC.RDS')
 # -------------------------------------------------------------------------------------# 
 
 q_VWC <- 
-  quarterly_VWC %>% 
+  seasonal_VWC %>% 
   spread(Treatment, avg) %>% 
   mutate( Drought = ifelse( year < 2012, Control, Drought  ),         # assign treatments prior to 2012 with Control level
           Irrigation = ifelse(year < 2012, Control, Irrigation)) %>% 
   gather( Treatment, avg, Control:Irrigation) %>% 
   ungroup() %>% 
   group_by(Treatment) %>% 
-  arrange(Treatment, year, quarter) %>%
+  arrange(Treatment, year, season) %>%
   mutate(VWC.sp.1 = avg, 
          VWC.sp.0 = lag( VWC.sp.1, 4),
          VWC.sp.l = lag( VWC.sp.0, 4),
@@ -81,18 +82,18 @@ q_VWC <-
          #VWC.a.1 = rollapply(avg, 4, 'mean', na.rm = TRUE, align = 'right', fill = NA), 
          #VWC.a.0 = lag( VWC.a.1,4), 
          #VWC.a.l = lag( VWC.a.0,4)) %>%
-  filter( quarter == 'Q2') %>% # plants are measured at the end of Q2 each year 
-  select( Treatment, Period, year, quarter, starts_with("VWC")) %>%
+  filter( season == 'spring') %>% # plants are measured at the end of spring each year 
+  select( Treatment, Period, year, season, starts_with("VWC")) %>%
   ungroup() %>% 
   gather( var, val, starts_with('VWC')) %>% 
   filter( !is.na(val)) %>%
   spread( var, val) 
 
 q_precip <- 
-  quarterly_clim %>% 
+  seasonal_clim %>% 
   filter( var == 'PRCP_ttl') %>%
   group_by(Treatment) %>% 
-  arrange(Treatment, year, quarter) %>%
+  arrange(Treatment, year, season) %>%
   mutate(P.f.w.sp.1 = rollsum(val, 3, align = 'right', fill = NA), 
          P.f.w.sp.0 = lag(P.f.w.sp.1, 4),
          P.f.w.sp.l = lag(P.f.w.sp.0, 4),
@@ -102,14 +103,14 @@ q_precip <-
          P.su.1 = lag(val, 3),                 
          P.su.0 = lag(P.su.1, 4), 
          P.su.l = lag(P.su.0, 4)) %>% 
-  filter( quarter == 'Q2') %>% # plants are measured at the end of Q2 each year 
-  select( Treatment, Period, year, quarter, starts_with("P"))
+  filter( season == 'spring') %>% # plants are measured at the end of spring each year 
+  select( Treatment, Period, year, season, starts_with("P"))
 
 q_temp <- 
-  quarterly_clim %>% 
+  seasonal_clim %>% 
   filter( var == 'TAVG_avg') %>% 
   group_by(Treatment) %>% 
-  arrange(Treatment, year, quarter) %>% 
+  arrange(Treatment, year, season) %>% 
   mutate( T.sp.1 = val, 
           T.sp.0 = lag(T.sp.1, 4),
           T.sp.l = lag(T.sp.0, 4), 
@@ -119,13 +120,13 @@ q_temp <-
           T.f.1 = lag(val, 2), 
           T.f.0 = lag(T.f.1, 4), 
           T.f.l = lag(T.f.0, 4)) %>% 
-  filter( quarter == 'Q2') %>% 
-  select( Treatment, Period, year, quarter, starts_with("T"))
+  filter( season == 'spring') %>% 
+  select( Treatment, Period, year, season, starts_with("T."))
 
 allClim <- 
   q_precip %>% 
-  left_join ( q_temp, by = c('Treatment', 'Period', 'quarter', 'year')) %>% 
-  right_join ( q_VWC, by = c('Treatment', 'Period', 'quarter', 'year')) %>% 
+  left_join ( q_temp, by = c('Treatment', 'Period', 'season', 'year')) %>% 
+  right_join ( q_VWC, by = c('Treatment', 'Period', 'season', 'year')) %>% 
   arrange( Treatment, year) 
 
 NA_index <- apply( allClim, 1 , function(x) any(is.na(x)))
