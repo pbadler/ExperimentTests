@@ -34,8 +34,8 @@ run_stan_model <- function(do_spp, do_vr, do_model, do_lambda, do_prior_sd, pars
   # if(predict) { 
   #   models <- dir(file.path(model_path, do_vr), '[0-9]_predict.stan', full.names = TRUE)
   # } else { 
-    
-  if ( do_spp == 'HECO' & do_vr == 'survival' ){ 
+  
+  if ( !is.matrix (data_list$C ) ){ 
     models <- dir(file.path(model_path, do_vr), '[0-9]_special.stan', full.names = TRUE)
   }else{ 
     models <- dir(file.path(model_path, do_vr), '[0-9].stan', full.names = TRUE)

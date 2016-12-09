@@ -49,4 +49,14 @@ write.csv( full_table, 'data/temp_data/model_table.csv', row.names = FALSE)
 write.csv( short_table, 'data/temp_data/short_model_table.csv', row.names = FALSE )
 
 
+# spp_tables <- split(full_table, interaction(full_table$species, full_table$vital_rate, full_table$lambda ))
+# 
+# for( i in 1:length(spp_tables)){ 
+#   
+#   species <- spp_tables[[i]]$species
+#   vr <- spp_tables[[i]]$vital_rate
+#   
+#   write.csv(paste0 ( 'data/temp_data/regularization_tables_', species, '_', vital_rate, '_table.csv' ) )
+# }
+
 
