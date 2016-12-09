@@ -29,8 +29,7 @@ plot_posterior_year_effects <- function(df){
 # input ------------------------------------------------------------------------------------# 
 setwd('~/Documents/ExperimentTests/precip/')
 
-mfiles <- dir('output/stan_fits', '_climate_fit.RDS', full.names = TRUE)
-mfiles <- mfiles[ -grep('best', mfiles)]
+mfiles <- dir('output/stan_fits', '_year_effects_fit.RDS', full.names = TRUE)
 
 for( i in 1:length(mfiles)){ 
   bname <- basename(mfiles[i])
@@ -40,11 +39,11 @@ for( i in 1:length(mfiles)){
   vr <- mpars[2]
     
   temp_fit <- readRDS(mfiles[i])
-  df <- readRDS(paste0( 'data/temp_data/modified_', vr, '_data_lists_for_stan.RDS'))[[spp]]
+  df <- readRDS(paste0( 'data/temp_data/', vr, '_data_lists_for_stan.RDS'))[[spp]]
   
   # make traceplots---------------------------------------------------------------------------------# 
 
-  pdf(file.path( 'figures', 'stan_fits',  paste(spp, vr, 'traceplots.pdf', sep = '_')), height = 8, width = 11)  
+  pdf(file.path( 'figures', 'stan_fits',  paste(spp, vr, 'year_model_traceplots.pdf', sep = '_')), height = 8, width = 11)  
   
   model_pars <- temp_fit@model_pars
   
@@ -95,7 +94,7 @@ for( i in 1:length(mfiles)){
     group_by( par, var) %>% 
     mutate( lcl95 = quantile(val, 0.025), lcl90 = quantile(val, 0.05), med = quantile(val, 0.5), ucl90 = quantile(val, 0.95), ucl95 = quantile(val, 0.975))
   
-  pdf( file.path( 'figures', 'stan_fits', paste( spp, vr, 'climate_model_year_effects.pdf', sep = '_')), height = 11, width = 8)
+  pdf( file.path( 'figures', 'stan_fits', paste( spp, vr, 'year_model_year_effects.pdf', sep = '_')), height = 11, width = 8)
   
   print( plot_posterior_year_effects(year_effects_long) + ggtitle(paste('Posterior of year effects on', spp, vr, 'model')) ) 
   
@@ -105,35 +104,15 @@ for( i in 1:length(mfiles)){
   
   if( is.null(colnames(df$C))){ 
     climate_vars <- names( df$Ccenter ) 
-   
+    crowding_vars <- colnames(df$W)
   }else{ 
     climate_vars <- colnames(df$C)
-
+    crowding_vars <- colnames(df$W)
+    if(is.null(crowding_vars)){ 
+      crowding_vars <- str_extract( colnames(df$parents1), '[A-Z]{4}')
+    } 
   }
-  
-  crowding_vars <- colnames(df$W)
-  if(is.null(crowding_vars)){ 
-    crowding_vars <- str_extract( colnames(df$parents1), '[A-Z]{4}')
-  }
-  
-  
-  if( 'b2' %in% model_pars ) { 
-    b2 <- data.frame( rstan::extract( temp_fit, 'b2') ) 
-    names(b2) <- climate_vars[1:ncol(b2)]
-        
-    b2_long <- 
-      b2 %>% 
-      gather( var, val, 1:ncol( b2)) %>% 
-      group_by( var) %>% 
-      mutate( lcl95 = quantile(val, 0.025), lcl90 = quantile(val, 0.05), med = quantile(val, 0.5), ucl90 = quantile(val, 0.95), ucl95 = quantile(val, 0.975))
-    
-    pdf( file.path( 'figures', 'stan_fits', paste( spp, vr, 'climate_effects.pdf', sep = '_')), height = 8, width = 11)
-    
-    print( plot_posterior(b2_long) + ggtitle(paste('Posterior of climate effects on', spp, vr, 'model')) ) 
-    
-    dev.off()
-  } 
-  
+   
   
   if ( 'w' %in% model_pars ) { 
     w <- data.frame(rstan::extract(temp_fit, 'w'))
@@ -149,17 +128,17 @@ for( i in 1:length(mfiles)){
     }
     
     w_long <- 
-      data.frame(w) %>% 
+      w %>% 
       gather( var, val, 1:ncol(w ) ) %>% 
       group_by( var) %>% 
       mutate( lcl95 = quantile(val, 0.025), lcl90 = quantile(val, 0.05), med = quantile(val, 0.5), ucl90 = quantile(val, 0.95), ucl95 = quantile(val, 0.975))
     
-    pdf( file.path( 'figures', 'stan_fits', paste( spp, vr, 'crowding_effects.pdf', sep = '_')), height = 8, width = 11)
+    pdf( file.path( 'figures', 'stan_fits', paste( spp, vr, 'year_model_crowding_effects.pdf', sep = '_')), height = 8, width = 11)
     
     print( plot_posterior(w_long) + ggtitle(paste('Posterior of crowding effects on', spp, vr)))
     
     dev.off()
   
   }
-  rm(w_long, b2_long)
+  rm(w_long)
 }

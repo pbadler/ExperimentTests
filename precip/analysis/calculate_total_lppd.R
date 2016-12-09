@@ -26,6 +26,5 @@ rank_by_exp <-
   mutate( score =  climate - year ) %>% 
   arrange( desc( score ) )
 
-
 write.csv(overall_rank, 'output/model_scores.csv', row.names = FALSE)
-write.csv(best_models, 'output/lppd_selected_models.csv', row.names = FALSE)
+#write.csv(best_models, 'output/lppd_selected_models.csv', row.names = FALSE)
