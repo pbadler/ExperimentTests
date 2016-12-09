@@ -175,5 +175,7 @@ print(
     scale_color_manual(values = my_colors) + 
     xlim( as.Date( c('2014-01-01', '2015-01-01'))) 
 )
+
+
 saveRDS(swVWC, 'data/temp_data/daily_swVWC_treatments.RDS')
 

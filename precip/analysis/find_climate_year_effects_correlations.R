@@ -11,6 +11,8 @@ dat_files <- dat_files[ - grep('modified', dat_files)]
 Cdat <- readRDS('data/temp_data/all_clim_covs.RDS')
 Cdat <- subset(Cdat, Period == 'Historical' & Treatment == 'Control')
 
+head( Cdat )
+i = 6
 for( i in 1:length(ye_files)){ 
   
   spp <- str_extract (ye_files[i], '[A-Z]{4}')
@@ -60,7 +62,7 @@ for( i in 1:length(ye_files)){
   
     }
     
-    out <- subset(out, Int_pval < 0.1)
+    out <- subset(out, Int_pval < 0.05)
     out <-  out[order(out$Intercept), ]
     write.csv(out, paste0( 'output/', spp, '_', vr, '_correlations.csv'))      
   }else{ 

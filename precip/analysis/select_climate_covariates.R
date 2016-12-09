@@ -30,3 +30,18 @@ out <- do.call(rbind, out)
 
 write.csv(out, 'output/selected_climate_covariates.csv')
 
+# check for highly correlated covariates 
+clim <- readRDS('data/temp_data/all_clim_covs.RDS')
+clim <- clim[complete.cases(clim), ]
+correlations <- list()
+i = 3
+for ( i in 1:nrow( out )  ) { 
+  covars     <- strsplit( as.character( out$covars[i] ) , ',')[[1]]
+  covars <- covars[ -grep('x', covars)]
+  correlations[[i]] <- cor(clim[ , covars, drop = F] )
+}
+
+corelations 
+
+
+
