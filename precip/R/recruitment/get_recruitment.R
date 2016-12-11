@@ -63,6 +63,11 @@ rm(D2)
 # get rid of removal treatments
 D <- subset(D,Treatment!="No_grass" & Treatment!="No_shrub")
 
+aggregate(data = D, cov.ARTR ~ Period, 'mean')
+aggregate(data = D, cov.PSSP ~ Period, 'mean')
+aggregate(data = D, cov.HECO ~ Period, 'max')
+aggregate(data = D, cov.POSE ~ Period, 'median')
+
 # clean up removal treatment data
 # ii <- which(D$year>=2011 & D$Treatment=="No_shrub")
 # D$cov.ARTR[ii] <- 0

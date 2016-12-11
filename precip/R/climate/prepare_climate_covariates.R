@@ -57,6 +57,8 @@ seasonal_VWC  <- readRDS('data/temp_data/seasonal_VWC.RDS')
 #     i.e. "lag effect" (sensu Adler). 
 #
 # -------------------------------------------------------------------------------------# 
+seasonal_VWC$season <- factor( seasonal_VWC$season, c('winter', 'spring', 'summer', 'fall'), ordered = T)
+seasonal_clim$season <- factor( seasonal_clim$season, c('winter', 'spring', 'summer', 'fall'), ordered = T)
 
 q_VWC <- 
   seasonal_VWC %>% 
@@ -108,7 +110,7 @@ q_precip <-
 
 q_temp <- 
   seasonal_clim %>% 
-  filter( var == 'TAVG_avg') %>% 
+  filter( var == 'TAVG_avg' ) %>% 
   group_by(Treatment) %>% 
   arrange(Treatment, year, season) %>% 
   mutate( T.sp.1 = val, 
@@ -119,7 +121,10 @@ q_temp <-
           T.su.l = lag(T.su.0, 4),
           T.f.1 = lag(val, 2), 
           T.f.0 = lag(T.f.1, 4), 
-          T.f.l = lag(T.f.0, 4)) %>% 
+          T.f.l = lag(T.f.0, 4), 
+          T.w.1 = lag(val, 1), 
+          T.w.0 = lag(T.w.1, 4), 
+          T.w.l = lag(T.w.0, 4)) %>% 
   filter( season == 'spring') %>% 
   select( Treatment, Period, year, season, starts_with("T."))
 

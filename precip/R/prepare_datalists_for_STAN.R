@@ -50,6 +50,13 @@ make_data_list <- function( x, vr ) {
   x$C <- as.matrix( x[ ,  grep( '^C\\.', names(x) ) ] )
   colnames(x$C) <- str_replace( colnames( x$C ) , '^C\\.' , '')
   
+  x$C <- scale( x$C )
+  
+  Ccenter <- attr(x$C, 'scaled:center')
+  Cscale  <- attr(x$C, 'scaled:scale')
+  # x$Chold <- scale( x$Chold, x$Ccenter, x$Cscale)
+  # x$C2    <- scale( x$C2, x$Ccenter, x$Cscale)
+  
   x$treat <- as.numeric(factor( x$Treatment))
   x$tm <- model.matrix.lm( ~ x$Treatment )[, -1 ]  # drop intercept 
   x$tm <- cbind ( x$tm , x$tm*x$X ) 
@@ -87,11 +94,8 @@ make_data_list <- function( x, vr ) {
   mylist$Periodhold <- as.numeric( factor(mylist$Periodhold))
   mylist$Period2 <- as.numeric( factor(mylist$Period2))
   
-  mylist$C <- scale( mylist$C )
-  mylist$Ccenter <- attr(mylist$C, 'scaled:center')
-  mylist$Cscale  <- attr(mylist$C, 'scaled:scale')
-  mylist$Chold <- scale( mylist$Chold, mylist$Ccenter, mylist$Cscale)
-  mylist$C2    <- scale( mylist$C2, mylist$Ccenter, mylist$Cscale)
+  mylist$Ccenter <- Ccenter
+  mylist$Cscale <- Cscale
   
   mylist$Wcenter <- Wcenter
   mylist$Wscale <- Wscale 
@@ -207,7 +211,10 @@ clim_vars <- c('VWC.sp.l',
                'T.su.l',
                'T.f.1', 
                'T.f.0', 
-               'T.f.l')                     
+               'T.f.l', 
+               'T.w.1',
+               'T.w.0', 
+               'T.w.l')                     
 
 clim_file <- 'all_clim_covs.RDS'
 data_path <- 'data/temp_data'

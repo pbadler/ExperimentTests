@@ -127,6 +127,7 @@ month_t <-
   distinct() %>% 
   spread( month , TAVG )
 
+
 mydata <- month_t[, 2:13]
 mydata <- mydata[complete.cases(mydata), ]
 pca <- princomp(mydata)
@@ -228,6 +229,8 @@ monthly_from_daily <-
   mutate( TMEAN = round(TMEAN, 1), TPPT = round(TPPT, 1))
 
 # -------- output -----------------------------------------------------------------------------#
+plot(data = subset(seasonal_clim, var == 'TAVG_avg' & Treatment == 'Control' & season == 'summer'), val ~ year)
+plot(data = subset(seasonal_clim, var == 'TAVG_avg' & Treatment == 'Control' & season == 'fall'), val ~ year)
 
 saveRDS( seasonal_clim, 'data/temp_data/seasonal_climate.RDS')
 saveRDS( monthly_clim, 'data/temp_data/monthly_climate.RDS')
