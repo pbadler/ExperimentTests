@@ -7,166 +7,6 @@ library(boot)
 
 # functions ---------------------------------------------------------------------------- 
 
-get_survival_size_covariates <- function( sdl, gdl ) {
- 
-  return( 
-    list(  
-      id_table = data.frame( year = sdl$year2, Treatment = sdl$treat2, yid = sdl$yid2, quad = sdl$quad2, trackID = sdl$trackid2),
-      yid      = sdl$yid2,
-      nyrs     = sdl$nyrs2,
-      X        = sdl$X2, 
-      C        = sdl$C2,
-      W        = sdl$W2,
-      gm       = sdl$gm2,
-      N        = sdl$N2,
-      Ycenter  = gdl$Ycenter,  # use growth Yscale and Ycenter 
-      Yscale   = gdl$Yscale 
-      )
-  )
-} 
-
-
-get_recruitment_covariates <- function( rdl ) {
-  
-  return( 
-    list( 
-      id_table = data.frame( year = rdl$year2, Treatment = rdl$treat2, yid = rdl$yid2, quad = rdl$quad2), 
-      yid      = rdl$yid2, 
-      nyrs     = rdl$nyrs2,
-      spp_id   = rdl$spp,
-      C        = rdl$C2,
-      parents1 = rdl$parents12,
-      parents2 = rdl$parents22,
-      gm       = rdl$gm2,
-      N        = rdl$N2
-    )
-  )
-} 
-
-
-simulate_survival <- function( pars , test_dat ){ 
-  
-  nyrs  <- test_dat$nyrs
-  N <- test_dat$N
-  C <- test_dat$C
-  W <- test_dat$W
-  X <- test_dat$X
-  gm <- test_dat$gm
-  yid <- test_dat$yid
-  
-  attach(pars )
-  Y <- matrix( NA, nsims, N)
-  
-  for( j in 1:nsims){ 
-    climEff  <- C%*%b2[j, ]
-    gint     <- gm%*%bg[j, ]
-    coverEff <- W%*%w[j, ]
-    
-    # draw random year effects 
-    a  <- rnorm(nyrs, 0, sd = sig_a[j])
-    b1 <- rnorm(nyrs, b1_mu[j], sd = sig_b1[j])
-    
-    mu <- coverEff
-    
-    for(n in 1:N){
-      mu[n] <- inv.logit(gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + coverEff[n] + climEff[n])
-    }
-    
-    Y[j, ] <- rbinom(N, 1, mu)
-  }
-  rm(pars)
-  detach(pars )   
-  return(Y)
-}
-
-
-simulate_growth <- function( pars , test_dat ){ 
-  
-  nyrs  <- test_dat$nyrs
-  N <- test_dat$N
-  C <- test_dat$C
-  W <- test_dat$W
-  X <- test_dat$X
-  gm <- test_dat$gm
-  yid <- test_dat$yid
-  Ycenter <- test_dat$Ycenter
-  Yscale   <- test_dat$Yscale
-  
-  attach(pars )
-  Y <- matrix( NA, nsims, N)
-  
-  for( j in 1:nsims){ 
-    climEff  <- C%*%b2[j, ]
-    gint     <- gm%*%bg[j, ]
-    coverEff <- W%*%w[j, ]
-    
-    # draw random year effects 
-    a  <- rnorm(nyrs, 0, sd = sig_a[j])
-    b1 <- rnorm(nyrs, b1_mu[j], sd = sig_b1[j])
-    
-    mu <- coverEff
-    sigma <- coverEff
-    
-    for(n in 1:N){
-      mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + coverEff[n] + climEff[n]
-      sigma[n] <- sqrt(max(tau*exp(tauSize*mu[n]), 1e-7))
-    }
-    
-    Y[j, ] <- rnorm(N, mu, sigma)
-  }
-  
-  Y <- exp( Y*Yscale + Ycenter) # re-scale by the observed mean and standard deviation in growth data
-  
-  rm(pars)
-  detach(pars )   
-  return(Y)
-}
-
-
-simulate_recruitment <- function( pars , test_dat ){ 
-  
-  nyrs  <- test_dat$nyrs
-  N <- test_dat$N
-  C <- test_dat$C
-  parents1 <- test_dat$parents1
-  parents2 <- test_dat$parents2
-  gm <- test_dat$gm
-  yid <- test_dat$yid
-  spp_id <- test_dat$spp_id
-  
-  attach(pars )
-  
-  Y <- matrix( NA, nsims, N)
-  
-  for( j in 1:nsims){ 
-    
-    trueP1 <- parents1*u[j] + parents2*(1-u[j])
-    trueP2 <- trueP1
-    
-    trueP2 <- sqrt(trueP1)
-    
-    climEff  <- C%*%b2[j, ]
-    gint     <- gm%*%bg[j, ]
-    coverEff <- trueP2%*%w[j, ]
-    
-    # draw random year effects 
-    a  <- rnorm(nyrs, 0, sd = pars$sig_a[j])
-    
-    mu <- coverEff
-    lambda <- coverEff
-    
-    for(n in 1:N){
-      mu[n] <- exp(gint[n] + a[yid[n]] + coverEff[n] + climEff[n]);
-      lambda[n] <- trueP1[n, spp_id]*mu[n];  
-    }
-    
-    Y[j, ] <- rnbinom(N, mu = lambda, size = theta[j] )
-  }
-  rm(pars)
-  detach(pars )  
-  return(Y)
-}
-
 simulate_recruit_size <- function( recruits , spp ) { 
   
   dat <- read.csv(paste0('~/driversdata/data/idaho/speciesData/', as.character(spp), '/recSize.csv'))
@@ -191,7 +31,7 @@ my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
 species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
 ylims <- list( c(0,40), c(0,7.5), c(0,7.5), c(0,7.5))
-i = 2
+i = 1
 
 for( i in 1:4) {  
   spp   <- species_list[i]  
@@ -208,19 +48,28 @@ for( i in 1:4) {
   
   g <- rstan::extract(readRDS(m[1]), 'muhat3')$muhat3
   
+  g[ exp(g)/10000 > 1 ]  <-  log(10000)  # assign plants larger than the entire plot to the plot size 
+  
   r1 <- rstan::extract(readRDS(m[2]), 'lambda')$lambda
   r2 <- rstan::extract(readRDS(m[2]), 'lambda_pred')$lambda_pred
   r <- cbind( r1, r2 )
+
+  apply(r1, 2, quantile)
+  apply(r2, 2, quantile)
+  max(r1)
+  min(r1)
+  
+  apply(r2, 2, median)
+  colMeans(r2)
   
   rsize <- simulate_recruit_size( r, spp = spp)
+  
+  length( rsize [ exp( rsize ) /10000 > 1 ]  
   
   nsims <- dim(s)[1]
   nobs  <- dim(s)[2]
   
   # combine survival, growth and recruitment
-  g[ g > 4.6 ] <- 4.6 
-  g[ g[] > 4.6] <- 4.6
-  
   g <- (100*exp( g ))/10000 
   size <- s*exp(g)
   
@@ -244,7 +93,8 @@ for( i in 1:4) {
   cover$size_cover [ is.na( cover$size_cover) ] <- 0 # assign size cover to zero when no plants were present 
   
   cover$total_cover <- cover$size_cover + cover$recruit_cover 
-
+  
+  hist( cover$total_cover )
   
   # get last year of cover which is not in the survival dataframe ------------------------------------- #   
   oldCover <- read.csv(paste0( '~/driversdata/data/idaho/speciesData/', spp, '/quadratCover.csv'))
@@ -288,6 +138,7 @@ for( i in 1:4) {
   true_cover$totCover <- (true_cover$totCover*10000)/100 
   
   trueCov <- rbind(true_cover, last_cover)
+  
   
   cover <- 
     cover %>% 

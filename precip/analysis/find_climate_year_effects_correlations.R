@@ -29,15 +29,22 @@ for( i in 1:length(ye_files)){
   
   years <- unique(dl$year)
   
-  ye_df <- data.frame( year = years, parameter = ye$parameter, year_effect = ye$mean )
+  ye_df <- data.frame( year = years, parameter = ye$parameter, year_effect = ye$mean , lci = ye$X2.5., uci = ye$X97.5.)
+  
+  if(nlevels(ye_df$parameter) == 2 ){ 
+    ye_df$parameter <- factor(ye_df$parameter, labels = c('a (intercept paramter)', 'b1 (size parameter)'))
+  }else{ 
+    ye_df$parameter <- factor(ye_df$parameter, labels = c('a (intercept paramter)'))
+  }
   
   ye_df <- ye_df[order(ye_df$parameter, ye_df$year), ]
 
   pdf( paste0( 'figures/year_effects_for', spp, '_', vr, '.pdf' ))
   print( 
-    ggplot( ye_df, aes( x = year, y = year_effect, color = parameter , linetype = parameter)) + 
+    ggplot( ye_df, aes( x = year, y = year_effect, ymin = lci, ymax = uci, color = parameter , linetype = parameter)) + 
       geom_point() + 
-      geom_line() + 
+      geom_line() +
+      geom_errorbar() +
       ggtitle(paste0('Year effects for ', spp, ' ', vr))
   )
   dev.off()

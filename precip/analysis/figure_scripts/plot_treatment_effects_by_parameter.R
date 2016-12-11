@@ -2,130 +2,100 @@ library(stringr)
 library(dplyr)
 library(tidyr)
 library(rstan)
-
+library(gridExtra)
 rm(list = ls())
 
-fit_files <- dir( 'output/stan_fits', '*climate_fit.RDS', full.names = T)
+fit_files <- dir( 'output/stan_fits', '.*climate_fit.RDS', full.names = T)
+fit_files <- fit_files[- grep('best', fit_files)]
+
+gs_fits <- fit_files [ -grep( 'recruitment', fit_files)]
+r_fits <- fit_files [ grep( 'recruitment', fit_files)]
+
 dat_files <- dir( 'data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 treatment_stan_fit  <- dir( 'output/stan_fits', 'treatment_effects', full.names = T)
+gs_treatment_fit <- treatment_stan_fit[ -grep('recruitment', treatment_stan_fit)]
+r_treatment_fit <- treatment_stan_fit[ grep('recruitment', treatment_stan_fit)]
 
-thin <- 5
-
-for( i in 1:length(fit_files)){
+i = 2
+for( i in 2:length(gs_fits)){
   
-  bname <- basename(fit_files[i])
+  bname <- basename(gs_fits[i])
   mpars <- unlist( str_split(bname, '_') ) 
   
   spp <- mpars[1]
   vr <- mpars[2]
-
-  b2 <-  rstan::extract( readRDS(fit_files[i], 'b2'))$b2
   
-  if(length(dim(b2)) == 1) {
-    b2  <- b2[ seq( 1, length(b2), thin) ]
-  }else{
-    b2 <- b2[seq(1, nrow(b2), thin), ]
-  }
-
   dat <- readRDS( dat_files[grep( vr, dat_files)] )[[spp]]
-  Chold <- dat$Chold
   
-  if ( vr == 'recruitment' ) { 
-    Chold1 <- Chold   # climate main effects 
-    alpha  <- matrix( NA, nrow = nrow(b2), ncol = nrow( Chold1 ))
-    
-    for( j in 1:nrow(b2)){ 
-      alpha[j, ] <- Chold1 %*% b2[ j,  ]
-    }
-    
-    pred_df <- data.frame(  par = 'a (Intercept)', t(alpha) )
-    
-  }else{ 
-    
-    if ( length(dim(Chold)) == 2 ){ 
-      
-      ifx <- grep( 'logarea', colnames(Chold))
-      nifx <- (1:ncol(Chold))[-ifx]
-      
-      Chold1 <- Chold [ , nifx ]   # climate main effects 
-      Chold2 <- Chold [ , ifx ]    # climate interactions with plant size 
-      
-      alpha <- matrix( NA, nrow = nrow(b2), ncol = nrow(Chold))
-      beta <- matrix( NA, nrow = nrow(b2), ncol =  nrow(Chold))
-      
-      for( j in 1:nrow(b2)){ 
-        
-        if( !is.null( dim(Chold1) ) ){ 
-          alpha[j, ] <- Chold1 %*% b2[ j, nifx ]
-        }else{ 
-          alpha[j, ] <- Chold1 * b2[j, nifx]
-        }
-        if( !is.null( dim(Chold2) ) ){ 
-          beta[j, ]  <- ( Chold2 / dat$Xhold ) %*% b2[ j,  ifx ]
-        }else{ 
-          beta[j, ]  <- ( Chold2 / dat$Xhold ) * b2[ j,  ifx ] 
-        }
-      }
-       
-      pred_df <- data.frame( rbind( data.frame ( par = 'a (Intercept)', t(alpha) ), data.frame( par = 'b1 (size effect)', t(beta)) ) )   
-      
-    }else{ 
-      
-      alpha <- Chold%*%t(b2) 
-      pred_df <- data.frame ( par = 'a (Intercept)', alpha  )
-    }
+  b2 <-  rstan::extract( readRDS(gs_fits[i], 'b2'))$b2
+  b2 <- as.matrix( b2 ) 
+  
+  Chold <- as.matrix( dat$Chold )
+  
+  nifx <- 1:ncol(Chold)
+  ifx <- grep( 'logarea', colnames(Chold))
+  colnames(Chold)
+  if(length(ifx) > 0 ) { 
+    nifx <- nifx[-ifx]
   }
   
+  Chold1 <- Chold [ , nifx, drop = F]   # climate main effects 
+  Chold2 <- Chold [ , ifx , drop = F]   # climate interactions with plant size 
+  
+  Chold2 <- sweep( Chold2 , 2, dat$Xhold, '/') # divide by size to isolate annual climate effect 
+  Chold2 <- round( Chold2 , digits = -log( .Machine$double.eps + 1, base = 10)) # round off machine error 
+
+  alpha <- matrix( NA, nrow = nrow(b2), ncol = nrow(Chold))
+  beta <- matrix( NA, nrow = nrow(b2), ncol =  nrow(Chold))
+  
+  for( j in 1:nrow(b2)){ 
+    alpha[j, ] <- Chold1 %*% b2[ j, nifx ]
+    beta[j, ]  <- Chold2 %*% b2[ j,  ifx ]
+  }
+  
+  if ( sum(beta) != 0 ) { 
+    pred_df <- data.frame( rbind( data.frame ( par = 'a (Intercept)', t(alpha) ), data.frame( par = 'b1 (size effect)', t(beta)) ) )   
+  } else { 
+    pred_df <- data.frame ( par = 'a (Intercept)', t(alpha) )
+  }
+
   # make dataframe for predictions ------------------------------------
-  pred_df$yid <- dat$yidhold
-  pred_df$Treatment <- dat$treathold
-  pred_df$quad <- dat$quadhold
   pred_df$year <- dat$yearhold
-  pred_df$Group <- dat$gidhold
+  pred_df$Treatment <- dat$treathold
+  
+  rm( b2, alpha, beta, Chold, Chold1, Chold2, dat )
+  
+  pred_df <- unique(pred_df)
   
   pred_df <- 
     pred_df %>% 
     mutate( type = 'predicted_effect') %>% 
     gather( iteration, val , starts_with('X')) 
   
+  pred_df$Treatment <- factor(pred_df$Treatment, labels = c('Control', 'Drought', 'Irrigation'))  
+  
+  pred_df <- 
+    pred_df %>% 
+    spread( Treatment, val ) %>%
+    mutate( Drought = Drought - Control, Irrigation = Irrigation - Control ) 
+  
+  pred_df <- 
+    pred_df %>% 
+    gather( Treatment , val, Control, Drought, Irrigation  ) %>% 
+    group_by( Treatment, par, type, iteration ) %>% 
+    filter( year > 2010 ) %>%
+    summarise( val = mean(val))
+  
   # get observed treatment effects ---------------------------------------- # 
+  bt <- rstan::extract(readRDS(gs_treatment_fit[i]), 'bt')$bt
   
-  gint <- rstan::extract(readRDS(treatment_stan_fit[i]), 'gint')$gint
-  bt <- rstan::extract(readRDS(treatment_stan_fit[i]), 'bt')$bt
-  treatEff <- rstan::extract(readRDS(treatment_stan_fit[i]), 'treatEff')$treatEff
-  gint <- gint[seq(1,nrow(gint), thin), ]
-  treatEff  <- treatEff[seq(1,nrow(treatEff), thin), ]
-  bt        <- bt[seq(1,nrow(bt), thin), ]
+  alpha <- bt[, 1:2]
+  beta  <- bt[, 3:4]  
   
-  tm <- dat$tmhold [ , -1] 
+  obs_df <- data.frame( rbind( data.frame ( par = 'a (Intercept)', t(alpha) ), data.frame( par = 'b1 (size effect)', t(beta)) ) ) 
   
-  if( vr != 'recruitment') { 
-    alpha <- matrix( NA, nrow = nrow(bt), ncol = nrow(tm))
-    beta  <- matrix( NA, nrow = nrow(bt), ncol = nrow(tm))
-    
-    for( j in 1:nrow(bt)){ 
-      alpha[j, ] <- tm %*% bt[ j, 1:2] 
-      beta[ j, ] <- tm %*% bt[ j, 3:4]
-    }
-    obs_df <- data.frame( rbind( data.frame ( par = 'a (Intercept)', t(alpha) ), data.frame( par = 'b1 (size effect)', t(beta)) ) )   
-    
-  }else{
-    
-    alpha <- matrix( NA, nrow = nrow(bt), ncol = nrow(tm))
-    
-    for( j in 1:nrow(bt)){ 
-      alpha[j, ] <- tm %*% bt[ j, 1:2] 
-    }
-    
-    obs_df <-  data.frame ( par = 'a (Intercept)', t(alpha) )
-    
-  }
-  
-  obs_df$yid <- dat$yidhold
-  obs_df$Treatment <- dat$treathold
-  obs_df$quad <- dat$quadhold
-  obs_df$year <- dat$yearhold
-  obs_df$Group <- dat$gidhold
+  # observation data frame   
+  obs_df$Treatment <- c('Drought', 'Irrigation')
   
   obs_df <- 
     obs_df %>% 
@@ -133,54 +103,76 @@ for( i in 1:length(fit_files)){
     gather( iteration, val , starts_with('X')) 
   
   # ------------------------------------------------------------------------ # 
+  pred_df <- pred_df %>% filter( Treatment != 'Control')
+  
+  pred_df <- as.data.frame( pred_df)
+  
   df <- rbind(obs_df, pred_df )
   
-  df$Treatment <- factor(df$Treatment, labels = c('Control', 'Drought', 'Irrigation'))  
+  df$type <- factor( df$type)
+  df$Treatment <- factor(df$Treatment ) 
+
+  my_colors1 <- c('#1b9e77', '#d95f02', '#7570b3')
+  my_colors2 <- c('black', 'orange')
+
+  gp <- 
+    ggplot(df , aes( x = val, fill = type ))  + 
+    geom_density(  alpha = 0.4) + 
+    geom_vline( aes(xintercept = 0), linetype = 2) +
+    facet_grid( Treatment ~ . )  + 
+    scale_fill_manual(values = my_colors2) +
+    xlab( paste0('Treatment Effect on ', spp, ' ', vr) )
   
-  mean_eff <-
+  p <- 
     df %>% 
-    filter (year > 2010 & Group == 1) %>%
-    group_by(Treatment, type, iteration, par  ) %>% 
-    summarise( val = mean( val) )
-
-  mean_eff <- 
-    mean_eff %>% 
-    spread(Treatment, val ) %>% 
-    mutate( Drought  = Drought - Control, Irrigation = Irrigation - Control) %>%
-    gather( Treatment, val , Control:Irrigation )
-
-  my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
+    group_by( par ) %>% 
+    do(p = gp %+% . + ggtitle( unique( .$par ) ) )
   
-  pdf( paste( 'figures/predictions/predicted_', spp, '_', vr, '_treatment_effects.pdf' ))
-    
+  pdf( paste( 'figures/predictions/predicted_', spp, '_', vr, '_treatment_effects.pdf' ),  width = 8, height = 6)
+  
+  if(length(p$p) > 1 ) { 
     print( 
-      ggplot( mean_eff %>% filter(Treatment != 'Control'), aes( x = val, fill = type ) ) + 
-        geom_density(  alpha = 0.4) + 
-        geom_vline( aes(xintercept = 0), linetype = 2) +
-        facet_grid( Treatment ~  par  )  + 
-        scale_fill_manual(values = my_colors) + 
-        xlab( paste0('Treatment Effect on ', spp, ' ', vr) )
+      grid.arrange(p$p[[1]] + theme(legend.position = c(0.1, 0.9) ), p$p[[2]] + guides(fill = FALSE), ncol = 2, nrow = 1 )  
     )
+  }else{
+    print( 
+      p$p[[1]]
+    )
+  }
     
   dev.off()  
   
-  mean_error <- 
-    mean_eff %>% 
-    filter( Treatment != 'Control') %>% 
+  error <- 
+    df %>% 
     spread(type, val ) %>% 
     mutate( prediction_error = predicted_effect - observed_effect ) 
   
-  pdf( paste( 'figures/predictions/prediction_error_', spp, '_', vr, '_treatment_effects.pdf' ))
+  gp <- 
+    ggplot( error, aes( x = prediction_error, fill = Treatment ) ) + 
+    geom_density(  alpha = 0.4) + 
+    geom_vline( aes(xintercept = 0), linetype = 2) +
+    facet_grid( Treatment ~  . )  + 
+    scale_fill_manual(values = my_colors1[ 2:3]) + 
+    xlab( paste0('Predicted - observed treatment effect on ', spp, ' ', vr) )
   
-  print( 
-    ggplot( mean_error, aes( x = prediction_error, fill = Treatment ) ) + 
-      geom_density(  alpha = 0.4) + 
-      geom_vline( aes(xintercept = 0), linetype = 2) +
-      facet_grid( Treatment ~  par  )  + 
-      scale_fill_manual(values = my_colors[2:3]) + 
-      xlab( paste0('Predicted - observed treatment effect on ', spp, ' ', vr) )
-  )
+  p <- 
+    error %>% 
+    group_by( par  ) %>% 
+    do( p = gp %+% . + ggtitle(.$par ) )
+  
+  
+  pdf( paste( 'figures/predictions/prediction_error_', spp, '_', vr, '_treatment_effects.pdf' ), width = 8, height = 6)
+  
+  if(length(p$p) > 1 ) { 
+    print( 
+      grid.arrange(p$p[[1]] + theme(legend.position = c(0.1, 0.9) ), p$p[[2]] + guides(fill = FALSE), ncol = 2, nrow = 1 )  
+    )
+  }else{
+    print( 
+      p$p[[1]]
+    )
+  }
   
   dev.off()  
-  
+  rm( p, gp, error, df, pred_df, obs_df)  
 }

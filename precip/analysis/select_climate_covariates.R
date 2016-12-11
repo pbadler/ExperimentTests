@@ -41,7 +41,26 @@ for ( i in 1:nrow( out )  ) {
   correlations[[i]] <- cor(clim[ , covars, drop = F] )
 }
 
-corelations 
+correlations 
+
+all_cors <- lapply(cor_files,  read.csv)
+
+names(all_cors) <- basename( cor_files )
+
+recruitment_cors <- do.call( rbind, all_cors[ grep( 'recruitment', names(all_cors)) ] )
+
+labels <- do.call( rbind, str_split(row.names(recruitment_cors), '_'))[, 1:2]
+recruitment_cors$species <- labels[, 1]
+recruitment_cors$vital_rate <- labels[, 2]
+
+gs_cors <- do.call( rbind, all_cors[ -grep( 'recruitment', names(all_cors)) ] )
+
+labels <- do.call( rbind, str_split(row.names(gs_cors), '_'))[, 1:2]
+gs_cors$species <- labels[, 1]
+gs_cors$vital_rate <- labels[, 2]
+
+write.csv(file = 'output/year_effects_correlations_recruitment.csv', recruitment_cors, row.names = F)
+write.csv(file = 'output/year_effects_correlations_growth_survival.csv', gs_cors, row.names = F)
 
 
 

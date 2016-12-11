@@ -4,8 +4,7 @@ library(stringr)
 
 dl_files <- dir('data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 m_files  <- dir('analysis', 'model.*_1.stan', recursive = T, full.names = T)
-
-for( i in 3:length(dl_files)){ 
+for( i in 1:length(dl_files)){ 
   
   dl  <- readRDS(dl_files[i])
   vr  <- str_extract(dl_files[i], c('growth', 'recruitment', 'survival'))
