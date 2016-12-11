@@ -15,11 +15,11 @@ data{
 }
 parameters{
   // for training data model  
-  vector[nyrshold] a_raw;
   real b1_mu;
-  vector[nyrshold] b1_raw;
   real<lower=0> sig_a;
   real<lower=0> sig_b1;
+  vector[nyrshold] a_raw;
+  vector[nyrshold] b1_raw;
   real<lower=0> sigma;
   vector[Wcovs] w;
   vector[nThold] bt;
@@ -27,28 +27,23 @@ parameters{
 }
 transformed parameters{
   // for training data model  
-  vector[nyrshold] a;
-  vector[nyrshold] b1;
   vector[Nhold] treatEff;
   vector[Nhold] gint;
   real mu[Nhold];
   vector[Nhold] crowdEff;
-  vector[Nhold] year_effect; 
+  vector[nyrshold] a; 
+  vector[nyrshold] b1; 
   
   // for training data model -----------------------------------
   crowdEff <- Whold*w;
   treatEff <- tmhold*bt;
-
   gint <- gmhold*bg; 
   
-  a  <- 0 + sig_a*a_raw; 
-  b1 <- 0 + sig_b1*b1_raw; 
-    
+  a <- 0 + sig_a*a_raw; 
+  b1 <- b1_mu + sig_b1*b1_raw;
+  
   for(n in 1:Nhold){
-
-    year_effect[n] <- a[yidhold[n] - nyrs] + b1[yidhold[n] - nyrs]*Xhold[n];
-    
-    mu[n] <- gint[n] + treatEff[n] + year_effect[n] + b1_mu*Xhold[n] + crowdEff[n];
+    mu[n] <- gint[n] + a[yidhold[n] - nyrs ] + b1[yidhold[n] - nyrs]*Xhold[n]+ treatEff[n]  + crowdEff[n];
   }
   
 }
@@ -66,9 +61,12 @@ model{
   Yhold ~ normal(mu, sigma);
 }
 generated quantities {
-  
   vector[Nhold] log_lik2;                     // for heldout data 
-
+  vector[Nhold] year_effect; 
+  
+  for(n in 1:Nhold)
+    year_effect[n] <-  a[yidhold[n] - nyrs] + Xhold[n]*(b1[yidhold[n] - nyrs] - b1_mu);
+  
   # fitted data log_lik 
   for(n in 1:Nhold){
       log_lik2[n] <- normal_log(Yhold[n], mu[n], sigma);

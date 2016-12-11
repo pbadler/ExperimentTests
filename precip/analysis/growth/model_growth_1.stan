@@ -61,8 +61,8 @@ transformed parameters{
   crowdEff  <- W*w;
   climEff   <- C*b2;
   
-  b1 <- b1_mu + sig_b1*b1_raw;
   a  <- 0 + sig_a*a_raw; 
+  b1 <- b1_mu + sig_b1*b1_raw;
   
   for(n in 1:N){
     mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n];
