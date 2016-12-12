@@ -18,6 +18,16 @@ data{
   matrix[Nhold, G] gmhold;      // group dummy variable matrix
   vector[Nhold] Xhold;          
   matrix[Nhold,Wcovs] Whold;    // crowding matrix for holdout data
+  
+  // holdout datalist for cover 
+  int<lower=0> N3;
+  vector[N3] Y3;
+  int<lower=0> nyrs3;         // years out
+  int<lower=0> yid3[N3];      // year out id
+  matrix[N3, G] gm3;          // group dummy variable matrix
+  vector[N3] X3;
+  matrix[N3,Wcovs] W3;        // crowding matrix for holdout data
+
 }
 parameters{
   // for training data model  
@@ -74,6 +84,12 @@ generated quantities {
   vector[Nhold] gint_out;
   vector[Nhold] crowdhat;
 
+  vector[nyrs3] a_out3;
+  vector[nyrs3] b1_out3;
+  real muhat3[N3];
+  vector[N3] gint_out3;
+  vector[N3] crowdhat3;
+
   # fitted data log_lik 
   for(n in 1:N){
       log_lik[n] <- normal_log(Y[n], mu[n], sigma);
@@ -92,4 +108,18 @@ generated quantities {
       muhat[n]      <- gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n];
       log_lik2[n]   <- normal_log(Yhold[n], muhat[n], sigma);
   }
+  
+  // 2. cover data predictions 
+  gint_out3  <- gm3*bg;
+  crowdhat3  <- W3*w;
+  
+  for( i in 1:nyrs3){
+    a_out3[i] <- normal_rng(0, sig_a);         // draw random year intercept
+    b1_out3[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect
+  }
+
+  for(n in 1:N3){
+      muhat3[n]    <- gint_out3[n] + a_out3[yid3[n]] + b1_out3[yid3[n]]*X3[n] + crowdhat3[n];
+  }
+  
 }
