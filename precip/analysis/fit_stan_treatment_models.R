@@ -2,7 +2,8 @@ rm(list = ls())
 library(rstan)
 
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
-i=1
+i=5
+
 for(i in 1:nrow(df)){ 
   
   spp <- df$species[i]

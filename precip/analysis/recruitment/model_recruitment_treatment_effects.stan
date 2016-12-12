@@ -6,8 +6,8 @@ data{
   int<lower=0> yidhold[Nhold];        // year id
   int<lower=0> G;                     // Groups 
   matrix[Nhold, G] gmhold;            // group dummy variable matrix
-  int<lower=0> nThold;               // groups
-  matrix[Nhold, nThold] tmhold;      // group dummy variable matrix
+  int<lower=0> nT;               // groups
+  matrix[Nhold, nT] tmhold;      // group dummy variable matrix
   int<lower=0> Nspp;                  // number of species 
   int<lower=0> spp;                   // focal species id
   matrix[Nhold, Nspp] parents1hold;   // parents in plot
@@ -21,7 +21,7 @@ data{
   matrix[N2, Nspp] parents12;   // hold out parents in plot
   matrix[N2, Nspp] parents22;   // hold out parents in group
   matrix[N2, G] gm2;
-  matrix[N2, nThold] tm2;      // group dummy variable matrix
+  matrix[N2, nT] tm2;      // group dummy variable matrix
   
 }parameters{
   vector[nyrshold] a_raw;
@@ -29,7 +29,7 @@ data{
   real<lower=0> sig_a;
   real<lower=0> theta;
   real<lower=0, upper=1> u;
-  vector[nThold] bt; 
+  vector[nT] bt; 
   vector[G] bg;
 }
 transformed parameters{

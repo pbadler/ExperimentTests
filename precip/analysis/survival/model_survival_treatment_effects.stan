@@ -7,8 +7,8 @@ data{
   int<lower=0> yidhold[Nhold];      //year out id
   int<lower=0> G;                   // Groups 
   matrix[Nhold, G] gmhold;          // group dummy variable matrix
-  int<lower=0> nThold;              // treatment groups
-  matrix[Nhold, nThold] tmhold;     // group dummy variable matrix
+  int<lower=0> nT;              // treatment groups
+  matrix[Nhold, nT] tmhold;     // group dummy variable matrix
   int<lower=0> Wcovs;               // number of crowding effects 
   vector[Nhold] Xhold;
   matrix[Nhold,Wcovs] Whold;        // crowding matrix for holdout data
@@ -20,7 +20,7 @@ data{
   matrix[N2, G] gm2;          // group dummy variable matrix 
   vector[N2] X2;
   matrix[N2,Wcovs] W2;        // crowding matrix for holdout data
-  matrix[N2, nThold] tm2;     // treatment matrix 
+  matrix[N2, nT] tm2;     // treatment matrix 
 }
 parameters{
   // for training data model  
@@ -30,7 +30,7 @@ parameters{
   real<lower=0> sig_a;
   real<lower=0> sig_b1;
   vector[Wcovs] w;
-  vector[nThold] bt;
+  vector[nT] bt;
   vector[G] bg;
 }
 transformed parameters{

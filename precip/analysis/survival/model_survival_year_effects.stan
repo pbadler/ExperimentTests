@@ -87,8 +87,6 @@ generated quantities {
   vector[N2] gint_out2;
   real muhat2[N2];
   vector[N2] crowdhat2;
-  vector[N2] climhat2;
-  
 
   for(n in 1:N){
     log_lik[n] <- bernoulli_log(Y[n], mu[n]); 
