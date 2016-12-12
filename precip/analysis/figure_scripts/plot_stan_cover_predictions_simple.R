@@ -4,6 +4,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(boot)
+library(rstan)
 
 # functions ---------------------------------------------------------------------------- 
 
@@ -31,7 +32,7 @@ my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
 species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
 ylims <- list( c(0,40), c(0,7.5), c(0,7.5), c(0,7.5))
-i = 4
+i = 2
 
 for( i in 1:4) {  
   spp   <- species_list[i]  
@@ -42,70 +43,85 @@ for( i in 1:4) {
   
   m <- dir('output/stan_fits', paste0( spp, '.*_climate_fit.RDS'), full.names = TRUE)
   
-  s1 <- rstan::extract(readRDS(m[3]), 'mu')$mu
-  s2 <- rstan::extract(readRDS(m[3]), 'muhat')$muhat
-  s <- cbind(s1, s2)
+  temp_fit <- readRDS(m[3])
+  s1 <- summary(temp_fit, 'mu')$summary[, 1]
+  s2 <- summary(temp_fit, 'muhat')$summary[, 1]
+  s <- c(s1, s2)
   
-  g <- rstan::extract(readRDS(m[1]), 'muhat3')$muhat3
+  g <- summary(readRDS(m[1]), 'muhat3')$summary[,1]
   g[ exp(g)/10000 > 1 ] <-  log(10000)  # assign plants larger than the entire plot to the plot size 
   
-  r1 <- rstan::extract(readRDS(m[2]), 'lambda')$lambda
-  r2 <- rstan::extract(readRDS(m[2]), 'lambda_pred')$lambda_pred
-  r <- cbind( r1, r2 )
+  r1 <- summary(readRDS(m[2]), 'lambda')$summary[,1]
+  r2 <- summary(readRDS(m[2]), 'lambda_pred')$summary[,1]
+  r <- c( r1, r2 )
 
   rsize <- simulate_recruit_size( r, spp = spp)
-  
   rsize[ (rsize > 10000 ) ] <- 10000 # assign cover over 10000 (100%) to 10000
   
   nsims <- dim(s)[1]
   nobs  <- dim(s)[2]
   
   # combine survival, growth and recruitment ---------------------------------------------------------- # 
-  size <- s*g # size is survival probability x size 
-  size <- 100*(exp(size)/10000) # convert to percent cover
-  rsize <- (100*rsize)/10000
+  g <- 100*( exp( g ) /10000 ) # convert to % cover 
+  size <- s*g                  # survival by size 
+  rsize <- 100*(rsize)/10000   # convert recruits to % cover 
   
-  size <- data.frame( Period = gdl$Period3, year = gdl$year3, Treatment = gdl$treat3 , quad = gdl$quad3, Group = gdl$gid3 , t(size))
-  rsize  <- data.frame(Period = rdl$Period2, year = rdl$year2, Treatment = rdl$treat2 , quad = rdl$quad2, Group = rdl$gid2, t(rsize))
+  size <- data.frame( Period = gdl$Period3, year = gdl$year3, Treatment = gdl$treat3 , quad = gdl$quad3, Group = gdl$gid3 , size = size)
+  rsize  <- data.frame(Period = rdl$Period2, year = rdl$year2, Treatment = rdl$treat2 , quad = rdl$quad2, Group = rdl$gid2, rsize = rsize)
   
   cover1 <-  
     size %>% 
-    gather( iteration, size , starts_with ('X')) %>% 
-    group_by( Period, Group, Treatment, year, quad, iteration ) %>% 
+    group_by( Period, Group, Treatment, year, quad) %>% 
     summarise( size_cover = sum( size ))
   
-  cover2 <- 
-    rsize %>% 
-    gather( iteration, recruit_cover, starts_with('X'))
-  
-  cover <- merge( cover2, cover1, all.x = T)
-  
+  cover <- merge(rsize, cover1, all.x = T)
   cover$size_cover [ is.na( cover$size_cover) ] <- 0 # assign size cover to zero when no plants were present 
-  
-  cover$pred_cover <- cover$size_cover + cover$recruit_cover 
-  
+  cover$pred_cover <- cover$size_cover + cover$rsize
   cover$pred_cover[ cover$pred_cover > 100 ] # total cover can be greater than 100 because of overlapping canopies
+  cover$Treatment <- factor(cover$Treatment, labels = c('Control', 'Drought', 'Irrigation'))
   
   # get last year of cover which is not in the survival dataframe ------------------------------------- #   
   oldCover <- read.csv(paste0( '~/driversdata/data/idaho/speciesData/', spp, '/quadratCover.csv'))
   newCover <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/quadratCover.csv'))
   oldCover$Period <- 'Historical'
   newCover$Period <- 'Modern'
-  all_cover  <- rbind(oldCover, newCover)
+  obs_cover  <- rbind(oldCover, newCover)
   quad <- read.csv('~/driversdata/data/idaho_modern/quad_info.csv')
   
-  all_cover$totCover <- (100*all_cover$totCover)/10000 # convert to percent cover 
-  
-  all_cover <- merge( all_cover, quad)
-  
-  all_cover <-
-    all_cover %>%
+  obs_cover$obs_cover <- (100*obs_cover$totCover)/10000 # convert to percent cover 
+  obs_cover <- merge( obs_cover, quad)
+    
+  obs_cover <-
+    obs_cover %>%
     left_join(quad) %>%
     filter( Treatment %in% c('Control', 'Drought', 'Irrigation')) %>%
-    mutate( Treatment = as.numeric(factor(Treatment))) %>%
-    mutate( year = ifelse(year < 100, year + 1900, year)) %>%
-    group_by(Period, Treatment, year) %>%
-    summarise( obs_cover = mean(totCover))
+    mutate( year = ifelse(year < 100, year + 1900, year)) %>% 
+    mutate( quad = str_extract(quad, '[0-9]+'))
+  
+  test <-  merge(obs_cover, cover [, c('year', 'pred_cover', 'Treatment', 'quad')], by = c('year' , 'quad', 'Treatment') )
+
+  ggplot( test, aes( x = pred_cover, y = obs_cover) ) + geom_point() + facet_grid( . ~ Period ) + geom_abline(aes( intercept = 0 , slope = 1))
+  
+  ggplot( test, aes( x = pred_cover, y = obs_cover) ) + geom_point() + 
+    facet_grid( Period ~ Group ) + 
+    geom_abline(aes( intercept = 0 , slope = 1))
+  
+  avg_cover <- 
+    test %>% 
+    gather( type , cover, pred_cover, obs_cover ) %>% 
+    group_by( Period, year , Group, Treatment, type ) %>% 
+    summarise( cover = mean(cover)) %>% 
+    spread( type, cover )
+  
+  ggplot( avg_cover, aes( x = pred_cover, y = obs_cover )) + geom_point() + facet_grid(Group ~ Period )  + geom_abline(aes(intercept = 0, slope = 1))
+  
+  annual_cover <- 
+    test %>%
+    gather( type , cover, pred_cover, obs_cover ) %>% 
+    group_by( Period, year, type )  %>% 
+    summarise( cover = mean(cover) )
+  
+  ggplot( annual_cover, aes( x = year, y = cover, linetype = type )) + geom_line() 
   
   # ------------------------------------------------------------------------------------------------------ #
   # true_cover <- data.frame(year = gdl$year3, quad = gdl$quad3 , Period = gdl$Period3, Treatment = gdl$treat3, Group = gdl$gid3, X =  gdl$X3)
@@ -125,16 +141,10 @@ for( i in 1:4) {
   # 
   # trueCov <- rbind(true_cover, last_cover)
 
-  predicted_cover <- 
-    cover %>% 
-    group_by(Period, Treatment, year, iteration) %>% 
-    summarise( avg_cover = mean(pred_cover)) %>% 
-    group_by( Period, Treatment, year ) %>% 
-    summarise( pred_cover = mean(avg_cover), uci50 = quantile( avg_cover, 0.75), lci50 = quantile( avg_cover, 0.25)) %>% 
-    mutate( year = year + 1 ) ### predict cover for the next year 
+  
   
   plot_cover <-
-    left_join( trueCov, predicted_cover, all.y = TRUE ) %>%
+    left_join( trueCov, cover, all.y = TRUE ) %>%
     mutate( pred_cover = ifelse(Treatment != 1 & year == 2011, obs_cover, pred_cover )) %>%
     mutate( pred_cover = ifelse(Treatment == 1 & year == 2007, obs_cover, pred_cover )) %>%
     mutate( pred_cover = ifelse(Treatment == 1 & year == 1929, obs_cover, pred_cover)) %>%

@@ -46,7 +46,7 @@ make_data_list <- function( x) {
   Xcenter <- attr( x$X, 'scaled:center') # save mean 
   x$X <- as.numeric(x$X)
   
-  write.csv(x, file =  paste0( 'data/temp_data/', unique( x$species) ,'_', 'growth_and_survival', '_cleaned_dataframe.csv'))
+  write.csv(x, file =  paste0( 'data/temp_data/', unique( x$species) ,'_', 'growth_and_survival', '_cleaned_dataframe.csv') , row.names = F)
   
   x$gm <- model.matrix.lm( ~ x$Group ) 
   
@@ -140,7 +140,7 @@ make_data_list_recruitment <- function( x, vr ) {
   x$parents1 <- as.matrix( x[ , grep( '^cov\\.', names(x))] )
   x$parents2 <- as.matrix( x[ , grep( '^Gcov\\.', names(x))] )
   
-  saveRDS(x, paste0( 'data/temp_data/', unique(x$species ) ,'_', vr, '_cleaned_dataframe.RDS'))
+  write.csv(x, paste0( 'data/temp_data/', unique(x$species ) ,'_', vr, '_cleaned_dataframe.csv'), row.names = F)
   
   x <- 
     x %>% 

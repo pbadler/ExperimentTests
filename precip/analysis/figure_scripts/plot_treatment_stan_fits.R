@@ -82,7 +82,9 @@ for( i in 1:length(mfiles)){
   a$par <- 'a (intercept)'
   
   if( 'b1' %in% model_pars ){
+    b1_mu <- rstan::extract(temp_fit, 'b1_mu')$b1_mu
     b1 <- rstan::extract(temp_fit, 'b1')$b1
+    b1 <- sweep(b1, 1, b1_mu , '-') # subtract mean size effect to focus on deviations 
     b1 <-  as.data.frame( b1 )
     names(b1) <- yid$df.yearhold 
     b1$par <- 'b1 (size effect)'

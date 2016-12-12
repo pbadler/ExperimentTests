@@ -24,6 +24,7 @@ covariates <-
   arrange(species, vital_rate)
 
 covariate_names <- str_split(covariates$covars, ',')
+
 all_clim_model_pars$parameter <- unlist(covariate_names)
 
 # get correlations with year effects 
@@ -48,10 +49,12 @@ vrcor <-
   mutate( parameter = ifelse(correlation == 'size', paste0(parameter, 'xlogarea.t0'), parameter ) )
 
 
-
 all_vr_pars <- merge(vrcor, all_clim_model_pars, by = c('species', 'vital_rate', 'parameter'))
 
 plot( all_vr_pars$val, all_vr_pars$mean ) # plot relationship between correlation with year effects and climate parameter estimate
+points(data = subset(all_vr_pars, correlation == 'size'), mean ~ val , col = 'red')
+abline(0,1, lty = 2)
 
-
-
+plot( all_vr_pars$val, all_vr_pars$mean ) # plot relationship between correlation with year effects and climate parameter estimate
+points(data = subset(all_vr_pars, vital_rate == 'growth'), mean ~ val , col = 'red')
+abline(0,1, lty = 2)

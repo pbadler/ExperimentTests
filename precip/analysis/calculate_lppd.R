@@ -36,7 +36,17 @@ for( i in 1:length(mfiles)){
   
   rm(temp_fit)
   
-  y_out <- data.frame(species = spp, vital_rate = vr, model = m, year = dat$yearhold, Treatment = dat$treathold, lppd2 = lppd2 )
+  if( vr == 'recruitment'){ 
+    y_out <- data.frame(species = spp, vital_rate = vr, model = m, quad = dat$quadhold, trackid = NA, 
+                        size = NA, obs_id = dat$obs_idhold, year = dat$yearhold, 
+                        Treatment = dat$treathold, lppd2 = lppd2 , Xcenter = NA, Xscale = NA )
+  }else{ 
+    y_out <- data.frame(species = spp, vital_rate = vr, model = m, quad = dat$quadhold, trackid = dat$trackidhold, 
+                        size = dat$Xhold, obs_id = dat$obs_idhold , year = dat$yearhold, 
+                        Treatment = dat$treathold, lppd2 = lppd2, Xcenter = dat$Xcenter, Xscale = dat$Xscale )
+  }
+  
+  
   
   y_out$Treatment <- factor(y_out$Treatment, labels = c('Control', 'Drought', 'Irrigation'))
   

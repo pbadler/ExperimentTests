@@ -30,7 +30,6 @@ plot_posterior_year_effects <- function(df){
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '_climate_fit.RDS', full.names = TRUE)
-mfiles <- mfiles[ -grep('best', mfiles)]
 
 for( i in 1:length(mfiles)){ 
   bname <- basename(mfiles[i])

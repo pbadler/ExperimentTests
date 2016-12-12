@@ -4,6 +4,8 @@ library(stringr)
 
 dl_files <- dir('data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 m_files  <- dir('analysis', 'model.*_1.stan', recursive = T, full.names = T)
+j= 1
+i= 1
 for( i in 1:length(dl_files)){ 
   
   dl  <- readRDS(dl_files[i])
