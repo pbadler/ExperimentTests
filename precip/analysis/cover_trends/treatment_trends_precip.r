@@ -215,30 +215,28 @@ i = 1
 subset( sppD.q, species == 'Hesperostipa comata' & year == 2016) %>% 
   arrange( year ) %>% 
   filter( cover > 0 )
-png("figures/start_to_finish_cover_change.png", height=3,width=8.5,units="in",res=400)
-par(mfrow= c(1,4))
-i = 2
-for( i in 1:length(spp)) { 
-  
-  temp <- subset( sppD.q , year == 2016 & species == spp[i])
 
-  temp$Treatment <- factor(temp$Treatment )
-  
-  temp$lc <- log( temp$cover/temp$cover.2011 ) 
-  temp <- subset( temp , is.finite(lc))
-  if ( i == 1 ) { 
-    plot ( data  = temp , lc ~ Treatment , main = spp[i] , ylab = 'log change in cover 2011 to 2016') 
-  }else{ 
-    plot ( data  = temp , lc ~ Treatment , main = spp[i] , ylab = '') 
-  }
-  
-    
-  points( temp$Treatment, temp$lc)
-  
-  m1[[i]] <- lm ( data = temp, coverDiff ~ Treatment )
-  m2[[i]] <- lm ( data = subset( temp, is.finite(lc)), lc ~ Treatment )    
-  
-}
+load('analysis/figure_scripts/my_plotting_theme.Rdata')
+
+png("figures/start_to_finish_cover_change.png", height=3,width=8.5,units="in",res=400)
+
+temp <- subset( sppD.q , year == 2016 )
+temp$Treatment <- factor(temp$Treatment )
+temp$lc <- log( temp$cover/temp$cover.2011 ) 
+temp <- subset( temp , is.finite(lc))
+temp$species <- factor( temp$species, labels =  c('ARTR', 'HECO', 'POSE', 'PSSP'))
+
+my_theme <- my_theme + theme( axis.text.x = element_blank())
+
+ggplot ( temp, aes( x  = Treatment, y = lc, color = Treatment )) + 
+  geom_boxplot() + 
+  geom_point( position = position_dodge(width = 1)) + 
+  ylab( 'Log change in cover 2011 to 2016')  + 
+  xlab ( '' ) + 
+  facet_grid( . ~ species) + 
+  scale_color_manual( values = my_colors) + 
+  my_theme
+
 dev.off()
 
 summary(m2[[1]])

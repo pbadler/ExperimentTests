@@ -23,10 +23,7 @@ simulate_recruit_size <- function( recruits , spp ) {
 }
   
 #
-
-setwd('~/Documents/ExperimentTests/precip/')
-
-my_colors <- c('#1b9e77', '#d95f02', '#7570b3')
+load('analysis/figure_scripts/my_plotting_theme.Rdata') 
 
 years <- expand.grid(year = 1925:2017, Treatment = c('Control', 'Drought', 'Irrigation'), stat = c('observed', 'predicted'))
 years$Period[ years$year > 2006 ] <- 'Modern'
@@ -149,9 +146,6 @@ for( i in 1:4) {
   plot_cover <- merge( years, plot_cover, all.x = TRUE)
   
   pdf( paste0( 'figures/predictions/', spp  , '_predicted_cover.pdf' ), height = 8, width = 8) 
-  
-  my_theme <- theme_bw () + theme ( panel.grid.major = element_blank(), 
-                                    panel.grid.minor = element_blank())
   
   print( 
     ggplot( subset( plot_cover, Period == "Historical"), aes( x = year, y =  val, fill = Treatment, color = Treatment, linetype = stat, ymax = ucl, ymin = lcl)) +

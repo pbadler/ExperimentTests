@@ -7,7 +7,7 @@ climate <- readRDS('data/temp_data/all_clim_covs.RDS')
 
 #lppd_scores <- read.csv('output/lppd_scores.csv')
 error <- read.csv('output/climate_effect_prediction_error.csv')
-datlist <- readRDS('data/temp_data/recruitment_data_lists_for_stan.RDS')
+datlist <- readRDS('data/temp_data/modified_recruitment_data_lists_for_stan.RDS')
 
 # base plot ------------------------------------------------------------- 
 
@@ -63,10 +63,7 @@ m2 <- update(m1, . ~ . + P.a.t3*T.g.t3)
 summary( m2 ) 
 
 
-
-
 plot(cover$year, cover$cov.ARTR)
-
 
 
 library(vegan)
