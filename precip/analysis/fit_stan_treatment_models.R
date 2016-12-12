@@ -8,9 +8,9 @@ for(i in 1:nrow(df)){
   spp <- df$species[i]
   vr  <- df$vital_rate[i]
   
-  test <- readRDS(paste0('data/temp_data/', vr, '_data_lists_for_stan.RDS'))[[spp]]
+  dat <- readRDS(paste0('data/temp_data/modified_', vr, '_data_lists_for_stan.RDS'))[[spp]]
   
-  myfit <- stan(paste0('analysis/', vr, '/model_', vr, '_treatment_effects.stan'), data = test, cores = 4, iter = 2000, thin = 4, seed = 1)
+  myfit <- stan(paste0('analysis/', vr, '/model_', vr, '_treatment_effects.stan'), data = dat, cores = 4, iter = 2000, thin = 4, seed = 1)
   
   ss <-  get_sampler_params(myfit) 
   
@@ -18,7 +18,7 @@ for(i in 1:nrow(df)){
   
   if ( dv > 0 ) { 
     # try again if divergence 
-    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 4000, thin = 8, seed = 1)
+    myfit <- stan( fit = myfit, data = dat, cores = 4, iter = 4000, thin = 8, seed = 1)
   }
   
   ss <-  get_sampler_params(myfit) 
@@ -27,7 +27,7 @@ for(i in 1:nrow(df)){
   
   if ( dv > 0 ){ 
     # try again if divergent 
-    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 2000, thin = 4, 
+    myfit <- stan( fit = myfit, data = dat, cores = 4, iter = 2000, thin = 4, 
                   control = list(adapt_delta = 0.85, stepsize = 0.8, max_treedepth = 20), seed = 1 )
   } 
   
@@ -37,7 +37,7 @@ for(i in 1:nrow(df)){
   
   if ( dv > 0 ){ 
     # try again if divergent 
-    myfit <- stan( fit = myfit, data = test, cores = 4, iter = 4000, thin = 8, 
+    myfit <- stan( fit = myfit, data = dat, cores = 4, iter = 4000, thin = 8, 
                    control = list(adapt_delta = 0.99, stepsize = 0.2, max_treedepth = 20), seed = 1 )
   } 
   

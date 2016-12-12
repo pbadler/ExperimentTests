@@ -42,8 +42,8 @@ make_data_list <- function( x) {
   x$treat <- as.numeric(factor(x$Treatment))
   x$spp <- as.numeric(factor( x$species))
   
-  x$X <- scale(x$logarea.t0, scale = F) # center X on mean 
-  Xcenter <- attr( x$X, 'scaled:center') # save mean 
+  x$X <- scale(x$logarea.t0, scale = F) # center X on mean.  Center BEFORE splitting up survival and growth, modern and historical
+  Xcenter <- attr( x$X, 'scaled:center') # save mean       
   x$X <- as.numeric(x$X)
   
   write.csv(x, file =  paste0( 'data/temp_data/', unique( x$species) ,'_', 'growth_and_survival', '_cleaned_dataframe.csv') , row.names = F)
@@ -81,7 +81,7 @@ make_data_list <- function( x) {
   growth <- growth[ complete.cases( growth ), ] 
   
   split_and_format <- 
-    function( df ) { 
+    function( df , Xcenter ) { 
       mylist <- split(df, df$Period)
       mylist <- lapply( mylist, as.list )
       mylist$all <- as.list( df )
@@ -100,11 +100,12 @@ make_data_list <- function( x) {
       mylist$Covs <- ncol ( mylist$C ) 
       mylist$spp <- unique(df$spp)
       mylist$tau_beta <- 10 
+      mylist$Xcenter <- Xcenter
       return(mylist)
     }
   
-  sdl <- split_and_format(survival)  
-  gdl <- split_and_format(growth)
+  sdl <- split_and_format(survival, Xcenter)  
+  gdl <- split_and_format(growth, Xcenter )
 
   return( list(sdl, gdl) ) 
   
@@ -210,7 +211,7 @@ clim <- readRDS(paste0( data_path, '/', clim_file ) )
 clim <- clim[ ,c('Treatment', 'year', clim_vars)]
 names ( clim ) [ grep( '^(P\\.)|(VWC\\.)|(T\\.)',  names( clim ) ) ] <- paste0 ( 'C.', names( clim ) [ grep( '^(P\\.)|(VWC\\.)|(T\\.)', names(clim ) ) ] )
 clim <- clim[ complete.cases(clim), ] 
-clim[ , grep( 'C\\.', names(clim))] <- scale(clim[ , grep( 'C\\.', names(clim))])
+clim[ , grep( 'C\\.', names(clim))] <- scale(clim[ , grep( 'C\\.', names(clim))]) # scale climate data 
 
 out <- list()
 i = 1
@@ -224,7 +225,6 @@ for(i in 1:length( species )) {
   
   sdat$logarea.t0 <- sdat$logarea
   
-  sdat <- sdat [ sdat$year %in% gdat$year, ] # drop survival years without growth data 
   df <- merge( sdat, gdat, all.x = T)
   df <- merge(df, clim)
     
@@ -234,6 +234,7 @@ for(i in 1:length( species )) {
   
   growth <- add_survival_data(growth, survival )
   
+  # recruitment  
   rdf <- merge( rdat, clim ) 
   recruitment <- make_data_list_recruitment( x = rdf, 'recruitment' ) 
   
