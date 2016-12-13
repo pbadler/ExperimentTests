@@ -4,6 +4,7 @@ library(rstan)
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
 
 df <- rbind( df[-1, ], df[1, ] ) # put first row last to run it last 
+i = 12
 
 for(i in 2:nrow(df)){ 
   
@@ -43,12 +44,12 @@ for(i in 2:nrow(df)){
     # try again if divergent 
     inits <- apply(myfit, 2, relist, skeleton = rstan:::create_skeleton(myfit@model_pars, myfit@par_dims)) 
     myfit <- stan( fit = myfit, init = inits, data = dat, cores = 4, iter = 4000, thin = 8, 
-                   control = list(adapt_delta = 0.99, stepsize = 0.1, max_treedepth = 20), seed = 1 )
+                   control = list(adapt_delta = 0.99, stepsize = 0.01, max_treedepth = 20), seed = 1 )
   } 
   
   saveRDS(myfit, paste0('output/stan_fits/', spp, '_', vr, '_treatment_fit.RDS'))
   
-  rm(myfit)
+  rm(myfit, dat, inits)
 
 }
 
