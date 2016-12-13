@@ -32,8 +32,6 @@ years$Period[ years$year <= 1960 ] <- 'Historical'
 species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
 ylims <- list( c(0,35), c(0,7.5), c(0,7.5), c(0,7.5))
-i = 1
-
 
 for( i in 1:4) {  
   spp   <- species_list[i]  
@@ -64,10 +62,15 @@ for( i in 1:4) {
     gather( simulation, size , matches('^X[0-9]')) %>% 
     group_by( year, Treatment, simulation, quad ) %>% 
     summarize( total_size = sum( size )) 
+  
+  rdf <- 
+    rdf %>% 
+    gather( simulation, rec_area, matches('^X[0-9]')) 
+  
+  saveRDS( merge(rdf[ , c('year', 'Treatment', 'simulation', 'rec_area', 'quad')], cover1, all.x = T), paste0( 'output/ibm/simulations/', spp, '_one_step_ahead_climate_model_cover_per_quad.RDS'))
 
   cover2 <- 
     rdf %>% 
-    gather( simulation, rec_area, matches('^X[0-9]')) %>% 
     group_by( year, Treatment, simulation) %>% 
     summarise( rec_area = mean(rec_area))
   
@@ -104,7 +107,7 @@ for( i in 1:4) {
     summarise( true_cov = 100*(mean(totCover )/10000)) 
   
   # ------------------------------------------------------------------------------------------------------ #
-  df <- read.csv('data/temp_data/ARTR_growth_and_survival_cleaned_dataframe.csv')
+  df <- read.csv(paste0('data/temp_data/', spp, '_growth_and_survival_cleaned_dataframe.csv'))
   
   df$true_cov <- 100*(exp(df$logarea.t0)/10000)
   
@@ -123,58 +126,40 @@ for( i in 1:4) {
   
   plot_cover <-
     merge( obs_cover, pred_cover, all.x = TRUE) %>%
-    mutate( predicted = ifelse(Treatment != 'Control' & year == 2011, observed, predicted )) %>%
-    mutate( predicted = ifelse(year == 2007, observed, predicted )) %>%
-    mutate( predicted = ifelse(year == 1929, observed, predicted )) %>%
-    mutate( predicted = ifelse(year == 1945, observed, predicted )) %>%
-    mutate( predicted = ifelse(year == 1949, observed, predicted )) %>%
-    mutate( predicted = ifelse(year == 1954, observed, predicted )) %>%
-    mutate( ucl = ifelse(Treatment != 'Control' & year == 2011, observed, ucl )) %>%
-    mutate( ucl = ifelse(year == 2007, observed, ucl )) %>%
-    mutate( ucl = ifelse(year == 1929, observed, ucl )) %>%
-    mutate( ucl = ifelse(year == 1945, observed, ucl )) %>%
-    mutate( ucl = ifelse(year == 1949, observed, ucl )) %>%
-    mutate( ucl = ifelse(year == 1954, observed, ucl )) %>%
-    mutate( lcl = ifelse(Treatment != 'Control' & year == 2011, observed, lcl )) %>%
-    mutate( lcl = ifelse(year == 2007, observed, lcl )) %>%
-    mutate( lcl = ifelse(year == 1929, observed, lcl )) %>%
-    mutate( lcl = ifelse(year == 1945, observed, lcl )) %>%
-    mutate( lcl = ifelse(year == 1949, observed, lcl )) %>%
-    mutate( lcl = ifelse(year == 1954, observed, lcl )) %>%
+    mutate( predicted = ifelse( is.na(predicted), observed, predicted )) %>% 
+    mutate( ucl = ifelse( is.na(ucl), observed, ucl)) %>% 
+    mutate( lcl = ifelse( is.na(lcl), observed, lcl)) %>%
     gather( stat, val,  predicted, observed) 
   
+  
   plot_cover <- merge( years, plot_cover, all.x = TRUE)
+  plot_cover <- subset(plot_cover, year < 2017 ) 
+  
+  p1 <- ggplot( subset( plot_cover, Period == "Historical"), aes( x = year, y =  val, fill = Treatment, color = Treatment, linetype = stat, shape = stat, ymax = ucl, ymin = lcl)) +
+    geom_line() +
+    #geom_ribbon(aes(ymax = ucl, ymin = lcl, color = NA), alpha = 0.1) + 
+    scale_color_manual(values = my_colors ) + 
+    ylim( ylims[[i]]) + 
+    ylab( 'cover (%)' ) +  
+    my_theme + 
+    guides( linetype=guide_legend(title=NULL)) 
   
   pdf( paste0( 'figures/predictions/', spp  , '_predicted_cover.pdf' ), height = 8, width = 8) 
   
   print( 
-    ggplot( subset( plot_cover, Period == "Historical"), aes( x = year, y =  val, fill = Treatment, color = Treatment, linetype = stat, ymax = ucl, ymin = lcl)) +
-      geom_line() +
-      #geom_ribbon(aes(ymax = ucl, ymin = lcl, color = NA), alpha = 0.1) + 
-      scale_color_manual(values = my_colors ) + 
-      ylim( ylims[[i]]) + 
-      ylab( 'cover (%)' ) +  
+    p1 + 
       scale_x_continuous(breaks = seq(1925,1960,5)) + 
-      my_theme + 
-      guides( linetype=guide_legend(title=NULL) ) + 
       ggtitle(paste('Historical cover of', spp )) 
   )
   
-  print( 
-    ggplot( subset( plot_cover, Period == "Modern"), aes( x = year, y =  val, fill = Treatment, color = Treatment, linetype = stat, ymax = ucl, ymin = lcl)) +
-      geom_line() +
-      #geom_ribbon(aes(ymax = ucl, ymin = lcl, color = NA), alpha = 0.1) + 
-      scale_color_manual(values = my_colors ) + 
-      ylim( ylims[[i]] ) + 
-      ylab( 'cover (%)') + 
+  print(
+    p1 %+% subset( plot_cover, Period == 'Modern' ) + 
       scale_x_continuous(breaks = c(2007:2016)) + 
-      my_theme + 
-      guides( linetype=guide_legend(title=NULL) ) + 
       ggtitle(paste('Modern cover of', spp ))
   )
   
   dev.off()
 } 
 
-saveRDS(size , 'output/predicted_size.RDS')
-saveRDS(survives, 'output/predicted_survival.RDS')
+#saveRDS(size , 'output/predicted_size.RDS')
+#saveRDS(survives, 'output/predicted_survival.RDS')

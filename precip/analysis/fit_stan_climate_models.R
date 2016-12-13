@@ -14,11 +14,7 @@ for( i in 1:length(dl_files)){
   
   for( j in 1:length(dl)){ 
     
-    if(is.null( ncol(dl[[j]]$C)) ){ 
-      myfit <- stan(str_replace(m_files[i], '.stan', '_special.stan'), data  = dl[[j]], thin = 4, cores = 4, iter = 2000, seed = 1)
-    }else{
-      myfit <- stan(m_files[i], data  = dl[[j]], thin = 4, cores = 4, iter = 2000, seed = 1)
-    }
+    myfit <- stan(m_files[i], data  = dl[[j]], thin = 4, cores = 4, iter = 2000, seed = 1)
     
     ss <-  get_sampler_params(myfit) 
     

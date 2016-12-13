@@ -1,7 +1,7 @@
 rm(list = ls())
 
 var_table <- read.csv('output/selected_climate_covariates.csv')
-i  = 1
+
 for( i in 1:nrow(var_table)){ 
   
   spp    <- var_table$species[i]

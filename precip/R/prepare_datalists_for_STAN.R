@@ -42,21 +42,26 @@ make_data_list <- function( x) {
   x$treat <- as.numeric(factor(x$Treatment))
   x$spp <- as.numeric(factor( x$species))
   
-  x$X <- scale(x$logarea.t0, scale = F) # center X on mean.  Center BEFORE splitting up survival and growth, modern and historical
+  x$X <- scale(x$logarea.t0) # center X on mean.  Center BEFORE splitting up survival and growth, modern and historical
   Xcenter <- attr( x$X, 'scaled:center') # save mean       
+  Xscale  <- attr( x$X, 'scaled:scale' ) # save sd 
   x$X <- as.numeric(x$X)
+  
+  W <- x[ , grep ( '^W\\.', names( x))]
+  W <- as.matrix( W )[,1:4] # big four competition effects
+  W <- scale( W ) # scale competition
+  Wcenter <- attr( W, 'scaled:center')  # save scaled mean
+  Wscale  <- attr( W, 'scaled:scale' )  # save scaled scale
+  x$W <- W
   
   write.csv(x, file =  paste0( 'data/temp_data/', unique( x$species) ,'_', 'growth_and_survival', '_cleaned_dataframe.csv') , row.names = F)
   
   x$gm <- model.matrix.lm( ~ x$Group ) 
   
   x$tm <- model.matrix.lm( ~ x$Treatment )[, -1 ]  # drop intercept 
-  x$tm <- cbind ( x$tm , x$tm*x$X ) 
-  colnames(x$tm) <- c('Drought' , 'Irrigation', 'Droughtxlogarea.t0', 'Irrigationxlogarea.t0')
+  x$tm <- cbind ( x$tm , x$tm*x$X )  # competition by climate effect 
   
-  W <- x[ , grep ( '^W\\.', names( x))]
-  W <- as.matrix( W )[,1:4] # big four competition effects
-  x$W <- W
+  colnames(x$tm) <- c('Drought' , 'Irrigation', 'Droughtxlogarea.t0', 'Irrigationxlogarea.t0')
   
   x$C <- as.matrix( x[ ,  grep( '^C\\.', names(x) ) ] )
   colnames(x$C) <- str_replace( colnames( x$C ) , '^C\\.' , '')
@@ -81,10 +86,10 @@ make_data_list <- function( x) {
   growth <- growth[ complete.cases( growth ), ] 
   
   split_and_format <- 
-    function( df , Xcenter ) { 
+    function( df , Xcenter, Xscale, Wcenter , Wscale ) { 
       mylist <- split(df, df$Period)
       mylist <- lapply( mylist, as.list )
-      mylist$all <- as.list( df )
+      mylist$all <- as.list( df ) # save entire data list as 'all' use for predictions 
       
       mylist <- lapply( mylist, function( y ) { y$nyrs = nlevels(factor(y$yid)); y } )
       mylist <- lapply( mylist, function( y ) { y$N = length(y$Y); y})
@@ -101,11 +106,14 @@ make_data_list <- function( x) {
       mylist$spp <- unique(df$spp)
       mylist$tau_beta <- 10 
       mylist$Xcenter <- Xcenter
+      mylist$Xscale  <- Xscale
+      mylist$Wcenter <- Wcenter
+      mylist$Wscale  <- Wscale 
       return(mylist)
     }
   
-  sdl <- split_and_format(survival, Xcenter)  
-  gdl <- split_and_format(growth, Xcenter )
+  sdl <- split_and_format(survival, Xcenter, Xscale,  Wcenter, Wscale )  
+  gdl <- split_and_format(growth, Xcenter , Xscale, Wcenter, Wscale )
 
   return( list(sdl, gdl) ) 
   

@@ -30,8 +30,7 @@ plot_posterior_year_effects <- function(df){
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '.*_treatment_fit.RDS', full.names = TRUE)
-i = 1
-
+i = 7
 for( i in 1:length(mfiles)){ 
   
   bname <- basename(mfiles[i])
@@ -39,7 +38,7 @@ for( i in 1:length(mfiles)){
 
   spp <- mpars[1]
   vr <- mpars[2]
-    
+   
   temp_fit <- readRDS(mfiles[i])
   
   df <- readRDS(paste0( 'data/temp_data/', vr, '_data_lists_for_stan.RDS'))[[spp]]

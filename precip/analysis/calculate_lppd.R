@@ -43,7 +43,7 @@ for( i in 1:length(mfiles)){
   }else{ 
     y_out <- data.frame(species = spp, vital_rate = vr, model = m, quad = dat$quadhold, trackid = dat$trackidhold, 
                         size = dat$Xhold, obs_id = dat$obs_idhold , year = dat$yearhold, 
-                        Treatment = dat$treathold, lppd2 = lppd2, Xcenter = dat$Xcenter, Xscale = dat$Xscale )
+                        Treatment = dat$treathold, lppd2 = lppd2)
   }
   
   
@@ -55,6 +55,6 @@ for( i in 1:length(mfiles)){
   }else { 
     write.table( y_out, file = file.path('output', 'lppd_scores.csv'), sep = ',', col.names = FALSE, row.names = FALSE, append = TRUE )
   }
-  rm(y_out, lppd2)
+  rm(y_out, lppd2, dat)
 }
 

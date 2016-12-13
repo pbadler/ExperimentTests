@@ -2,7 +2,7 @@ rm(list = ls())
 library(rstan)
 
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
-
+i = 1
 for(i in 1:nrow(df)){ 
   
   spp <- df$species[i]
@@ -18,7 +18,8 @@ for(i in 1:nrow(df)){
   
   if ( dv > 0 ) { 
     # try again if divergence 
-    myfit <- stan( fit = myfit, data = dat, cores = 4, iter = 4000, thin = 8, seed = 1)
+    inits <- apply(myfit, 2, relist, skeleton = rstan:::create_skeleton(myfit@model_pars, myfit@par_dims)) # find initial values from end of chain 
+    myfit <- stan( fit = myfit, init = inits, data = dat, cores = 4, iter = 4000, thin = 8, seed = 1)
   }
   
   ss <-  get_sampler_params(myfit) 
@@ -27,7 +28,8 @@ for(i in 1:nrow(df)){
   
   if ( dv > 0 ){ 
     # try again if divergent 
-    myfit <- stan( fit = myfit, data = dat, cores = 4, iter = 2000, thin = 4, 
+    inits <- apply(myfit, 2, relist, skeleton = rstan:::create_skeleton(myfit@model_pars, myfit@par_dims))
+    myfit <- stan( fit = myfit, init = inits, data = dat, cores = 4, iter = 2000, thin = 4, 
                   control = list(adapt_delta = 0.85, stepsize = 0.8, max_treedepth = 20), seed = 1 )
   } 
   
@@ -37,8 +39,9 @@ for(i in 1:nrow(df)){
   
   if ( dv > 0 ){ 
     # try again if divergent 
-    myfit <- stan( fit = myfit, data = dat, cores = 4, iter = 4000, thin = 8, 
-                   control = list(adapt_delta = 0.99, stepsize = 0.2, max_treedepth = 20), seed = 1 )
+    inits <- apply(myfit, 2, relist, skeleton = rstan:::create_skeleton(myfit@model_pars, myfit@par_dims)) 
+    myfit <- stan( fit = myfit, init = inits, data = dat, cores = 4, iter = 4000, thin = 8, 
+                   control = list(adapt_delta = 0.99, stepsize = 0.1, max_treedepth = 20), seed = 1 )
   } 
   
   saveRDS(myfit, paste0('output/stan_fits/', spp, '_', vr, '_treatment_fit.RDS'))
