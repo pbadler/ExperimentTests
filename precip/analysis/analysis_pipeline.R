@@ -1,4 +1,14 @@
+rm(list = ls() ) 
+library(rstan)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot)
+library(lme4)
+library(zoo)
 # run data preparation files first --------------------------- # 
+
+source('R/prepare_datalists_for_STAN.R')
 
 # analysis pipeline ------------------------------------------ # 
 
