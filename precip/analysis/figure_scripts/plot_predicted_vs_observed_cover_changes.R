@@ -25,7 +25,7 @@ last_cover <-
 # ------------------------------------------------------------------------------------------------------ #
 df <- read.csv(paste0('data/temp_data/', spp, '_growth_and_survival_cleaned_dataframe.csv'))
 
-df$true_cov <- exp(df$logarea.t0)
+df$true_cov <- exp(df$logarea.t0) # use year 0 cover 
 
 trueCov <- 
   df %>% 
@@ -39,47 +39,62 @@ obs_cover <- obs_cover %>% mutate( observed = ifelse( is.na(observed.y), observe
 
 # get predicted cover -------------------------------------------------------------------------------------# 
 pred <- readRDS('output/ibm/simulations/ARTR_one_step_ahead_climate_model_cover_per_quad.RDS')
+
 pred$total_size[ is.na(pred$total_size  ) ]  <- 0 
 
 pred <- 
   pred %>% 
   mutate( predicted = rec_area + total_size ) %>%  
-  arrange( simulation, Treatment, quad, year) %>% 
-  mutate( year = year + 1 )                        #### plus one to get line up prediction with observed year 
-
-# %>% 
-#   mutate( change = log( cover ) - log(lag(cover, 1) ), year_diff = year - lag(year, 1)) %>% 
-#   group_by(quad, year, Treatment) %>%
-#   filter( year_diff == 1) %>% 
-#   filter( is.finite( change )) %>%
-#   summarise( cover_pred = mean(cover),  predicted = mean(change), ucl = quantile( change, 0.75), lcl = quantile( change, 0.25) )
+  arrange( simulation, Treatment, quad, year)     # prediction for year + 1 
 
 head( obs_cover)
 head( pred )
 
 predicted_df  <- merge( obs_cover[, c('year', 'Treatment', 'quad', 'observed', 'Period')], pred[, c('simulation', 'quad', 'Treatment', 'predicted', 'year')] )
 
-predicted_df %>% 
-  mutate( pgr_predicted =  predicted - lag (observed, 1)) %>% 
-  group_by( year, Treatment , quad ) %>% 
-  filter( )
-  summarise( mean(pgr_predicted), ucl = quantile( pgr_predicted, 0.75), lcl = quantile( pgr_predicted, 0.25 )) 
+head( predicted_df ) 
 
-obs_change <- 
+predicted_pgr <- 
+  predicted_df %>% 
+  mutate( pgr_predicted = log( predicted)  - log(observed)) %>% 
+  group_by( year, Treatment, simulation ) %>% 
+  filter( is.finite(pgr_predicted)) %>%
+  summarise( mpgr = mean(pgr_predicted)) %>% 
+  ungroup(.) %>% 
+  group_by(year, Treatment ) %>% 
+  summarise( predicted = mean(mpgr) , lcl = quantile ( mpgr, 0.25 ) , ucl = quantile( mpgr , 0.75)) %>% 
+  ungroup() %>% 
+  mutate( year = year + 1  ) # predictions are for year t + 1 
+
+
+obs_pgr <- 
   obs_cover %>% 
   ungroup() %>% 
-  arrange( Treatment, quad, year ) %>% 
+  arrange( Period, Treatment, quad, year ) %>% 
   rename( cover_obs = observed ) %>% 
-  mutate( observed = log(cover_obs) - log(lag(cover_obs,1)), year_diff = year - lag( year , 1 )) %>% 
-  filter( year_diff == 1 ) 
-
+  mutate( pgr_observed = log(cover_obs) - log(lag(cover_obs,1)), year_diff = year - lag( year , 1 )) %>% 
+  filter( year_diff == 1 ) %>% 
+  group_by( Period , year , Treatment ) %>% 
+  summarise ( observed = mean(pgr_observed))
 
 # merge predicted and observed 
 
-plot_df <- merge( obs_change[ , c('Period', 'Group', 'Treatment', 'quad', 'cover_obs', 'observed', 'year')], pred, all.x = T)
+plot_df <- merge(obs_pgr, predicted_pgr)
 
-ggplot ( plot_df, aes( x = cover_pred, y = cover_obs, color = Period ) ) + geom_point() 
+plot_df_long <- 
+  plot_df %>% 
+  gather( type, val , observed , predicted ) %>% 
+  mutate(lcl = ifelse( type == 'observed' , NA, lcl )) %>% 
+  mutate(ucl = ifelse( type == 'observed' , NA, ucl ))
+  
+library(ggplot2)
+ggplot( plot_df_long, aes( x = year, y = val, color = Treatment , shape = type, linetype = type ) ) + geom_point() + geom_line() 
+
+ggplot ( plot_df, aes( x = predicted,  y = observed, color = Period ) ) + 
+  geom_point() + 
+  geom_smooth(method= 'lm', se = FALSE)
 
 ggplot ( plot_df, aes( x = predicted, y = observed, color = Period ) ) + geom_point() 
 
-plot_df 
+ggplot ( plot_df, aes( x = predicted, y = observed, color = Period ) ) + geom_point() 
+
