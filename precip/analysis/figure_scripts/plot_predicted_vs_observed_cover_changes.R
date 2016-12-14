@@ -36,6 +36,15 @@ obs_cover <- merge( last_cover, trueCov, by = c('Period', 'year', 'Treatment', '
 
 obs_cover <- obs_cover %>% mutate( observed = ifelse( is.na(observed.y), observed.x, observed.y)) # fill in data from end years in dataframe
 
+obs_pgr <- 
+  obs_cover %>% 
+  ungroup() %>% 
+  arrange( Period, Treatment, quad, year ) %>% 
+  rename( cover_obs = observed ) %>% 
+  mutate( pgr_observed = log(cover_obs) - log(lag(cover_obs,1)), year_diff = year - lag( year , 1 )) %>% 
+  filter( year_diff == 1 ) %>% 
+  group_by( Period , year , Treatment ) %>% 
+  summarise ( observed = mean(pgr_observed))
 
 # get predicted cover -------------------------------------------------------------------------------------# 
 pred <- readRDS('output/ibm/simulations/ARTR_one_step_ahead_climate_model_cover_per_quad.RDS')
@@ -47,12 +56,7 @@ pred <-
   mutate( predicted = rec_area + total_size ) %>%  
   arrange( simulation, Treatment, quad, year)     # prediction for year + 1 
 
-head( obs_cover)
-head( pred )
-
 predicted_df  <- merge( obs_cover[, c('year', 'Treatment', 'quad', 'observed', 'Period')], pred[, c('simulation', 'quad', 'Treatment', 'predicted', 'year')] )
-
-head( predicted_df ) 
 
 predicted_pgr <- 
   predicted_df %>% 
@@ -66,18 +70,7 @@ predicted_pgr <-
   ungroup() %>% 
   mutate( year = year + 1  ) # predictions are for year t + 1 
 
-
-obs_pgr <- 
-  obs_cover %>% 
-  ungroup() %>% 
-  arrange( Period, Treatment, quad, year ) %>% 
-  rename( cover_obs = observed ) %>% 
-  mutate( pgr_observed = log(cover_obs) - log(lag(cover_obs,1)), year_diff = year - lag( year , 1 )) %>% 
-  filter( year_diff == 1 ) %>% 
-  group_by( Period , year , Treatment ) %>% 
-  summarise ( observed = mean(pgr_observed))
-
-# merge predicted and observed 
+# merge predicted and observed ---------------------------------------------------------- # 
 
 plot_df <- merge(obs_pgr, predicted_pgr)
 
@@ -88,13 +81,26 @@ plot_df_long <-
   mutate(ucl = ifelse( type == 'observed' , NA, ucl ))
   
 library(ggplot2)
-ggplot( plot_df_long, aes( x = year, y = val, color = Treatment , shape = type, linetype = type ) ) + geom_point() + geom_line() 
 
-ggplot ( plot_df, aes( x = predicted,  y = observed, color = Period ) ) + 
+pts <- 
+  ggplot( plot_df_long, aes( x = year, y = val, ymax = ucl, fill = Treatment, ymin = lcl, color = Treatment, linetype = type) ) + 
+  geom_ribbon( alpha = 0.2, color = NA) + 
+  geom_line( ) 
+
+
+pts %+% subset( plot_df_long , Period == 'Historical')
+
+pts %+% subset( plot_df_long , Period == 'Modern')
+
+pcor1 <- 
+  ggplot ( plot_df, aes( x = predicted,  y = observed, color = Period) ) + 
   geom_point() + 
-  geom_smooth(method= 'lm', se = FALSE)
+  geom_smooth(method= 'lm', se = FALSE, alpha = 0.5)
 
-ggplot ( plot_df, aes( x = predicted, y = observed, color = Period ) ) + geom_point() 
+pcor2 <- 
+  ggplot ( plot_df, aes( x = predicted,  y = observed, color = Treatment) ) + 
+  geom_point() + 
+  geom_smooth(method= 'lm', se = FALSE, alpha = 0.5)
 
-ggplot ( plot_df, aes( x = predicted, y = observed, color = Period ) ) + geom_point() 
+pcor2 %+% subset( plot_df, Period == 'Modern')
 
