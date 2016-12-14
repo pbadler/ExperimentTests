@@ -12,7 +12,7 @@ VWCdat <- subset( VWCdat, Period == 'Historical' & Treatment == 'Control')
 Cdf <- merge( Cdat, VWCdat)
 
 Sfiles <- dir('data/temp_data', '*_survival.RDS', full.names = T)
-
+i = 1
 for(i in 1:length(Sfiles)){
 
   S  <-  readRDS(Sfiles[i])
@@ -30,7 +30,25 @@ for(i in 1:length(Sfiles)){
   
   ss <- getME(myr, c('theta', 'fixef'))
   myr <- update( myr, start = ss, control = glmerControl(optCtrl=list(maxfun=2e4)))
-
+  
+  spp <-  str_extract(Sfiles[i], '[A-Z]{4}')  
+  
+  stan_ye <- read.csv(paste0('output/', spp, '_', 'survival', '_year_effects_table.csv'))
+  
+  stan_ye$type <- str_match( stan_ye$X , '(^[a-b]1?)\\[')[, 2]
+  
+  stan_ye$type[ is.na( stan_ye$type ) ]  <- 'other'
+  
+  stan_intercept <- stan_ye[ stan_ye$type == 'a', 2] 
+  stan_size <- stan_ye[ stan_ye$type == 'b1', 2] 
+  
+  plot( ranef( myr )$year[ -1, ] )
+  
+  plot( ranef(myr)$year[-1, 1] , stan_intercept )
+  plot( ranef(myr)$year[-1, 2] , stan_size)
+  
+  summary(myr)
+  
   VWC_year_effects <- cbind( unique(df[, grep('^VWC', names(df))]), ranef(myr)$year)
   T_year_effects <- cbind( unique(df[, grep('^T\\.', names(df))]), ranef(myr)$year)
   
@@ -77,10 +95,10 @@ for(i in 1:length(Sfiles)){
     out [ j, 4] <- Rest$p.value
   }
 
-  out <- subset(out, Int_pval < 0.1)
+  out <- subset(out, Int_pval < 0.05)
   out <-  out[order(out$`(Intercept)`), ]
   
-  
+  out
   write.csv(out, paste0( 'output/', spp, '_survival_correlations.csv'))
   rm(myr)
 }

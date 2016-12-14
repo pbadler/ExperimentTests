@@ -21,26 +21,14 @@ simulate_recruit_size <- function( recruits , spp ) {
   }
   return(  out  )
 }
+
+generate_cover_predictions <- function( spp, model ) { 
   
-#
-load('analysis/figure_scripts/my_plotting_theme.Rdata') 
-
-years <- expand.grid(year = 1925:2017, Treatment = c('Control', 'Drought', 'Irrigation'), stat = c('observed', 'predicted'))
-years$Period[ years$year > 2006 ] <- 'Modern'
-years$Period[ years$year <= 1960 ] <- 'Historical'
-
-species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
-
-ylims <- list( c(0,35), c(0,7.5), c(0,7.5), c(0,7.5))
-
-for( i in 1:4) {  
-  spp   <- species_list[i]  
+  sdl   <- readRDS('data/temp_data/modified_survival_data_lists_for_stan.RDS')[[spp]]
+  rdl   <- readRDS('data/temp_data/modified_recruitment_data_lists_for_stan.RDS')[[spp]]
+  gdl   <- readRDS('data/temp_data/modified_growth_data_lists_for_stan.RDS')[[spp]]
   
-  sdl   <- readRDS('data/temp_data/modified_survival_data_lists_for_stan.RDS')[[i]]
-  rdl   <- readRDS('data/temp_data/modified_recruitment_data_lists_for_stan.RDS')[[i]]
-  gdl   <- readRDS('data/temp_data/modified_growth_data_lists_for_stan.RDS')[[i]]
-  
-  m <- dir('output/stan_fits', paste0( spp, '.*_climate_fit.RDS'), full.names = TRUE)
+  m <- dir('output/stan_fits', paste0( spp, '.*_', model, '_fit.RDS'), full.names = TRUE)
   
   s <- rstan::extract(readRDS(m[3]), c('muhat2'))$muhat2
   g <- rstan::extract(readRDS(m[1]), c('muhat3'))$muhat3
@@ -49,7 +37,13 @@ for( i in 1:4) {
   df <- read.csv(paste0( 'data/temp_data/', spp, '_growth_and_survival_cleaned_dataframe.csv'))
   rdf <- read.csv(paste0( 'data/temp_data/', spp, '_recruitment_cleaned_dataframe.csv'))
   
+  if (model == 'treatment'){  #### Treatment model fit is very bad so just sample with replacement from real values
+    r <- r 
+    r[] <- sample(rdf$Y, length(r), replace = T)
+  }
+  
   rec_area <- simulate_recruit_size(r, spp )
+  
   g <- exp( g ) 
   g[ g > 10000 ]  <- 10000 # assign plants with greater than 10000 cover to 10000 (can't be bigger than plot)
   k <- s*g 
@@ -61,105 +55,164 @@ for( i in 1:4) {
     df %>% 
     gather( simulation, size , matches('^X[0-9]')) %>% 
     group_by( year, Treatment, simulation, quad ) %>% 
-    summarize( total_size = sum( size )) 
+    summarize( total_size = sum( size ))                # sum area of all plants per quad 
   
   rdf <- 
     rdf %>% 
     gather( simulation, rec_area, matches('^X[0-9]')) 
   
-  saveRDS( merge(rdf[ , c('year', 'Treatment', 'simulation', 'rec_area', 'quad')], cover1, all.x = T), paste0( 'output/ibm/simulations/', spp, '_one_step_ahead_climate_model_cover_per_quad.RDS'))
+  predicted_cover <- merge(rdf[ , c('year', 'Treatment', 'simulation', 'rec_area', 'quad')], cover1, all.x = T)
+  
+  predicted_cover$total_size <- ifelse( is.na( predicted_cover$total_size), 0, predicted_cover$total_size )
+  
+  predicted_cover$area <- predicted_cover$rec_area + predicted_cover$total_size
+  
+  predicted_cover$model <- model
+  
+  saveRDS( predicted_cover, paste0( 'output/ibm/simulations/', spp, '_one_step_ahead_', model, '_model_quadrat_cover.RDS'))
+  
+  return(predicted_cover)
+}
 
-  cover2 <- 
-    rdf %>% 
-    group_by( year, Treatment, simulation) %>% 
-    summarise( rec_area = mean(rec_area))
-  
-  cover <- 
-    merge( cover2, cover1, all.y = TRUE) %>%  # use all recruitment years  
-    mutate( total_size = ifelse(is.na(total_size), 0, total_size)) %>%  # years without observed plants get 0
-    mutate( area = total_size + rec_area ) %>% 
-    group_by( year , Treatment, simulation ) %>% 
-    summarise(cover = 100*( mean(area)/10000) ) # percent cover is total area / 10000 cm * 100
 
-  pred_cover <- 
-    cover %>% 
-    ungroup %>% 
-    mutate( year = year + 1 ) %>% # cover predictions the "Y's" are for the next year 
-    group_by(Treatment, year ) %>% 
-    summarise( predicted = mean(cover), 
-               ucl = quantile( cover, 0.75), 
-               lcl = quantile(cover , 0.25))
+#
+load('analysis/figure_scripts/my_plotting_theme.Rdata') 
+
+years <- expand.grid(year = 1925:2016, Treatment = c('Control', 'Drought', 'Irrigation'), type = c('observed', 'predicted'))
+years$Period[ years$year > 2006 ] <- 'Modern'
+years$Period[ years$year <= 1960 ] <- 'Historical'
+
+species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
+model_list <- c('climate', 'treatment', 'year_effects')
+
+ylims <- list( c(0,25), c(0,5), c(0,5), c(0,5))
+names(ylims) <- species_list
+iter <- expand.grid( species = species_list, model = model_list )
+
+for( i in 5:nrow(iter) ) { 
   
-  # get last year of cover which is not in the survival dataframe ------------------------------------- #   
-  oldCover <- read.csv(paste0( '~/driversdata/data/idaho/speciesData/', spp, '/quadratCover.csv'))
-  newCover <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/quadratCover.csv'))
-  oldCover$Period <- "Historical"
-  newCover$Period <- "Modern"
-  last_cover  <- rbind(oldCover, newCover)
-  quad <- read.csv('~/driversdata/data/idaho_modern/quad_info.csv')
+  spp <- as.character( iter$species[i])
+  model <- as.character( iter$model[i] )
   
-  last_cover <-
-    last_cover %>%
-    left_join(quad) %>%
-    filter( Treatment %in% c('Control', 'Drought', 'Irrigation')) %>%
-    mutate( year = ifelse(year < 100, year + 1900, year)) %>%
-    group_by(Period, Treatment, year) %>%
-    summarise( true_cov = 100*(mean(totCover )/10000)) 
+  pred_cover <- generate_cover_predictions(spp, model)
   
-  # ------------------------------------------------------------------------------------------------------ #
+  # get list of all quads observed each year ------------------------------------------------------------# 
+  all_quad_years1 <- pred_cover %>% dplyr::select(Treatment, quad, year ) %>% distinct() # first year of transition
+  all_quad_years2 <- all_quad_years1
+  all_quad_years2$year <- all_quad_years2$year + 1 # also need cover predictions for each quad in the second year 
+  all_quad_years <- unique( rbind( all_quad_years1, all_quad_years2 )) # both years 
+  
+  # get observed cover --------------------------------------------------------------------------------- #   
   df <- read.csv(paste0('data/temp_data/', spp, '_growth_and_survival_cleaned_dataframe.csv'))
+  df <- df[, c('year', 'Treatment', 'quad', 'obs_id', 'logarea.t0')]
+  df$area <- exp( df$logarea.t0 )
+  qarea <- df %>% group_by( year, Treatment, quad ) %>% summarise( area = sum( area ))
+  qarea <- merge( all_quad_years1, qarea , all.x = T) 
+  qarea$area <- ifelse(is.na(qarea$area), 0, qarea$area )  # assign quadrats without plants zero cover 
   
-  df$true_cov <- 100*(exp(df$logarea.t0)/10000)
+  # get second year of observed cover, not in survival data -----------------------------------------------#  
+  df <- read.csv(paste0('data/temp_data/', spp, '_growth_and_survival_cleaned_dataframe.csv'))
+  df <- df[, c('year', 'Treatment', 'quad', 'obs_id', 'logarea.t1')]
+  df$year <- df$year + 1  # jump ahead 1 year 
+  df$area <- exp( df$logarea.t1 ) # get cover of surviving plants in next year 
+  qarea2 <- df %>% filter( !is.na(area)) %>% group_by( year, Treatment, quad ) %>% summarise( area = sum(area)) 
+
+  # get recruit area in the second year 
+  df <- read.csv(paste0('~/driversdata/data/idaho/speciesData/', spp, '/', spp, '_genet_xy.csv'))
+  df$quad <- as.numeric( str_extract(df$quad, '[0-9]+'))
+  df$year <- df$year + 1900  
+  df <- df %>% filter( age == 1 ) %>% group_by( quad, year ) %>% summarise( area = sum(area ) ) # get area of recruits 
   
-  trueCov <- 
-    df %>% 
-    group_by( Period, year, Treatment, quad ) %>% 
-    summarise( totCover = sum( true_cov ) ) %>% 
-    group_by( Period, year, Treatment) %>% 
-    summarise( observed  = mean(totCover ))
+  df2 <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/', spp, '_genet_xy.csv'))
+  df2$quad <- as.numeric( str_extract(df2$quad, '[0-9]+'))
+  df2 <- df2 %>% filter( age == 1 ) %>% group_by( quad, year ) %>% summarise( area = sum(area ) ) # get area of recruits 
+  df2 <- subset(df2, year == 2016)
   
-  obs_cover <- merge( last_cover, trueCov , by = c('Period', 'year', 'Treatment'), all.x = T)
+  df <- rbind( df, df2) # last year recruits 
   
-  obs_cover$observed <- ifelse( is.na(obs_cover$observed), obs_cover$true_cov, obs_cover$observed) # fill in data from end years in dataframe
+  # merge second year data 
+  qarea2 <- merge( qarea2, df , by  = c('year', 'quad' ), all.x = T ) 
+  qarea2$area.x [ is.na(qarea2$area.x) ] <- 0 
+  qarea2$area.y [ is.na( qarea2$area.y ) ] <- 0 
+  qarea2$area <- qarea2$area.x + qarea2$area.y # sum up area 
   
-  rm(sdl, rdl)
+  qarea2 <-  merge(all_quad_years2, qarea2, by = c('Treatment', 'year', 'quad'), all.x = T)
+  qarea2$area <- ifelse( is.na(qarea2$area), 0 , qarea2$area )
   
-  plot_cover <-
-    merge( obs_cover, pred_cover, all.x = TRUE) %>%
-    mutate( predicted = ifelse( is.na(predicted), observed, predicted )) %>% 
-    mutate( ucl = ifelse( is.na(ucl), observed, ucl)) %>% 
-    mutate( lcl = ifelse( is.na(lcl), observed, lcl)) %>%
-    gather( stat, val,  predicted, observed) 
+  # merge second year with first year 
+  qarea <- merge( qarea, qarea2[, c('year', 'quad', 'Treatment', 'area')], by = c('quad', 'year', 'Treatment' ), all.x = T, all.y = T)
+  qarea$area <- ifelse( is.na( qarea$area.x ), qarea$area.y, qarea$area.x)  # fill in missing area for second year 
+  
+  write.csv(qarea, paste0( 'output/ibm/simulations/', spp, '_observed_cover_per_quadrat.csv'), row.names = F)
+  
+  # merge observed and predicted cover 
+  pred_cover$year <- pred_cover$year + 1  # predicted cover is for the following year 
+  
+  plot_df <- merge( qarea[ , c('area', 'quad', 'year', 'Treatment') ], pred_cover[, c('area', 'quad', 'year', 'Treatment', 'simulation')], by = c('year','quad', 'Treatment') , all.x = T, all.y = T)
+  
+  predicted_cover <- 
+    plot_df %>% 
+    group_by( simulation, year, Treatment  ) %>% 
+    filter( !is.na( area.y) ) %>% 
+    summarise( cover = 100*mean(area.y)/10000 ) %>% 
+    group_by( year, Treatment ) %>% 
+    summarise(predicted = mean(cover), ucl = quantile( cover, 0.75), lcl = quantile( cover, 0.25) )
+  
+  observed_cover <- 
+    plot_df %>% 
+    group_by( year, quad, Treatment ) %>% 
+    summarise( area.x = unique(area.x) ) %>% 
+    group_by( year, Treatment) %>% 
+    summarise( observed = 100*mean(area.x)/10000 ) 
+  
+  plot_df <- 
+    merge( observed_cover, predicted_cover, all.x = T) %>% 
+    mutate( predicted = ifelse(is.na(predicted), observed, predicted))
+  
+  plot_df$Period <- ifelse( plot_df$year < 2000 , 'Historical', 'Modern')
+  
+  plot_df <- 
+    plot_df %>% 
+    gather( type, cover, observed, predicted ) %>% 
+    mutate ( ucl = ifelse( is.na(ucl), cover, ucl )) %>% 
+    mutate( lcl = ifelse (is.na(lcl), cover, lcl ))
+
+  plot_df <- merge( years, plot_df, all.x = T, all.y = T)
+  
+  plot_df <- 
+    plot_df %>% 
+    filter( !(Treatment != 'Control' & Period == 'Historical')) %>% 
+    mutate( Period = ifelse(is.na(Period), 'Historical', Period )) %>%
+    mutate( Treatment = ifelse(Period == 'Historical', 'Control' , as.character(Treatment))) %>% 
+    mutate( Treatment2 = ifelse( Period == 'Historical', 'Historical', Treatment )) 
+  
+  plot_df$Treatment <- factor(plot_df$Treatment2, levels = c('Historical', 'Control', 'Drought', 'Irrigation'), ordered = T)
   
   
-  plot_cover <- merge( years, plot_cover, all.x = TRUE)
-  plot_cover <- subset(plot_cover, year < 2017 ) 
+  p1 <- 
+    ggplot( plot_df, aes( x = year, y =  cover, fill = Treatment, color = Treatment, linetype = type, shape = type, ymax = ucl, ymin = lcl)) +
+      geom_line()  +
+      geom_ribbon(aes(ymax = ucl, ymin = lcl, color = NA), alpha = 0.05) + 
+      scale_color_manual(values = my_colors) + 
+      scale_fill_manual( values = my_colors) +
+      ylab( 'cover (%)' ) +  
+      my_theme + 
+      scale_y_continuous(limits = ylims[[spp]]) + 
+      guides( linetype=guide_legend(title=NULL)) 
   
-  p1 <- ggplot( subset( plot_cover, Period == "Historical"), aes( x = year, y =  val, fill = Treatment, color = Treatment, linetype = stat, shape = stat, ymax = ucl, ymin = lcl)) +
-    geom_line() +
-    #geom_ribbon(aes(ymax = ucl, ymin = lcl, color = NA), alpha = 0.1) + 
-    scale_color_manual(values = my_colors ) + 
-    ylim( ylims[[i]]) + 
-    ylab( 'cover (%)' ) +  
-    my_theme + 
-    guides( linetype=guide_legend(title=NULL)) 
-  
-  pdf( paste0( 'figures/predictions/', spp  , '_predicted_cover.pdf' ), height = 8, width = 8) 
+  pdf( paste0( 'figures/predictions/', spp  , '_', model, '_model_predicted_cover2.pdf' ), height = 8, width = 8) 
   
   print( 
-    p1 + 
-      scale_x_continuous(breaks = seq(1925,1960,5)) + 
+    p1 +       
+      scale_x_continuous(breaks = seq(1925,1960,5), limits = c(1928, 1959)) + 
       ggtitle(paste('Historical cover of', spp )) 
   )
   
   print(
-    p1 %+% subset( plot_cover, Period == 'Modern' ) + 
-      scale_x_continuous(breaks = c(2007:2016)) + 
+    p1 %+% plot_df + 
+      scale_x_continuous(breaks = c(2007:2016), limits = c(2007, 2016)) + 
       ggtitle(paste('Modern cover of', spp ))
   )
   
   dev.off()
 } 
-
-#saveRDS(size , 'output/predicted_size.RDS')
-#saveRDS(survives, 'output/predicted_survival.RDS')

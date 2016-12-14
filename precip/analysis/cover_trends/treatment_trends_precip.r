@@ -4,6 +4,8 @@ root <- "~"
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
 dataDir <- file.path(root,"/driversdata/data/idaho_modern/")
 
+load('analysis/figure_scripts/my_plotting_theme.Rdata')
+
 # import data and calculate treatment trends ######################################
 
 covD<-read.csv(paste(dataDir,"allrecords_cover.csv",sep=""))
@@ -27,6 +29,8 @@ sppD$area[is.na(sppD$area)]<-0
 sppD$area<-sppD$area*100
 sppD.q<-aggregate(sppD$area,by=list(species=sppD$species,Group=sppD$Group,Treatment=sppD$Treatment,
                   quad=sppD$quad,year=sppD$year),FUN=sum)
+
+test <- sppD.q %>% filter( species == 'Artemisia tripartita') %>%  group_by( species, year, Treatment ) %>% summarise( mean(x))
 
 sample_size <- aggregate( sppD$area, by = list(species=sppD$species,Treatment=sppD$Treatment,
                                 quad=sppD$quad,year=sppD$year), FUN = function(x) sum(x > 0))
@@ -92,8 +96,6 @@ spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
 
 # statistical tests ####################################################
 
-#library(lme4)
-
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub" & year > 2010 )
 dARTR$year <- as.factor(dARTR$year)
 dARTR$Treatment[ dARTR$year == 2011 & dARTR$Treatment != 'Control' ] <- 'Control'
@@ -111,11 +113,11 @@ mPOSE <- lmer(pcgr ~ Treatment +  (1|year), data=dPOSE)
 
 dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass" & year > 2010 )
 dPSSP$year <- as.factor(dPSSP$year)
-dPSSP$Treatment[ dPSSP$year == 2012 & dPSSP$Treatment != 'Control' ] <- 'Control'
-mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
+dPSSP$Treatment[ dPSSP$year == 2011 & dPSSP$Treatment != 'Control' ] <- 'Control'
+mPSSP <- lmer(pcgr ~ Treatment + (1|year),data=dPSSP)
 
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
-statsOutput <- paste0( "output/", species, "_stats_table.text")
+statsOutput <- paste0( "output/", species, "_lmer_pgr_stats_table.text")
 output <- list(mARTR,mHECO,mPOSE,mPSSP)
 
 for(i in 1:length(species)){ 
@@ -128,12 +130,34 @@ summary(mHECO)
 summary(mPOSE)
 summary(mPSSP)
 
-
 # figures ########################################################################
 
 trtLabels<-substr(x=names(spp.mean)[3:5],start=7,stop=nchar(names(spp.mean)[3:5]))
 
-myCols<-c("black","red","blue")
+trtLabels
+spp.mean
+
+spp.mean_cover_long <- 
+  sppD.q %>% 
+  filter( Group == 'E1') %>% 
+  group_by( species, Treatment, year ) %>% 
+  summarise( mcover = mean(cover))
+
+spp.mean_cover_long$species <- factor( spp.mean_cover_long$species, labels = c('ARTR', 'HECO', 'POSE', 'PSSP'))
+
+p1 <- 
+  ggplot( spp.mean_cover_long, aes( x = year, y = mcover, color = Treatment ) ) + 
+  geom_point() + 
+  geom_line() + 
+  ylab( 'Mean cover (%)' ) + 
+  scale_color_manual(values = my_colors[2:4]) + 
+  my_theme + theme(axis.text.x = element_text()) + 
+  guides( color = 'none') + 
+  scale_x_continuous(name = 'year', breaks = c(2007:2016)) 
+
+p1 %+% subset(spp.mean_cover_long, species == 'ARTR') + ylim( 0, 25)
+
+
 
 #1. Average cover treatment and year
 png("figures/treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
@@ -149,9 +173,9 @@ png("figures/treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
       my.y<- c(0,3.2)
     }
     matplot(tmp.mean$year,tmp.mean[,3:5],ylim=my.y,type="o",xlab="",ylab="",pch=16,lty="solid",
-            col=myCols,main=doSpp,font.main=4,lwd=2)
+            col=my_colors[2:4],main=doSpp,font.main=4,lwd=2)
     if(doSpp==sppList[1]) {
-      legend("bottomright",c("Control","Drought","Irrigation"),pch=16,lty="solid",col=myCols,bty="n")
+      legend("bottomright",c("Control","Drought","Irrigation"),pch=16,lty="solid",col=my_colors[2:4],bty="n")
       mtext("Mean cover (%)",side=2,line=2,outer=F)
     }
   }
@@ -209,14 +233,9 @@ dev.off()
 
 spp <- unique( sppD$species)
 
-m1 <- m2 <- list()
-i = 1
-
 subset( sppD.q, species == 'Hesperostipa comata' & year == 2016) %>% 
   arrange( year ) %>% 
   filter( cover > 0 )
-
-load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
 png("figures/start_to_finish_cover_change.png", height=3,width=8.5,units="in",res=400)
 
@@ -234,7 +253,7 @@ ggplot ( temp, aes( x  = Treatment, y = lc, color = Treatment )) +
   ylab( 'Log change in cover 2011 to 2016')  + 
   xlab ( '' ) + 
   facet_grid( . ~ species) + 
-  scale_color_manual( values = my_colors) + 
+  scale_color_manual( values = my_colors[ 2:4]) + 
   my_theme
 
 dev.off()

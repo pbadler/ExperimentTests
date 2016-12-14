@@ -4,9 +4,8 @@ library(rstan)
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
 
 df <- rbind( df[-1, ], df[1, ] ) # put first row last to run it last 
-i = 12
-
-for(i in 2:nrow(df)){ 
+i = 9
+for(i in 1:nrow(df)){ 
   
   spp <- df$species[i]
   vr  <- df$vital_rate[i]
