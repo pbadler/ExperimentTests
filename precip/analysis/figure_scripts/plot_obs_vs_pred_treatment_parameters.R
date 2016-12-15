@@ -121,7 +121,8 @@ for( i in 1:length(gs_fits)){
       my_theme + 
       ggtitle(paste0( 'Treatment effects on ', spp, ' ', vr ))
     
-  
+  df$species <- spp
+  df$vital_rate <- vr
   write.csv(df, paste0('output/predicted_and_observed_par_estimates_for_', spp, '_', vr, '.csv') )
     
   # plot observed and predicted effects across size ----------------------------------------------------------------- #
@@ -306,7 +307,8 @@ for( i in 1:length(r_fits)){
     my_theme + 
     ggtitle(paste0( 'Treatment effects on ', spp, ' ', vr ))
   
-  
+  df$species <- spp
+  df$vital_rate <- vr
   write.csv(df, paste0('output/predicted_and_observed_par_estimates_for_', spp, '_', vr, '.csv') )
   
   pdf( paste( 'figures/predictions/predicted_vs_observed_treatment_effects_on_', spp,'_', vr, '.pdf' ),  width = 8, height = 6)
