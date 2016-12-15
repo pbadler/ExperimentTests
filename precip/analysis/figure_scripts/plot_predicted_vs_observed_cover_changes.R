@@ -4,103 +4,121 @@ library(tidyr)
 library(stringr)
 
 rm(list = ls() ) 
-spp = 'ARTR'
 
-# get last year of cover which is not in the survival dataframe ------------------------------------- #   
-oldCover <- read.csv(paste0( '~/driversdata/data/idaho/speciesData/', spp, '/quadratCover.csv'))
-newCover <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/quadratCover.csv'))
-oldCover$Period <- "Historical"
-newCover$Period <- "Modern"
-last_cover  <- rbind(oldCover, newCover)
-quad <- read.csv('~/driversdata/data/idaho_modern/quad_info.csv')
+load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
-last_cover <-
-  last_cover %>%
-  left_join(quad) %>%
-  mutate( quad = as.numeric(str_extract(pattern = '[0-9]+$', quad))) %>% 
-  filter( Treatment %in% c('Control', 'Drought', 'Irrigation')) %>%
-  mutate( year = ifelse(year < 100, year + 1900, year)) %>% 
-  mutate( observed = totCover)
+species_list <- c('ARTR', 'HECO', 'POSE' , 'PSSP')
 
-# ------------------------------------------------------------------------------------------------------ #
-df <- read.csv(paste0('data/temp_data/', spp, '_growth_and_survival_cleaned_dataframe.csv'))
+cover_threshholds <- c(2, 0, 0.5, 1)
+x_adj <- c(0.75, 0.75, 0.45, 0.45)
+grd <- data.frame(species = species_list, cover_threshholds = cover_threshholds, x_adj = x_adj , model = c('climate'))
+grd2 <- grd
+grd2$model <- 'year_effects'
+grd <- rbind(grd,grd2)
 
-df$true_cov <- exp(df$logarea.t0) # use year 0 cover 
 
-trueCov <- 
-  df %>% 
-  group_by( Period, year, Treatment, quad ) %>% 
-  summarise( observed = sum( true_cov ) )
-
-obs_cover <- merge( last_cover, trueCov, by = c('Period', 'year', 'Treatment', 'quad'), all.x = T)
-
-obs_cover <- obs_cover %>% mutate( observed = ifelse( is.na(observed.y), observed.x, observed.y)) # fill in data from end years in dataframe
-
-obs_pgr <- 
-  obs_cover %>% 
-  ungroup() %>% 
-  arrange( Period, Treatment, quad, year ) %>% 
-  rename( cover_obs = observed ) %>% 
-  mutate( pgr_observed = log(cover_obs) - log(lag(cover_obs,1)), year_diff = year - lag( year , 1 )) %>% 
-  filter( year_diff == 1 ) %>% 
-  group_by( Period , year , Treatment ) %>% 
-  summarise ( observed = mean(pgr_observed))
-
-# get predicted cover -------------------------------------------------------------------------------------# 
-pred <- readRDS('output/ibm/simulations/ARTR_one_step_ahead_climate_model_cover_per_quad.RDS')
-
-pred$total_size[ is.na(pred$total_size  ) ]  <- 0 
-
-pred <- 
-  pred %>% 
-  mutate( predicted = rec_area + total_size ) %>%  
-  arrange( simulation, Treatment, quad, year)     # prediction for year + 1 
-
-predicted_df  <- merge( obs_cover[, c('year', 'Treatment', 'quad', 'observed', 'Period')], pred[, c('simulation', 'quad', 'Treatment', 'predicted', 'year')] )
-
-predicted_pgr <- 
-  predicted_df %>% 
-  mutate( pgr_predicted = log( predicted)  - log(observed)) %>% 
-  group_by( year, Treatment, simulation ) %>% 
-  filter( is.finite(pgr_predicted)) %>%
-  summarise( mpgr = mean(pgr_predicted)) %>% 
-  ungroup(.) %>% 
-  group_by(year, Treatment ) %>% 
-  summarise( predicted = mean(mpgr) , lcl = quantile ( mpgr, 0.25 ) , ucl = quantile( mpgr , 0.75)) %>% 
-  ungroup() %>% 
-  mutate( year = year + 1  ) # predictions are for year t + 1 
-
-# merge predicted and observed ---------------------------------------------------------- # 
-
-plot_df <- merge(obs_pgr, predicted_pgr)
-
-plot_df_long <- 
-  plot_df %>% 
-  gather( type, val , observed , predicted ) %>% 
-  mutate(lcl = ifelse( type == 'observed' , NA, lcl )) %>% 
-  mutate(ucl = ifelse( type == 'observed' , NA, ucl ))
+for(i in 1:nrow(grd)){ 
   
-library(ggplot2)
-
-pts <- 
-  ggplot( plot_df_long, aes( x = year, y = val, ymax = ucl, fill = Treatment, ymin = lcl, color = Treatment, linetype = type) ) + 
-  geom_ribbon( alpha = 0.2, color = NA) + 
-  geom_line( ) 
-
-
-pts %+% subset( plot_df_long , Period == 'Historical')
-
-pts %+% subset( plot_df_long , Period == 'Modern')
-
-pcor1 <- 
-  ggplot ( plot_df, aes( x = predicted,  y = observed, color = Period) ) + 
-  geom_point() + 
-  geom_smooth(method= 'lm', se = FALSE, alpha = 0.5)
-
-pcor2 <- 
-  ggplot ( plot_df, aes( x = predicted,  y = observed, color = Treatment) ) + 
-  geom_point() + 
-  geom_smooth(method= 'lm', se = FALSE, alpha = 0.5)
-
-pcor2 %+% subset( plot_df, Period == 'Modern')
+  spp <- grd$species[i]
+  model <- grd$model[i]
+  cover_threshholds <- grd$cover_threshholds[i]
+  x_adj <- grd$x_adj[i]
+  # get last year of cover which is not in the survival dataframe ------------------------------------- #   
+  
+  oc <- read.csv(paste0('output/ibm/simulations/', spp, '_observed_cover_per_quadrat.csv'))
+  
+  m1 <- dir( 'output/ibm/simulations', as.character(spp) , full.names = T)
+  pc <- readRDS(  paste0('output/ibm/simulations/', as.character(spp), '_one_step_ahead_', as.character(model),'_model_quadrat_cover.RDS'))
+  
+  # ------------------------------------------------------------------------------------------------------ #
+  oc$obs <- oc$area
+  pc$pred <- pc$area
+  df <- merge(oc[, c('year', 'Treatment', 'quad', 'obs')], pc[, c('year', 'Treatment', 'simulation', 'quad', 'pred')], by = c('year', 'Treatment', 'quad' ))
+  
+  pred_pgr <- 
+    df %>% 
+    mutate( pgr = log(pred) - log(obs)) %>%
+    filter( is.finite(pgr)) %>% 
+    group_by(year, Treatment, quad) %>% 
+    summarise( predicted = mean(pgr), lcl = quantile(pgr, 0.25), ucl = quantile(pgr, 0.75), pred = mean(pred))
+  
+  pred_pgr$year = pred_pgr$year + 1 # predicted pgr for next year 
+  
+  # get observed pgr --------------------------------------------------------------------- # 
+  
+  all_years <- expand.grid( year = min(oc$year):max(oc$year), quad = unique(oc$quad))
+  all_years <- merge( all_years, unique(oc[, c('quad', 'Treatment')] ) )
+  
+  oc <- merge(all_years, oc, by = c('year', 'quad', 'Treatment'), all.x = T )
+  
+  obs_pgr <- 
+    oc %>% 
+    group_by( Treatment , quad ) %>% 
+    arrange(Treatment, quad,  year ) %>% 
+    mutate( obs_lag = lag( obs, 1 )) %>% 
+    mutate( observed = log(obs)- log(obs_lag))  %>% 
+    filter( is.finite(observed) ) %>% 
+    dplyr::select(year, quad, Treatment, obs, observed ) 
+  
+  # get mean squared error ---- 
+  df <- merge(obs_pgr, pred_pgr)
+  
+  df$Period <- ifelse(df$year > 2000, 'Modern', 'Historical')
+  T2 <- as.character( df$Treatment)
+  T2 <- ifelse(df$Period == 'Historical' , 'Historical', T2)
+  df$Treatment <- T2
+  df$Treatment <- factor( df$Treatment, levels = c('Historical', 'Control', 'Drought', 'Irrigation'), ordered = T)
+  
+  
+  df <- 
+    df %>% 
+    filter( obs*100/10000 > cover_threshholds, pred*100/10000 > cover_threshholds )  # only use plots with greater than cover threshold 
+  
+  allcombos <- expand.grid(Treatment = c('Historical', 'Control', 'Drought', 'Irrigation'), year = c(1925:2016))
+  
+  MSE <- 
+    df %>% 
+    group_by(Treatment ) %>% 
+    summarise( MSE = mean( (observed - predicted)^2 ) )
+  
+  cor <- 
+    df %>% 
+    group_by( Treatment ) %>% 
+    summarise( cor = cor(predicted, observed))
+  
+  xlim <- max( df$predicted )
+  ylim <- min(  df$observed)
+  
+  
+  label_df <- merge(cor, MSE)
+  
+  label_df <- 
+    label_df %>% 
+    mutate( pos.x = x_adj*xlim, pos.y = -Inf ) %>% 
+    #mutate( pos.x = , pos.y = 0.8*ylim ) %>% 
+    mutate(cor = round(cor, 2), MSE = round(MSE, 2)) %>% 
+    mutate( label = paste0('r=', cor, '\n', 'MSE=', MSE))
+  
+  df <- merge(allcombos, df, all.x = T)
+  
+  pts <- 
+    ggplot( df, aes( x = predicted, y = observed, color = Treatment) ) + 
+    geom_point(aes(alpha = Treatment)) +
+    geom_smooth(method = 'lm', se = F, alpha = 1, linetype = 1, color = 1, size = 1) + 
+    geom_text(data = label_df, aes( x = pos.x, y = pos.y , color = NULL , label = label), hjust = 1, vjust = -0.5 , show.legend = F) +   
+    facet_wrap( ~ Treatment  )+ 
+    xlab( 'Annual population growth rate predicted') + 
+    ylab( 'Annual population growth rate observed') + 
+    # scale_y_continuous(limits = c(-ylim, ylim)) + 
+    # scale_x_continuous(limits = c(-ylim, ylim)) + 
+    scale_color_manual(values = my_colors) + 
+    scale_alpha_manual(values = c(0.4, 1, 1, 1)) + 
+    my_theme +
+    ggtitle(paste(spp))
+    # coord_fixed()
+  
+  pdf(paste0( 'figures/predictions/', spp, '_', model , '_model_predicted_and_observed_population_growth_rates.pdf'), height = 8, width = 8)
+  print( pts )
+  dev.off()
+}
 

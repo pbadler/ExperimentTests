@@ -85,11 +85,11 @@ years$Period[ years$year <= 1960 ] <- 'Historical'
 species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 model_list <- c('climate', 'treatment', 'year_effects')
 
-ylims <- list( c(0,25), c(0,5), c(0,5), c(0,5))
+ylims <- list( c(0,25), c(0,4), c(0,4), c(0,4))
 names(ylims) <- species_list
 iter <- expand.grid( species = species_list, model = model_list )
 
-for( i in 5:nrow(iter) ) { 
+for( i in 1:nrow(iter) ) { 
   
   spp <- as.character( iter$species[i])
   model <- as.character( iter$model[i] )
@@ -113,11 +113,11 @@ for( i in 5:nrow(iter) ) {
   # get second year of observed cover, not in survival data -----------------------------------------------#  
   df <- read.csv(paste0('data/temp_data/', spp, '_growth_and_survival_cleaned_dataframe.csv'))
   df <- df[, c('year', 'Treatment', 'quad', 'obs_id', 'logarea.t1')]
-  df$year <- df$year + 1  # jump ahead 1 year 
+  df$year <- df$year + 1  # using next years cover so add one to year 
   df$area <- exp( df$logarea.t1 ) # get cover of surviving plants in next year 
   qarea2 <- df %>% filter( !is.na(area)) %>% group_by( year, Treatment, quad ) %>% summarise( area = sum(area)) 
 
-  # get recruit area in the second year 
+  # get recruit area ---------------------------------------------------------------------------------------# 
   df <- read.csv(paste0('~/driversdata/data/idaho/speciesData/', spp, '/', spp, '_genet_xy.csv'))
   df$quad <- as.numeric( str_extract(df$quad, '[0-9]+'))
   df$year <- df$year + 1900  
@@ -126,11 +126,11 @@ for( i in 5:nrow(iter) ) {
   df2 <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/', spp, '_genet_xy.csv'))
   df2$quad <- as.numeric( str_extract(df2$quad, '[0-9]+'))
   df2 <- df2 %>% filter( age == 1 ) %>% group_by( quad, year ) %>% summarise( area = sum(area ) ) # get area of recruits 
-  df2 <- subset(df2, year == 2016)
+  df2 <- subset(df2, year == 2016) # only need 2016 
   
   df <- rbind( df, df2) # last year recruits 
   
-  # merge second year data 
+  # merge recruits with second year of cover   
   qarea2 <- merge( qarea2, df , by  = c('year', 'quad' ), all.x = T ) 
   qarea2$area.x [ is.na(qarea2$area.x) ] <- 0 
   qarea2$area.y [ is.na( qarea2$area.y ) ] <- 0 
@@ -145,13 +145,19 @@ for( i in 5:nrow(iter) ) {
   
   write.csv(qarea, paste0( 'output/ibm/simulations/', spp, '_observed_cover_per_quadrat.csv'), row.names = F)
   
-  # merge observed and predicted cover 
+  # merge observed and predicted cover ---------------------------------------------------
   pred_cover$year <- pred_cover$year + 1  # predicted cover is for the following year 
   
   plot_df <- merge( qarea[ , c('area', 'quad', 'year', 'Treatment') ], pred_cover[, c('area', 'quad', 'year', 'Treatment', 'simulation')], by = c('year','quad', 'Treatment') , all.x = T, all.y = T)
   
+  # merge_with quad_info to get groups 
+  quad_info <- read.csv('~/driversdata/data/idaho_modern/quad_info.csv')
+  quad_info$quad <- as.numeric(str_extract(quad_info$quad, '[0-9]+'))
+  plot_df <- merge( plot_df, quad_info)
+  
   predicted_cover <- 
     plot_df %>% 
+    filter( Group != 'P2') %>%
     group_by( simulation, year, Treatment  ) %>% 
     filter( !is.na( area.y) ) %>% 
     summarise( cover = 100*mean(area.y)/10000 ) %>% 

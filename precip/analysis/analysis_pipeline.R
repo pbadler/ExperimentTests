@@ -3,7 +3,7 @@ library(rstan)
 library(dplyr)
 library(tidyr)
 library(stringr)
-library(ggplot)
+library(ggplot2)
 library(lme4)
 library(zoo)
 # run data preparation files first --------------------------- # 
@@ -14,8 +14,9 @@ source('R/prepare_datalists_for_STAN.R')
 
 # 1. run year effects model 
   
- source('analysis/fit_year_effects.R')
+ source('analysis/fit_stan_year_effects_models.R')
  source('analysis/summarize_year_model_fits.R')
+ source('analysis/figure_scripts/plot_year_model_fits.R')
 
 # 2. find climate correlations 
 
@@ -31,7 +32,10 @@ source('R/prepare_datalists_for_STAN.R')
 
  source('analysis/fit_stan_climate_models.R')
 
+ source('analysis/figure_scripts/plot_climate_fits.R')
+
  source('analysis/summarize_climate_model_fits.R')
+
 
 # source('analysis/figure_scripts/plot_predictive_fits.R')
 
@@ -43,7 +47,7 @@ source('R/prepare_datalists_for_STAN.R')
 
  source('analysis/figure_scripts/plot_treatment_stan_fits.R')
 
- source('analysis/figure_scripts/plot_treatmeant_parameter_estimates.R')
+ source('analysis/figure_scripts/plot_treatment_parameter_estimates.R')
  
 # 6.  check for divergence 
 
@@ -51,6 +55,15 @@ source('R/prepare_datalists_for_STAN.R')
 
 # 7. plot observed cover and predicted cover 
 
+source('analysis/figure_scripts/plot_one_step_ahead_cover.R')
+
+source('analysis/figure_scripts/plot_predicted_vs_observed_cover_changes.R')
+
 # 8. plot observed and predicted climate effects on vital rates 
 
+source('analysis/figure_scripts/plot_obs_vs_pred_treatment_parameters.R')
+
+source('analysis/figure_scripts/plot_significant_effect_comparison.R')
+
 # 9. 
+
