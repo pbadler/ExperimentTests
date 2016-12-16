@@ -3,20 +3,49 @@ library(rstan)
 
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
 
-df <- rbind( df[-1, ], df[1, ] ) # put first row last to run it last 
-i = 9
-for(i in 1:nrow(df)){ 
+i = 1
+source('analysis/waic_fxns.R')
+
+for(i in 5:nrow(df)){ 
   
   spp <- df$species[i]
   vr  <- df$vital_rate[i]
   
-  dat <- readRDS(paste0('data/temp_data/modified_', vr, '_data_lists_for_stan.RDS'))[[spp]]
+  dat <- readRDS(paste0('data/temp_data/', vr, '_data_lists_for_stan.RDS'))[[spp]] # fit full treatment by size effects
   
-  myfit <- stan(paste0('analysis/', vr, '/model_', vr, '_treatment_effects.stan'), data = dat, cores = 4, iter = 2000, thin = 4, seed = 1)
+  myfit <- stan(paste0('analysis/', vr, '/model_', vr, '_treatment_effects2.stan'), data = dat, cores = 4, iter = 2000, thin = 4, seed = 1)
+  
+  if(vr != 'recruitment' ) { ### Deal with size by treatment effects 
+    
+    waic1 <- waic(myfit, 'log_lik2')
+    
+    dat2 <- dat
+    dat2$tm2 <- dat2$tm2[, -c(3:4)] # remove size by treatment effects 
+    dat2$tm3 <- dat2$tm3[, -c(3:4)] # remove size by treatment effects 
+    dat2$nT <- ncol(dat2$tm2)
+    
+    myfit2 <- stan( fit = myfit, data = dat2, cores = 4, iter = 2000, thin = 4, seed = 1)
+    
+    waic2 <- waic(myfit2, 'log_lik2')
+    
+    # if removing the size by treatment parameters improves fit then take them out  -------------------------- # 
+    if ( waic1$waic < waic2$waic ){ 
+      myfit <- myfit 
+      dat <- dat 
+    }else if( waic1$waic > waic2$waic ) { 
+      myfit <- myfit2  
+      dat <- dat2 
+    }
+  
+  }
+  
+  
+  # ----------------------------------------------------------------------------------------------------------#   
   
   ss <-  get_sampler_params(myfit) 
   
   dv <- sum(   unlist( lapply( ss, function(x) sum( x[ (1 + ceiling(0.5*nrow(x))):nrow(x), 'divergent__']) )))
+  
   
   if ( dv > 0 ) { 
     # try again if divergence 

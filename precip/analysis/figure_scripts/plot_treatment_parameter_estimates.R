@@ -1,8 +1,11 @@
 rm(list = ls())
+library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(stringr)
 
 files <- dir( 'output', 'treatment_model_parameters.*.csv', full.names = T)
+load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
 dat <- lapply( files, read.csv)
 
@@ -35,7 +38,8 @@ effect_plot <-
   geom_hline( aes( yintercept = 0 ), linetype = 2 , alpha = 0.5) + 
   facet_grid( type  ~  species ) + 
   ylab ( 'mean effect (+/- 95% Bayesian Credible Interval)') + 
-  theme_bw()
+  scale_color_manual(values = my_colors[3:4]) + 
+  my_theme
 
 gg <- treat %>% group_by(vital_rate) %>% do(gg =  effect_plot %+% .  + ggtitle( paste0('Effects on ', .$vital_rate)))
 

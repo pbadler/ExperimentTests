@@ -30,7 +30,7 @@ plot_posterior_year_effects <- function(df){
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '.*_treatment_fit.RDS', full.names = TRUE)
-i = 7
+
 for( i in 1:length(mfiles)){ 
   
   bname <- basename(mfiles[i])
@@ -73,11 +73,11 @@ for( i in 1:length(mfiles)){
   
   # plot posterior of year effects ------------------------------------------------------------# 
   
-  yid <- unique( data.frame( df$yidhold, df$yearhold) ) 
+  yid <- unique( data.frame( df$yid2, df$year2) ) 
   
   a <- data.frame( rstan::extract(temp_fit, 'a') ) 
 
-  names(a)  <- yid$df.yearhold
+  names(a)  <- yid$df.year2
   a$par <- 'a (intercept)'
   
   if( 'b1' %in% model_pars ){
@@ -85,13 +85,14 @@ for( i in 1:length(mfiles)){
     b1 <- rstan::extract(temp_fit, 'b1')$b1
     b1 <- sweep(b1, 1, b1_mu , '-') # subtract mean size effect to focus on deviations 
     b1 <-  as.data.frame( b1 )
-    names(b1) <- yid$df.yearhold 
+    names(b1) <- yid$df.year2 
     b1$par <- 'b1 (size effect)'
     year_effects <- rbind( a, b1)
   }else{ 
     year_effects <- a
   }
   
+
   year_effects_long <- 
     year_effects %>% 
     gather( var, val, - par ) %>% 
@@ -119,7 +120,7 @@ for( i in 1:length(mfiles)){
   
   if( 'bt' %in% model_pars  ) { 
     bt <- data.frame( rstan::extract( temp_fit, 'bt') ) 
-    names(bt) <- treatment_vars
+    names(bt) <- treatment_vars[1:ncol(bt)]
       
     bt_long <- 
       bt %>% 

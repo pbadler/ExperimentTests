@@ -1,4 +1,7 @@
 library(lme4)
+library(dplyr)
+library(tidyr)
+
 # call from removal_analysis_wrapper.r
 root <- "~"
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
@@ -130,8 +133,9 @@ summary(mHECO)
 summary(mPOSE)
 summary(mPSSP)
 
-# figures ########################################################################
 
+# figures ########################################################################
+library(ggplot2)
 trtLabels<-substr(x=names(spp.mean)[3:5],start=7,stop=nchar(names(spp.mean)[3:5]))
 
 trtLabels
@@ -156,8 +160,6 @@ p1 <-
   scale_x_continuous(name = 'year', breaks = c(2007:2016)) 
 
 p1 %+% subset(spp.mean_cover_long, species == 'ARTR') + ylim( 0, 25)
-
-
 
 #1. Average cover treatment and year
 png("figures/treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
@@ -200,11 +202,11 @@ png("figures/treatment_trends_logChange.png",height=3,width=8.5,units="in",res=4
       tmp.mean$pcgr.No_grass <- NA
     }
     matplot(tmp.mean$year,tmp.mean[,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-            col=myCols,ylim=myLims,main=doSpp, font.main=4)
+            col=my_colors[2:4],ylim=myLims,main=doSpp, font.main=4)
     abline(h=0,col="gray")
     
     if(doSpp==sppList[1]) {
-      legend("topright",c("Control","Drought","Irrigation"),pch=16,lty="solid",col=myCols,bty="n")
+      legend("topright",c("Control","Drought","Irrigation"),pch=16,lty="solid",col=my_colors[2:4],bty="n")
       mtext("Mean log change",side=2,line=2,outer=F)
     }
     
@@ -220,9 +222,9 @@ par(mfrow=c(1,4),mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2.5,0,0),tcl=-0.2)
 for(doSpp in sppList){
   tmp.mean<-subset(spp.mean.diff,species==doSpp)
   matplot(tmp.mean$year,tmp.mean[,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-          col=myCols,main=doSpp)
+          col=my_colors[2:4],main=doSpp)
 
-  if(doSpp==sppList[1]) legend("topleft",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
+  if(doSpp==sppList[1]) legend("topleft",trtLabels,pch=16,lty="solid",col=my_colors[2:4],bty="n")
 }
 mtext("Year",side=1,line=1,outer=T)
 mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)
@@ -245,11 +247,22 @@ temp$lc <- log( temp$cover/temp$cover.2011 )
 temp <- subset( temp , is.finite(lc))
 temp$species <- factor( temp$species, labels =  c('ARTR', 'HECO', 'POSE', 'PSSP'))
 
-my_theme <- my_theme + theme( axis.text.x = element_blank())
+lc.ARTR <- lm(dat =  subset( temp, species == 'ARTR'), lc ~ Treatment )
+lc.HECO <- lm(dat =  subset( temp, species == 'HECO'), lc ~ Treatment )
+lc.POSE <- lm(dat =  subset( temp, species == 'POSE'), lc ~ Treatment )
+lc.PSSP <- lm(dat =  subset( temp, species == 'PSSP'), lc ~ Treatment )
+
+summary(lc.ARTR)
+summary(lc.HECO)
+summary(lc.POSE)
+summary(lc.PSSP)
+
+temp
 
 ggplot ( temp, aes( x  = Treatment, y = lc, color = Treatment )) + 
   geom_boxplot() + 
   geom_point( position = position_dodge(width = 1)) + 
+  geom_hline(aes(yintercept = 0 ), linetype = 2) + 
   ylab( 'Log change in cover 2011 to 2016')  + 
   xlab ( '' ) + 
   facet_grid( . ~ species) + 
@@ -277,9 +290,9 @@ summary(m2[[4]])
 #     tmp.mean$pcgr.No_grass <- NA
 #   }
 #   matplot(tmp.mean$year[2:5],tmp.mean[2:5,3:5],type="o",xlab="",ylab="",pch=16,lty="solid",
-#           col=myCols,main=doSpp,ylim=myLims)
+#           col=my_colors[2:4],main=doSpp,ylim=myLims)
 #   abline(h=0,col="gray")
-#   if(doSpp==sppList[1]) legend("top",trtLabels,pch=16,lty="solid",col=myCols,bty="n")
+#   if(doSpp==sppList[1]) legend("top",trtLabels,pch=16,lty="solid",col=my_colors[2:4],bty="n")
 # }
 # mtext("Year",side=1,line=1,outer=T)
 # mtext("Mean cover  deviation (%)",side=2,line=1,outer=T)

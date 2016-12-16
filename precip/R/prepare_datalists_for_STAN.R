@@ -85,6 +85,7 @@ make_data_list <- function( x) {
   survival <- survival[ complete.cases( survival ), ] 
   growth <- growth[ complete.cases( growth ), ] 
   
+  
   split_and_format <- 
     function( df , Xcenter, Xscale, Wcenter , Wscale ) { 
       mylist <- split(df, df$Period)
@@ -231,18 +232,23 @@ for(i in 1:length( species )) {
   sdat <- readRDS( paste0(data_path, '/', spp, '_survival.RDS'))
   rdat <- readRDS( paste0( data_path, '/', spp, '_recruitment.RDS'))
   
+  # growth and survival data -------------------------------------- # 
+  
   sdat$logarea.t0 <- sdat$logarea
   
   df <- merge( sdat, gdat, all.x = T)
   df <- merge(df, clim)
-    
+  
+  df$Period <- ifelse(df$year > 2011, "Modern", "Historical")
+
   res <- make_data_list(df)
   survival <- res[[1]]
   growth <- res[[2]]
   
+  
   growth <- add_survival_data(growth, survival )
   
-  # recruitment  
+  # recruitment -----------------------------------------------------# 
   rdf <- merge( rdat, clim ) 
   recruitment <- make_data_list_recruitment( x = rdf, 'recruitment' ) 
   
