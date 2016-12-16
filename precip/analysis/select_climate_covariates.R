@@ -6,8 +6,7 @@ cor_files <- dir('output', 'correlations.csv', full.names = T)
 cor_files <- cor_files [ -grep('all', cor_files)] # keep only the selected ones 
 
 out <- list( NA )
-
-
+i = 1
 for(i in 1:length(cor_files)){
   
   spp <- str_extract( pattern =  '[A-Z]{4}', cor_files[i])
@@ -16,7 +15,7 @@ for(i in 1:length(cor_files)){
   temp <- read.csv(cor_files[i])
   
   VWC_parameter <- as.character( temp$var [ temp$vartype == 'VWC'] )
-  T_parameter <- as.character( temp$var[ temp$vartype == 'T'])
+  
   
   if ( vr == 'growth' & spp %in% c('ARTR', 'POSE')) {  # use the size effect interaction 
     ifx <- paste( VWC_parameter, 'logarea.t0', sep = 'x')
@@ -29,7 +28,7 @@ for(i in 1:length(cor_files)){
     VWC_parameter <- c(VWC_parameter, ifx)
   }  
   
-  use_vars <- c(T_parameter, VWC_parameter)
+  use_vars <- VWC_parameter
   
   out[[i]] <- data.frame( species = spp, vital_rate = vr, covars = paste( use_vars, collapse = ','))
 }

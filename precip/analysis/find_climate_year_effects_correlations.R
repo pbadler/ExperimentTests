@@ -73,10 +73,10 @@ for( i in 1:length(ye_files)){
       out %>% 
       mutate( var = row.names(.)) %>% 
       mutate( vartype = str_extract(var, "^[A-Z]+" )) %>% 
-      group_by( vartype ) %>% 
-      mutate( sig = ifelse( Int_pval < 0.05, 'sig', 'ns')) %>% 
-      arrange( vartype, desc(sig), desc(abs(Intercept)) ) %>% 
-      filter( (vartype == 'T' & row_number() < 2) | (vartype == 'VWC' & row_number() < 4 ))
+      filter( vartype =='VWC')  %>% 
+      ungroup() %>%
+      arrange( desc(abs(Intercept)) ) %>% 
+      filter(row_number() < 4 )
     
     write.csv(out, paste0('output/', spp, '_', vr, '_all_correlations.csv'))
     write.csv(vars, paste0( 'output/', spp, '_', vr, '_correlations.csv'))      
@@ -100,21 +100,42 @@ for( i in 1:length(ye_files)){
       out [ j, 4] <- temp$p.value
     }
     
-    vars <- 
-      out %>% 
-      mutate( var = row.names(.)) %>% 
-      mutate( vartype = str_extract(var, "^[A-Z]+" )) %>% 
-      gather( type , val , Intercept:size_pval )%>% 
-      group_by( vartype ) %>% 
-      mutate( stat = ifelse(str_detect(pattern = 'pval', type), 'pval', 'effect')) %>%
-      mutate( type2 = str_extract(pattern = '(Int)|(size)', type )) %>% 
-      dplyr::select(-type) %>% 
-      spread(stat, val ) %>% 
-      group_by( vartype ) %>% 
-      mutate( sig = ifelse( pval < 0.05, 'sig', 'ns')) %>% 
-      arrange( vartype, desc(sig), desc(abs(effect)) ) %>% 
-      filter(type2 == 'Int') %>% 
-      filter( (vartype == 'T' & row_number() < 2) | (vartype == 'VWC' & row_number() < 4 ))
+    if(vr == 'growth' & spp %in% c('ARTR', 'POSE')){ 
+    
+      vars <- 
+        out %>% 
+        mutate( var = row.names(.)) %>% 
+        mutate( vartype = str_extract(var, "^[A-Z]+" )) %>% 
+        filter( vartype == 'VWC') %>% 
+        group_by( row_number() ) %>% 
+        mutate( max_cor = max( abs(Intercept), abs(size))) %>% 
+        ungroup() %>% 
+        arrange( desc(max_cor) ) %>% 
+        filter(vartype == 'VWC' & row_number() < 4 )
+    
+    }else if ( vr == 'survival' & spp == 'POSE' ) { 
+      vars <- 
+        out %>% 
+        mutate( var = row.names(.)) %>% 
+        mutate( vartype = str_extract(var, "^[A-Z]+" )) %>% 
+        filter( vartype == 'VWC') %>% 
+        group_by( row_number() ) %>% 
+        mutate( max_cor = max( abs(Intercept), abs(size))) %>% 
+        ungroup() %>% 
+        arrange( desc(max_cor) ) %>% 
+        filter(vartype == 'VWC' & row_number() < 4 )
+      
+    }else { 
+      vars <- 
+        out %>% 
+        mutate( var = row.names(.)) %>% 
+        mutate( vartype = str_extract(var, "^[A-Z]+" )) %>% 
+        filter( vartype == 'VWC') %>% 
+        ungroup() %>% 
+        arrange( desc( abs( Intercept ) ) )%>% 
+        filter(vartype == 'VWC' & row_number() < 4 )
+    }
+  
     
     write.csv(out, paste0('output/', spp, '_', vr, '_all_correlations.csv'))
     

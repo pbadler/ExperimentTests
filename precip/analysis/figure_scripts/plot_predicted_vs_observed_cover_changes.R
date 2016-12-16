@@ -9,14 +9,13 @@ load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
 species_list <- c('ARTR', 'HECO', 'POSE' , 'PSSP')
 
-cover_threshholds <- c(2, 0, 0.5, 1)
+cover_threshholds <- c(2, 0, 0.25, 0.25)
 x_adj <- c(0.75, 0.75, 0.45, 0.45)
 grd <- data.frame(species = species_list, cover_threshholds = cover_threshholds, x_adj = x_adj , model = c('climate'))
 grd2 <- grd
 grd2$model <- 'year_effects'
 grd <- rbind(grd,grd2)
-
-
+i = 1
 for(i in 1:nrow(grd)){ 
   
   spp <- grd$species[i]
@@ -63,18 +62,19 @@ for(i in 1:nrow(grd)){
   # get mean squared error ---- 
   df <- merge(obs_pgr, pred_pgr)
   
-  df$Period <- ifelse(df$year > 2000, 'Modern', 'Historical')
+  df$Period <- ifelse(df$year > 2010, 'Modern', 'Historical')
   T2 <- as.character( df$Treatment)
   T2 <- ifelse(df$Period == 'Historical' , 'Historical', T2)
   df$Treatment <- T2
   df$Treatment <- factor( df$Treatment, levels = c('Historical', 'Control', 'Drought', 'Irrigation'), ordered = T)
-  
+  df$Treatment <- factor( df$Treatment, labels = c('Training Data', 'Control', 'Drought', 'Irrigation'))
   
   df <- 
     df %>% 
-    filter( obs*100/10000 > cover_threshholds, pred*100/10000 > cover_threshholds )  # only use plots with greater than cover threshold 
+    filter( obs*100/10000 > cover_threshholds, 
+            pred*100/10000 > cover_threshholds )  # only use plots with greater than cover threshold 
   
-  allcombos <- expand.grid(Treatment = c('Historical', 'Control', 'Drought', 'Irrigation'), year = c(1925:2016))
+  allcombos <- expand.grid(Treatment = c('Training Data', 'Control', 'Drought', 'Irrigation'), year = c(1925:2016))
   
   MSE <- 
     df %>% 

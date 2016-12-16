@@ -7,6 +7,7 @@ library(rstan)
 setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', 'fit.RDS', full.names = TRUE)
+mfiles <- mfiles [ -grep('treatment', mfiles)] # don't use year effects
 
 # log-pointwise predictive density -------------------------------------------------------# 
 
@@ -17,7 +18,8 @@ compute_lppd <- function( stan_fit, ll = 'log_lik' ) {
 } 
 
 # ---------------------------------------------------------------------------------------------------------------------
-i = 1
+i = 2
+
 for( i in 1:length(mfiles)){ 
   
   bname <- basename(mfiles[i])
@@ -45,8 +47,6 @@ for( i in 1:length(mfiles)){
                         size = dat$Xhold, obs_id = dat$obs_idhold , year = dat$yearhold, 
                         Treatment = dat$treathold, lppd2 = lppd2)
   }
-  
-  
   
   y_out$Treatment <- factor(y_out$Treatment, labels = c('Control', 'Drought', 'Irrigation'))
   

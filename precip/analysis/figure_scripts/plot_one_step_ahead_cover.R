@@ -79,8 +79,8 @@ generate_cover_predictions <- function( spp, model ) {
 load('analysis/figure_scripts/my_plotting_theme.Rdata') 
 
 years <- expand.grid(year = 1925:2016, Treatment = c('Control', 'Drought', 'Irrigation'), type = c('observed', 'predicted'))
-years$Period[ years$year > 2006 ] <- 'Modern'
-years$Period[ years$year <= 1960 ] <- 'Historical'
+years$Period[ years$year > 2010 ] <- 'Modern'
+years$Period[ years$year <= 2011 ] <- 'Historical'
 
 species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 model_list <- c('climate', 'treatment', 'year_effects')
@@ -175,7 +175,7 @@ for( i in 1:nrow(iter) ) {
     merge( observed_cover, predicted_cover, all.x = T) %>% 
     mutate( predicted = ifelse(is.na(predicted), observed, predicted))
   
-  plot_df$Period <- ifelse( plot_df$year < 2000 , 'Historical', 'Modern')
+  plot_df$Period <- ifelse( plot_df$year < 2011 , 'Historical', 'Modern')
   
   plot_df <- 
     plot_df %>% 
@@ -190,21 +190,20 @@ for( i in 1:nrow(iter) ) {
     filter( !(Treatment != 'Control' & Period == 'Historical')) %>% 
     mutate( Period = ifelse(is.na(Period), 'Historical', Period )) %>%
     mutate( Treatment = ifelse(Period == 'Historical', 'Control' , as.character(Treatment))) %>% 
-    mutate( Treatment2 = ifelse( Period == 'Historical', 'Historical', Treatment )) 
+    mutate( Treatment2 = ifelse( Period == 'Historical', 'Training Data', Treatment )) 
   
-  plot_df$Treatment <- factor(plot_df$Treatment2, levels = c('Historical', 'Control', 'Drought', 'Irrigation'), ordered = T)
-  
+  plot_df$Treatment <- factor(plot_df$Treatment2, levels = c('Training Data', 'Control', 'Drought', 'Irrigation'), ordered = T)
   
   p1 <- 
     ggplot( plot_df, aes( x = year, y =  cover, fill = Treatment, color = Treatment, linetype = type, shape = type, ymax = ucl, ymin = lcl)) +
       geom_line()  +
-      geom_ribbon(aes(ymax = ucl, ymin = lcl, color = NA), alpha = 0.05) + 
+      #geom_ribbon(aes(ymax = ucl, ymin = lcl, color = NA), alpha = 0.05) + 
       scale_color_manual(values = my_colors) + 
       scale_fill_manual( values = my_colors) +
       ylab( 'cover (%)' ) +  
       my_theme + 
       scale_y_continuous(limits = ylims[[spp]]) + 
-      guides( linetype=guide_legend(title=NULL)) 
+      guides( linetype=guide_legend(title=NULL), color = guide_legend(title = NULL)) 
   
   pdf( paste0( 'figures/predictions/', spp  , '_', model, '_model_predicted_cover2.pdf' ), height = 8, width = 8) 
   
@@ -214,11 +213,23 @@ for( i in 1:nrow(iter) ) {
       ggtitle(paste('Historical cover of', spp )) 
   )
   
+  # fix break in line 
+
+  plot_df <-
+    rbind( plot_df  %>% 
+             filter( !(year == 2011 & Period == 'Historical' )) , 
+      plot_df %>% 
+        filter( year == 2011 & Treatment == 'Control') %>% 
+        mutate( Treatment = 'Training Data')
+    ) 
+
   print(
     p1 %+% plot_df + 
+      #geom_vline(aes(xintercept= 2011), alpha = 0.5, linetype = 4) + 
       scale_x_continuous(breaks = c(2007:2016), limits = c(2007, 2016)) + 
       ggtitle(paste('Modern cover of', spp ))
   )
   
   dev.off()
 } 
+

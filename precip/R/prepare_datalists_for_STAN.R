@@ -249,6 +249,8 @@ for(i in 1:length( species )) {
   growth <- add_survival_data(growth, survival )
   
   # recruitment -----------------------------------------------------# 
+  rdat$Period <- ifelse(rdat$year > 2011, "Modern", "Historical")
+  
   rdf <- merge( rdat, clim ) 
   recruitment <- make_data_list_recruitment( x = rdf, 'recruitment' ) 
   

@@ -9,6 +9,7 @@ m_files  <- dir('analysis', 'year_effects.stan', recursive = T, full.names = T)
 
 grd <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
 i = 1
+
 for( i in 1:nrow(grd)){ 
   
   vr <- grd$vital_rate[i]

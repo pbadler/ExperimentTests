@@ -48,9 +48,11 @@ cors$label <- paste0( 'r=', round( cors$cor, 2))
 
 all_effects <- unique(all_effects)
 
+nrow( all_effects )
+
 p1 <- 
   ggplot(all_effects, aes( x = mu.x, y = mu.y, color = Treatment, shape = sig_label,  group = 1 )  ) + 
-  geom_point(size = 2) + 
+  geom_point(size = 2.5, alpha = 0.7) + 
   geom_smooth(method = 'lm', se = F, color = 'darkgray', linetype = 2) +
   geom_vline(aes(xintercept = 0) , linetype = 2 , alpha = 0.1) + 
   geom_hline( aes(yintercept = 0 ), linetype = 2, alpha = 0.1)  + 
@@ -63,6 +65,7 @@ p1 <-
   scale_shape_manual(values = c(16,8), guide = 'none') + 
   facet_grid( . ~ par  )  + 
   coord_fixed()
+
 
 p1 <- p1 + geom_text( data = cors, aes( x  = x.pos, y = y.pos , label = label , color = NULL, shape = NULL), show.legend = F) 
 p1
@@ -83,11 +86,11 @@ p <-
 
 g <- all_effects %>% group_by(type ) %>% do( p = p %+% . + ggtitle(.$type) )
 
-g$p[[1]]
-g$p[[2]]
-g$p[[3]]
+p1
 
-pdf( 'figures/significant_parameter_comparison.pdf' , height = 5, width = 5)
+
+
+pdf( 'figures/significant_parameter_comparison.pdf' , height = 6, width = 8)
 
 print( p1 )
 

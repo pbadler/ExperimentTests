@@ -18,6 +18,7 @@ gs_treatment_fit <- treatment_stan_fit[ -grep('recruitment', treatment_stan_fit)
 r_treatment_fit <- treatment_stan_fit[ grep('recruitment', treatment_stan_fit)]
 
 # first loop do all growth and survival fits ------------------------------------- # 
+i = 1
 for( i in 1:length(gs_fits)){
   
   bname <- basename(gs_fits[i])
@@ -43,12 +44,14 @@ for( i in 1:length(gs_fits)){
   
   Chold1 <- Chold [ , nifx, drop = F]   # climate main effects 
   Chold2 <- Chold [ , ifx , drop = F]   # climate interactions with plant size 
-  Chold2 <- sweep( Chold2 , 2, dat$Xhold, '/') # divide by size to isolate annual climate effect 
+  
+  Chold2 <- sweep( Chold2 , 1, dat$Xhold, '/') # divide by size to isolate annual climate effect 
   
   alpha <- matrix( NA, nrow = nrow(b2), ncol = nrow(Chold))
   beta <- matrix( NA, nrow = nrow(b2), ncol =  nrow(Chold))
   
   # calculate the overall climate effects on intercept and slope ----------- # 
+  
   for( j in 1:nrow(b2)){ 
     alpha[j, ] <- Chold1 %*% b2[ j, nifx ]
     beta[j, ]  <- Chold2 %*% b2[ j,  ifx ]
@@ -93,7 +96,11 @@ for( i in 1:length(gs_fits)){
   bt <- bt[ grep( '^bt', bt$X ), c(2, 5, 9)] 
   names(bt) <- c('mu', 'lcl', 'ucl')
   
-  obs_df <- data.frame( type = 'observed_effect', Treatment = c('Drought', 'Irrigation'), par = c('a (Intercept)', 'a (Intercept)', 'b1 (size effect)', 'b1 (size effect)'), bt )
+  if(nrow(bt) == 4 ){ 
+    obs_df <- data.frame( type = 'observed_effect', Treatment = c('Drought', 'Irrigation'), par = c('a (Intercept)', 'a (Intercept)', 'b1 (size effect)', 'b1 (size effect)'), bt )
+  }else if(nrow(bt)==2){ 
+    obs_df <- data.frame( type = 'observed_effect', Treatment = c('Drought', 'Irrigation'), par = c('a (Intercept)', 'a (Intercept)'), bt )
+  }
   
   # bind together observed and predicted ----------------------------------- #
   
@@ -104,7 +111,6 @@ for( i in 1:length(gs_fits)){
     filter( Treatment != 'Control' ) %>% 
     gather( stat, val, mu:ucl) %>% 
     spread( type, val ) %>% 
-    mutate( predicted_effect = ifelse( is.na(predicted_effect) , 0, predicted_effect )) %>% 
     gather( type, val, observed_effect:predicted_effect ) %>% 
     spread(stat, val )
   
@@ -138,15 +144,18 @@ for( i in 1:length(gs_fits)){
   
   mm <- model.matrix(data = tm , ~ -1  + Treatment ) 
   
-  pred_matrix <- cbind( mm , mm*tm$logarea.t0 )
+  if(ncol(bt) == 4){ 
+    pred_matrix <- cbind( mm , mm*tm$logarea.t0 )
+  }else{ 
+    pred_matrix <- mm 
+  }
   
   muhat <- matrix( ncol = nrow(pred_matrix), nrow = nrow( bt ) )
   
   for( j in 1:nrow(bt)) { 
-    
     muhat[j , ] <- pred_matrix%*%bt[j, ]
-    
   }
+  
   mus <- colMeans(muhat)
   ci <- apply( muhat, 2, quantile, c(0.025, 0.975))
   observed_effect <- data.frame( mus, t(ci) , logarea.t0 = tm$logarea.t0, Treatment = tm$Treatment)
@@ -171,13 +180,16 @@ for( i in 1:length(gs_fits)){
     pred_bt <- cbind(pred_bt1, pred_bt2 )
   }else if (length(pfx) == 1 ){ 
     pred_bt1 <- as.matrix( pfx[[1]] %>% filter( par == 'a (Intercept)') %>% spread( Treatment, val ) %>% ungroup() %>% dplyr::select( Drought, Irrigation ))
-    pred_bt2 <- pred_bt1 
-    pred_bt2[] <- 0  # assign size effects zero if no parameter b2 is estimated 
-    pred_bt  <- cbind(pred_bt1, pred_bt2)
+    pred_bt  <- pred_bt1
   } 
   
-  muhat <- matrix( ncol = nrow(pred_matrix), nrow = nrow( pred_bt ) )
+  if(ncol(bt) == 4){ 
+    pred_bt <- pred_bt
+  }else if(ncol(bt)==2){
+    pred_bt <- pred_bt[, 1:2]
+  }
   
+  muhat <- matrix( ncol = nrow(pred_matrix), nrow = nrow( pred_bt ) )
   for( j in 1:nrow(pred_bt)) { 
     
     muhat[j , ] <- pred_matrix%*%pred_bt[j, ]
