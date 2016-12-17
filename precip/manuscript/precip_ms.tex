@@ -151,21 +151,37 @@ We modeled the average daily deviations in soil moisture and temperature in the 
 
 \subsection*{Statistical models of vital rates}
 
-Our regression models for survival, growth and recruitment follow previous work \citep{adler_coexistence_2010,chu_large_2015}. We model the survival probability of an individual genet as a function of genet size, the neighborhood-scale crowding experienced by the genet from both conspecific and heterospecific genets, temporal variation among years, and permanent spatial variation among groups of quadrats (`group'; here means a set of nearby quadrats located within one pasture or grazing exclosure). In this analysis we only include crowding from the four main focal species. 
+For each of the vital rates and each species we fit three separate models.  First we fit a treatment model fit to all observations in the historical data as well as the contemporary experiment.  This model included parameters estimating the effects of the drought and irrigation treatments on each species vital rate. This model was used to describe the basic results of the experiment. Next we fit two models to the historical observational data only (including the first four years of the modern data 2007 to 2010). We used these two models to generate predictions for the effects of the experiment. In the first prediction model, year to year variation in vital rates was treated as random effect. In the second prediction model, the "climate" model, we included paramaters that described the effects of year to year variation in seasonal soil moisture. These three models allow for two meaningful comparisons.  First we can compare the predictions made by the two prediction models directly to the raw data in the experimental plots.  In addition, we can compare the direction and magnitude of the soil moisture parameters estimated from the observational data by the climate model to the coefficients describing the treatment effects in the treatment model.      
 
-Formally, we modeled the survival probability, $S$, of genet $i$ in species $j$, group $g$, and removal treatme nt $h$, from time $t$ to $t+1$  as
+All three versions of the models of the models above follow the same basic structure and are developed from previous work \citep{adler_coexistence_2010,chu_large_2015}. We model the survival probability of an individual genet as a function of genet size, the neighborhood-scale crowding experienced by the genet from both conspecific and heterospecific genets, temporal variation among years, and permanent spatial variation among groups of quadrats (`group'; here means a set of nearby quadrats located within one pasture or grazing exclosure). In this analysis we only include crowding from the four main focal species. 
+
+Formally, we modeled the survival probability, $S$, of genet $i$ in species $j$, group $g$, and removal treatmnt $h$, from time $t$ to $t+1$  as
 \begin{equation}
-\mbox{logit}(S_{ijgh,t}) = \gamma_{j,t}^S + \varphi_{jg}^S+  \chi_{jh}^S  + \beta_{j,t}^S u_{ij,t} +  
+\mbox{logit}(S_{ijgh,t}) = \varphi_{jg}^S + \gamma_{j,t}^S  + \beta_{j,t}^S u_{ij,t} +  
 \left \langle \boldsymbol{\omega}_{j,t}^S, \boldsymbol{W}_{ij,t} \right \rangle 
 \label{eqn:survReg}
 \end{equation}
-where $\gamma$ is a time-dependent intercept, $\varphi$ is the coefficient for the effect of spatial location group, $\chi$ is the removal treatment effect, $\beta$ is the coefficient that represents the effect of log genet size, $u$, on survival. $\boldsymbol{\omega}$ is a vector of interaction coefficients which determine the impact of crowding, $\boldsymbol{W}$, by each species on the focal species. The vector $\boldsymbol{W}$ includes crowding from the four dominant species,  \textit{A. tripartita}, \textit{P. spicata}, \textit{H. comata}, and \textit{Poa secunda}, as well as two covariates representing total crowding from (1) all other perennial grasses and shrubs, which were mapped as polygons, and (2) all forb species, which were mapped as points. 
+where $\varphi$ is the spatial group dependent intercept, $\gamma$ is a year-effect, $\beta$ is year-dependent coefficient that represents the effect of log genet size, $u$, on survival in year $t$. $\boldsymbol{\omega}$ is a vector of interaction coefficients which determine the impact of crowding, $\boldsymbol{W}$, by each species on the focal species. The vector $\boldsymbol{W}$ includes crowding from the four dominant species, \textit{A. tripartita}, \textit{P. spicata}, \textit{H. comata}, and \textit{Poa secunda}. 
 $\left \langle \boldsymbol{x, y} \right \rangle$ denotes the inner product of vectors $\boldsymbol{x}$ and $\boldsymbol{y}$, 
 calculated as \texttt{sum(x*y)} in R.
 
+To describe the treatment effects in the experiment a new term is added to the above model,
+\begin{equation}
+ \boldsymbol{T}\chi_{j}^S
+\label{eqn:survT}
+\end{equation}
+where $\chi$ is a vector of treatment effect coefficients describing the effects of each experimental treatment $h$ on the survival rate, and $\boldsymbol{T}$ is a design matrix indicating the treatment level of each observation in the data. The design matrix also includes terms for the interaction between plant size $u$ and the treatment effects. These interaction terms allow the effect of each treatment to vary with plant size.  
+
+In the climate model, the $\chi$ and $\xi$ terms are replaced with, 
+\begin{equation}
+\boldsymbol{C}\xi_{j}^S 
+\label{eqn:survC}
+\end{equation}
+where $\xi$ gives a vector of coefficients describing the effects of a set of soil moisture covariates $\boldsymbol{C}$ in treatment $h$ and year $t$ on the survival rate of species $j$. $\boldsymbol{C}$ is a vector of seasonal average soil moisture at a set of species-specific seasons and time lags and can include interaction effects between plant size, $u$ and the soil moisture covariates.  These interaction effects allow the effect of soil moisture to vary with plant size. 
+
 Our growth model has a similar structure. The change in genet size from time $t$ to $t+1$ , conditional on survival, is given by:
 \begin{equation}
-u_{ijgh,t+1} = \gamma_{j,t}^G + \varphi_{jg}^G+  \chi_{jh}^G  + \beta_{j,t}^G u_{ij,t} + 
+u_{ijgh,t+1} = \varphi_{jg}^G + \gamma_{j,t}^G + \chi_{jh}^G  + \beta_{j,t}^G u_{ij,t} + 
 \left \langle  \boldsymbol{\omega}_{j,t}^G, \boldsymbol{W}_{ij,t} \right \rangle + \varepsilon_{ij,t}^G .
 \label{eqn:growReg}
 \end{equation}
@@ -175,7 +191,22 @@ Var(\varepsilon_{ij,t}^G) = a \exp ^{(bu_{ij,t+1})} .
 \label{eqn:growVar}
 \end{equation}
 
-We model the crowding experienced by a focal genet as a function of the distance to and size of neighbor genets. In previous work, we assumed that the decay of crowding with neighbor distance followed a Gaussian function \citep{chu_large_2015}, but here we use a data-driven approach \citep{teller_linking_2016}. We model the crowding experienced by genet $i$ of species $j$ from neighbors of species $m$ as the sum of neighbor areas across a set of concentric annuli, $k$, centered at the plant,
+As in the survival regression above, specific specific parameters describing the treatment effects on growth are added in the treatment model, 
+\begin{equation}
+\boldsymbol{T} \chi_{j}^G 
+\label{eqn:growT}
+\end{equation}
+
+where $\chi$ is a treatment effect describing the effect of experimental treatment $h$ on growth, including treatment by size interactions.
+
+Similarly, in the climate model soil moisture influences the growth equation through these terms,  
+\begin{equation}
+\boldsymbol{C}\xi_{j}^G 
+\label{eqn:growC}
+\end{equation}
+where $\xi$ is a vector of coefficients describing the effects of soil moisture covariates in the matrix $\boldsymbol{C}$ for treatment $h$ and year $t$ on growth of species $j$. Again this can include interactions between soil moisture and plant size $u$.
+
+We model the crowding experienced by a focal genet as a function of the distance to and size of neighbor genets. In previous work, we assumed that the decay of crowding with neighbor distance followed a Gaussian function \citep{chu_large_2015}, but here we use a data-driven approach \citep{teller_linking_2016, adler_in_prep}. We model the crowding experienced by genet $i$ of species $j$ from neighbors of species $m$ as the sum of neighbor areas across a set of concentric annuli, $k$, centered at the plant,
 \begin{equation}
 w_{ijm,k} = F_{jm}(d_{k})A_{i,k}     
 \label{eqn:wik}
@@ -203,88 +234,78 @@ and returns an approximate AIC value and model degrees of freedom ($df$) for sur
 local minimum of AIC as a function of $df$, as in \cite{teller_linking_2016}. This approach assumes that one measure of crowding affects 
 survival and growth. In addition, for fitting the kernels we assumed that survival and growth depended only on intraspecific crowding, and thus only fitted the
 within-species competition kernels $F_{jj}$. Based on previous work \citep{adler_coexistence_2010}, we set all $F_{mj}$ equal to $F_{jj}$, meaning that 
-the within-species competition kernel for species $j$ is also used to determine the effect of all other species on species $j$. We used data from all historical plots and contemporary control-treatment plots to estimate the competition kernels, which are shown in Fig. \ref{fig:CompKernels}. 
+the within-species competition kernel for species $j$ is also used to determine the effect of all other species on species $j$. We used data from all historical plots and contemporary control-treatment plots to estimate the competition kernels \citep{adler_in_prep}. 
 
 Once we had estimated the competitions kernels, we used them to calculate the values of $\boldsymbol{W}$ for each individual, 
 and fit the full survival and growth regressions, which include the interspecific interaction coefficients, $\boldsymbol{\omega}$. 
 All genets in a quadrat were included in calculating $W$, but plants located within 5 cm of quadrat edges were not used in fitting. 
-We fit the models using the \textit{R-INLA} package for R \citep{rue_approximate_2009}. To explore variations on the growth regressions, such as the addition of a year-by-treatment interaction or information about the locations of individual grasses relative to removed \textit{Artemisia} shrubs, we fit models using the \textit{lmer} function in the \textit{lme4} package for R
 
-We model recruitment at the quadrat level rather than at the individual genet level because the mapped data do not allow us to determine which recruits were produced by which potential parent genets. We assume that the number of individuals, $y$, of species $j$ recruiting at time $t+1$ in the location $q$ follows a negative binomial distribution:
+We model recruitment at the quadrat level rather than at the individual genet level because the mapped data do not allow us to determine which recruits were produced by which potential parent plants. We assume that the number of individuals, $y$, of species $j$ recruiting at time $t+1$ in the location $q$ follows a negative binomial distribution:
 \begin{equation}
 y_{jq,t+1}= NegBin(\lambda_{jq,t+1},\theta) 	   
 \label{eqn:recrDataModel}
 \end{equation}
 where $\lambda$ is the mean intensity and $\theta$ is the size parameter. In turn, $\lambda$ depends on the composition of the quadrat in the previous year:
 \begin{equation}
-\lambda_{jq,t+1} = C'_{jq,t} \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jm}^R + 
+\lambda_{jq,t+1} = C'_{jq,t} \exp{\left(\varphi_{jg}^R + \gamma_{j,t}^R + 
 \left \langle \boldsymbol{\omega}^R , \boldsymbol{\sqrt{C'}_{q,t}} \right \rangle \right) }
 \label{eqn:recrProcessModel}
 \end{equation}
-where the superscript $R$ refers to Recruitment, $C'_{jq,t}$ is the `effective cover' (cm$^2$) of species $j$ in quadrat $q$ at time $t$, $\gamma$ is a time-dependent intercept, $\varphi$ is a coefficient for the effect of spatial location,
-$\chi$ is the removal treatment effect, $\boldsymbol{\omega}$ is a vector of coefficients that determine the strength of intra- and interspecific density-dependence, and $\boldsymbol{C'}$ is the vector of ``effective'' cover of each species in the community. Eqn (\ref{eqn:recrProcessModel}) is essentially the Ricker model for discrete time population growth \citep{ricker_stock_1954}, except that we use the square root of cover in the density-dependent term. We previously used a Ricker equation \citep{adler_coexistence_2010}, but using the square-root transformation instead gave a lower Deviance Information Criterion (DIC) value \citep{spiegelhalter_bayesian_2002} for the recruitment model. Following previous work \citep{adler_coexistence_2010}, we treated year and spatial group variables as random factors, allowing intercepts to vary among years and spatial locations. 
+where the superscript $R$ refers to Recruitment, $C'_{jq,t}$ is the `effective cover' (cm$^2$) of species $j$ in quadrat $q$ at time $t$, $\varphi$ is a group dependent intercept, $\gamma$ is a random year effect, $\boldsymbol{\omega}$ is a vector of coefficients that determine the strength of intra- and interspecific density-dependence, and $\boldsymbol{C'}$ is the vector of ``effective'' cover of each species in the community. Following previous work \citep{adler_coexistence_2010}, we treated year as a random factor allowing intercepts to vary among years. 
+   
+Because plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location, $g$, in which the quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
 
-Due to the possibility that plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location, $g$, in which the quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
+In the treatment model, a new term is added to the exponential term in the equation above, 
+\begin{equation}
+ \boldsymbol{T}\boldsymbol{chi}_{j}^R
+\end{equation}
+where $chi$ describes the effect of the treatment levels on recruitment.
 
-We ran Hamiltonian-Markov Chain Monte Carlo (HMCMC) simulations in STAN 6.4 \citep{stan} to estimate the recruitment model parameters. Each model was run for 2,000 iterations and four independent chains with different initial values for parameters. We discarded the initial 1,000 samples. Convergence was observed graphically for all parameters, and confirmed by the Brooks-Gelman statistic \citep{brooks_general_1998}. 
+Likewise in the climate model this term is added,
+\begin{equation}
+\boldsymbol{C}\xi_{j}^R 
+\label{eqn:recC}
+\end{equation}
+where the $\boldsymbol{\xi}$ gives a set of coefficients for the soil year, and treatment specific soil moisture covariates in $\boldsymbol{C}$.
 
-For all three vital rate models, we considered the effect of climate covariates to be significant when 95\% posterior
-intervals did not overlap zero. 
+We fit all vital rate models using Hamiltonian-Markov Chain Monte Carlo (HMCMC) simulations in STAN 6.4 \citep{stan} and  \citep{rstan}. Each model was run for 2,000 iterations and four independent chains with different initial values for parameters. We discarded the initial 1,000 samples. Convergence was observed graphically for all parameters, and confirmed by assessing the split $\widehat{R}$ statistic which at convergence is equal to one \citep{stan manual}. 
 
-All data and R code necessary to reproduce our analysis will be deposited in the Dryad Digital Repository once the manuscript is accepted. The current version of the computer code is available at https://github.com/pbadler/ExperimentTests/tree/master/removals and the data are available at https://bitbucket.org/ellner/driversdata. 
+To assess the effects of the experimental treatments on species survival and growth we fit treatment models with and without the size by treatment interactions in the treatment effect term for (\ref{eqn:survT}) and growth models (\ref{eqn:growT}). We judged whether including interaction terms improved model fit by comparing the Watanabe-Aikake Information Criteria (WAIC) scores for each version of the model and retained the version with the lower WAIC score \citep{vetari_practical_2015}. WAIC scores approximate cross-validation predictive accuracy for a model and like traditional AIC allow for model comparison. Lower WAIC scores indicate a more parsimonious model. When a treatment model for survival or growth for a species included a size by treatment effect, we also included a size by soil moisture effect in the climate model for that species and vital rate. This allowed us to more directly compare the effects in the experimental data to the effects predicted from the climate model fit to the observational data.
+
+
+\subsection*{Selecting soil moisture covariates}
+
+After generating a time series of predicted daily soil moisture from the SOILWAT model, we averaged daily soil moisture across spring, summer and fall seasons in each year. We considered each of the three seasonal soil moisture variables at three different time periods relative to the demographic transition from year $t$ to year $t+1$.  Soil moisture in the year between $t$ and $t+1$ is indicated with a "1" subscript.  Soil moisture in the year before $t$ is indicated with a "0" subscript. And soil moisture preceding this year is indicated with a "lag" subscript. For example, for the year 2010, $spring_1$ would indicate soil moisture in the spring of 2010, $spring_0$ would indicate soil moisture during the spring of 2009 and $spring_{lag}$ would indicate soil moisture during the spring of 2008.   
+
+In order to select among the nine potential soil moisture covariates (three seasons and three lags each) for each species and vital rate, we first fit a model with random year effects but without climate covariates to the observational data up to 2010. We then extracted the mean of the year effects estimates for each fitted year in the data. These random effects represented unexplained deviations in the average vital rate in a given year.  We then found the correlations between each of the soil moisture variable and the random year effects. For each vital rate and species, we selected the three covariates with highest correlations with these year effects. This screening technique has been used in previous demographic studies at this site \citep{dalgleish_climate_2010} and is often used in dendrochronology to screen for potential climate influence on tree-ring growth \citep{wang trees}; however, it is subject to the criticism that it is a form of data dredging \citep{dredging}.  Nevertheless, we felt that this approach was justified in this study because ultimately we did not make inference from these fitted parameters until after we tested their ability to predict the data in the experimental plots.  
+
+Once we selected soil moisture covariates for each of the species and vital rates we fit the climate models including the climate terms for survival \ref{eqn:survC}, growth \ref{eqn:growC} and recruitment \ref{eqn:recC}.  We fit these models only to the observational data from the historical period and (1928 to 1957) and the first four years of the modern period (2007 to 2010).  Thus in generating predictions for the treatment effects observed in from 2011 to 2016 we are predicting truly out of sample data.
 
 \subsection*{Individual-based models}
 
-The vital rate regressions provide a qualitative test of removal treatment effects: Does removal have an effect on a vital rate that goes above and beyond the effects of species interactions that are explicit in the model? However, the population-level response by each species integrates the effects of the removal treatment on all three vital rates. We used an individual-based model (IBM) to compare observed and predicted changes 
-in population size (cover) from one year to the next. 
+The vital rate regressions allow us to evaluate whether the experimental treatments and the soil moisture variables considered had an effect on species performance.  But the population response of each species ultimately depends on the integrated effects of treatment or soil moisture on all three vital rates.  To evaluate whether the climate models could predict the overall population response of these species in the drought and irrigation experiment we used an individual-based model (IBM) to compare observed and predicted changes in population size (cover) from one year to the next in the experimental plots. 
 
 To simulate changes in cover in each quadrat from year $t$ to year $t+1$, we initialized the IBM with the actual configuration of the four focal species (genet sizes and locations) observed in year $t$. We then projected the model forward one year, applying the random year effects corresponding to year $t$ and the spatial random effects corresponding to the quadrat of interest. Because we were interested in comparing model predictions to observations, and were not interested in the effects of demographic stochasticity, we used a deterministic version of the model (e.g., recruitment is the $\lambda$ of (\ref{eqn:recrProcessModel}), rather than a random draw from a Poisson distribution with a mean of $\lambda$).
 We first applied the recruitment regression to determine the expected number of new recruits at time $t+1$, which we then multiplied by the mean size of recruits observed for the focal species to get expected cover of new recruits. We then used the survival regression to predict the survival probability of each genet, and the growth regression to predict the change in size of each genet. Expected cover at $t+1$ is expected area of new recruits, plus the sum of the survival probabilities multiplied by the expected sizes. 
 
 For control plots, we used a version of the model with all removal treatment effects set to zero. For removal treatment plots, we generated predictions from two versions of the model, with and without treatment effects set to zero.  We calculated the mean across quadrats of observed log cover change, $log(Cover_{t+1}/Cover_t)$ and compared it to the mean across quadrats of the predicted cover change.
 
-One reason we might observe small effects of the removal treatment is the limited power of our experiment. Perhaps large uncertainty in the estimates of these effects makes it difficult to reject the null hypothesis represented by our baseline model. To address this possibility, we also simulated a version of the model in which we replaced the mean estimate of each removal treatment effect with the parameter value at either the 5\% or 95\% confidence interval, whichever was farthest from zero. This version of the model shows the population-level changes we would expect given maximum removal effects.
+\subsection*{Assessing soil moisture effects and predictive accuracy} 
 
-\subsection*{Integral projection models}
+After fitting the random year effects (null) and climate models to the observational data, we generated predictions from these models for each of the vital rates in the experimental plots. We then assessed performance of the climate and null models by calculating the mean square error between the predictions and observations for each of the vital rates. In addition we evaluated whether the climate model predicted treatment effects of similar direction and magnitude to those observed in the experiment.  We did this by extracting the soil moisture coefficients contained in $\xi$ for each of the vital rates and then multiplying those by the appropriate soil moisture covariates for each year and treatment level in the experiment.  The average of this product across all the years of the experiment then gives the predicted treatment coefficient for treatment level $h$. These predicted treatment effects can then be compared directly to the treatment effects fitted in the treatment model in the term $\chi$. 
 
-To quantify the long-term, population-level consequences of the removal effects, we built and then simulated an integral projection model (IPM). In our IPM, the population of species $j$ is represented by a density function $n(u_{j,t})$ which gives the density of genets of size $u$ at time $t$, with genet size on a natural-log scale, i.e. $n(u_{j,t})du$ is the number of genets whose log area is between $u$ and $u+du$, hence their area 
-(on arithmetic scale) is between $exp(u_j)$ and $exp(u_j+du)$. The size distribution function at time $t+1$ is given by
-\begin{equation}
-n(v_{j,t+1})=\int_{L_j}^{U_j} k_j (v_j,u_j,{\vec{n}})n(u_{j,t})   
-\label{eqn:IPM}
-\end{equation}
-where the kernel $k_j (v_j,u_j,\vec{n}_j)$ describes all possible transitions from size $u$ to $v$ and $\vec{n}$ 
-is the set of size-distribution functions for all species in the community. The integral is evaluated over all possible sizes from a 
-lower size limit $L$ to an upper size limit $U$ that extends past the range of observed sizes.   
+For treatment and vital rate models we considered the effect of climate covariates or treatment effects to be significant when the 95\% Bayesian credible intervals on the posterior estimates did not overlap zero.  
 
-The kernel is constructed from the fitted survival ($S$), growth ($G$), and recruitment ($R$) models, 
-\begin{equation}
-k_j(v_j,u_j,\vec{n})=S_j(u_j,\vec{n})G_j(v_j,u_j,\vec{n})+R_j(v_j,u_j,\vec{n}) du_j
-\label{eqn:IPM} 
-\end{equation}
-$S$ is given by (Eqn. \ref{eqn:survReg}) and $G$ is given by (Eqn. \ref{eqn:growReg}), using an expected neighborhood crowding
-index calculated from the size distributions of the competing species. In the vital rate regressions and in the IBM, each 
-individual has a unique neighborhood crowding index based on the spatial locations and sizes of neighboring plants. This 
-measure cannot be extended to the IPM, which tracks individual size but not location. Instead we used a 
-mean-field approximation that captures the essential features of spatially-explicit neighborhood interactions \citep{adler_coexistence_2010}. 
-We found that in both the observed data and IBM simulations, heterospecific individuals were approximately randomly distributed with respect to each other, 
-but conspecific individuals displayed a non-random, size-dependent patterns: small genets were randomly distributed, while large genets 
-were segregated from each other. The overdispersion of large conspecific genets was introduced into the IPM 
-with a 'no-overlap' rule \citep{adler_coexistence_2010}. In \ref{suppMethods} we explain how the spline competition kernels with the no-overlap rule kernels were used to compute neigbhorhood crowding index as a function of individual size for the IPM.  
+We evaluated cover predictions from the climate and year effects model similarly.  We first fit the 
 
-For recruitment in the IPM, the factor $ \Phi_j  = \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jm}^R + 
-\left \langle \boldsymbol{\omega}^R , \boldsymbol{\sqrt{C'_{q,t}}} \right \rangle \right) }$
-in eqn. (\ref{eqn:recrDataModel}) gives the expected 
-area of new recruits per quadrat, per unit area of parents. To incorporate this recruitment function into the IPM, we assumed that individual fecundity increases linearly with individual area (equal to $e^u$ for a size-$u$ individual). The recruitment kernel is thus
-$R_j(v_j,u_j,\vec{n})=c_{0,j}(v_j)e^{u_j}\Phi_j$ \citep{adler_coexistence_2010} where $c_{0,j}$ is the
-size distribution of new recruits. $\Phi_j$ is calculated from eqn. (\ref{eqn:recrDataModel}) with total cover values computed from the population densities as $C'_{j,t} = \int e^u n_j(u,t) du$. 
-
-We simulated the IPM to estimate equilibrium abundances under three different scenarios. For all IPM simulations, we set the spatial random effects to zero, meaning that we are simulating dynamics on a hypothetical, average site. The first scenario featured all four species and our ``baseline'' model for control plots (no removal effects). We initialized all species with arbitrarily low cover and ran the model for 500 time steps (years) to allow the community to reach an equilibrium. To incorporate temporal environmental variation, at each time step we randomly selected one of the 30 sets of random year effects for the survival, growth and recruitment models (``kernel selection'' in the terminology of \citealt{metcalf_statistical_2015}). We calculated the equilibrium cover for each species by simulating an additional 2000 time steps and averaging each species' cover over this period. For the second scenario, we set the cover of \textit{A. tripartita} to zero and then repeated the procedure. This simulation estimates the competitive release of grasses following \textit{A. tripartita} removal according to the baseline model (no removal effects). For the third scenario, we again set  \textit{A. triparitia} to zero, but this time we projected the model using the vital rate regressions that include removal effects. If our baseline model successfully predicts competitive release observed in the removal experiment, then the results of the second and third scenarios should be similar. However, to the extent that the baseline model underestimates (or overestimates) the actual competitive release, the results of the second and third scenarios will differ. As with the IBM, we repeated these simulations using maximum removal treatment effects represented by parameters values at the 5\% or 95\% confidence limit farthest from zero. We did not simulate long-term \textit{A. tripartita} response to grass removal because the vital rate regressions for \textit{A. tripartita} showed that the baseline model effectively predicted removal effects.
-
+All data and R code necessary to reproduce our analysis will be deposited in the Dryad Digital Repository once the manuscript is accepted. The current version of the computer code is available at https://github.com/pbadler/ExperimentTests/tree/master/precip and the data are available at https://bitbucket.org/ellner/driversdata. 
 
 \section*{Results}
 
 During the period of our experiment, annual water-year (October-September) precipitation fell within the 5\% - 95\% quantiles of the long-term mean, although more years fell below the mean than above it (\ref{fig:climate}a). However, annual mean temperatures were consistently warm relative to the long-term mean, and two years were warmer than the 95\% quantile (\ref{fig:climate}b).  
+
+The experimental drought shelter successfully reduced the soil moisture in the study plots in the spring and summer, while irrigation successfully increased soil moisture \ref{fig:spotm}. Our continuous data  
+
 
 \subsection*{Cover trends}
 
@@ -356,7 +377,9 @@ To quantify the long-term population-level consequences of removals, we used an 
 
 \section*{Discussion}
 
-Our population models based on historical, observational data reveal weak interspecific interactions \citep{adler_coexistence_2010,chu_large_2015} and, as a result, predict very little competitive release among the four dominant species in a sagebrush steppe. Despite the fact that previous removal studies have reported variable results, ranging from negative effects of removal on remaining species to complete competitive release, we were suspicious of our model's predictions and conducted a removal experiment to test them. The results provide substantial support for our model's predictions.
+Our experiment showed that including climate covariates in our population models did little to improve population level predictions across the course of the experiment.  In general the climate models did not perform as well as null models in predicting response to the experimental drought and irrigation treatments at the vital rate or the population level.  However, there were some glimmers of hope.  First at the population level we generally found that including climate covariates did not improve predictions in the control and irrigation plots, but they did appear to improve predictions in the drought plots ().  This suggests that models fit to observational data do contain useful information about the effects of climate on individual performance.  The fact that these predictions showed up in the more extreme conditions produced by the drought plots could be a sign that in ambient conditions the effect of climate is weak enough that it is washed out at the population level by finer scale sources of variation. This pattern was observed for species x, x and x.
+
+ the climate signal  improve population growth predictions in the drought treatment but not experiment showed some relatively strong reson based on historical, observational data reveal weak interspecific interactions \citep{adler_coexistence_2010,chu_large_2015} and, as a result, predict very little competitive release among the four dominant species in a sagebrush steppe. Despite the fact that previous removal studies have reported variable results, ranging from negative effects of removal on remaining species to complete competitive release, we were suspicious of our model's predictions and conducted a removal experiment to test them. The results provide substantial support for our model's predictions.
 
 For three of the four species, we find little or no evidence that models based on observational data underestimate the intensity of interspecific competition. Removal treatment effects were never significant for \textit{A. tripartita} or \textit{H. comata}; our baseline model, which accounts for local neighborhood composition, adequately explained vital rate responses to  removal.  \textit{Poa secunda} showed mixed responses to \textit{Artemisia} removal: removal effects were not significant at the survival stage, were positive at the growth stage, and negative at the recruitment stage (where the estimated effect of \textit{Artemisia} on \textit{Poa} is positive). At the population level, models with and without removal effects projected similar patterns of short (Fig. \ref{fig:IBM1step}) and long-term (Fig. \ref{fig:IPMresults}) dynamics for \textit{H. comata} and \textit{A. tripartita}. For \textit{Poa secunda}, the model with removal effects predicted higher population growth over the short but not the long-term, perhaps because the short-term projections mostly reflect the positive effect of \textit{Artemisia} removal on growth, while the long-term equilibrium are also sensitive to the negative effects of removal on recruitment. Although the baseline model did not always successfully predict removal effects on vital rates, it does appear to successfully capture the population-level consequences of removals on these three species and did not severely underestimate the magnitude of competitive release.
 
@@ -370,7 +393,7 @@ Our results have given us more confidence that competitive release is quite smal
   
 \section*{Acknowledgements}
 
-Funding was provided by NSF grants DEB-1353078,and  DEB-1054040 to PBA and DEB 1353039 to SPE, and by the Utah Agricultural Experiment Station (get journal paper number). The USDA-ARS Sheep Experiment Station generously provided access to historical data and the field experiment site.  We thank Robin Snyder for suggestions that improved the manuscript.
+Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-1054040 to PBA and by the Utah Agricultural Experiment Station (get journal paper number). The USDA-ARS Sheep Experiment Station generously provided access to historical data and the field experiment site. Joe and Kevin, Lau, John Bradford, Caitlin (soilwat), 
 
 \newpage
 \bibliographystyle{Ecology}
