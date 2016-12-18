@@ -177,7 +177,7 @@ In the climate model, the $\chi$ and $\xi$ terms are replaced with,
 \boldsymbol{C}\xi_{j}^S 
 \label{eqn:survC}
 \end{equation}
-where $\xi$ gives a vector of coefficients describing the effects of a set of soil moisture covariates $\boldsymbol{C}$ in treatment $h$ and year $t$ on the survival rate of species $j$. $\boldsymbol{C}$ is a vector of seasonal average soil moisture at a set of species-specific seasons and time lags and can include interaction effects between plant size, $u$ and the soil moisture covariates.  These interaction effects allow the effect of soil moisture to vary with plant size. 
+where $\xi$ gives a vector of coefficients describing the effects of a set of soil moisture covariates $\boldsymbol{C}$ in treatment $h$ and year $t$ on the survival rate of species $j$. $\boldsymbol{C}$ is a vector of seasonal average soil moisture and can include interaction effects between plant size, $u$, and the soil moisture covariates that allow the effects of soil moisture to vary with plant size. 
 
 Our growth model has a similar structure. The change in genet size from time $t$ to $t+1$ , conditional on survival, is given by:
 \begin{equation}
@@ -219,11 +219,9 @@ genet $i$ exerted by species $m$ is
 W_{ijm}  =\sum_k {w_{ijm,k}} .
 \label{eqn:wijm}
 \end{equation} 
-Note that $W_{ijj}$ gives intraspecific crowding. The $W$'s are then the components of the $\boldsymbol{W}$ vectors 
-introduced as covariates in the survival (\ref{eqn:survReg}) and growth (\ref{eqn:growReg}) regressions.
+Note that $W_{ijj}$ gives intraspecific crowding. The $W$'s are then the components of the $\boldsymbol{W}$ vectors introduced as covariates in the survival (\ref{eqn:survReg}) and growth (\ref{eqn:growReg}) regressions.
 
-We assume that competition kernels $F_{jm}(d)$ are non-negative and decreasing, so that distant plants have less effect 
-than close plants. Otherwise, we let the data dictate the shape of the kernel by fitting a spline model 
+We assume that competition kernels $F_{jm}(d)$ are non-negative and decreasing, so that distant plants have less effect than close plants. Otherwise, we let the data dictate the shape of the kernel by fitting a spline model 
 using the methods of Teller et al. (2016). The shape of $F_{jm}$ is determined by a set of spline basis coefficients $\vec{b}_{jm}$
 and a smoothing parameter $\eta$ that controls the complexity of the fitted kernel. 
 Demographic models such as \eqref{eqn:survReg} then have $\gamma$, $\varphi$, $\chi$ , 
@@ -292,11 +290,9 @@ For control plots, we used a version of the model with all removal treatment eff
 
 \subsection*{Assessing soil moisture effects and predictive accuracy} 
 
-After fitting the random year effects (null) and climate models to the observational data, we generated predictions from these models for each of the vital rates in the experimental plots. We then assessed performance of the climate and null models by calculating the mean square error between the predictions and observations for each of the vital rates. In addition we evaluated whether the climate model predicted treatment effects of similar direction and magnitude to those observed in the experiment.  We did this by extracting the soil moisture coefficients contained in $\xi$ for each of the vital rates and then multiplying those by the appropriate soil moisture covariates for each year and treatment level in the experiment.  The average of this product across all the years of the experiment then gives the predicted treatment coefficient for treatment level $h$. These predicted treatment effects can then be compared directly to the treatment effects fitted in the treatment model in the term $\chi$. 
+After fitting the random year effects (null model) and climate models to the observational data, we generated predictions from these models for each of the vital rates in the experimental plots. We then assessed performance of the climate and null models by calculating the mean square error between the predictions and observations for each of the vital rates. In addition we evaluated whether the climate model predicted treatment effects of similar direction and magnitude to those observed in the experiment.  We did this by extracting the soil moisture coefficients contained in $\xi$ for each of the vital rates and then multiplying those by the appropriate soil moisture covariates for each year and treatment level in the experiment. We then averaged these products across the years in the experiment to get the effects of the experiment predicted by the soil moisture model. These predicted treatment effects can then be compared directly to the treatment parameters in the term $\chi$. 
 
 For treatment and vital rate models we considered the effect of climate covariates or treatment effects to be significant when the 95\% Bayesian credible intervals on the posterior estimates did not overlap zero.  
-
-We evaluated cover predictions from the climate and year effects model similarly.  We first fit the 
 
 All data and R code necessary to reproduce our analysis will be deposited in the Dryad Digital Repository once the manuscript is accepted. The current version of the computer code is available at https://github.com/pbadler/ExperimentTests/tree/master/precip and the data are available at https://bitbucket.org/ellner/driversdata. 
 
@@ -304,7 +300,7 @@ All data and R code necessary to reproduce our analysis will be deposited in the
 
 During the period of our experiment, annual water-year (October-September) precipitation fell within the 5\% - 95\% quantiles of the long-term mean, although more years fell below the mean than above it (\ref{fig:climate}a). However, annual mean temperatures were consistently warm relative to the long-term mean, and two years were warmer than the 95\% quantile (\ref{fig:climate}b).  
 
-The experimental drought shelter successfully reduced the soil moisture in the study plots in the spring and summer, while irrigation successfully increased soil moisture \ref{fig:spotm}. Our continuous data  
+The experimental drought shelter successfully reduced the soil moisture in the study plots in the spring and summer, while irrigation successfully increased soil moisture \ref{fig:spotm}. Our seasonal model of soil moisture in the experiment indicated that  
 
 
 \subsection*{Cover trends}
