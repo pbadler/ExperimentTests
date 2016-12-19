@@ -34,21 +34,150 @@ VWC_weights <-
   group_by( year, PrecipGroup, simple_date) %>%  
   summarise( weight = n_distinct(unique_position))
 
-df_soil_moist <- 
+myVWC <-  
   myVWC %>% 
   filter( bad_values == 0 , stat == 'raw', measure == 'VWC') %>% 
   filter( !is.na(rainfall)) %>% 
-  filter( !(plot == 16 ) ) %>%           ##### Drop plot 16  
+  filter( !(plot == 16 ) ) # drop plot 16
+
+df_soil_moist <- 
+  myVWC %>% 
   group_by( year, PrecipGroup, Treatment, season, simple_date, rainfall) %>%  
   summarise( avg_VWC = mean(v, na.rm = TRUE)) %>% 
   group_by(PrecipGroup) %>% 
-  mutate( avg_VWC = scale(avg_VWC)) %>%  # scale within Precip Group and Depth 
+  mutate( avg_VWC = scale(avg_VWC, mean(avg_VWC[Treatment == 'Control'], na.rm = T), sd(avg_VWC[Treatment == 'Control'], na.rm = T))) %>%  # scale within Precip Group and Depth 
   spread( Treatment, avg_VWC) %>%
   mutate( Drought = Drought - Control, Irrigation = Irrigation - Control ) %>% 
   arrange( PrecipGroup, simple_date)
 
 df_soil_moist <- merge( df_soil_moist, VWC_weights)
 
+
+# -------- add in the spot measurements ------------------------------------------------# 
+df_soil_moist$type <- 'logger'
+VWC_df <- df_soil_moist
+
+spotVWC <- readRDS('data/temp_data/spotVWC.RDS')
+spotVWC$type <- 'spot'
+spotVWC$year <- strftime( spotVWC$date, '%Y')
+
+VWC_df <- rbind( VWC_df, spotVWC[, -1])
+
+# 
+#  Model the standardized treatment differences. 
+#  Treatment effects vary with season and whether it's a rainy period. 
+#  See definition of rainy periods in the datadrivers data preparation scripts. 
+# 
+
+# fit models 
+
+VWC_test <- VWC_df %>% 
+  gather( Treatment, VWC, Drought , Irrigation )
+
+mTreatment <- lm( data = VWC_test, VWC ~ Treatment*rainfall*season, weights = VWC_test$weight)  
+
+mDrought <- lm( data = VWC_df, Drought ~ rainfall*season , weights = VWC_df$weight)
+mIrrigation <- lm(data = VWC_df, Irrigation ~ rainfall*season , weights = VWC_df$weight)
+
+summary(mDrought)
+summary(mIrrigation)
+summary(mTreatment)
+# select models 
+
+library(MASS)
+mTreatment <- stepAIC(mTreatment, scope = list(upper = ~. , lower = ~1), trace = T)
+
+mDrought <- stepAIC(mDrought,scope=list(upper=~.,lower=~1),trace=T)
+mIrrigation <- stepAIC(mIrrigation,scope=list(upper=~.,lower=~1),trace=T)
+summary(mDrought)
+summary(mIrrigation)
+summary(mTreatment)
+
+mTreatment <- lmer(update(formula(mTreatment) , . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_test, weights = VWC_test$weight)
+mDrought <- lmer( update( formula( mDrought), . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_df, weights = VWC_df$weight)
+mIrrigation <- lmer( update( formula( mIrrigation), . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_df, weights = VWC_df$weight)
+
+summary(mDrought)
+
+summary(mTreatment)
+
+
+
+
+# data frame to view predictions 
+pred_df <- expand.grid( rainfall = unique(VWC_test$rainfall), Treatment = unique(VWC_test$Treatment), season = unique(VWC_test$season))
+
+pred_df$mu <- predict( mTreatment, newdata = pred_df,  re.form = NA)
+library(lsmeans)
+lsmeans(mTreatment,  ~ Treatment + season + rainfall)
+
+#
+
+daily_VWC <- 
+  myVWC %>% 
+  ungroup() %>% 
+  filter( !is.na(v)) %>% 
+  dplyr::select(simple_date, year, season, rainfall, Treatment, v) %>% 
+  group_by( Treatment, simple_date, year, season, rainfall) %>% 
+  summarise( v = mean(v , na.rm = T ) ) %>% 
+  ungroup() 
+
+daily_control <- daily_VWC %>% filter( Treatment == 'Control') %>% mutate( v = as.numeric(scale(v))) %>% spread( Treatment, v)
+
+pred_df <- daily_VWC %>% filter( Treatment != 'Control') %>% dplyr::select(-v)
+
+pred_df$predicted <- predict( mTreatment, pred_df, re.form = NA)
+
+pred_df <- pred_df %>% spread( Treatment, predicted )
+
+pred_df <- merge( pred_df, daily_control)  %>% mutate( Drought = Drought + Control, Irrigation = Irrigation + Control )  %>% gather( Treatment, predicted, Drought:Control )
+
+observed_df  <- daily_VWC %>% rename( observed = v)
+
+plot_df <- merge(pred_df, observed_df)
+
+plot_df <- 
+  plot_df %>% 
+  mutate( back_scaled_pred = predicted*sd(observed[Treatment == 'Control']) + mean(observed[Treatment == 'Control']))
+
+head( plot_df)
+
+plot_df <- plot_df %>% dplyr::select( -predicted) %>% distinct() %>% rename(predicted = back_scaled_pred )  %>% gather( type, VWC, predicted , observed )
+
+everyday <- expand.grid( simple_date = seq.Date(as.Date('2012-01-01'), as.Date( '2016-12-30'), 1), Treatment = c('Control', 'Drought', 'Irrigation'), type = c('predicted', 'observed'))
+
+plot_df <- merge( everyday, plot_df, all.x = T)
+
+plot_df <- plot_df %>% mutate( julian_date = as.numeric(strftime( simple_date, '%j')), year = as.numeric( strftime( simple_date, '%Y'))) 
+
+load('analysis/figure_scripts/my_plotting_theme.Rdata')
+
+subset(plot_df, type != 'predicted')
+
+ggplot( plot_df, aes( x = julian_date, y = VWC, color = Treatment, linetype = type, alpha = type )) + 
+  geom_line() + 
+  facet_grid( year ~ . ) + 
+  scale_color_manual(values = my_colors[2:4]) + 
+  scale_linetype_manual(values = c(2,1)) + 
+  scale_alpha_manual(values = c(1, 0.7)) + 
+  my_theme
+
+
+png( 'figures/avg_daily_soil_moisture.png', width = 8, height = 8, res = 300, units = 'in')
+print( 
+  ggplot( subset( plot_df, type != 'predicted'), aes( x = julian_date, y = VWC, color = Treatment)) + 
+    geom_line(alpha = 0.8) + 
+    facet_grid( year ~ . ) + 
+    scale_color_manual(values = my_colors[2:4]) + 
+    scale_alpha_manual(values = c(0.7)) + 
+    labs( color = '') + 
+    ylab( 'Soil volumetric water content (ml/ml)') + 
+    xlab( 'Day of year') +
+    my_theme 
+)
+dev.off()
+
+# predict the treatment effects from the scaled model VWC ----------------------------# 
 # ---process dates----------------------------------------------------------------------#
 
 swVWC$date <- as.POSIXct(strptime( paste( swVWC$Year, swVWC$DOY, sep = '-') , '%Y-%j'))
@@ -76,60 +205,6 @@ swVWC <- swVWC %>%
   group_by( date) %>% 
   summarise( modelVWC = mean(VWC)*100 )
 
-df_soil_moist$type <- 'logger'
-VWC_df <- df_soil_moist
-
-spotVWC <- readRDS('data/temp_data/spotVWC.RDS')
-spotVWC$type <- 'spot'
-spotVWC$year <- strftime( spotVWC$date, '%Y')
-
-VWC_df <- rbind( VWC_df, spotVWC[, -1])
-
-# 
-#  Model the standardized treatment differences. 
-#  Treatment effects vary with season and whether it's a rainy period. 
-#  See definition of rainy periods in the datadrivers data preparation scripts. 
-# 
-
-# fit models 
-mDrought <- lm( data = VWC_df, Drought ~ rainfall*season , weights = VWC_df$weight)
-mIrrigation <- lm(data = VWC_df, Irrigation ~ rainfall*season , weights = VWC_df$weight)
-
-# select models 
-
-library(MASS)
-mDrought <- stepAIC(mDrought,scope=list(upper=~.,lower=~1),trace=T)
-mIrrigation <- stepAIC(mIrrigation,scope=list(upper=~.,lower=~1),trace=T)
-
-mDrought <- lmer( update( formula( mDrought), . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_df, weights = VWC_df$weight)
-mIrrigation <- lmer( update( formula( mIrrigation), . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_df, weights = VWC_df$weight)
-
-#
-daily_avg_VWC <- 
-  VWC_df %>% 
-  gather( Treatment, VWC, Control:Irrigation) %>% 
-  group_by(rainfall, year, season, simple_date,Treatment) %>% 
-  summarise( avg_VWC = mean(VWC, na.rm = TRUE) ) %>% 
-  spread( Treatment, avg_VWC ) 
-
-daily_avg_VWC$Dpred <- predict( mDrought, daily_avg_VWC, re.form = NA)
-daily_avg_VWC$Ipred <- predict( mIrrigation, daily_avg_VWC, re.form = NA)
-
-# daily_avg_VWC$`25 cm deep`$Dpred <- predict( m25cmDrought, daily_avg_VWC$`25 cm deep`)
-# daily_avg_VWC$`25 cm deep`$Ipred <- predict( m25cmIrrigation, daily_avg_VWC$`25 cm deep`)
-
-pdf( 'figures/treatment_effects_modeled_vs_observed_soil_moisture.pdf', width = 11, height = 5)
-print( 
-    ggplot( daily_avg_VWC, aes( x = simple_date, y = Control)) +
-      geom_line() +
-      geom_line(aes( y = Irrigation + Control) , color = 'blue', alpha = 0.2) + 
-      geom_line(aes( y = Ipred + Control), color = 'blue', linetype = 2) + 
-      geom_line(aes( y = Drought + Control) , color = 'red', alpha = 0.2) + 
-      geom_line(aes( y = Dpred + Control), color = 'red', linetype = 2) 
-)
-dev.off()
-
-# predict the treatment effects from the scaled model VWC ----------------------------# 
 daily_clim$date <- as.Date(daily_clim$date ) 
 swVWC$date <- as.Date( swVWC$date)
 swVWC$month <- as.numeric( strftime(swVWC$date, '%m') )
@@ -144,22 +219,29 @@ swVWC <- left_join(swVWC, seasons, by = 'month')
 swVWC <- left_join( swVWC, daily_clim, by = c('date')) 
 
 swVWC$Control <- scale( swVWC$modelVWC ) # standardize control SWC 
-swVWC$Drought <- predict(mDrought,  swVWC, re.form = NA)
-swVWC$Irrigation <- predict(mIrrigation, swVWC, re.form = NA)
+Control_mean <- mean(swVWC$modelVWC)
+Control_sd <- sd(swVWC$modelVWC)
+
+swVWC2 <- swVWC
+swVWC$Treatment <-  'Drought'
+swVWC2$Treatment <- 'Irrigation'
+
+swVWC <- rbind(swVWC, swVWC2)
+
+swVWC$predicted <- predict(mTreatment,  swVWC, re.form = NA)
+
+swVWC <- swVWC %>% spread(Treatment, predicted )
 
 # unscale the Control Drought and Irrigation VWC --------------------------------------------------------  #
-
-swVWC$center <- attr(swVWC$Control, 'scaled:center')
-swVWC$scale  <- attr(swVWC$Control, 'scaled:scale')
 
 swVWC <- 
   swVWC %>% 
   mutate( Drought = Control + Drought, Irrigation = Control + Irrigation) %>% 
   gather( Treatment, VWC, Control:Irrigation) 
 
-swVWC$VWC_raw <- swVWC$VWC*swVWC$scale + swVWC$center
+swVWC$VWC_raw <- swVWC$VWC*Control_sd + Control_mean
 
-my_colors <- c('#66c2a5','#fc8d62','#8da0cb')
+
 
 pdf( 'figures/modeled_soilwat_soil_moisture_example.pdf', width = 8, height = 6)
 print( 
@@ -177,5 +259,8 @@ print(
 )
 
 
+
+
 saveRDS(swVWC, 'data/temp_data/daily_swVWC_treatments.RDS')
+
 

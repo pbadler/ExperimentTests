@@ -56,7 +56,7 @@ source('analysis/figure_scripts/plot_treatment_parameter_estimates.R')
 
 # 6.  check for divergence 
 
- source('analysis/check_for_divergent_transitions.R')
+source('analysis/check_for_divergent_transitions.R')
 
 # 7. plot observed cover and predicted cover 
 

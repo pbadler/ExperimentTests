@@ -25,6 +25,8 @@
 \DeclareGraphicsExtensions{.eps}
 \fi
 
+\graphicspath{{../figures/}}
+
 \renewcommand{\floatpagefraction}{0.98}
 \renewcommand{\topfraction}{0.99}
 \renewcommand{\textfraction}{0.05}
@@ -196,7 +198,6 @@ As in the survival regression above, specific specific parameters describing the
 \boldsymbol{T} \chi_{j}^G 
 \label{eqn:growT}
 \end{equation}
-
 where $\chi$ is a treatment effect describing the effect of experimental treatment $h$ on growth, including treatment by size interactions.
 
 Similarly, in the climate model soil moisture influences the growth equation through these terms,  
@@ -266,10 +267,9 @@ Likewise in the climate model this term is added,
 \end{equation}
 where the $\boldsymbol{\xi}$ gives a set of coefficients for the soil year, and treatment specific soil moisture covariates in $\boldsymbol{C}$.
 
-We fit all vital rate models using Hamiltonian-Markov Chain Monte Carlo (HMCMC) simulations in STAN 6.4 \citep{stan} and  \citep{rstan}. The prior distributions and model code used are described more completely in appendix A. Each model was run for 2,000 iterations and four independent chains with different initial values for parameters. We discarded the initial 1,000 samples. Convergence was observed graphically for all parameters, and confirmed by assessing the split $\widehat{R}$ statistic which at convergence is equal to one \citep{stan manual}. 
+We fit all vital rate models using Hamiltonian-Markov Chain Monte Carlo (HMCMC) simulations in STAN 6.4 \citep{stan} and  \citep{rstan}. The priors and model code are described more completely in appendix A. Each model was run for 2,000 iterations and four independent chains with different initial values for parameters. We discarded the initial 1,000 samples. Convergence was observed graphically for all parameters, and confirmed by assessing the split $\widehat{R}$ statistic which at convergence is equal to one \citep{stan manual}. 
 
 To assess the effects of the experimental treatments on species survival and growth we fit treatment models with and without the size by treatment interactions in the treatment effect term for (\ref{eqn:survT}) and growth models (\ref{eqn:growT}). We judged whether including interaction terms improved model fit by comparing the Watanabe-Aikake Information Criteria (WAIC) scores for each version of the model and retained the version with the lower WAIC score \citep{vetari_practical_2015}. WAIC scores approximate cross-validation predictive accuracy for a model and like traditional AIC allow for model comparison. Lower WAIC scores indicate a more parsimonious model. When a treatment model for survival or growth for a species included a size by treatment effect, we also included a size by soil moisture effect in the climate model for that species and vital rate. This allowed us to more directly compare the effects in the experimental data to the effects predicted from the climate model fit to the observational data.
-
 
 \subsection*{Selecting soil moisture covariates}
 
@@ -281,11 +281,11 @@ Once we selected soil moisture covariates for each of the species and vital rate
 
 \subsection*{Predicting cover from individual-based models}
 
-The vital rate regressions allow us to evaluate whether soil moisture and the experimental treatments had an effect on species performance.  But the population response ultimately depends on the integrated effects of treatment or soil moisture on all three vital rates.  To evaluate whether the climate models could predict the overall population response of these species in the drought and irrigation experiment we used an individual-based model (IBM) to compare observed and predicted changes in population size, defined as plot-level percent cover, from one year to the next in the experimental plots. 
+The vital rate regressions allow us to evaluate whether soil moisture and the experimental treatments had an effect on species performance.  But the population response ultimately depends on the integrated effects of treatment or soil moisture on all three vital rates.  To evaluate whether the climate models could predict the responses of these species in the drought and irrigation experiment at the overall population level we used an individual-based model (IBM) to compare observed and predicted changes in population size from one year to the next. 
 
-To simulate changes in cover in each quadrat from year $t$ to year $t+1$, we initialized the IBM with the observed genet sizes and locations of the four focal species observed in year $t$ in each quadrat. For every individual genet in a quadrat, we projected its size and survival probability in the next year using the growth and survival models and the appropriate crowding and soil moisture or treatment covariates for that year and quadrat.  Likewise we projected the number of new recruits in the quadrat in the next year using the recruitment model. We calculated the expected cover in year $t+1$ as the sum area of new recruits, plus the sum of the expected area of existing plants multiplied by each plant's expected survival probability. 
+To simulate changes in cover in each quadrat from year $t$ to year $t+1$, we initialized the IBM with the observed genet sizes and locations of the four focal species observed in year $t$ in each quadrat. For every individual genet in a quadrat, we projected its size and survival probability in the next year using the growth and survival models and the appropriate crowding and soil moisture or treatment covariates for that year and quadrat.  Likewise we projected the number of new recruits in the quadrat in the next year using the recruitment model. We calculated the expected cover in year $t+1$ as the total area of new recruits, plus the sum of the predicted area of each existing plant at time $t+1$ multiplied by each plant's expected survival probability from time $t$ to $t+1$. 
 
-We accounted for the uncertainty in our random year effects in our projections, by drawing random year effects for each predicted year from a normal distribution with a mean of zero and a standard deviation drawn from the posterior estimate of the standard deviation of the random year effects \ref{eqn:}. We generated predictions using the full posterior distributions of each model parameter which allowed us to carry forward all of the uncertainty of the fitted vital rate models into our cover predictions. Because we were interested in comparing model predictions to observations, and were not interested in the effects of demographic stochasticity, we used a deterministic version of the models (e.g., recruitment is the $\lambda$ of (\ref{eqn:recrProcessModel}), rather than a random draw from a negative binomial distribution with a mean of $\lambda$).
+We accounted for the uncertainty in our random year effects when generating predictions, by drawing random year effects for each predicted year from a normal distribution with a mean of zero and a standard deviation drawn from the posterior estimate of the standard deviation of the random year effects \ref{eqn:}. We generated predictions using the full posterior distributions of each model parameter which allowed us to carry forward all of the uncertainty of the fitted vital rate models into our cover predictions. Because we were interested in comparing model predictions to observations, and were not interested in the effects of demographic stochasticity, we used a deterministic version of the models (e.g., recruitment is the $\lambda$ of (\ref{eqn:recrProcessModel}), rather than a random draw from a negative binomial distribution with a mean of $\lambda$).
 
 We generated predictions for the full time series of observations, including the five experimental years, from the year effects model, the climate model and the treatment model. After generating predictions for each year, we found the mean cover across all quadrats in each treatment level and then calculated the predicted log cover change as $log(Cover_{t+1}/Cover_{t})$.
 
@@ -320,7 +320,9 @@ All data and R code necessary to reproduce our analysis will be deposited in the
 
 \subsection*{Effects on soil moisture}
 
-We successfully changed the average soil moisture measured in the plots we covered with drought shelters and irrigated, in the directions we expected (fig); our spot measurements conducted during the springs of X, X and X showed that drought plots were X percent drier, while irrigation plots were X percent wetter than ambient plots.  This difference was highly significant () but there was a lot of spatial variation in the soil moisture measurements within treatments (\ref{fig:}). The automatically recorded soil moisture data from only half of the experimental plots also showed that the drought treatment decreased and the irrigation treatment increased soil moisture, but the size of these effects were dependent on season and whether it had rained recently (). The best model for predicting the average treatment effects on soil moisture was : .  We did not find evidence that the drought shelters and the irrigation treatments significantly changed air temperature within the plots ().  
+Our treatments successfully changed the soil moisture in the experimental plots in the directions expected (fig. \ref{fig:VWCspot}). Our spot measurements of soil moisture from the spring showed that drought plots were roughly 50\% drier, while irrigated plots were roughly 40\% wetter than ambient plots. This difference was highly significant (table \ref{table:spotVWC}).
+  
+The automatically recorded soil moisture data from only half of the experimental plots also showed that the drought treatment decreased and the irrigation treatment increased soil moisture, but the size of these effects were dependent on season and whether it had rained recently (). The best model for predicting the average treatment effects on soil moisture was : .  We did not find evidence that the drought shelters and the irrigation treatments significantly changed air temperature within the plots ().  
 
 The SOILWAT soil moisture model indicated that soil moisture fluctated from between X and X on average each year, with the months of X and X being the wettest while soil moisture during the months of X and X was driest (fig). Predicted seasonal soil moisture for each year was positively correlated with precipitation, and negatively correlated with average temperatures. The average soil moisture predicted from soilwat for the entire study period from X to X is shown in figure X.  Soil moisture predictions for the ambient conditions from 2011 to 2016 fall on the low side of the period of record averages.  This was driven by higher than average temperatures and severely dry winters and spring conditions in the years of X. 
 
@@ -355,31 +357,10 @@ We tested the effects of removal on cover by analyzing year-to-year changes in (
 (Table \ref{table:coefficients}). However, these treatment comparisons do not address our questions about whether responses to removal were 
 adequately predicted by models fit to observational data on non-removal plots. 
 
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=1\textwidth]{treatment_trends_cover}
-\caption{Cover trends by treatment for the four dominant species.  Note the difference in y-axis scale between the canopy cover of \textit{A. tripartita} and the basal cover of the dominant grasses. ``Shrub removal'' refers to removal of \textit{A. tripartita}, and ``Grass removal'' refers to removal of all perennial grasses. The cover of species in treatments from which they are removed (e.g. \textit{A. tripartita} cover in shrub removal plots) is included to show values at the start of the experiment in 2011 and the efficacy of the removal treatments.}
-\label{fig:CoverTrends}
-\end{figure}
-
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=1\textwidth]{cover_change_chrono}
-\caption{Observed and predicted year-to-year changes in cover for the four dominant species. Mean observed changes (averaged across quadrats) are shown in solid symbols, mean predicted changes are shown in open symbols. Values for control and removal plots are blue and red, respectively. Predictions from the ``Baseline'' model do account for effects of local species composition on vital rates, but do not include additional effects of removals. Predictions from the ``Removal'' model include additional treatment effects on vital rates. }
-\label{fig:CoverChange}
-\end{figure}
 
 \subsection*{Vital rates}
 
 Our vital rate models take into account the effects of local species composition and should therefore be able to predict the effect of removals on survival, growth and recruitment without any additional parameters. If the removal treatment effects that we added to these models are statistically significant, it would indicate an effect of removals that goes above and beyond the response predicted by a model based on data from the control plots. For the survival models, the 95\% confidence intervals on the removal effects overlapped zero for all four species (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRsurvival} to \ref{PSSPsurvival}), meaning that the survival probabilities of plants in removal plots can be predicted based on data from control plots. However, for the growth models, the 95\% confidence intervals on the removal effects were positive for \textit{Poa secunda}  and \textit{P. spicata}, meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). In contrast, \textit{Poa secunda} had lower recruitment in removal than controls plots (upper limit of 95\% CI $<0$; Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}).
-
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{treatment_tests}
- \caption{Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% confidence intervals. The removal effect shows response of \textit{A. tripartita} ("ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. }
- \label{fig:VitalRateTest}
- \end{figure}
 
 The positive removal effects on \textit{Poa secunda}  and \textit{P. spicata} growth are particularly interesting, because they suggest that models based on observational data may underestimate competitive release. We conducted additional analyses to further explore removal effects on the growth of these two species. First, we classified all individuals of these species as located either inside or outside the limits of \textit{A. tripartita} canopies present in 2011 (before removal). If removal is releasing grasses from \textit{A. tripartita} competition, we would expect individuals located under the shrub canopies to experience a greater effect of removal. However, the location of individuals with respect to \textit{A. tripartita} canopies had no effect on growth of either species (Tables \ref{table:POSEgrowth-inARTR} and \ref{table:PSSPgrowth-inARTR}), meaning that individuals located outside \textit{A. tripartita} canopies responded to removals as much as individuals underneath (removed) canopies. 
 
@@ -393,23 +374,9 @@ Finally, we evaluated pre-existing differences in community composition in remov
 
 To quantify the short-term population-level consequences of removals, we used an IBM to project the cover of each species in each quadrat one year ahead using versions of the model with and without removal treatment effects. Our models tended to under-predict population growth (Fig. \ref{fig:CoverChange}) and population size (Fig. \ref{fig:IBM1step}) for all species, but the difference between predictions from the baseline and removal models varied among species. For \textit{A. tripartita}, both observed and predicted population growth rates were close to zero, and differences in model predictions were small. \textit{H. comata} experienced greater variation in growth rates, but the inclusion of removal treatment effects had little effect on population growth rates. For \textit{Poa secunda} and especially \textit{P. spicata}, the model with removal effects consistently predicted higher population growth than the baseline model (Fig. \ref{fig:CoverChange}), and reduced the underestimates of cover (Fig. \ref{fig:IBM1step}). The version of the model with maximum removal treatment effects (removal coefficients set to the 95\% confidence limit furthest from zero), were qualitatively similar, but further amplified the contrast between predictions of the baseline and removal models for and \textit{P. spicata} (Fig. \ref{fig:IBM1step-maxCI}).
 
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{cover_projections_1step}
- \caption{Observed and predicted cover for each of the four modeled species. Solid lines show mean observed cover averaged across control (blue) and removal treatment (red) quadrats. Dashed lines show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Dotted lines show one-step-ahead predictions from an IBM that includes removal treatment coefficients. }
- \label{fig:IBM1step}
- \end{figure}
-
 To quantify the long-term population-level consequences of removals, we used an IPM to project stochastic equilibrium cover. We concentrated on grass species' responses to \textit{A. tripartita} removal, since the growth regressions indicated our baseline model might underestimate competitive release in this situation (our baseline vital rate models worked well in predicting \textit{A. tripartita} responses to grass removal). Using the baseline model, with no removal treatment coeffiicients, the IPM predicts little effect of \textit{A. tripartita} removal on the cover of any grass species (compare gray and brown boxes in Fig. \ref{fig:IPMresults}). Using a model with removal treatment coefficients, the IPM predicts little effect of shrub removal on \textit{Poa secunda} and \textit{H. comata}, but a 2-fold increase in the cover of \textit{P. spicata} (Fig. \ref{fig:IPMresults}). Running a version of the model with maximum removal treatment effects (removal coefficients set to the 95\% confidence limit furthest from zero), resulted in the same qualitative outcome, but a larger increase in \textit{P. spicata} (Fig. \ref{fig:IPMresults-maxCI}). 
 
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{boxplots}
- \caption{Equilibrium cover of the four dominant species simulated by the IPM. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), and green boxes show results from a model with  \textit{A. tripartita} set to zero and removal treatment coefficients included.  }
- \label{fig:IPMresults}
- \end{figure}
- 
- The equilibrium cover of \text{Artemisia} simulated by the IPM (6.0\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%,\ref{fig:CoverTrends}). Could the small competitive release following simulated \text{Artemisia} removal simply reflect the low \text{Artemisia} cover? To explore this possibility, we increased \text{Artemisia} cover in the baseline simulation by increasing average \text{Artemisia} fecundity. The increased fecundity led to a doubling of \text{Artemisia} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover). 
+The equilibrium cover of \text{Artemisia} simulated by the IPM (6.0\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%,\ref{fig:CoverTrends}). Could the small competitive release following simulated \text{Artemisia} removal simply reflect the low \text{Artemisia} cover? To explore this possibility, we increased \text{Artemisia} cover in the baseline simulation by increasing average \text{Artemisia} fecundity. The increased fecundity led to a doubling of \text{Artemisia} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover). 
 
 \section*{Discussion}
 
@@ -437,6 +404,70 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 
 
 \end{doublespacing} 
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% TABLES !
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\begin{table}[h]
+	\caption{Spring soil moisture}
+	\centering
+	%\begin{center}
+	\begin{tabular}{l c c }
+		\hline
+		& Model 1 \\
+		\hline
+		(Intercept)                  & $8.81^{*}$    	& $[5.78;\ 11.83]$  \\
+		TreatmentDrought             & $-3.97^{*}$      & $[-4.84;\ -3.09]$ \\
+		TreatmentIrrigation          & $3.26^{*}$       & $[2.39;\ 4.14]$   \\
+		\hline
+		AIC                          & 3191.87           \\
+		BIC                          & 3222.92           \\
+		Log Likelihood               & -1588.93          \\
+		Num. obs.                    & 624               \\
+		Num. groups: plot            & 24                \\
+		Num. groups: PrecipGroup     & 8                 \\
+		Num. groups: date            & 5                 \\
+		Var: plot (Intercept)        & 0.45              \\
+		Var: PrecipGroup (Intercept) & 0.23              \\
+		Var: date (Intercept)        & 11.24             \\
+		Var: Residual                & 8.90              \\
+		\hline
+		\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+	\end{tabular}
+	\label{table:spotVWC}
+	%\end{center}
+\end{table}
+
+
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% FIGURES !
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{VWC_spot_measurements}
+	\caption{Soil moisture in the upper 5 cm of drought and irrigated plots compared to ambient controls. Soil moisture was measured at six locations around each plot at five different dates during the spring. Control plots were nearby areas of experiencing ambient soil moisture. Box plots show the mean soil moisture and the upper lower interquartile range.  Dots show individual soil moisture measurements. Readings of volumetric soil moisture less than zero were occasionally obtained in very dry soil.}
+	\label{fig:VWCspot}
+\end{figure}
+
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{avg_daily_soil_moisture}
+	\caption{Average soil moisture in the control, drought, and irrigation treatments during each year of the experiment.  Soil moisture was monitored in four drought plots and four irrigated plots and four ambient control plots.  Averages represent average soil moisture recorded every two hours over the course of the day at 5 cm and 25 cm depths.}
+	\label{fig:CoverTrends}
+\end{figure}
+
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{cover_change_chrono}
+	\caption{Observed and predicted year-to-year changes in cover for the four dominant species. Mean observed changes (averaged across quadrats) are shown in solid symbols, mean predicted changes are shown in open symbols. Values for control and removal plots are blue and red, respectively. Predictions from the ``Baseline'' model do account for effects of local species composition on vital rates, but do not include additional effects of removals. Predictions from the ``Removal'' model include additional treatment effects on vital rates. }
+	\label{fig:CoverChange}
+\end{figure}
+
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % APPENDICES !
@@ -988,47 +1019,6 @@ Var: Residual                    & 0.71              \\
 
 \section{Additional Figures} 
 
- \begin{figure}[h]
- \centering
- \includegraphics[width=0.7\textwidth]{CompKernels}
- \caption{Competition kernels for the four dominant species.  }
- \label{fig:CompKernels}
- \end{figure}
- 
-  \begin{figure}[h]
-  \centering
-  \includegraphics[width=1\textwidth]{climate}
-  \caption{Annual precipitation (a) and mean temperature (b) during the period of the experiment, shown against the long-term (1927-2016) means (solid blue and red lines) and 5\% and 95\% quantiles (dashed lines).  }
-  \label{fig:climate}
-  \end{figure}
- 
-  \begin{figure}[tbp]
-  \centering
-  \includegraphics[width=1\textwidth]{PSSP_W_scatters}
-  \caption{Bivariate scatter plots comparing crowding exerted by each neighbor species on \textit{P. spicata}. Blue symbols show values from controls plots, red symbols show values from \textit{Artemisia} removal plots.``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  }
-  \label{fig:Wscatters}
-  \end{figure}
-  
-  \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{PSSP_W_byTrt}
- \caption{Distribution of crowding exerted by each neighbor species on \textit{P. spicata} individuals in controls plots (blue) and removal quadrats (red) in 2011, before \textit{Artemisia}  removals were conducted. Inset bar graphs show the probability that a particular neighbor species was present ($W>0$) in a focal plant's local neighborhood in control (blue) and removal (red) quadrats. ``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  }
- \label{fig:W-by-treatment}
- \end{figure}
-
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{cover_projections_1step_maxCI}
- \caption{Observed and predicted cover for each of the four modeled species assuming maximum effects of removal. Solid lines show mean observed cover averaged across control (blue) and removal treatment (red) quadrats. Dashed lines show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Dotted lines show one-step-ahead predictions from an IBM that includes removal treatment coefficients representing the outermost values of the 95\% confidence intervals. }
- \label{fig:IBM1step-maxCI}
- \end{figure}
- 
-  \begin{figure}[tbp]
-  \centering
-  \includegraphics[width=1\textwidth]{boxplots-maxCI}
-  \caption{Equilibrium cover of the four dominant species simulated by the IPM with maximum removal treatment effects. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), green boxes show results from a model with  \textit{A. tripartita} set to zero and (mean) removal treatment coefficients included, and blue boxes show results with removal treatments coefficients assigned the outermost value of the 95\% confidence intervals.  }
-  \label{fig:IPMresults-maxCI}
-  \end{figure}
 
 \end{document}
 

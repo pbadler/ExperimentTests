@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.30)  18 DEC 2016 15:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.30)  18 DEC 2016 17:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -289,18 +289,18 @@ Package color Info: Driver file: pdftex.def on input line 143.
 (./precip_ms.aux)
 \openout1 = `precip_ms.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 68.
-LaTeX Font Info:    ... okay on input line 68.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 68.
-LaTeX Font Info:    ... okay on input line 68.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 68.
-LaTeX Font Info:    ... okay on input line 68.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 68.
-LaTeX Font Info:    ... okay on input line 68.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 68.
-LaTeX Font Info:    ... okay on input line 68.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 68.
-LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
  (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count117
@@ -349,105 +349,105 @@ LaTeX Font Info:    ... okay on input line 68.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \celsius on input line 68.
-Package gensymb Info: Faking symbols for \degree and \celsius on input line 68.
+LaTeX Info: Redefining \celsius on input line 70.
+Package gensymb Info: Faking symbols for \degree and \celsius on input line 70.
 
 
 Package gensymb Warning: Not defining \perthousand.
 
-LaTeX Info: Redefining \ohm on input line 68.
-Package gensymb Info: Using \Omega for \ohm on input line 68.
+LaTeX Info: Redefining \ohm on input line 70.
+Package gensymb Info: Using \Omega for \ohm on input line 70.
 
 Package gensymb Warning: Not defining \micro.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 70.
+LaTeX Font Info:    Try loading font information for U+msa on input line 72.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 70.
+LaTeX Font Info:    Try loading font information for U+msb on input line 72.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 70.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 72.
 
 (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 70.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 72.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 70.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 72.
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <6> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 70.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 72.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
 
 Package natbib Warning: Citation `parmesan' on page 3 undefined on input line 1
-05.
+07.
 
 
-Package natbib Warning: Citation `davis' on page 3 undefined on input line 105.
+Package natbib Warning: Citation `davis' on page 3 undefined on input line 107.
 
 
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 3 undefined on
- input line 107.
+ input line 109.
 
 
 Package natbib Warning: Citation `dalgleish_climate_2010' on page 3 undefined o
-n input line 107.
+n input line 109.
 
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 3 undefined on
- input line 107.
+ input line 109.
 
 
 Package natbib Warning: Citation `gerber_optimal_2015' on page 3 undefined on i
-nput line 107.
+nput line 109.
 
 
 Package natbib Warning: Citation `adler_can_the_past_2014' on page 3 undefined 
-on input line 107.
+on input line 109.
 
 [3]
 
 Package natbib Warning: Citation `knapp and smith' on page 4 undefined on input
- line 111.
+ line 113.
 
 
 Package natbib Warning: Citation `Hsu and Adler' on page 4 undefined on input l
-ine 111.
+ine 113.
 
 
-Package natbib Warning: Citation `yang' on page 4 undefined on input line 111.
+Package natbib Warning: Citation `yang' on page 4 undefined on input line 113.
 
 
 Package natbib Warning: Citation `Franklin' on page 4 undefined on input line 1
-11.
+13.
 
 
-Package natbib Warning: Citation `Srur' on page 4 undefined on input line 111.
+Package natbib Warning: Citation `Srur' on page 4 undefined on input line 113.
 
 
 Package natbib Warning: Citation `venables' on page 4 undefined on input line 1
-11.
+13.
 
 
 Package natbib Warning: Citation `crone_ability_2013' on page 4 undefined on in
-put line 114.
+put line 116.
 
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 4 undefined on
- input line 114.
+ input line 116.
 
 
 Package natbib Warning: Citation `adler byrn and leiker' on page 4 undefined on
- input line 114.
+ input line 116.
 
 [4]
 Missing character: There is no â in font cmr10!
@@ -456,170 +456,153 @@ Missing character: There is no “ in font cmr10!
  [5]
 
 Package natbib Warning: Citation `gherardi' on page 6 undefined on input line 1
-31.
+33.
 
 
 Package natbib Warning: Citation `yahdjian_rainout_2002' on page 6 undefined on
- input line 131.
+ input line 133.
 
 [6] [7]
 
 Package natbib Warning: Citation `Parton 1978' on page 8 undefined on input lin
-e 141.
+e 143.
 
 
 Package natbib Warning: Citation `Bradford' on page 8 undefined on input line 1
-41.
+43.
 
 [8] [9] [10]
 
 Package natbib Warning: Citation `adler_in_prep' on page 11 undefined on input 
-line 209.
+line 210.
 
 [11]
 
 Package natbib Warning: Citation `adler_in_prep' on page 12 undefined on input 
-line 237.
+line 236.
 
 [12] [13]
 
-Package natbib Warning: Citation `stan' on page 14 undefined on input line 271.
+Package natbib Warning: Citation `stan' on page 14 undefined on input line 270.
 
 
 
-Package natbib Warning: Citation `rstan' on page 14 undefined on input line 271
+Package natbib Warning: Citation `rstan' on page 14 undefined on input line 270
 .
 
 
 Package natbib Warning: Citation `stan manual' on page 14 undefined on input li
-ne 271.
+ne 270.
 
 
 Package natbib Warning: Citation `vetari_practical_2015' on page 14 undefined o
-n input line 273.
+n input line 272.
 
 [14]
 
 Package natbib Warning: Citation `dalgleish_climate_2010' on page 15 undefined 
-on input line 280.
+on input line 278.
 
 
 Package natbib Warning: Citation `wang trees' on page 15 undefined on input lin
-e 280.
+e 278.
 
 
 Package natbib Warning: Citation `dredging' on page 15 undefined on input line 
-280.
+278.
 
 [15]
 
-LaTeX Warning: Reference `eqn:' on page 16 undefined on input line 290.
-
-[16]
-
-Package natbib Warning: Citation `gelman_understanding_2014' on page 17 undefin
-ed on input line 302.
+LaTeX Warning: Reference `eqn:' on page 16 undefined on input line 288.
 
 
-Package natbib Warning: Citation `gelman_understanding_2014' on page 17 undefin
-ed on input line 302.
+Package natbib Warning: Citation `gelman_understanding_2014' on page 16 undefin
+ed on input line 299.
 
-[17]
 
-LaTeX Warning: Reference `fig:' on page 18 undefined on input line 326.
+Package natbib Warning: Citation `gelman_understanding_2014' on page 16 undefin
+ed on input line 299.
 
-[18] [19]
+[16] [17] [18] [19]
 
 Package natbib Warning: Citation `chu_direct_2016' on page 20 undefined on inpu
-t line 346.
+t line 343.
 
 
 Package natbib Warning: Citation `treddenick_' on page 20 undefined on input li
-ne 346.
+ne 343.
 
 [20]
 
 Package natbib Warning: Citation `chu_direct_2016' on page 21 undefined on inpu
-t line 352.
+t line 349.
 
 
-! LaTeX Error: File `treatment_trends_cover' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.365 ...idth=1\textwidth]{treatment_trends_cover}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+LaTeX Warning: Reference `fig:VitalRateTest' on page 21 undefined on input line
+ 363.
 
 
-! LaTeX Error: File `cover_change_chrono' not found.
+LaTeX Warning: Reference `fig:VitalRateTest' on page 21 undefined on input line
+ 363.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.373 ...s[width=1\textwidth]{cover_change_chrono}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+
+LaTeX Warning: Reference `fig:VitalRateTest' on page 21 undefined on input line
+ 363.
 
 [21]
 
-! LaTeX Error: File `treatment_tests' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.384 ...phics[width=1\textwidth]{treatment_tests}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[22] [23]
-
-! LaTeX Error: File `cover_projections_1step' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.403 ...dth=1\textwidth]{cover_projections_1step}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+LaTeX Warning: Reference `fig:Wscatters' on page 22 undefined on input line 369
+.
 
 
-! LaTeX Error: File `boxplots' not found.
+LaTeX Warning: Reference `fig:W-by-treatment' on page 22 undefined on input lin
+e 371.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.412 ...ludegraphics[width=1\textwidth]{boxplots}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+[22]
 
-[24] [25] [26] [27] [28] (./precip_ms.bbl
+LaTeX Warning: Reference `fig:IBM1step' on page 23 undefined on input line 375.
+
+
+
+LaTeX Warning: Reference `fig:IBM1step' on page 23 undefined on input line 375.
+
+
+
+LaTeX Warning: Reference `fig:IBM1step-maxCI' on page 23 undefined on input lin
+e 375.
+
+
+LaTeX Warning: Reference `fig:IPMresults' on page 23 undefined on input line 37
+7.
+
+
+LaTeX Warning: Reference `fig:IPMresults' on page 23 undefined on input line 37
+7.
+
+
+LaTeX Warning: Reference `fig:IPMresults-maxCI' on page 23 undefined on input l
+ine 377.
+
+[23]
+
+LaTeX Warning: Reference `fig:IBM1step' on page 24 undefined on input line 387.
+
+
+
+LaTeX Warning: Reference `fig:IPMresults' on page 24 undefined on input line 38
+7.
+
+[24]
+
+LaTeX Warning: Reference `fig:W-by-treatment' on page 25 undefined on input lin
+e 389.
+
+[25] [26] [27] (./precip_ms.bbl
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ƒ in font cmr10!
 Missing character: There is no Â in font cmr10!
 Missing character: There is no ¶ in font cmr10!
- [29] [30]
+ [28] [29]
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ƒ in font cmr10!
 Missing character: There is no Â in font cmr10!
@@ -632,7 +615,7 @@ Missing character: There is no Ã in font cmr10!
 Missing character: There is no ƒ in font cmr10!
 Missing character: There is no Â in font cmr10!
 Missing character: There is no ³ in font cmr10!
- [31]
+ [30]
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¢ in font cmr10!
 Missing character: There is no â in font cmr10!
@@ -641,15 +624,50 @@ Missing character: There is no ¬ in font cmr10!
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no œ in font cmr10!
-) [32]
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 471
+)
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<../figures/VWC_spot_measurements.png, id=118, 361.35pt x 361.35pt>
+File: ../figures/VWC_spot_measurements.png Graphic file (type png)
+
+<use ../figures/VWC_spot_measurements.png>
+Package pdftex.def Info: ../figures/VWC_spot_measurements.png used on input lin
+e 450.
+(pdftex.def)             Requested size: 469.75502pt x 469.76047pt.
+
+<../figures/treatment_trends_cover.png, id=119, 578.16pt x 198.7425pt>
+File: ../figures/treatment_trends_cover.png Graphic file (type png)
+
+<use ../figures/treatment_trends_cover.png>
+Package pdftex.def Info: ../figures/treatment_trends_cover.png used on input li
+ne 458.
+(pdftex.def)             Requested size: 469.75502pt x 161.47787pt.
+
+
+! LaTeX Error: File `cover_change_chrono' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.466 ...s[width=1\textwidth]{cover_change_chrono}
+                                                  
+I could not locate the file with any of these extensions:
+.pdf,.png,.jpg,.eps
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+[31] [32] [33 <../figures/VWC_spot_measurements.png (PNG copy)>] [34 <../figure
+s/treatment_trends_cover.png (PNG copy)>]
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 497
 .
 
 (/usr/share/texmf/tex/latex/R/tex/latex/omscmtt.fd
 File: omscmtt.fd 
 )
 LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 471.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 497.
  [1
 
 ] [2] [3
@@ -657,107 +675,23 @@ LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10.95> not available
 ] [4] [5]
 [6] [7] [8] [9] [10]
 
-! LaTeX Error: File `CompKernels' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.998 ...raphics[width=0.7\textwidth]{CompKernels}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: File `climate' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1005 ...ludegraphics[width=1\textwidth]{climate}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: File `PSSP_W_scatters' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1012 ...hics[width=1\textwidth]{PSSP_W_scatters}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: File `PSSP_W_byTrt' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1019 ...raphics[width=1\textwidth]{PSSP_W_byTrt}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: File `cover_projections_1step_maxCI' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1026 ...extwidth]{cover_projections_1step_maxCI}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: File `boxplots-maxCI' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1033 ...phics[width=1\textwidth]{boxplots-maxCI}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
 Package natbib Warning: There were undefined citations.
 
 [11
 
-] [12] (./precip_ms.aux)
+] (./precip_ms.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
  4617 strings out of 494953
- 64248 string characters out of 6180977
- 190268 words of memory out of 5000000
- 7769 multiletter control sequences out of 15000+600000
+ 64476 string characters out of 6180977
+ 190202 words of memory out of 5000000
+ 7776 multiletter control sequences out of 15000+600000
  20256 words of font info for 77 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 42i,11n,31p,1587b,370s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,11n,31p,1587b,376s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share
@@ -778,10 +712,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmtt10.pfb>
-Output written on precip_ms.pdf (44 pages, 342628 bytes).
+Output written on precip_ms.pdf (45 pages, 669411 bytes).
 PDF statistics:
- 232 PDF objects out of 1000 (max. 8388607)
- 163 compressed objects within 2 object streams
+ 237 PDF objects out of 1000 (max. 8388607)
+ 165 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

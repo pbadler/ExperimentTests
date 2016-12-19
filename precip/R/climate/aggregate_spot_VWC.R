@@ -32,7 +32,7 @@ spotVWC <-
   group_by( season, date, PrecipGroup,rainfall, Treatment ) %>% 
   summarise( avg_VWC = mean(VWC, na.rm = TRUE)) %>% 
   group_by(PrecipGroup) %>% 
-  mutate( avg_VWC = scale(avg_VWC)) %>%  # scale within Precip Group and Depth 
+  mutate( avg_VWC = scale(avg_VWC, mean(avg_VWC[Treatment == 'Control'], na.rm = T), sd(avg_VWC[Treatment == 'Control'], na.rm = T))) %>%  # scale within Precip Group and Depth 
   spread( Treatment, avg_VWC) %>%
   mutate( Drought = Drought - Control, Irrigation = Irrigation - Control ) %>% 
   arrange( PrecipGroup, date) 
