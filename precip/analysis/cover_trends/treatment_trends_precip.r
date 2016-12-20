@@ -286,7 +286,7 @@ avgcover
 
 subset( temp , species == 'ARTR')
 
-png("figures/start_to_finish_cover_change.png", height=4,width=10,units="in",res=400)
+png("figures/start_to_finish_cover_change.png", height=6,width=10,units="in",res=400)
 print( 
 ggplot ( temp, aes( x  = Treatment, y = lc, color = Treatment )) + 
   geom_boxplot() + 
