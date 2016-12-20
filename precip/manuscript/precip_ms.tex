@@ -132,23 +132,15 @@ We extracted data on survival, growth, and recruitment from the mapped quadrats 
 \subsection*{Precipitation experiment}
 In spring 2011, we selected locations for an additional 16 quadrats for the precipitation experiment. We located these in a large exclosure containing six of the historical permanent quadrats.  We avoided plots falling on hill slopes, areas with greater than 20\% bare rock, or with over 10\% cover of the woody shrubs \textit{Purshia tridentata} or \textit{Amelanchier utahensis}. New plots were established in pairs, and one plot per pair was randomly assigned to either the precipitation reduction or the precipitation addition treatment. We mapped the quadrats in June, 2011 and then built the rainfall shelters and set-up the irrigation systems in the fall of 2011. We used a rain-out shelter and automatic irrigation design described in \citep{gherardi, yahdjian_rainout_2002}. Each rain-out shelter covered an area of 2.5 by 2 m and consisted of transparent acrylic shingles held up over the plot to channel 50\% of incoming rainfall off of the plot and into 75 l reservoirs. The collected water was pumped out of reservoirs and sprayed onto paired irrigation treatment plots. Pumping was initiated automatically with float switches that were triggered when water levels in the reservoirs were approximately 20 l, or equivalently irrigation was triggered once for every 6 mm of rainfall collected. We disconnected the irrigation pumps in late fall each year and re-connected them in April.  The drought shelters remained in place throughout the year.  
 
-We monitored soil moisture and air temperature in four of the precipitation experiment plot pairs using Decagon Devices (Pulman Washington) 5TM and EC-5 soil moisture sensors and 5TE temperature sensors.  We installed two soil moisture sensors in each monitored plot at 5 cm and two at 25 cm deep in the soil.  Air temperature was measured underneath the roofing of the shelter at 30 cm above ground. For each pair of manipulated plots, we also installed sensors in a nearby area to measure ambient rainfall and temperature. Data were logged automatically every four hours. We augmented automatic monitoring of the climate in these plots with by taking direct measurements of soil moisture with a handheld EC-5 soil moisture sensor around each plot at X different times in the spring and summer between 2012 and 2016.  
+We monitored soil moisture and air temperature in four of the precipitation experiment plot pairs using Decagon Devices (Pulman Washington) 5TM and EC-5 soil moisture sensors and 5TE temperature sensors.  We installed two soil moisture sensors in each monitored plot at 5 cm and two at 25 cm deep in the soil.  Air temperature was measured underneath the roofing of the shelter at 30 cm above ground. For each pair of manipulated plots, we also installed sensors in a nearby area to measure ambient rainfall and temperature. Data were logged automatically every four hours. We augmented automatic monitoring of the climate in these plots with by taking direct measurements of soil moisture with a handheld EC-5 soil moisture sensor at six points around each plot on 6/6/2012, 4/29/2015, 5/7/2015, 6/9/2015 and 5/10/2016. We analyzed these spot measurements for significant treatment effects on soil moisture using a linear mixed effects model with the \textit{lmer} package in \textit{R} \citep{bates}, with plot, plot group, and date as random effects in the model.    
 
-
-We conducted a simple statistical to determine the net effect of the experimental treatments on cover in the experiment. First we calculated the log change in cover for each of the four focal species in each quadrat from from the start of the experiment in spring prior to manipulation, to the last year of the experiment. Log change in cover was defined as , $log(Cover_{2016}/Cover_{2011})$ where $Cover_{2016}$ is the cover of each species in 2011 and $Cover_{2015}$ is cover in 2011. We tested for the effect of precipitation treatment on this measure with a linear model in \textit{R}. We considered the precipitation treatment effects to be significant when??.
-
+We conducted a simple statistical to determine the net effect of the experimental treatments on cover in the experiment. First we calculated the log change in cover for each of the four focal species in each quadrat from from the start of the experiment in spring prior to manipulation, to the last year of the experiment. Log change in cover was defined as , $log(Cover_{2016}/Cover_{2011})$ where $Cover_{2016}$ is the cover of each species in 2011 and $Cover_{2015}$ is cover in 2011. We tested for the effect of precipitation treatment on this measure with a linear model in \textit{R}.
 
 \subsection*{Soil moisture modeling}
 
 We expected that our precipitation manipulation experiment would affect plants by altering available soil moisture during the growing season.  Because we do not have direct soil moisture measures for each year of observed plant cover in the historical record, we used the SOILWAT soil moisture model to estimate daily soil moisture at the USSES from 1925 to the present \citep{Parton 1978}. We used an enhanced version of soilwat that has recently been developed for use in semi-arid shrubland ecosystems \citep{Bradford}. SOILWAT uses daily weather data, ecosystem specific vegetation properties and site specific soil properties to estimate water balance processes. SOILWAT specifically estimates rainfall interception by vegetation, evaporation of intercepted water, snow melt and snow redistribution, infiltration into the soil, percolation through the soil, bare-soil evaporation, transpiration from each soil layer, and drainage. We parameterized SOILWAT with the generic sagebrush steppe vegetation parameters and site specific soil texture and bulk density data. We used daily weather data collected at the USSES from 1925 until the present as weather forcing data for the SOILWAT predictions.  
 
-We averaged daily soil moisture predictions from SOILWAT from upper 40 cm of soil and then aggregated these seasonally to serve as the covariates in the vital rate regressions for each species. In order to predict species' performance in the experimental plots we took the raw SOILWAT predictions for the ambient conditions for each day during the experimental period and then adjusted these up or down using coefficients from a linear model fit to the changes in soil moisture directly observed in the drought and irrigation plots.  
-
-Because we did not monitor soil moisture directly in all X control, drought and irrigation plots, we used a model to describe the average treatment effects on soil moisture during the course of the experiment. To do this we first averaged observed soil moisture data from the dataloggers installed in four of the plot groups by date and plot and then within each plot group we found the average deviation from ambient soil moisture by subtracting the average soil moisture in the drought and irrigation plots from the average soil moisture in the nearby control areas. This left us with a list of average daily deviations from ambient soil moisture in the drought and irrigation plots.
-
-We expected that the effects the drought and irrigation experiment would have on soil moisture would depend on the season and whether it had rained recently.  So we classified the daily climate during the experimental period into four seasons and classified each day as dry or rainy. Rainy days were defined as any days when average temperatures were above 3 degrees C and precipitation was over x mm. The day immediately following rainfall was also classified as rainy. 
-
-We modeled the average daily deviations in soil moisture and temperature in the treatments as a function of season, whether it had rained recently and the interaction between these two factors. After all this, we could then use this model to adjust the ambient soil moisture values predicted from the SOILWAT model above. These adjusted soil moisture values reflected the average season and rainfall dependent effects of the experimental treatments on soil moisture and could be used as covariates for predicting the effects of our manipulation on each species demographic rates. 
+We averaged daily soil moisture predictions from SOILWAT from upper 40 cm of soil and then averaged these seasonally to serve as the covariates in the vital rate regressions for each species. Because we did not monitor soil moisture directly in all control, drought and irrigation plots, we used a model to describe the average treatment effects on soil moisture during the course of the experiment. To do this we first averaged observed soil moisture data by date and plot and then standardized these by the mean and standard deviation of the control soil moisture conditions observed within each plot group. We then found the difference between the soil moisture in the treated plots and the ambient conditions. We then modeled these treatment effects as a function of season and whether a day was rainy or dry. We expected that our drought and irrigation treatments might be more effective during rainy weather than during dry weather. Rainy days were defined as any days when any precipitation was recorded and average temperatures were above 3 degrees C. The day immediately following rainfall was also classified as rainy. We fit this model using the \textit{lmer} package in \textit{R} \citep{bates} with random effects for plot group and date. We then used this model to predict the treatment effects on soil moisture for the entire study period from the ambient soil moisture values predicted from the SOILWAT model described above. These adjusted soil moisture values reflected the average season and rainfall dependent effects of the experimental treatments on soil moisture and could be used as covariates for predicting the effects of our manipulation on each species demographic rates. 
 
 
 \subsection*{Statistical models of vital rates}
@@ -320,19 +312,21 @@ All data and R code necessary to reproduce our analysis will be deposited in the
 
 \subsection*{Effects on soil moisture}
 
-Our treatments successfully changed the soil moisture in the experimental plots in the directions expected (fig. \ref{fig:VWCspot}). Our spot measurements of soil moisture from the spring showed that drought plots were roughly 50\% drier, while irrigated plots were roughly 40\% wetter than ambient plots. This difference was highly significant (table \ref{table:spotVWC}).
+Our treatments successfully changed the soil moisture in the experimental plots in the directions expected (fig. \ref{fig:spotVWC}). Spring spot measurements of soil moisture from all the plots showed that on average the drought plots were roughly 50\% drier, while irrigated plots were roughly 40\% wetter than ambient conditions (table \ref{table:spotVWC}).
   
-The automatically recorded soil moisture data from only half of the experimental plots also showed that the drought treatment decreased and the irrigation treatment increased soil moisture, but the size of these effects were dependent on season and whether it had rained recently (). The best model for predicting the average treatment effects on soil moisture was : .  We did not find evidence that the drought shelters and the irrigation treatments significantly changed air temperature within the plots ().  
+The continuously recorded soil moisture data also recorded treatment effects on soil moisture, but these effects were weaker on average than the more complete spot measurements and depended on season and recent rainfall (table \ref{table:soil_moisture_model}; fig \ref{fig:dailyVWC}). We saw weaker effects during the spring than during the fall and summer: the drought plots were about 20-30\% drier in the fall and summer but only 7 to 14\% drier during the spring. The irrigated plots were 30\% wetter during the fall and summer but only 20 to 25\% wetter during the spring.  Treatment differences were slightly larger during rainy periods, especially in the spring. We did not find evidence that the drought shelters and the irrigation treatments consistently affected air temperature within the plots.  
 
-The SOILWAT soil moisture model indicated that soil moisture fluctated from between X and X on average each year, with the months of X and X being the wettest while soil moisture during the months of X and X was driest (fig). Predicted seasonal soil moisture for each year was positively correlated with precipitation, and negatively correlated with average temperatures. The average soil moisture predicted from soilwat for the entire study period from X to X is shown in figure X.  Soil moisture predictions for the ambient conditions from 2011 to 2016 fall on the low side of the period of record averages.  This was driven by higher than average temperatures and severely dry winters and spring conditions in the years of X. 
+The SOILWAT soil moisture model predicted average monthly soil volumetric water content of between 10 ml/ml and 15 ml/ml each month, with the month of April being the wettest and the month of July, August and September being the driest. Annual variation in seasonal soil moisture for each year was positively correlated with seasonal precipitation and negatively correlated with seasonal temperature. During the course of the experiment, SOILWAT reproduced much of the daily variation observed in soil moisture recorded by our automatic data loggers, but the average soil moisture predicted by SOILWAT was about 5 ml/ml wetter than the soil moisture content observed.  
 
-When we adjust the seasonally averaged soil moisture predictions by the treatment effects, we find that the soil moisture conditions predicted in the drought plots during the course of the experiment are lower than those predicted for any of the previous years in the historical record.  Likewise the predicted soil moisture in the irrigation plots was far above the average for the historical record in the years of X and X.  We interpret this as evidence that our drought and irrigation plots created truly novel soil moisture conditions in the years X and X that were unlikely to have ever been experienced by the study species during the entire period of the observational data. We visualize this by conducting a principle component analysis (PCA) on all the seasonal soil moisture, and plotting each year on the first two principle components. The PCA shows that the ambient, drought and irrigation plots experienced warmer than average seasonal conditions during the course of the experiment (further left on PCA1).  The drought plots were considerably drier, and the irrigated plots considerably wetter (figure PCA). 
+After adjusting the SOILWAT seasonal soil moisture predictions by the treatment effects, we found that the soil moisture predicted in the drought plots during the course of the experiment was well below the historical seasonal averages: the summer of 2012 and 2013, the fall of 2013, and the spring and winter of 2014 fell below the 5th percentile limit for drought in the historical period \ref{fig:seasonalVWC}. Soil moisture in our irrigation plots was generally above the historical average soil moisture but conditions never exceeded the 90th percentile for soil moisture in the historical period. 
 
 \subsection*{Effects on cover and vital rates}
 
-The cover of \textit{H. comata} and \textit{P. spicata} fell significantly by X and X percent respectively from the pre-treatment cover in 2011 to 2016. The cover of \textit{P. secunda} showed a trend towards decrease in the drought plots and an increase in the irrigated plots but these changes were not significant.  In contrast the cover of \textit{A. tripartita} changed in the opposite direction from the grasses; it increased in the drought plots and decreased in the irrigated plots but these changes were not significant (fig). 
+The cover of \textit{H. comata} and \textit{P. spicata} fell significantly in the drought plots from the pre-treatment cover 2011 to 2016 (tables \ref{table:changeHECO}, \ref{table:changePSSP}, fig \ref{fig:coverChange}). The cover of \textit{P. secunda} showed a slight decrease in the drought plots and an increase in the irrigated plots but these changes were not significant (table \ref{table:changePOSE}).  In contrast to the grasses, the cover of \textit{A. tripartita} increased slightly in all three treatments (fig \ref{fig:coverChange}). 
 
-Our treatment models fit to the experimental and observational data indicated a variety of treatment effects on the vital rates of each species (table x). Among the survival models, WAIC scores indicated that we should retain size x treatment effects for \textit{P. secunda}.  Among the growth models, we retained size by treatment effects for \textit{A. tripartita} and \textit{P. secunda}. DISCUSS SIGNIFICANT treatment effects: For \textit{A. tripartita} we observed a significant decrease in growth in the x treatment, while we observed no change in the X treatment.  \textit{H. comata} growth, survival and recruitment, while growth. \textit{P. secunda} growth and survival recruitment.  \textit{P. spicata} growth survival and recruitment. Treatment by size effects on \textit{A. tripartita} and \textit{P. secunda} showed that ()
+Our treatment models fit to the experimental and observational data indicated a variety of treatment effects on the vital rates of each species. After comparing WAIC scores for the growth models with and without the size by treatment effects, we retained size by treatment interaction effects in the growth models for \textit{A. tripartita} and \textit{P. secunda}, and the survival model for \textit{P. secunda}. For \textit{A. tripartita} the model showed a significant size by treatment effect in the drought plots: the effect of drought was positive for plants of average size and smaller \ref{fig:growthTreat}, but plants larger than the mean by more than 1.5 standard deviations grew slightly less in the drought treatment than in the controls. \textit{A. tripartita} showed the opposite response in the irrigation plots, (although the irrigation parameters were not technically significant at the 95\% confidence level), irrigation reduced growth the most for small plants while irrigation had positive effects on plants more than 1.5 standard deviations greater than the mean size. \textit{H. comata} growth showed a strong (but not significant) decrease in the drought plots and no response to the irrigation plots.  Like \textit{A. tripartita}, \textit{P.secunda} growth also showed a size by treatment effect in the drought plots, with the negative effects on growth becoming greater for larger plants. \textit{P. secunda} showed the opposite response in the irrigation plots with larger plants showing the largest increase in growth in response to irrigation (although these effects were technically not significant). \textit{P. spicata} growth was relatively unaffected by the drought and irrigation treatments. 
+
+The effects of drought were negative and signficant on the survival of all three grass species (fig \ref{fig:) 
 
 We observed a number of strong correlations between the year effects in the vital rate models and the seasonal soil moisture variables and table x reports the strongest three correlations for each species and vital rate (table). In general the soil moisture during the spring and summer period appeared to be more strongly correlated with the year effects for each species than the fall soil moisture, but see \textit{P. spicata} vr.  All three time lags show up in the choosen variables, but 1 out of X variables choosen involved soil moisture in the year immediately before the first year of the transition, (subscript "0"), while variables involving soil moisture in the year before that (subscript "lag") and after that (subscript "1") were choosen less often.
 
@@ -348,35 +342,6 @@ As for the vital rate predictions, our one-step ahead cover predictions from the
   
 As expected from previous research most of our demographic models estimated strong negative intra-specific crowding effects and weaker negative inter-specific crowding effects on the focal species (appendix) \citep{adler_coexistence_2010,chu_direct_2016,chu_large_2015}.
  
-(Fig. \ref{fig:CoverTrends}), but shrub removal did appear to cause an increase in the cover of \textit{P. spicata}. 
-We tested the effects of removal on cover by analyzing year-to-year changes in (log) cover, a measure of population growth rate (Fig. \ref{fig:CoverChange}). The removal treatments had no significant effect on 
-\textit{A. tripartita} (95\% confidence interval on removal treatment effect: -0.75, 0.56) or 
-\textit{Poa secunda} (95\% CI: -0.41, 0.25) population growth, but did increase 
-\textit{H. comata} (95\% CI: 0.01, 0.65) and
- \textit{P. spicata} (95\% CI: 0.01, 0.40) population growth 
-(Table \ref{table:coefficients}). However, these treatment comparisons do not address our questions about whether responses to removal were 
-adequately predicted by models fit to observational data on non-removal plots. 
-
-
-\subsection*{Vital rates}
-
-Our vital rate models take into account the effects of local species composition and should therefore be able to predict the effect of removals on survival, growth and recruitment without any additional parameters. If the removal treatment effects that we added to these models are statistically significant, it would indicate an effect of removals that goes above and beyond the response predicted by a model based on data from the control plots. For the survival models, the 95\% confidence intervals on the removal effects overlapped zero for all four species (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRsurvival} to \ref{PSSPsurvival}), meaning that the survival probabilities of plants in removal plots can be predicted based on data from control plots. However, for the growth models, the 95\% confidence intervals on the removal effects were positive for \textit{Poa secunda}  and \textit{P. spicata}, meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). In contrast, \textit{Poa secunda} had lower recruitment in removal than controls plots (upper limit of 95\% CI $<0$; Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}).
-
-The positive removal effects on \textit{Poa secunda}  and \textit{P. spicata} growth are particularly interesting, because they suggest that models based on observational data may underestimate competitive release. We conducted additional analyses to further explore removal effects on the growth of these two species. First, we classified all individuals of these species as located either inside or outside the limits of \textit{A. tripartita} canopies present in 2011 (before removal). If removal is releasing grasses from \textit{A. tripartita} competition, we would expect individuals located under the shrub canopies to experience a greater effect of removal. However, the location of individuals with respect to \textit{A. tripartita} canopies had no effect on growth of either species (Tables \ref{table:POSEgrowth-inARTR} and \ref{table:PSSPgrowth-inARTR}), meaning that individuals located outside \textit{A. tripartita} canopies responded to removals as much as individuals underneath (removed) canopies. 
-
-Second, we evaluated the possibility that removal effects might be transient. We removed aboveground plant material, but roots of the removed plants remain in the ground and decompose, potentially creating a flush of mineral nutrients. We tested for a transient removal effect by adding a year-by-treatment interaction. For both  \textit{Poa secunda}  and \textit{P. spicata} , we found no sign of a decrease in the removal effect over time (Tables \ref{table:POSEgrowth-byYr} and \ref{table:PSSPgrowth-byYr}).
-
-Third, responses to removals might be poorly predicted by models based on observational data if the removals create local crowding outside the range of historical variation or if the removals break covariances in crowding among species. However, the distribution of crowding observed within control plots easily spans the crowding values observed in removal plots (Fig. \ref{fig:Wscatters}), and we failed to find evidence for strong interspecific covariances in crowding (\ref{suppMethods}).
-
-Finally, we evaluated pre-existing differences in community composition in removal and control plots. In selecting removal plots, our criteria required candidate plots to include a certain amount of our target removal species. Because we adopted the historical plots as our controls, the same criteria were not applied (a control plot might not contain any \textit{A. tripartita}). To quantify resulting differences in pre-treatment (2011) composition, we compared neighborhood crowding at the individual plant level (the $\boldsymbol{W}$ of the growth regression) across treatments. \textit{A. tripartita} crowding and crowding by all subdominant shrub and grass species appeared greater than in the controls, whereas crowding by \textit{H. comata} was lower in removal plots than controls, though it was absent from most \textit{P. spicata} neighborhood in both treatments (Fig. \ref{fig:W-by-treatment}). These pre-existing differences in composition raise the possibility that plots selected for the removal treatments might differ from the control plots in some unobserved covariate that could influence plant performance.
-
-\subsection*{Population-level responses}
-
-To quantify the short-term population-level consequences of removals, we used an IBM to project the cover of each species in each quadrat one year ahead using versions of the model with and without removal treatment effects. Our models tended to under-predict population growth (Fig. \ref{fig:CoverChange}) and population size (Fig. \ref{fig:IBM1step}) for all species, but the difference between predictions from the baseline and removal models varied among species. For \textit{A. tripartita}, both observed and predicted population growth rates were close to zero, and differences in model predictions were small. \textit{H. comata} experienced greater variation in growth rates, but the inclusion of removal treatment effects had little effect on population growth rates. For \textit{Poa secunda} and especially \textit{P. spicata}, the model with removal effects consistently predicted higher population growth than the baseline model (Fig. \ref{fig:CoverChange}), and reduced the underestimates of cover (Fig. \ref{fig:IBM1step}). The version of the model with maximum removal treatment effects (removal coefficients set to the 95\% confidence limit furthest from zero), were qualitatively similar, but further amplified the contrast between predictions of the baseline and removal models for and \textit{P. spicata} (Fig. \ref{fig:IBM1step-maxCI}).
-
-To quantify the long-term population-level consequences of removals, we used an IPM to project stochastic equilibrium cover. We concentrated on grass species' responses to \textit{A. tripartita} removal, since the growth regressions indicated our baseline model might underestimate competitive release in this situation (our baseline vital rate models worked well in predicting \textit{A. tripartita} responses to grass removal). Using the baseline model, with no removal treatment coeffiicients, the IPM predicts little effect of \textit{A. tripartita} removal on the cover of any grass species (compare gray and brown boxes in Fig. \ref{fig:IPMresults}). Using a model with removal treatment coefficients, the IPM predicts little effect of shrub removal on \textit{Poa secunda} and \textit{H. comata}, but a 2-fold increase in the cover of \textit{P. spicata} (Fig. \ref{fig:IPMresults}). Running a version of the model with maximum removal treatment effects (removal coefficients set to the 95\% confidence limit furthest from zero), resulted in the same qualitative outcome, but a larger increase in \textit{P. spicata} (Fig. \ref{fig:IPMresults-maxCI}). 
-
-The equilibrium cover of \text{Artemisia} simulated by the IPM (6.0\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%,\ref{fig:CoverTrends}). Could the small competitive release following simulated \text{Artemisia} removal simply reflect the low \text{Artemisia} cover? To explore this possibility, we increased \text{Artemisia} cover in the baseline simulation by increasing average \text{Artemisia} fecundity. The increased fecundity led to a doubling of \text{Artemisia} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover). 
 
 \section*{Discussion}
 
@@ -405,12 +370,10 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 
 \end{doublespacing} 
 
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% TABLES !
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\section{Tables}
 
 \begin{table}[h]
-	\caption{Spring soil moisture}
+	\caption{Treatment effects on spring soil moisture}
 	\centering
 	%\begin{center}
 	\begin{tabular}{l c c }
@@ -439,34 +402,179 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 	%\end{center}
 \end{table}
 
+\begin{table}
+	\caption{Model of treatment effects on soil moisture}
+	\begin{center}
+		\begin{tabular}{l c c }
+			\hline
+			& Model 1 \\
+			\hline
+			(Intercept)                       & $-0.57^{*}$       & $[-0.89;\ -0.26]$ \\
+			TreatmentIrrigation               & $1.23^{*}$        & $[1.18;\ 1.29]$   \\
+			rainfallrainy                     & $-0.05$           & $[-0.12;\ 0.01]$  \\
+			seasonspring                      & $0.27^{*}$        & $[0.23;\ 0.32]$   \\
+			seasonsummer                      & $0.15^{*}$        & $[0.10;\ 0.19]$   \\
+			seasonwinter                      & $0.25^{*}$        & $[0.21;\ 0.29]$   \\
+			TreatmentIrrigation:rainfallrainy & $0.18^{*}$        & $[0.13;\ 0.24]$   \\
+			TreatmentIrrigation:seasonspring  & $-0.23^{*}$       & $[-0.29;\ -0.16]$ \\
+			TreatmentIrrigation:seasonsummer  & $-0.26^{*}$       & $[-0.33;\ -0.20]$ \\
+			TreatmentIrrigation:seasonwinter  & $-0.33^{*}$       & $[-0.40;\ -0.27]$ \\
+			rainfallrainy:seasonspring        & $-0.23^{*}$       & $[-0.31;\ -0.16]$ \\
+			rainfallrainy:seasonsummer        & $-0.07$           & $[-0.14;\ 0.01]$  \\
+			rainfallrainy:seasonwinter        & $-0.07$           & $[-0.20;\ 0.07]$  \\
+			\hline
+			AIC                               & 14581.58          \\
+			BIC                               & 14695.49          \\
+			Log Likelihood                    & -7274.79          \\
+			Num. obs.                         & 9133              \\
+			Num. groups: date                 & 1596              \\
+			Num. groups: PrecipGroup          & 8                 \\
+			Var: date (Intercept)      		  & 0.00              \\
+			Var: PrecipGroup (Intercept)      & 0.19              \\
+			Var: Residual                     & 2.50              \\
+			\hline
+			\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+		\end{tabular}
+		\label{table:soil_moisture_model}
+	\end{center}
+\end{table}
+
+% latex table generated in R 3.3.1 by xtable 1.8-2 package
+% Mon Dec 19 18:10:15 2016
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrrrr}
+		\hline
+		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
+		\hline
+		(Intercept) & -0.2835 & 0.4627 & -0.61 & 0.5487 \\ 
+		TreatmentDrought & 0.9378 & 0.7743 & 1.21 & 0.2434 \\ 
+		TreatmentIrrigation & 0.8882 & 0.7743 & 1.15 & 0.2682 \\ 
+		\hline
+	\end{tabular}
+	\caption{Treatment effects on log cover change for 	extit{A. tripartita} from 2011 to 2016. Intercept gives control effects.} 
+	\label{table:changeARTR}
+\end{table}
+
+% latex table generated in R 3.3.1 by xtable 1.8-2 package
+% Mon Dec 19 18:10:16 2016
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrrrr}
+		\hline
+		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
+		\hline
+		(Intercept) & 0.3982 & 0.2587 & 1.54 & 0.1548 \\ 
+		TreatmentDrought & -2.9951 & 0.5784 & -5.18 & 0.0004 \\ 
+		TreatmentIrrigation & -0.1219 & 0.4953 & -0.25 & 0.8105 \\ 
+		\hline
+	\end{tabular}
+	\caption{Treatment effects on log cover change for 	extit{H. comata} from 2011 to 2016. Intercept gives control effects.} 
+	\label{table:changeHECO}
+\end{table}
+
+% latex table generated in R 3.3.1 by xtable 1.8-2 package
+% Mon Dec 19 18:10:16 2016
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrrrr}
+		\hline
+		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
+		\hline
+		(Intercept) & -0.7247 & 0.4613 & -1.57 & 0.1298 \\ 
+		TreatmentDrought & 0.0273 & 0.8208 & 0.03 & 0.9737 \\ 
+		TreatmentIrrigation & 1.1459 & 0.7797 & 1.47 & 0.1552 \\ 
+		\hline
+	\end{tabular}
+	\caption{Treatment effects on log cover change for 	extit{P. secunda} from 2011 to 2016. Intercept gives control effects.} 
+	\label{table:changePOSE}
+\end{table}
+
+% latex table generated in R 3.3.1 by xtable 1.8-2 package
+% Mon Dec 19 18:10:16 2016
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rrrrr}
+		\hline
+		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
+		\hline
+		(Intercept) & 0.0188 & 0.2124 & 0.09 & 0.9303 \\ 
+		TreatmentDrought & -0.8851 & 0.3780 & -2.34 & 0.0287 \\ 
+		TreatmentIrrigation & 0.1453 & 0.3780 & 0.38 & 0.7044 \\ 
+		\hline
+	\end{tabular}
+	\caption{Treatment effects on log cover change for 	extit{P. spicata} from 2011 to 2016. Intercept gives control effects.} 
+	\label{table:changePSSP}
+\end{table}
 
 
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% FIGURES !
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+\section{Figures}
 
 \begin{figure}[tbp]
 	\centering
 	\includegraphics[width=1\textwidth]{VWC_spot_measurements}
-	\caption{Soil moisture in the upper 5 cm of drought and irrigated plots compared to ambient controls. Soil moisture was measured at six locations around each plot at five different dates during the spring. Control plots were nearby areas of experiencing ambient soil moisture. Box plots show the mean soil moisture and the upper lower interquartile range.  Dots show individual soil moisture measurements. Readings of volumetric soil moisture less than zero were occasionally obtained in very dry soil.}
-	\label{fig:VWCspot}
+	\caption{Soil moisture in the upper 5 cm of drought and irrigated plots compared to ambient controls. Soil moisture was measured at six locations around each plot at five different dates during the spring. Control plots were nearby areas of experiencing ambient soil moisture. Box plots show the median soil moisture and the interquartile range.  Dots show individual soil moisture measurements. Readings of volumetric soil moisture less than zero were occasionally obtained in very dry soil.}
+	\label{fig:spotVWC}
 \end{figure}
 
 
 \begin{figure}[tbp]
 	\centering
 	\includegraphics[width=1\textwidth]{avg_daily_soil_moisture}
-	\caption{Average soil moisture in the control, drought, and irrigation treatments during each year of the experiment.  Soil moisture was monitored in four drought plots and four irrigated plots and four ambient control plots.  Averages represent average soil moisture recorded every two hours over the course of the day at 5 cm and 25 cm depths.}
-	\label{fig:CoverTrends}
+	\caption{Average soil moisture in the control, drought, and irrigation treatments during each year of the experiment.  Soil moisture was monitored in four drought plots, four irrigated plots and four ambient control plots. Two sensors were installed at 5 cm depth at each plot and two at 25 cm and data was logged every 2 hours.}
+	\label{fig:dailyVWC}
 \end{figure}
 
 
 \begin{figure}[tbp]
 	\centering
-	\includegraphics[width=1\textwidth]{cover_change_chrono}
-	\caption{Observed and predicted year-to-year changes in cover for the four dominant species. Mean observed changes (averaged across quadrats) are shown in solid symbols, mean predicted changes are shown in open symbols. Values for control and removal plots are blue and red, respectively. Predictions from the ``Baseline'' model do account for effects of local species composition on vital rates, but do not include additional effects of removals. Predictions from the ``Removal'' model include additional treatment effects on vital rates. }
-	\label{fig:CoverChange}
+	\includegraphics[width=1\textwidth]{modern_soil_moisture_comparison}
+	\caption{Average seasonal soil moisture in the control, drought, and irrigation treatments during each year of the experiment. The dashed gray lines give the 5th percentile and 95th percentile limits for seasonal soil moisture in the historical record (1929 to 2010). }
+	\label{fig:seasonalVWC}
 \end{figure}
+
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{treatment_trends_cover}
+	\caption{Average cover of each of the focal species in the control, drought, and irrigation treatments during the experiment. Percent cover of \textit{A. tripartita} refers to canopy cover, while the cover of the three grasses refers to basal cover. }
+	\label{fig:coverTrends}
+\end{figure}
+
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{start_to_finish_cover_change}
+	\caption{Log change in cover in each of the experimental plots from the pre-treatment monitoring in 2011 to the last year of the experiment in 2016. Box plots show the median cover change and the interquartile range.}
+	\label{fig:coverChange}
+\end{figure}
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{treatment_effect_growth}
+	\caption{Parameter estimates for the effects of treatment on growth of all four species. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero. Size by treatment interactions were only fit for ARTR, and POSE. Plant size was centered on mean size and scaled by its standard deviation. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
+	\label{fig:growthTreat}
+\end{figure}
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{treatment_effect_survival}
+	\caption{Parameter estimates for the effects of treatment on survival of all four species. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero. Size by treatment interactions were only fit for POSE. Plant size was centered on mean size and scaled by its standard deviation.  ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
+	\label{fig:survivalTreat}
+\end{figure}
+
+\begin{figure}[tbp]
+	\centering
+	\includegraphics[width=1\textwidth]{treatment_effect_recruitment}
+	\caption{Parameter estimates for the effects of treatment on recruitment of all four species. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.  ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
+	\label{fig:recruitmentTreat}
+\end{figure}
+
+
+
 
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

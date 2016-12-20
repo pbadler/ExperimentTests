@@ -12,10 +12,11 @@ my_theme <-
 # orange drought 
 # blue  irrigation 
 
+
 my_colors <- c('black', '#1b9e77', '#d95f02', '#7570b3') 
 
+species_names <- c(bquote( italic('A. tripartita')), bquote(italic('H. comata')), bquote(italic('P. secunda')), bquote(italic('P. spicata')))
 
 pdf_settings <- c('height' = 5, width = 5 ) 
 
-
-save(my_colors, my_theme, file = 'analysis/figure_scripts/my_plotting_theme.Rdata')
+save(my_colors, species_names, my_theme, file = 'analysis/figure_scripts/my_plotting_theme.Rdata')

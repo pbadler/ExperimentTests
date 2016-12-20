@@ -30,6 +30,7 @@ modern_data$Period <- 'Modern'
 
 all_data <- rbind(historical_data, modern_data)
 
+
 all_data <-
   all_data %>% 
   filter(! Treatment %in% c('No_grass', 'No_shrub')) %>% 

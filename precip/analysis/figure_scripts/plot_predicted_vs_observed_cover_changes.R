@@ -2,7 +2,7 @@
 library(dplyr)
 library(tidyr)
 library(stringr)
-
+library(ggplot2)
 rm(list = ls() ) 
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
@@ -16,6 +16,8 @@ grd2 <- grd
 grd2$model <- 'year_effects'
 grd <- rbind(grd,grd2)
 i = 1
+out <- labels <- list(NA)
+
 for(i in 1:nrow(grd)){ 
   
   spp <- grd$species[i]
@@ -101,6 +103,7 @@ for(i in 1:nrow(grd)){
   
   df <- merge(allcombos, df, all.x = T)
   
+  
   pts <- 
     ggplot( df, aes( x = predicted, y = observed, color = Treatment) ) + 
     geom_point(aes(alpha = Treatment)) +
@@ -119,6 +122,46 @@ for(i in 1:nrow(grd)){
   
   pdf(paste0( 'figures/predictions/', spp, '_', model , '_model_predicted_and_observed_population_growth_rates.pdf'), height = 8, width = 8)
   print( pts )
+  dev.off()
+  
+  label_df$species <- spp
+  label_df$model <- paste0( model, ' model' )
+  
+  df$species <- spp
+  df$model <- paste0( model, ' model')
+  
+  labels[[i]] <- label_df
+  out[[i]] <- df 
+  rm(df)
+  
+}
+ 
+ 
+
+out <- do.call(rbind, out)
+label_df <- do.call(rbind, labels )
+
+i = 1
+for( i in 1:length(species_list)) { 
+  
+  spp <- species_list[i]
+  
+  png(paste0('figures/', spp, '_predicted_pgr_comparison.png'), width = 8, height = 10, res = 300, units = 'in')
+  print( 
+  ggplot( subset( out, species == spp), aes(x = predicted, y = observed, color = Treatment )) +
+    geom_point(aes(alpha = Treatment)) +
+    geom_smooth(method = 'lm', se = F, alpha = 1, linetype = 1, color = 1, size = 1) +
+    geom_text( data = subset(label_df, species == spp), aes( x = pos.x, y = pos.y , color = NULL , label = unique(label)), hjust = 1, vjust = -0.5 , show.legend = F) +
+    facet_grid(  Treatment ~ model  )+
+    xlab( 'Annual population growth rate predicted') +
+    ylab( 'Annual population growth rate observed') +
+    # scale_y_continuous(limits = c(-ylim, ylim)) +
+    # scale_x_continuous(limits = c(-ylim, ylim)) +
+    scale_color_manual(values = my_colors) +
+    scale_alpha_manual(values = c(0.4, 1, 1, 1)) +
+    my_theme +
+    ggtitle(species_names[[i]])
+  )
   dev.off()
 }
 

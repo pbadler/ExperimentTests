@@ -168,7 +168,7 @@ png("figures/treatment_trends_cover.png",height=2.75,width=8,units="in",res=400)
 
   # mean cover
   for(doSpp in sppList){
-    tmp.mean<-subset(spp.mean,species==doSpp)
+    tmp.mean<-subset(spp.mean,species==doSpp & year > 2010)
     if(doSpp==sppList[1]){
       my.y <- c(0,max(tmp.mean[,3:5], na.rm = T))
     }else{
@@ -239,7 +239,6 @@ subset( sppD.q, species == 'Hesperostipa comata' & year == 2016) %>%
   arrange( year ) %>% 
   filter( cover > 0 )
 
-png("figures/start_to_finish_cover_change.png", height=3,width=8.5,units="in",res=400)
 
 temp <- subset( sppD.q , year == 2016 )
 temp$Treatment <- factor(temp$Treatment )
@@ -252,13 +251,43 @@ lc.HECO <- lm(dat =  subset( temp, species == 'HECO'), lc ~ Treatment )
 lc.POSE <- lm(dat =  subset( temp, species == 'POSE'), lc ~ Treatment )
 lc.PSSP <- lm(dat =  subset( temp, species == 'PSSP'), lc ~ Treatment )
 
+
 summary(lc.ARTR)
 summary(lc.HECO)
 summary(lc.POSE)
 summary(lc.PSSP)
 
-temp
+library(xtable)
+xt1 <- xtable(lc.ARTR, 
+              caption = 'Treatment effects on log cover change for \textit{A. tripartita} from 2011 to 2016. Intercept gives control effects.', 
+              label = 'table:changeARTR')
+xt2 <- xtable(lc.HECO, caption = 'Treatment effects on log cover change for \textit{H. comata} from 2011 to 2016. Intercept gives control effects.', 
+              label = 'table:changeHECO')
+xt3 <- xtable(lc.POSE, caption = 'Treatment effects on log cover change for \textit{P. secunda} from 2011 to 2016. Intercept gives control effects.', 
+              label = 'table:changePOSE')
+xt4 <- xtable(lc.PSSP, caption = 'Treatment effects on log cover change for \textit{P. spicata} from 2011 to 2016. Intercept gives control effects.', 
+              label = 'table:changePSSP')
 
+print(xt1, 'output/results_tables/ARTR_cover_change.txt', type = 'latex')
+print(xt2, 'output/results_tables/HECO_cover_change.txt', type = 'latex')
+print(xt3, 'output/results_tables/POSE_cover_change.txt', type = 'latex')
+print(xt4, 'output/results_tables/PSSP_cover_change.txt', type = 'latex')
+
+
+
+temp$percent_change <- 100*(temp$coverDiff/temp$cover.2011 )
+
+aggregate(data = temp, percent_change ~ Treatment + species, 'mean')
+
+avgcover <- aggregate(data = temp, cbind(cover.2011, cover) ~ Treatment + species, 'mean')
+
+avgcover$propchange <- (avgcover$cover - avgcover$cover.2011)/avgcover$cover.2011
+avgcover
+
+subset( temp , species == 'ARTR')
+
+png("figures/start_to_finish_cover_change.png", height=4,width=10,units="in",res=400)
+print( 
 ggplot ( temp, aes( x  = Treatment, y = lc, color = Treatment )) + 
   geom_boxplot() + 
   geom_point( position = position_dodge(width = 1)) + 
@@ -268,7 +297,7 @@ ggplot ( temp, aes( x  = Treatment, y = lc, color = Treatment )) +
   facet_grid( . ~ species) + 
   scale_color_manual( values = my_colors[ 2:4]) + 
   my_theme
-
+)
 dev.off()
 
 summary(m2[[1]])

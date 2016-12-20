@@ -75,41 +75,30 @@ VWC_test <- VWC_df %>%
   gather( Treatment, VWC, Drought , Irrigation )
 
 mTreatment <- lm( data = VWC_test, VWC ~ Treatment*rainfall*season, weights = VWC_test$weight)  
-
-mDrought <- lm( data = VWC_df, Drought ~ rainfall*season , weights = VWC_df$weight)
-mIrrigation <- lm(data = VWC_df, Irrigation ~ rainfall*season , weights = VWC_df$weight)
-
-summary(mDrought)
-summary(mIrrigation)
-summary(mTreatment)
 # select models 
 
 library(MASS)
 mTreatment <- stepAIC(mTreatment, scope = list(upper = ~. , lower = ~1), trace = T)
-
-mDrought <- stepAIC(mDrought,scope=list(upper=~.,lower=~1),trace=T)
-mIrrigation <- stepAIC(mIrrigation,scope=list(upper=~.,lower=~1),trace=T)
-summary(mDrought)
-summary(mIrrigation)
 summary(mTreatment)
 
 mTreatment <- lmer(update(formula(mTreatment) , . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_test, weights = VWC_test$weight)
-mDrought <- lmer( update( formula( mDrought), . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_df, weights = VWC_df$weight)
-mIrrigation <- lmer( update( formula( mIrrigation), . ~ . + (1|simple_date) + (1|PrecipGroup)), data = VWC_df, weights = VWC_df$weight)
-
-summary(mDrought)
-
 summary(mTreatment)
 
+library(lsmeans)
+library(texreg)
 
+lsmeans(mTreatment,  ~ Treatment + season + rainfall)
+
+statsOutput <- 'output/results_tables/soil_moisture_model.txt'
+
+texreg(mTreatment, ci.force=TRUE,caption="soil moisture model",
+       caption.above=TRUE,file=statsOutput)
 
 
 # data frame to view predictions 
 pred_df <- expand.grid( rainfall = unique(VWC_test$rainfall), Treatment = unique(VWC_test$Treatment), season = unique(VWC_test$season))
 
 pred_df$mu <- predict( mTreatment, newdata = pred_df,  re.form = NA)
-library(lsmeans)
-lsmeans(mTreatment,  ~ Treatment + season + rainfall)
 
 #
 
@@ -122,7 +111,17 @@ daily_VWC <-
   summarise( v = mean(v , na.rm = T ) ) %>% 
   ungroup() 
 
+# table of seasonal differences on raw scale 
+daily_VWC %>% 
+  group_by( Treatment, season, rainfall ) %>% 
+  summarise( avg = mean(v) , sd = sd(v)) %>% 
+  arrange( season, rainfall, Treatment ) %>% 
+  gather(stat, v, avg:sd) %>% 
+  spread( Treatment , v) %>% 
+  mutate (dp = (Drought - Control)/Control, ip = (Irrigation - Control)/Control ) %>% filter( stat == 'avg')
+
 daily_control <- daily_VWC %>% filter( Treatment == 'Control') %>% mutate( v = as.numeric(scale(v))) %>% spread( Treatment, v)
+daily_VWC2 <- daily_VWC %>% filter( Treatment == 'Control') %>% spread(Treatment, v )
 
 pred_df <- daily_VWC %>% filter( Treatment != 'Control') %>% dplyr::select(-v)
 
@@ -162,8 +161,7 @@ ggplot( plot_df, aes( x = julian_date, y = VWC, color = Treatment, linetype = ty
   scale_alpha_manual(values = c(1, 0.7)) + 
   my_theme
 
-
-png( 'figures/avg_daily_soil_moisture.png', width = 8, height = 8, res = 300, units = 'in')
+png( 'figures/avg_daily_soil_moisture.png', width = 5, height = 6, res = 300, units = 'in')
 print( 
   ggplot( subset( plot_df, type != 'predicted'), aes( x = julian_date, y = VWC, color = Treatment)) + 
     geom_line(alpha = 0.8) + 
@@ -218,6 +216,20 @@ daily_clim <-
 swVWC <- left_join(swVWC, seasons, by = 'month')
 swVWC <- left_join( swVWC, daily_clim, by = c('date')) 
 
+head(swVWC)
+head(daily_VWC2)
+
+soilWAT <- swVWC %>% dplyr::select( simple_date, modelVWC, year, season, rainfall)
+soilWAT$SW_predicted <- soilWAT$modelVWC
+daily_VWC2$observed <- daily_VWC2$Control
+
+obs_predicted <- merge( daily_VWC2, soilWAT, by = c('simple_date', 'year', 'season', 'rainfall'))
+ggplot(obs_predicted, aes( x = SW_predicted, y = observed)) + geom_point() 
+
+obs_predicted <- obs_predicted %>% gather( type, val, observed, SW_predicted)
+ggplot( obs_predicted, aes( x = simple_date, y = val, color = type )) + geom_line() 
+
+
 swVWC$Control <- scale( swVWC$modelVWC ) # standardize control SWC 
 Control_mean <- mean(swVWC$modelVWC)
 Control_sd <- sd(swVWC$modelVWC)
@@ -247,18 +259,16 @@ pdf( 'figures/modeled_soilwat_soil_moisture_example.pdf', width = 8, height = 6)
 print( 
   ggplot( swVWC, aes( x = date, y = VWC_raw, color = Treatment)) + 
     geom_line() + 
-    scale_color_manual(values = my_colors) + 
+    scale_color_manual(values = my_colors[2:4]) + 
     xlim( as.Date( c('2016-01-01', '2016-10-01')))
 )
 dev.off()
 print( 
   ggplot( swVWC, aes( x = date, y = VWC, color = Treatment)) + 
     geom_line() + 
-    scale_color_manual(values = my_colors) + 
+    scale_color_manual(values = my_colors[2:4]) + 
     xlim( as.Date( c('2014-01-01', '2015-01-01'))) 
 )
-
-
 
 
 saveRDS(swVWC, 'data/temp_data/daily_swVWC_treatments.RDS')

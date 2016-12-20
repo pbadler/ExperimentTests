@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.30)  18 DEC 2016 17:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.30)  19 DEC 2016 19:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -387,12 +387,20 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <6> not available
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
 
+Package natbib Warning: Citation `teller_linking_2016' on page 3 undefined on i
+nput line 107.
+
+
 Package natbib Warning: Citation `parmesan' on page 3 undefined on input line 1
 07.
 
 
 Package natbib Warning: Citation `davis' on page 3 undefined on input line 107.
 
+
+
+Package natbib Warning: Citation `teller_linking_2016' on page 3 undefined on i
+nput line 109.
 
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 3 undefined on
@@ -405,6 +413,10 @@ n input line 109.
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 3 undefined on
  input line 109.
+
+
+Package natbib Warning: Citation `teller_linking_2016' on page 3 undefined on i
+nput line 109.
 
 
 Package natbib Warning: Citation `gerber_optimal_2015' on page 3 undefined on i
@@ -455,6 +467,14 @@ Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
  [5]
 
+Package natbib Warning: Citation `zachmann_mapped_2010' on page 6 undefined on 
+input line 128.
+
+
+Package natbib Warning: Citation `lauenroth_demography_2008' on page 6 undefine
+d on input line 130.
+
+
 Package natbib Warning: Citation `gherardi' on page 6 undefined on input line 1
 33.
 
@@ -462,218 +482,303 @@ Package natbib Warning: Citation `gherardi' on page 6 undefined on input line 1
 Package natbib Warning: Citation `yahdjian_rainout_2002' on page 6 undefined on
  input line 133.
 
-[6] [7]
+[6]
+
+Package natbib Warning: Citation `bates' on page 7 undefined on input line 135.
+
+
+[7]
 
 Package natbib Warning: Citation `Parton 1978' on page 8 undefined on input lin
-e 143.
+e 141.
 
 
 Package natbib Warning: Citation `Bradford' on page 8 undefined on input line 1
-43.
+41.
 
-[8] [9] [10]
+
+Package natbib Warning: Citation `bates' on page 8 undefined on input line 143.
+
+
+[8]
+
+Package natbib Warning: Citation `adler_coexistence_2010' on page 9 undefined o
+n input line 150.
+
+
+Package natbib Warning: Citation `chu_large_2015' on page 9 undefined on input 
+line 150.
+
+[9] [10]
+
+Package natbib Warning: Citation `chu_large_2015' on page 11 undefined on input
+ line 202.
+
+
+Package natbib Warning: Citation `teller_linking_2016' on page 11 undefined on 
+input line 202.
+
 
 Package natbib Warning: Citation `adler_in_prep' on page 11 undefined on input 
-line 210.
+line 202.
 
 [11]
 
+Package natbib Warning: Citation `teller_linking_2016' on page 12 undefined on 
+input line 225.
+
+
+Package natbib Warning: Citation `adler_coexistence_2010' on page 12 undefined 
+on input line 227.
+
+
 Package natbib Warning: Citation `adler_in_prep' on page 12 undefined on input 
-line 236.
+line 228.
 
-[12] [13]
+[12]
 
-Package natbib Warning: Citation `stan' on page 14 undefined on input line 270.
+Package natbib Warning: Citation `adler_coexistence_2010' on page 13 undefined 
+on input line 245.
+
+[13]
+
+Package natbib Warning: Citation `stan' on page 14 undefined on input line 262.
 
 
 
-Package natbib Warning: Citation `rstan' on page 14 undefined on input line 270
+Package natbib Warning: Citation `rstan' on page 14 undefined on input line 262
 .
 
 
 Package natbib Warning: Citation `stan manual' on page 14 undefined on input li
-ne 270.
+ne 262.
 
 
 Package natbib Warning: Citation `vetari_practical_2015' on page 14 undefined o
-n input line 272.
+n input line 264.
 
 [14]
 
 Package natbib Warning: Citation `dalgleish_climate_2010' on page 15 undefined 
-on input line 278.
+on input line 270.
 
 
 Package natbib Warning: Citation `wang trees' on page 15 undefined on input lin
-e 278.
+e 270.
 
 
 Package natbib Warning: Citation `dredging' on page 15 undefined on input line 
-278.
+270.
 
 [15]
 
-LaTeX Warning: Reference `eqn:' on page 16 undefined on input line 288.
+LaTeX Warning: Reference `eqn:' on page 16 undefined on input line 280.
 
 
 Package natbib Warning: Citation `gelman_understanding_2014' on page 16 undefin
-ed on input line 299.
+ed on input line 291.
 
 
 Package natbib Warning: Citation `gelman_understanding_2014' on page 16 undefin
-ed on input line 299.
+ed on input line 291.
 
 [16] [17] [18] [19]
 
 Package natbib Warning: Citation `chu_direct_2016' on page 20 undefined on inpu
-t line 343.
+t line 337.
 
 
 Package natbib Warning: Citation `treddenick_' on page 20 undefined on input li
-ne 343.
+ne 337.
 
 [20]
 
+Package natbib Warning: Citation `adler_coexistence_2010' on page 21 undefined 
+on input line 343.
+
+
 Package natbib Warning: Citation `chu_direct_2016' on page 21 undefined on inpu
-t line 349.
+t line 343.
 
 
-LaTeX Warning: Reference `fig:VitalRateTest' on page 21 undefined on input line
- 363.
-
-
-LaTeX Warning: Reference `fig:VitalRateTest' on page 21 undefined on input line
- 363.
-
-
-LaTeX Warning: Reference `fig:VitalRateTest' on page 21 undefined on input line
- 363.
+Package natbib Warning: Citation `chu_large_2015' on page 21 undefined on input
+ line 343.
 
 [21]
 
-LaTeX Warning: Reference `fig:Wscatters' on page 22 undefined on input line 369
-.
+Package natbib Warning: Citation `adler_coexistence_2010' on page 22 undefined 
+on input line 350.
+
+
+Package natbib Warning: Citation `chu_large_2015' on page 22 undefined on input
+ line 350.
+
+
+LaTeX Warning: Reference `fig:IBM1step' on page 22 undefined on input line 352.
+
+
+
+LaTeX Warning: Reference `fig:IPMresults' on page 22 undefined on input line 35
+2.
+
+
+LaTeX Warning: Reference `fig:CoverTrends' on page 22 undefined on input line 3
+54.
 
 
 LaTeX Warning: Reference `fig:W-by-treatment' on page 22 undefined on input lin
-e 371.
+e 354.
 
 [22]
 
-LaTeX Warning: Reference `fig:IBM1step' on page 23 undefined on input line 375.
+Package natbib Warning: Citation `chesson_mechanisms_2000' on page 23 undefined
+ on input line 356.
 
 
-
-LaTeX Warning: Reference `fig:IBM1step' on page 23 undefined on input line 375.
-
-
-
-LaTeX Warning: Reference `fig:IBM1step-maxCI' on page 23 undefined on input lin
-e 375.
+Package natbib Warning: Citation `adler_weak_2009' on page 23 undefined on inpu
+t line 356.
 
 
-LaTeX Warning: Reference `fig:IPMresults' on page 23 undefined on input line 37
-7.
+Package natbib Warning: Citation `hersh_evaluating_2011' on page 23 undefined o
+n input line 356.
 
 
-LaTeX Warning: Reference `fig:IPMresults' on page 23 undefined on input line 37
-7.
+Package natbib Warning: Citation `janzen_herbivores_1970' on page 23 undefined 
+on input line 356.
 
 
-LaTeX Warning: Reference `fig:IPMresults-maxCI' on page 23 undefined on input l
-ine 377.
-
-[23]
-
-LaTeX Warning: Reference `fig:IBM1step' on page 24 undefined on input line 387.
+Package natbib Warning: Citation `connell_role_1971' on page 23 undefined on in
+put line 356.
 
 
+Package natbib Warning: Citation `Barbier2008' on page 23 undefined on input li
+ne 356.
 
-LaTeX Warning: Reference `fig:IPMresults' on page 24 undefined on input line 38
-7.
 
-[24]
+Package natbib Warning: Citation `adler_forecasting_2012' on page 23 undefined 
+on input line 358.
 
-LaTeX Warning: Reference `fig:W-by-treatment' on page 25 undefined on input lin
-e 389.
 
-[25] [26] [27] (./precip_ms.bbl
-Missing character: There is no Ã in font cmr10!
-Missing character: There is no ƒ in font cmr10!
-Missing character: There is no Â in font cmr10!
-Missing character: There is no ¶ in font cmr10!
- [28] [29]
-Missing character: There is no Ã in font cmr10!
-Missing character: There is no ƒ in font cmr10!
-Missing character: There is no Â in font cmr10!
-Missing character: There is no ± in font cmr10!
-Missing character: There is no Ã in font cmr10!
-Missing character: There is no ƒ in font cmr10!
-Missing character: There is no Â in font cmr10!
-Missing character: There is no ¥ in font cmr10!
-Missing character: There is no Ã in font cmr10!
-Missing character: There is no ƒ in font cmr10!
-Missing character: There is no Â in font cmr10!
-Missing character: There is no ³ in font cmr10!
- [30]
-Missing character: There is no Ã in font cmr10!
-Missing character: There is no ¢ in font cmr10!
-Missing character: There is no â in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no ¬ in font cmr10!
-Missing character: There is no â in font cmr10!
-Missing character: There is no € in font cmr10!
-Missing character: There is no œ in font cmr10!
-)
+Package natbib Warning: Citation `kleinhesselink_indirect_2015' on page 23 unde
+fined on input line 358.
 
-LaTeX Warning: `h' float specifier changed to `ht'.
 
-<../figures/VWC_spot_measurements.png, id=118, 361.35pt x 361.35pt>
+Package natbib Warning: Citation `yenni_strong_2012' on page 23 undefined on in
+put line 358.
+
+
+Package natbib Warning: Citation `comita_asymmetric_2010' on page 23 undefined 
+on input line 360.
+
+
+Package natbib Warning: Citation `kunstler_plant_2015' on page 23 undefined on 
+input line 360.
+
+
+Package natbib Warning: Citation `johnson_conspecific_2012' on page 23 undefine
+d on input line 360.
+
+
+Package natbib Warning: Citation `kokkoris_patterns_1999' on page 23 undefined 
+on input line 360.
+
+[23] [24] (./precip_ms.bbl)
+<../figures/VWC_spot_measurements.png, id=99, 505.89pt x 361.35pt>
 File: ../figures/VWC_spot_measurements.png Graphic file (type png)
 
 <use ../figures/VWC_spot_measurements.png>
 Package pdftex.def Info: ../figures/VWC_spot_measurements.png used on input lin
-e 450.
-(pdftex.def)             Requested size: 469.75502pt x 469.76047pt.
+e 518.
+(pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/treatment_trends_cover.png, id=119, 578.16pt x 198.7425pt>
+<../figures/avg_daily_soil_moisture.png, id=100, 361.35pt x 433.62pt>
+File: ../figures/avg_daily_soil_moisture.png Graphic file (type png)
+
+<use ../figures/avg_daily_soil_moisture.png>
+Package pdftex.def Info: ../figures/avg_daily_soil_moisture.png used on input l
+ine 526.
+(pdftex.def)             Requested size: 469.75502pt x 563.71255pt.
+
+<../figures/modern_soil_moisture_comparison.png, id=101, 433.62pt x 433.62pt>
+File: ../figures/modern_soil_moisture_comparison.png Graphic file (type png)
+
+<use ../figures/modern_soil_moisture_comparison.png>
+Package pdftex.def Info: ../figures/modern_soil_moisture_comparison.png used on
+ input line 534.
+(pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
+
+<../figures/treatment_trends_cover.png, id=102, 578.16pt x 198.7425pt>
 File: ../figures/treatment_trends_cover.png Graphic file (type png)
 
 <use ../figures/treatment_trends_cover.png>
 Package pdftex.def Info: ../figures/treatment_trends_cover.png used on input li
-ne 458.
+ne 542.
 (pdftex.def)             Requested size: 469.75502pt x 161.47787pt.
 
+<../figures/start_to_finish_cover_change.png, id=103, 722.7pt x 289.08pt>
+File: ../figures/start_to_finish_cover_change.png Graphic file (type png)
 
-! LaTeX Error: File `cover_change_chrono' not found.
+<use ../figures/start_to_finish_cover_change.png>
+Package pdftex.def Info: ../figures/start_to_finish_cover_change.png used on in
+put line 550.
+(pdftex.def)             Requested size: 469.75502pt x 187.90417pt.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.466 ...s[width=1\textwidth]{cover_change_chrono}
-                                                  
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+<../figures/treatment_effect_growth.png, id=104, 505.89pt x 361.35pt>
+File: ../figures/treatment_effect_growth.png Graphic file (type png)
 
-[31] [32] [33 <../figures/VWC_spot_measurements.png (PNG copy)>] [34 <../figure
-s/treatment_trends_cover.png (PNG copy)>]
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 497
+<use ../figures/treatment_effect_growth.png>
+Package pdftex.def Info: ../figures/treatment_effect_growth.png used on input l
+ine 557.
+(pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
+
+<../figures/treatment_effect_survival.png, id=105, 505.89pt x 361.35pt>
+File: ../figures/treatment_effect_survival.png Graphic file (type png)
+
+<use ../figures/treatment_effect_survival.png>
+Package pdftex.def Info: ../figures/treatment_effect_survival.png used on input
+ line 564.
+(pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
+
+<../figures/treatment_effect_recruitment.png, id=106, 505.89pt x 289.08pt>
+File: ../figures/treatment_effect_recruitment.png Graphic file (type png)
+
+<use ../figures/treatment_effect_recruitment.png>
+Package pdftex.def Info: ../figures/treatment_effect_recruitment.png used on in
+put line 571.
+(pdftex.def)             Requested size: 469.75502pt x 268.43579pt.
+ [25] [26] [27 <../figures/VWC_spot_measurements.png (PNG copy)>] [28 <../figur
+es/avg_daily_soil_moisture.png (PNG copy)>] [29 <../figures/modern_soil_moistur
+e_comparison.png (PNG copy)>]
+[30 <../figures/treatment_trends_cover.png (PNG copy)> <../figures/start_to_fin
+ish_cover_change.png (PNG copy)>] [31 <../figures/treatment_effect_growth.png (
+PNG copy)>] [32 <../figures/treatment_effect_survival.png (PNG copy)>] [33 <../
+figures/treatment_effect_recruitment.png (PNG copy)>]
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 605
 .
 
 (/usr/share/texmf/tex/latex/R/tex/latex/omscmtt.fd
 File: omscmtt.fd 
 )
 LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 497.
- [1
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 605.
+
+
+Package natbib Warning: Citation `adler_coexistence_2010' on page 1 undefined o
+n input line 608.
+
+
+Package natbib Warning: Citation `adler_coexistence_2010' on page 1 undefined o
+n input line 610.
+
+
+Package natbib Warning: Citation `Ellner2016' on page 1 undefined on input line
+ 610.
+
+[1
 
 ] [2] [3
 
-] [4] [5]
-[6] [7] [8] [9] [10]
+] [4] [5] [6] [7] [8] [9] [10]
 
 Package natbib Warning: There were undefined citations.
 
@@ -685,13 +790,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4617 strings out of 494953
- 64476 string characters out of 6180977
- 190202 words of memory out of 5000000
- 7776 multiletter control sequences out of 15000+600000
+ 4550 strings out of 494953
+ 62989 string characters out of 6180977
+ 187779 words of memory out of 5000000
+ 7706 multiletter control sequences out of 15000+600000
  20256 words of font info for 77 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 42i,11n,31p,1587b,376s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,11n,31p,1759b,318s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share
@@ -712,10 +817,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmtt10.pfb>
-Output written on precip_ms.pdf (45 pages, 669411 bytes).
+Output written on precip_ms.pdf (44 pages, 1670552 bytes).
 PDF statistics:
- 237 PDF objects out of 1000 (max. 8388607)
- 165 compressed objects within 2 object streams
+ 240 PDF objects out of 1000 (max. 8388607)
+ 163 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

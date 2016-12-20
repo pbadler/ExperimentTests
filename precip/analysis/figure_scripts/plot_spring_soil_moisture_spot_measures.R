@@ -131,7 +131,7 @@ aggregate( data = df, VWC ~ Treatment, FUN = 'mean')
 
 # print figures --------------------------------------------------------------------------------------------------------
 
-png( 'figures/VWC_spot_measurements.png', height = 5 , width = 5, res = 300, units = 'in' ) 
+png( 'figures/VWC_spot_measurements.png', height = 5 , width = 7, res = 300, units = 'in' ) 
 
 print( plot_by_treat ) 
 
