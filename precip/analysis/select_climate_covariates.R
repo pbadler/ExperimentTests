@@ -5,7 +5,7 @@ rm(list = ls())
 cor_files <- dir('output', 'correlations.csv', full.names = T)
 cor_files <- cor_files [ -grep('all', cor_files)] # keep only the selected ones 
 
-out <- list( NA )
+out <- out2 <-  list( NA )
 i = 1
 for(i in 1:length(cor_files)){
   
@@ -14,8 +14,13 @@ for(i in 1:length(cor_files)){
   
   temp <- read.csv(cor_files[i])
   
-  VWC_parameter <- as.character( temp$var [ temp$vartype == 'VWC'] )
+  out2[[i]] <- temp
+  out2[[i]]$species <- spp
+  out2[[i]]$vital_rate <- vr
+  names(out2)[i] <- paste(vr, spp)
   
+  
+  VWC_parameter <- as.character( temp$var [ temp$vartype == 'VWC'] )
   
   if ( vr == 'growth' & spp %in% c('ARTR', 'POSE')) {  # use the size effect interaction 
     ifx <- paste( VWC_parameter, 'logarea.t0', sep = 'x')
@@ -31,11 +36,60 @@ for(i in 1:length(cor_files)){
   use_vars <- VWC_parameter
   
   out[[i]] <- data.frame( species = spp, vital_rate = vr, covars = paste( use_vars, collapse = ','))
+  
+  
 }
 
 out <- do.call(rbind, out)
 
 write.csv(out, 'output/selected_climate_covariates.csv')
+
+#
+
+recOuts <- out2[grep('recruitment', out2)]
+gsOuts <- out2[-grep('recruitment', out2)]
+
+out_cors <- lapply( gsOuts, function(x) x[, c('Intercept', 'Int_pval', 'size', 'size_pval', 'var', 'species', 'vital_rate')])
+
+out_cors <- do.call(rbind, out_cors)
+
+rec_outs <- do.call(rbind, recOuts)
+
+
+rec_outs$size <- NA
+rec_outs$size_pval <- NA
+rec_outs <- rec_outs[, c('Intercept', 'Int_pval', 'size', 'size_pval', 'var', 'species', 'vital_rate')]
+
+all_cors <- rbind(out_cors, rec_outs)
+
+all_cors <- all_cors %>% dplyr::select(vital_rate, species, var, Intercept, Int_pval, size, size_pval ) %>% arrange( vital_rate, species, desc(abs(Intercept)) )
+
+size_cors <- 
+  all_cors %>% 
+  filter( (((species == 'ARTR' | species == 'POSE') & vital_rate == 'growth') | (species == 'POSE' & vital_rate == 'survival')) )
+
+all_cors <- 
+  all_cors %>% 
+  filter( !(((species == 'ARTR' | species == 'POSE') & vital_rate == 'growth') | (species == 'POSE' & vital_rate == 'survival')))
+
+all_cors$size <- NA
+all_cors$size_pval <- NA
+
+all_cors <- rbind( all_cors, size_cors)
+
+all_cors <- all_cors %>% rename(`climate variable` = var , `Int. cor.` = Intercept, `p val.`  = Int_pval, `Size cor.` = size , `Size p. val.`  = size_pval )
+
+all_cors <- all_cors %>% arrange( vital_rate, species, desc(abs(`Int. cor.`)))
+
+all_cors$`climate variable` <- str_replace( all_cors$`climate variable` , 'l', 'lag')
+
+library(xtable)
+
+xtcor <- xtable(all_cors, 
+                caption = 'Correlations between intercept of year effects and soil moisture variables. P-values of correlations are given next to correlations. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given.', 
+                label = 'table:strongCor')
+
+print(xtcor, 'output/results_tables/strong_correlations.txt', type = 'latex', include.rownames = F)
 
 # check for highly correlated covariates 
 # clim <- readRDS('data/temp_data/all_clim_covs.RDS')

@@ -38,12 +38,20 @@ effect_plot <-
   geom_hline( aes( yintercept = 0 ), linetype = 2 , alpha = 0.5) + 
   facet_grid( type  ~  species ) + 
   ylab ( 'mean effect (+/- 95% Bayesian Credible Interval)') + 
+  xlab( '') + 
+  labs(color = '') + 
   scale_color_manual(values = my_colors[3:4]) + 
   my_theme
 
 gg <- treat %>% group_by(vital_rate) %>% do(gg =  effect_plot %+% .  + ggtitle( paste0('Effects on ', .$vital_rate)))
 
-pdf( 'figures/treatment_effect_estimates.pdf', height = 5, width = 8 ) 
-print( gg$gg ) 
+png( 'figures/treatment_effect_growth.png', height = 5, width = 7, res = 300, units = 'in' ) 
+print( gg$gg[[1]] ) 
+dev.off() 
+png( 'figures/treatment_effect_recruitment.png', height = 4, width = 7, res = 300, units = 'in' ) 
+print( gg$gg[[2]] ) 
+dev.off() 
+png( 'figures/treatment_effect_survival.png', height = 5, width = 7, res = 300, units = 'in' ) 
+print( gg$gg[[3]] ) 
 dev.off() 
 
