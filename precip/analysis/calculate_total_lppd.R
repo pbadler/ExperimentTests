@@ -46,12 +46,10 @@ rank_by_size_class <-
   spread( model, lppd ) %>% 
   mutate( climate_model_performance = climate - year )
 
-rank_by_Treatment
-
-overall_rank
 
 
-write.csv(overall_rank, 'output/model_scores.csv', row.names = FALSE)
-#write.csv(best_models, 'output/lppd_selected_models.csv', row.names = FALSE)
+
+write.csv(overall_rank, 'output/overall_lppd.csv', row.names = FALSE)
+write.csv(rank_by_Treatment, 'output/treatment_lppd.csv', row.names = FALSE)
 
 

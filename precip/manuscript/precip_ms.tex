@@ -13,6 +13,10 @@
 
 \usepackage{gensymb}
 
+\usepackage{longtable}
+\setlength{\LTcapwidth}{\linewidth}
+
+
 \usepackage[compact]{titlesec} 
 
 \usepackage{bm,mathrsfs}
@@ -93,11 +97,12 @@
 \begin{enumerate}
 \item Climate is an important driver of population ecology however there have been few tests of whether observational data that links population performance with climate variation can be used to predict the responses of populations to experimentally imposed climate conditions.   
 \item Using longterm historical observational data from a sagebrush steppe plant community, previous research has reported a wide variety of climate effects on four dominant plant species. We tested whether statistical models based on these observational data could be used to predict how these species respond to a five year drought and irrigation experiment conducted from 2011 to 2016. 
-\\item We established sixteen new plots at the same field cite as the original historical data and assigned each to either drought or irrigation treatments imposed using rainfall shelters and automatic sprinklers. The original plots were also monitored and served as ambient climate controls. In order to describe the demographic effects of the climate manipulations, we used all data, observational and experimental, to fit a set of statistical models describing each species survival, growth and recruitment in response to local competitive interactions and the effects of the climate manipulation experiment. Next we fit another set of models to only the observational data that used seasonal soil moisture covariates to describe annual variation in the vital rates.  Finally, we used the observation-based models to predict the effects of the experimental treatments on each species vital rates. We also used an individual based population model to predict one year ahead changes in population size in the experimental plots.   
-\item The experimental drought and irrigation treatments successfully lowered and increased soil moisture respectively.  Over the course of the experiment, average plot cover of \textit{Hesperostipa comata} and \textit{Pseudoroegneria spicata} declined, while cover of \textit{Poa secunda} showed a trend towards increase in the irrigated plots. At the level of individual vital rates, experimental drought reduced growth of \textit{Hesperostipa comata} and growth and survival of \textit{Poa secunda}. Drought increased, while irrigation decreased, growth of the shrub \textit{Artemisia tripartita}. 
-\item Vital rate models fit to the observational data correctly predicted significant increases in X and X and significant decreaes in X and X.  However, the historical models predicted significant changes in X X and X that were not observed in the experiment.  Moreover, the experiment led to a significant change in X that was not predicted by the historical data. 
-\item Our individual based population model more accurately predicted changes in the population growth rates of \textit{} in the experimental plots than a model without climate effects.  However for the other X species predictions made from the climate model were less accurate than models without climate.   
-\item \emph{Synthesis}: Out of all four species examined, climate covariates only appeared to increase our predictive accuracy for one species: \textit{Hesperostipa comata}. In general the relatively weak responses to the experimental treatments agrees with the low explanatory power of climate covariates in explaining the vital rates and population dynamics of these species in this system. The highly variable environment and water limited conditions may select for species with a conservative non-responsive strategy to variation in climate both natural and experimentally imposed.  
+\item We established sixteen new plots at the same field cite as the original historical data and assigned each to either drought or irrigation treatments imposed using rainfall shelters and automatic sprinklers. The original plots were also monitored and served as ambient climate controls. In order to describe the demographic effects of the climate manipulations, we used all data, observational and experimental, to fit a set of statistical models describing each species survival, growth and recruitment in response to local competitive interactions and the effects of the climate manipulation experiment. Next we fit another set of models to only the observational data that used seasonal soil moisture covariates to describe annual variation in the vital rates.  Finally, we used the observation-based models to predict the effects of the experimental treatments on each species vital rates. We also used an individual based population model to predict one year ahead changes in population size in the experimental plots.   
+\item The experimental drought and irrigation treatments successfully lowered and increased soil moisture respectively.  Over the course of the experiment, average plot cover of \textit{Hesperostipa comata} and \textit{Pseudoroegneria spicata} declined significantly, while cover of \textit{Poa secunda} showed a trend towards increase in the irrigated plots. At the level of individual vital rates, experimental drought reduced growth and survival of \textit{Hesperostipa comata} and \textit{Poa secunda} and the survival of \textit{P. spicata}, while drought increased the growth of small \textit{A. tripartita}. 
+\item Soil moisture parameters improved model predictions for six out of the twelve models we examined.  Moreover, we observed strong positive correlations between the predicted treatment effects and the treatment effects we observed.   
+\item At the population-level, including the effects of soil moisture improved the cover predictions made by individual based models for \textit{P. secunda} and \textit{P. spicata}.   
+\item \emph{Synthesis}: Observational climate data did hold valuable information for predicting species' responses to this climate change experiment. We were encouraged that treatment responses were often in the right direction to predicted responses even when the effect were not signficant. We generally were better able to predict species responses to the drought treatment than to the control or the irrigation treatment. This suggests that soil moisture is an important factor in predicting the population dynamics of these species but only when water is truly limiting.
+  
 
 \end{enumerate}
 
@@ -187,7 +192,7 @@ Var(\varepsilon_{ij,t}^G) = a \exp ^{(bu_{ij,t+1})} .
 
 As in the survival regression above, specific specific parameters describing the treatment effects on growth are added in the treatment model, 
 \begin{equation}
-\boldsymbol{T} \chi_{j}^G 
+\boldsymbol{T}\chi_{j}^G 
 \label{eqn:growT}
 \end{equation}
 where $\chi$ is a treatment effect describing the effect of experimental treatment $h$ on growth, including treatment by size interactions.
@@ -248,9 +253,9 @@ Because plants outside the mapped quadrat could contribute recruits to the focal
 
 In the treatment model, a new term is added to the exponential term in the equation above, 
 \begin{equation}
- \boldsymbol{T}\boldsymbol{chi}_{j}^R
+ \boldsymbol{T}\boldsymbol{\chi}_{j}^R
 \end{equation}
-where $chi$ describes the effect of the treatment levels on recruitment.
+where $\chi$ describes the effect of the treatment levels on recruitment.
 
 Likewise in the climate model this term is added,
 \begin{equation}
@@ -324,13 +329,15 @@ After adjusting the SOILWAT seasonal soil moisture predictions by the treatment 
 
 The cover of \textit{H. comata} and \textit{P. spicata} fell significantly in the drought plots from 2011 to 2016 (tables \ref{table:changeHECO}, \ref{table:changePSSP}, fig \ref{fig:coverChange}). The cover of \textit{P. secunda} showed a slight decrease in the drought plots and an increase in the irrigated plots but these changes were not significant (table \ref{table:changePOSE}).  In contrast to the grasses, the cover of \textit{A. tripartita} increased slightly in all three treatments (fig \ref{fig:coverChange}). 
 
-Our treatment models fit to the experimental and observational data indicated a variety of treatment effects on the vital rates of each species. After comparing WAIC scores for the growth models with and without the size by treatment effects, we retained size by treatment interaction effects in the growth models for \textit{A. tripartita} and \textit{P. secunda}, and the survival model for \textit{P. secunda}. For \textit{A. tripartita} we found significant size by treatment effects of drought: drought had positive effects on plants of average size and smaller \ref{fig:growthTreat}, but plants larger than the mean by more than 1.5 standard deviations grew slightly less in the drought treatment than in the controls. \textit{A. tripartita} showed the opposite response in the irrigation plots, (although the irrigation parameters were not technically significant at the 95\% confidence level): irrigation reduced growth the most for small plants while irrigation had positive effects on plants more than 1.5 standard deviations greater than the mean size. Drought led to a strong (but not signficant) decrease in \textit{H. comata} growth, while irrigation had no effect on growth.  Like \textit{A. tripartita}, we saw size by treatment effects on \textit{P.secunda} growth, with the negative effects of drought becoming greater for larger plants. \textit{P. secunda} showed the opposite response in the irrigation plots with larger plants showing the largest increase in growth in response to irrigation (although these effects were technically not significant). \textit{P. spicata} growth was relatively unaffected by the drought and irrigation treatments. 
+Our treatment models fit to the experimental and observational data indicated a variety of treatment effects on the vital rates of each species. After comparing WAIC scores for the growth models with and without the size by treatment effects, we retained size by treatment interaction effects in the growth models for \textit{A. tripartita} and \textit{P. secunda}, and the survival model for \textit{P. secunda}. For \textit{A. tripartita} we found significant size by treatment effects of drought: drought had positive effects on plants of average size and smaller \ref{fig:growthTreat}, but plants larger than the mean size by more than 1.5 standard deviations grew slightly less in the drought treatment than in the controls. \textit{A. tripartita} showed the opposite response in the irrigated plots, (although the irrigation parameters were not technically significant at the 95\% confidence level): irrigation reduced growth for small plants while irrigation increased growth of plants more than 1.5 standard deviations greater than the mean size. Drought led to a strong (but not signficant) decrease in \textit{H. comata} growth, while irrigation had no effect on growth.  Like \textit{A. tripartita}, we saw size by treatment effects on \textit{P.secunda} growth, with the negative effects of drought becoming greater for larger plants. \textit{P. secunda} showed the opposite response in the irrigation plots with larger plants showing the largest increase in growth in response to irrigation (although these effects were technically not significant). \textit{P. spicata} growth was relatively unaffected by the drought and irrigation treatments. 
 
 Drought decreased the survival of all three grass species (fig \ref{fig:survivalTreat}). And \textit{P. secunda} showed a negative size by drought interaction effect, indicating that the survival of larger plants was more negatively affected by drought than that of the smaller plants, with the smallest plants (plants one standard deviation smaller than the mean) actually seeing a slightly positive effect of drought. \textit{A. tripartita} survival was relatively unaffected by the drought and irrigation treatments.
 
 Recruitment in our irrigation plots was significantly less than in control plots for two grass species \textit{P. secunda} and \textit{P. spicata} (fig \ref{fig:recruitmentTreat}). However, recruitment was also lower in the drought plots than in the the control plots (although not significantly so), indicating that the decrease in the irrigated plots may have not been entirely due to the irrigation itself. The recruitment data for \textit{A. tripartita} were relatively limited, with only 32 new recruits in total observed in all 30 plots over the course of the five year experiment.
 
-\subsection*{Soil moisture effects}
+As expected from previous research most of our demographic models estimated strong negative intra-specific crowding effects and weaker negative inter-specific crowding effects on the focal species (appendix) \citep{adler_coexistence_2010,chu_direct_2016,chu_large_2015}.
+
+\subsection*{Effects of soil moisture on vital rates}
 
 We choose three seasonal soil moisture variables for each species' climate model based on their correlation with the year effects in the random year effects model fit to the observational data (table \ref{table:strongCor}). We included size by soil moisture variables for \textit{A. tripartita} and  \textit{P. secunda} based on the treatment response we observed in the experiment. All three time lags and all three seasons show up in the choosen variables. After fitting the vital rate models with the selected soil moisture variable we observed a trend towards positive soil moisture effects on growth of all three grasses \ref{fig:climateGrowth}. For \textit{H.comata} the soil moisture of the most recent summer had a significantly positive effect while the soil moisture of the previous summer and the fall before that were also positive but not significant. For \textit{A. tripartita} the summer and fall soil moisture of the previous year had strong negative effects on growth.  There were also strong positive size by climate interaction effects for these variables: soil moisture had a stronger negative effect on small plants and a positive effect only on the largest plants.
 
@@ -338,33 +345,37 @@ Soil moisture had significant effects on the survival of all four species \ref{f
 
 There were only two significant effects of soil moisture on recruitment: lag fall soil moisture had a positive effect on \textit{P. secunda}, and lag summer soil moisture had a negative effect on \textit{P. spicata} recruitment. Soil moisture of the previous year's summer had also had a strong negative effect on \textit{P. spicata} recruitment.  
 
+The intra- and interspecific crowding effects estimated in the climate model were similar to those estimated in the treatment model (appendix) \citep{adler_coexistence_2010,chu_direct_2016,chu_large_2015}.
 
 \subsection*{Evaluating the predictions}
 
-For each vital rate and species, predictions from the year effects and climate models were nearly indistinguishable (fig). This indicated that the additional soil moisture covariates in the climate models had very little effect on the predictions. Not surprisingly \citep{chu_direct_2016,treddenick_} our models show that plant size and intra-specific crowding are far more influential in determining growth, survival and recruitment than climate effects.  In all cases, we found MSE and lppd scores for the climate models were slightly worse than the MSE and the lppd of the year effects model (table).  This indicated that adding the soil moisture parameters did not improve model predictions over all (table). When we break the data up into treatment groups we do see that the climate model outperformed the year effects model for predicting X species VR in treatment T.    
+For most models adding climate covariates did not improve our ability to predict species responses in the experiment \ref{table:overallPreds}. However, the climate models did improve overall prediction MSE for growth of \textit{A. tripartita} and growth and survival of \textit{P. secunda} (table \ref{table:overallPreds}). In terms of lppd, the climate model outperformed the year effects model for \textit{A. tripartita} growth, \textit{H. comata} recruitment, \textit{P. secunda} growth and survival and \textit{P. spicata} recruitment.  .
 
-While our climate models failed to improve predictions, we did find that they predicted treatment responses that were largely in the same direction as the observed treatment responses (fig).  The overall correlation between the predicted treatment parameters and the observed treatment parameters was X with stronger correlation for the climate effects on the size by treatment effects fit for \textit{P. secunda} growth and survival and \textit{A. tripartita} growth (fig) than for the treatment effects on the intercept.  A table of MSE between predicted and expected treatment parameters shows that averaged over all species and vital rates, we did the best job of predicting the response to the drought treatment.  Averaged across all treatements and vital rates, we did the best job predicting the response of \textit{species} to the treatments. Finally if we average across all species and treatments, we did the best job of predicting VR parameters in response to the treatment. 
+When we look at the predictions for each treatment separately we see that climate covariates improved model predictions more often in the drought treatments than in the control or irrigation treatments \ref{table:treatmentPreds}. For all four species, the climate model outperformed the year effects model for predicting the response of growth to drought in terms of lppd \ref{table:treatmentPreds}. The climate model outperformed the year effects model for predicting irrigation effects on growth for all species except \textit{H. comata}. 
 
-As for the vital rate predictions, our one-step ahead cover predictions from the year effects models and the climate models were fairly similar (fig). Models with and without soil moisture parameters tended to underpredict the cover of \textit{A. tripartita} and \textit{P.secunda} during the experiment (fig).  When we compare the MSE of the predicted population growth rates for each year and quadrat from the model with and without the soil moisture parameters, we find that adding soil moisture to the vital rate models always made the one step ahead cover predictions slightly less accurate (table).  The pattern when we consider the correlation between the predicted and observed population growth rates was slightly different (table?).  When we considered the population growth rate data separately by treatment, we found that adding soil moisture to the models mostly did not improve predictions of cover change in the control and irrigation plots. However, we did find that adding soil moisture parameters produced better predictions of population growth rates for three of the species (S , S, and S) in the drought plots (fig). 
+Overall our climate models often predicted the correct direction of the drought and irrigation treatments \ref{fig:parPredictions}. In four cases we both observed and predicted treatment effects significantly different from zero based on the 95\% Bayesian credible interval around the parameters: the drought response of \textit{H. comata} survival (fig \ref{fig:parPredHECOSurvival}), the drought response of \textit{P. secunda} growth (fig \ref{fig:parPredPOSEGrowth}), the irrigation response of \textit{P spicata} recruitment (fig \ref{fig:parPredPSSPRecruitment}) and the irrigation response of \textit{P. secunda} recruitment (fig \ref{fig:parPredPOSERecruitment}).  In only one of these cases, for \textit{P. secunda} recruitment, was the predicted effect in the opposite direction from the observed treatment effect \ref{fig:parPredictions}. The overall correlation between the predicted and observed treatment effects for all treatments, species and vital rates was r = 0.54, whereas the correlation for the drought treatment effects (r = 0.77) was better than for the irrigation effects (r = 0.46).  Also for the three models in which we included size by treatment or size by climate interactions the correlation of these size dependent effects were much stronger than the intercept parameter estimates \ref{fig:parPredictions}.  
+
+Using the vital rate models for each species we generated one year ahead cover predictions for each quadrat in each year of the experiment.  Average cover predicted by the climate model tended to be lower than the observed cover each year for \textit{A. tripartita} and \textit{P.secunda} (fig \ref{fig:coverPred}). Comparing the overall population growth rates predicted to those observed in the experiment, we see that the MSE of the climate model was lower than the MSE of the year effects model for \textit{P. secunda} and \textit{P. spicata} (table \ref{table:corPGR}). The predictions produced by the climate model for these species were also slightly more correlated with the observations than the predictions produced by the year effects model (table \ref{table:corPGR}). Considering each treatment and species separately we see that the predicted population growth rates for \textit{A. tripartita}, \textit{P. secunda} and \textit{P. spicata} were all consistently lower than the observed population growth rates (figs \ref{fig:pgrARTR}, \ref{fig:pgrPOSE}, \ref{fig:pgrPSSP}). The climate model showed lower MSE for \textit{A. tripartita}, \textit{P. secunda} and \textit{P. spicata} in the irrigation treatment, \textit{P. spicata} in the control treatment and \textit{H. comata} in the drought treatment (figs \ref{fig:pgrHECO}).  However, the correlations between the predicted and observed log changes in cover did not always show the same pattern as MSE: the climate model made more strongly correlated predictions with the observations than the year effects model only for \textit{P. spicata} and \textit{P. secunda} in the control treatment and \textit{P. secunda} and \textit{H. comata} in the drought treatment. 
   
-As expected from previous research most of our demographic models estimated strong negative intra-specific crowding effects and weaker negative inter-specific crowding effects on the focal species (appendix) \citep{adler_coexistence_2010,chu_direct_2016,chu_large_2015}.
- 
 
 \section*{Discussion}
 
-Our experiment showed that including climate covariates in our population models did little to improve population level predictions across the course of the experiment.  Averaged across the control, drought and irrigation treatments, the climate models did not perform as well as null models in predicting response the experiment at the vital rate or at the level of population growth rates.  However, there were some glimmers of hope.  First at the population level we generally found that including climate covariates did not improve predictions in the control and irrigation plots, but they did appear to improve predictions in the drought plots ().  This suggests that models fit to observational data do contain useful information about the effects of climate on individual performance.  The fact that these predictions showed up in the more extreme conditions produced by the drought plots could be a sign that in ambient conditions the effect of climate is weak enough that it is washed out at the population level by finer scale sources of variation. This pattern was observed for species x, x and x.
+Our experiment showed that observational data on the response of plant populations to interannual climate variation can indeed help us predict the direction of species response to experimental climate manipulations \ref{fig:parPredictions}. This was true even though adding climate parameters to the demographic models only improved vital rate predictions for half of the models \ref{table:overallPreds}. This should give us some hope that even when climate effects in demographic models to observational data are weak, they may contain useful qualitative information on the direction of climate effects in the future. 
 
- the climate signal  improve population growth predictions in the drought treatment but not experiment showed some relatively strong reson based on historical, observational data reveal weak interspecific interactions \citep{adler_coexistence_2010,chu_large_2015} and, as a result, predict very little competitive release among the four dominant species in a sagebrush steppe. Despite the fact that previous removal studies have reported variable results, ranging from negative effects of removal on remaining species to complete competitive release, we were suspicious of our model's predictions and conducted a removal experiment to test them. The results provide substantial support for our model's predictions.
+* discuss biggest successes--astreces in fig \ref{fig:parPredictions}
+* discuss biggest mistake, P. secunda recruitment went in wrong direction. 
+ 
+Scaling up to the population level, the climate models only produced better one step a head predictions of the overall response of the species to the experiment for two species: \textit{P. spicata} and \textit{P. secunda} (table \ref{table:corPGR}). However adding climate effects produced better population-level predictions in the drought treatments for \textit{P. secunda} and \textit{H. comata}.  Both the survival and the growth of these species were positively affected by increased soil moisture (fig \ref{fig:climateGrowth}, \ref{fig:climateSurvival}), and so it makes intuitive sense that we would observe declines in these species cover in the drought treatment (fig \ref{fig:coverChange}). 
 
-For three of the four species, we find little or no evidence that models based on observational data underestimate the intensity of interspecific competition. Removal treatment effects were never significant for \textit{A. tripartita} or \textit{H. comata}; our baseline model, which accounts for local neighborhood composition, adequately explained vital rate responses to  removal.  \textit{Poa secunda} showed mixed responses to \textit{Artemisia} removal: removal effects were not significant at the survival stage, were positive at the growth stage, and negative at the recruitment stage (where the estimated effect of \textit{Artemisia} on \textit{Poa} is positive). At the population level, models with and without removal effects projected similar patterns of short (Fig. \ref{fig:IBM1step}) and long-term (Fig. \ref{fig:IPMresults}) dynamics for \textit{H. comata} and \textit{A. tripartita}. For \textit{Poa secunda}, the model with removal effects predicted higher population growth over the short but not the long-term, perhaps because the short-term projections mostly reflect the positive effect of \textit{Artemisia} removal on growth, while the long-term equilibrium are also sensitive to the negative effects of removal on recruitment. Although the baseline model did not always successfully predict removal effects on vital rates, it does appear to successfully capture the population-level consequences of removals on these three species and did not severely underestimate the magnitude of competitive release.
+*Among our species, we had the most success predicting the response of the three grass species and less success predicting the response of the shrub species \textit{A. tripartita}.    Why might ARTR be different? 
 
-The story is different for the fourth species, \textit{P. spicata}. Both individual growth and short- and long-term population growth were higher in the sagebrush removal treatments than in the control plots, suggesting that our analyses of observational data may underestimate the competitive release that \textit{P. spicata} experiences following \textit{Artemisia} removal. However, the mechanism by which \textit{Artemisia} removal promotes \textit{P. spicata} remains unclear. If  \textit{Artemisia} removal is releasing \textit{P. spicata} from competition, we should expect \textit{P. spicata} individuals that were located beneath \textit{Artemisia} shrubs that we removed to respond more than individuals located away from any shrubs. Yet we found no evidence for such a difference. An alternative explanation involves pre-treatment differences in composition between control plots and  the \textit{Artemisia} removal  plots, which had higher cover of \textit{Artemisia} (see 2011 means in Fig. \ref{fig:CoverTrends}) and higher cover of subdominant grasses and shrubs (Fig. \ref{fig:W-by-treatment}). Perhaps these pre-treatment differences reflect subtle differences in edaphic and environmental factors which could promote \textit{P. spicata} growth. While \textit{P. spicata} appears to show stronger competitive release than our baseline model predicted, the evidence is not conclusive. 
+*We also had more success predicting species response to the drought treatment than to the irrigation treatment. We also tended to see species respond more strongly to the drought treatment than they did to the irrigation treatment.  This tells us that in some cases, demographic models based on observational data may be of more use for prediction in extreme conditions than when conditions are close to average.  Our drought treatment likely created extremely low soil moisture compared to the historical average \ref{fig:seasonalVWC}. We hypothesize that this made water the most limiting resource for plants in these plots. In contrast, in the control and irrigated plots soil moisture may not have always been limiting during the course of the experiment.  It may make sense then that our climate models did not make more accurate predictions in these conditions than a random year effects model.
 
-The small competitive release of many species in our system implies that each of the four dominant species we studied are limited by quite different factors. This low niche overlap could reflect strong resource partitioning (Tilman 1982), perhaps combined with variation in the times and locations at which species are taking up those resources. Species-specific responses to spatial and temporal variation in non-resource environmental variables can also weaken interspecific interactions \citep{chesson_mechanisms_2000}, though in a previous study we failed to find evidence of a temporal storage effect in this community \citep{adler_weak_2009}. Interactions with above- or belowground enemies can regulate populations and, given enough species-specificity in the effects of these enemies, decouple interspecific dynamics \citep{hersh_evaluating_2011,janzen_herbivores_1970,connell_role_1971}.  More likely, plants may alter the environment, and even resource availability, in ways that facilitate their neighbors. For example, shade cast by \textit{Artemisia} canopies may reduce evapotranspiration (e.g. \citealt{Barbier2008}). \textit{Artemisia} removal might offest this facilitative effect by reducing resource uptake, resulting in little net change in water balance following removal.  Unfortunately, we did not monitor soil moisture at the fine spatial and temporal resolution necessary to test this hypothesis.
+*Mixed success at predicting species responses to high and low moisture availability has interesting implications.  On the one hand it is re-assuring that observational data is sometimes useful. On the other hand, for predictions to be truly useful we would also like more information to help us sort out why our predictions for some species were good and for others no better than a null model.  In other words, we have little ability to predict when our predictions are likely to be accurate.  Among plants detailed physiological ecology may give us a guide to which factors and climate conditions are likely to affect which species.  In our system, for instance, it may make sense that the grasses showed a stronger response to the drought treatment than the a woody shrub.  Although these grasses are adapted to the arid conditions that characterize the sagebrush steppe, they thrive during the brief window in spring and early summer when the soil moisture and temperatures are warmer.  \textit{A. tripartita} on the other hand grows throughout the summer and generally has deeper roots than the grasses. These traits may help it tolerate the water stress induced by drought. 
 
-Evidence for weak interspecific interactions and limited competitive release carries interesting implications. If most interspecific interactions are weak, then single-species models may be adequate for forecasting population responses to environmental change \citep{adler_forecasting_2012,kleinhesselink_indirect_2015}. Similarly, differences among species in relative abundance should reflect variation in the strength of intraspecific density dependence more than variation in the strength of interspecific interactions \citep{yenni_strong_2012}. In such a system, effective management and conservation requires understanding the sources and species-specificity of intraspecific density dependence. In fact, an experiment to test our model's skill at predicting release from intraspecific competition could be more important than the test of interspecific competitive release described here.
+*Will our predictions be useful for the longer term? Because these species compete, one could argue that our predictions for any one species in this community will only be as good as the predictions we make for their competitors. For instance, while we observed little effect of drought on \textit{A. tripartita} in our experiment, it is possible that it will eventually respond positively to the drought treatment as cover of the grass species it comptetes with declines (fig \ref{fig:coverChange}). We know that grass species compete strongly with \textit{A. tripartita}.  However, we also know from previous work in this community that each species is more limited by intra-specific competition than by inter-specific crowding.  This fact ensures that the direct effects of climate change will generally be greater than the competition mediated indirect effects of climate change \cite{chu_direct_2016, kleinhesselink_indirect_2015}.  
 
-Our results have given us more confidence that competitive release is quite small for the dominant species in our study system. But for many species in other communities, interspecific competition may still be an important driver. In closed-canopy forests where competition for light is intense, we might have found different results than in our system, in which competition for a number of belowground resources is more important than competition for light. However, a number of recent studies from forests have also found that heterospecific competitive effects are dramatically weaker than conspecific effects \citep{comita_asymmetric_2010,kunstler_plant_2015,johnson_conspecific_2012}. We also expect stronger competitive release in successional systems, or communities in the early stages of community assembly where the process of competitive exclusion is still underway \citep{kokkoris_patterns_1999}. Finally, we might have found stronger competitive release if we could have studied rare species in our system, as long as those species are rare because of niche overlap with stronger competitors. If they are rare because they occupy unique, but narrow, niches, interspecific interactions would still be weak. Determining why interspecific interactions and competitive release are strong in some ecological contexts but weak in others remains a fascinating research problem. 
+*Our results give us more confidence that historical observational data can in theory be used to detect and predict the demographic effects of climate change. This should encourage more researchers to try and use observational data to predict the future in both experimental and natural settings. Nevertheless, our success at predicting the short-term response of two species to a small-scale climate manipulation is not likely to be very reassuring to applied ecologists and resource managers wishing to make accurate medium to long-term quantitative predictions about the effects of climate change on the species they manage.  Clearly more work is needed to distinguish which predictions are worth having confidence in and which predictions we should have less confidence in. Towards that goal, perhaps the best way to build confidence in ecological predictions is conduct more tests like this one.   
   
 \section*{Acknowledgements}
 
@@ -462,7 +473,7 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 		TreatmentIrrigation & 0.8882 & 0.7743 & 1.15 & 0.2682 \\ 
 		\hline
 	\end{tabular}
-	\caption{Treatment effects on log cover change for 	extit{A. tripartita} from 2011 to 2016. Intercept gives control effects.} 
+	\caption{Treatment effects on log cover change for \textit{A. tripartita} from 2011 to 2016. Intercept gives control effects.} 
 	\label{table:changeARTR}
 \end{table}
 
@@ -479,7 +490,7 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 		TreatmentIrrigation & -0.1219 & 0.4953 & -0.25 & 0.8105 \\ 
 		\hline
 	\end{tabular}
-	\caption{Treatment effects on log cover change for 	extit{H. comata} from 2011 to 2016. Intercept gives control effects.} 
+	\caption{Treatment effects on log cover change for \textit{H. comata} from 2011 to 2016. Intercept gives control effects.} 
 	\label{table:changeHECO}
 \end{table}
 
@@ -496,7 +507,7 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 		TreatmentIrrigation & 1.1459 & 0.7797 & 1.47 & 0.1552 \\ 
 		\hline
 	\end{tabular}
-	\caption{Treatment effects on log cover change for 	extit{P. secunda} from 2011 to 2016. Intercept gives control effects.} 
+	\caption{Treatment effects on log cover change for \textit{P. secunda} from 2011 to 2016. Intercept gives control effects.} 
 	\label{table:changePOSE}
 \end{table}
 
@@ -513,59 +524,125 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 		TreatmentIrrigation & 0.1453 & 0.3780 & 0.38 & 0.7044 \\ 
 		\hline
 	\end{tabular}
-	\caption{Treatment effects on log cover change for 	extit{P. spicata} from 2011 to 2016. Intercept gives control effects.} 
+	\caption{Treatment effects on log cover change for \textit{P. spicata} from 2011 to 2016. Intercept gives control effects.} 
 	\label{table:changePSSP}
 \end{table}
 
+
+
 % latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Mon Dec 19 20:47:29 2016
+% Tue Dec 20 12:39:32 2016
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{lllrrrr}
 		\hline
 		vital\_rate & species & climate variable & Int. cor. & p val. & Size cor. & Size p. val. \\ 
 		\hline
-		growth & ARTR & VWC.su.0 & -0.49 & 0.02 & 0.26 & 0.26 \\ 
-		growth & ARTR & VWC.f.0 & -0.28 & 0.23 & 0.40 & 0.08 \\ 
-		growth & ARTR & VWC.sp.1 & 0.17 & 0.45 & -0.33 & 0.14 \\ 
-		growth & HECO & VWC.su.1 & 0.69 & 0.00 &  &  \\ 
-		growth & HECO & VWC.su.0 & 0.50 & 0.02 &  &  \\ 
-		growth & HECO & VWC.f.lag & 0.37 & 0.10 &  &  \\ 
-		growth & POSE & VWC.f.lag & 0.31 & 0.17 & -0.11 & 0.64 \\ 
-		growth & POSE & VWC.su.lag & 0.29 & 0.20 & -0.20 & 0.38 \\ 
-		growth & POSE & VWC.sp.1 & 0.26 & 0.25 & -0.20 & 0.38 \\ 
-		growth & PSSP & VWC.f.lag & 0.34 & 0.13 &  &  \\ 
-		growth & PSSP & VWC.su.lag & 0.25 & 0.27 &  &  \\ 
-		growth & PSSP & VWC.f.0 & -0.22 & 0.34 &  &  \\ 
-		recruitment & ARTR & VWC.su.lag & -0.32 & 0.16 &  &  \\ 
-		recruitment & ARTR & VWC.su.0 & -0.26 & 0.25 &  &  \\ 
-		recruitment & ARTR & VWC.sp.1 & 0.22 & 0.34 &  &  \\ 
-		recruitment & HECO & VWC.su.lag & -0.31 & 0.18 &  &  \\ 
-		recruitment & HECO & VWC.su.0 & -0.30 & 0.18 &  &  \\ 
-		recruitment & HECO & VWC.f.lag & 0.19 & 0.40 &  &  \\ 
-		recruitment & POSE & VWC.sp.1 & 0.49 & 0.02 &  &  \\ 
-		recruitment & POSE & VWC.f.lag & 0.34 & 0.13 &  &  \\ 
-		recruitment & POSE & VWC.f.1 & 0.32 & 0.16 &  &  \\ 
-		recruitment & PSSP & VWC.su.lag & -0.52 & 0.02 &  &  \\ 
-		recruitment & PSSP & VWC.su.0 & -0.48 & 0.03 &  &  \\ 
-		recruitment & PSSP & VWC.sp.0 & 0.30 & 0.19 &  &  \\ 
-		survival & ARTR & VWC.su.0 & -0.60 & 0.00 &  &  \\ 
-		survival & ARTR & VWC.sp.0 & -0.41 & 0.06 &  &  \\ 
-		survival & ARTR & VWC.su.1 & -0.40 & 0.07 &  &  \\ 
-		survival & HECO & VWC.sp.0 & 0.44 & 0.04 &  &  \\ 
-		survival & HECO & VWC.sp.lag & 0.43 & 0.05 &  &  \\ 
-		survival & HECO & VWC.f.1 & 0.33 & 0.14 &  &  \\ 
-		survival & POSE & VWC.sp.0 & 0.44 & 0.04 & 0.22 & 0.34 \\ 
-		survival & POSE & VWC.sp.1 & 0.27 & 0.23 & -0.46 & 0.04 \\ 
-		survival & POSE & VWC.f.lag & -0.00 & 0.99 & 0.30 & 0.19 \\ 
-		survival & PSSP & VWC.sp.0 & 0.36 & 0.11 &  &  \\ 
-		survival & PSSP & VWC.sp.lag & 0.34 & 0.13 &  &  \\ 
-		survival & PSSP & VWC.su.1 & 0.26 & 0.26 &  &  \\ 
+		growth & ARTR & su.0 & -0.49 & 0.02 & 0.26 & 0.26 \\ 
+		growth & ARTR & f.0 & -0.28 & 0.23 & 0.40 & 0.08 \\ 
+		growth & ARTR & sp.1 & 0.17 & 0.45 & -0.33 & 0.14 \\ 
+		growth & HECO & su.1 & 0.69 & 0.00 &  &  \\ 
+		growth & HECO & su.0 & 0.50 & 0.02 &  &  \\ 
+		growth & HECO & f.lag & 0.37 & 0.10 &  &  \\ 
+		growth & POSE & f.lag & 0.31 & 0.17 & -0.11 & 0.64 \\ 
+		growth & POSE & su.lag & 0.29 & 0.20 & -0.20 & 0.38 \\ 
+		growth & POSE & sp.1 & 0.26 & 0.25 & -0.20 & 0.38 \\ 
+		growth & PSSP & f.lag & 0.34 & 0.13 &  &  \\ 
+		growth & PSSP & su.lag & 0.25 & 0.27 &  &  \\ 
+		growth & PSSP & f.0 & -0.22 & 0.34 &  &  \\ 
+		recruitment & ARTR & su.lag & -0.32 & 0.16 &  &  \\ 
+		recruitment & ARTR & su.0 & -0.26 & 0.25 &  &  \\ 
+		recruitment & ARTR & sp.1 & 0.22 & 0.34 &  &  \\ 
+		recruitment & HECO & su.lag & -0.31 & 0.18 &  &  \\ 
+		recruitment & HECO & su.0 & -0.30 & 0.18 &  &  \\ 
+		recruitment & HECO & f.lag & 0.19 & 0.40 &  &  \\ 
+		recruitment & POSE & sp.1 & 0.49 & 0.02 &  &  \\ 
+		recruitment & POSE & f.lag & 0.34 & 0.13 &  &  \\ 
+		recruitment & POSE & f.1 & 0.32 & 0.16 &  &  \\ 
+		recruitment & PSSP & su.lag & -0.52 & 0.02 &  &  \\ 
+		recruitment & PSSP & su.0 & -0.48 & 0.03 &  &  \\ 
+		recruitment & PSSP & sp.0 & 0.30 & 0.19 &  &  \\ 
+		survival & ARTR & su.0 & -0.60 & 0.00 &  &  \\ 
+		survival & ARTR & sp.0 & -0.41 & 0.06 &  &  \\ 
+		survival & ARTR & su.1 & -0.40 & 0.07 &  &  \\ 
+		survival & HECO & sp.0 & 0.44 & 0.04 &  &  \\ 
+		survival & HECO & sp.lag & 0.43 & 0.05 &  &  \\ 
+		survival & HECO & f.1 & 0.33 & 0.14 &  &  \\ 
+		survival & POSE & sp.0 & 0.44 & 0.04 & 0.22 & 0.34 \\ 
+		survival & POSE & sp.1 & 0.27 & 0.23 & -0.46 & 0.04 \\ 
+		survival & POSE & f.lag & -0.00 & 0.99 & 0.30 & 0.19 \\ 
+		survival & PSSP & sp.0 & 0.36 & 0.11 &  &  \\ 
+		survival & PSSP & sp.lag & 0.34 & 0.13 &  &  \\ 
+		survival & PSSP & su.1 & 0.26 & 0.26 &  &  \\ 
 		\hline
 	\end{tabular}
-	\caption{Correlations between intercept of year effects and soil moisture variables. P-values of correlations are given next to correlations. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given.} 
+	\caption{Selected climate variables for each vital rate model for each species. Correlations and p-values between the choosen variables and the intercept of year effects model are shown. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given. "f" = fall, "su" = summer, "sp" = spring. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
 	\label{table:strongCor}
 \end{table}
+
+
+
+% latex table generated in R 3.3.1 by xtable 1.8-2 package
+% Tue Dec 20 12:38:30 2016
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{lllrrrl}
+		\hline
+		species & vital\_rate & score & climate model & year effects model & diff & improved \\ 
+		\hline
+		ARTR & growth & lppd & -186.08 & -189.17 & 3.09 & *** \\ 
+		ARTR & growth & MSE & 0.55 & 0.55 & -0.00 & *** \\ 
+		ARTR & recruitment & lppd & -79.05 & -77.81 & -1.24 &  \\ 
+		ARTR & recruitment & MSE & 169.86 & 9.47 & 160.39 &  \\ 
+		ARTR & survival & lppd & -37.55 & -36.42 & -1.13 &  \\ 
+		ARTR & survival & MSE & 0.06 & 0.06 & 0.00 &  \\ 
+		HECO & growth & lppd & -475.54 & -454.36 & -21.18 &  \\ 
+		HECO & growth & MSE & 1.26 & 1.18 & 0.09 &  \\ 
+		HECO & recruitment & lppd & -149.43 & -151.60 & 2.17 & *** \\ 
+		HECO & recruitment & MSE & 288.16 & 235.57 & 52.59 &  \\ 
+		HECO & survival & lppd & -158.99 & -147.06 & -11.93 &  \\ 
+		HECO & survival & MSE & 0.12 & 0.11 & 0.01 &  \\ 
+		POSE & growth & lppd & -1823.71 & -1831.56 & 7.85 & *** \\ 
+		POSE & growth & MSE & 1.72 & 1.73 & -0.01 & *** \\ 
+		POSE & recruitment & lppd & -260.05 & -257.46 & -2.59 &  \\ 
+		POSE & recruitment & MSE & 45.40 & 37.32 & 8.08 &  \\ 
+		POSE & survival & lppd & -698.06 & -718.60 & 20.54 & *** \\ 
+		POSE & survival & MSE & 0.14 & 0.14 & -0.00 & *** \\ 
+		PSSP & growth & lppd & -1232.93 & -1237.92 & 4.99 & *** \\ 
+		PSSP & growth & MSE & 1.51 & 1.51 & 0.00 &  \\ 
+		PSSP & recruitment & lppd & -271.34 & -273.94 & 2.60 & *** \\ 
+		PSSP & recruitment & MSE & 79.09 & 42.68 & 36.41 &  \\ 
+		PSSP & survival & lppd & -332.47 & -307.26 & -25.21 &  \\ 
+		PSSP & survival & MSE & 0.11 & 0.10 & 0.01 &  \\ 
+		\hline
+	\end{tabular}
+	\caption{Comparison of model predictions from climate model and year effects model for each species and vital rate.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the random year effects model are marked with "***" in the last column. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
+	\label{table:overallPreds}
+\end{table}
+
+
+% latex table generated in R 3.3.1 by xtable 1.8-2 package
+% Tue Dec 20 19:24:15 2016
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{rllrrrl}
+		\hline
+		& species & stat & year effects model & climate model & diff & improved \\ 
+		\hline
+		1 & ARTR & cor & 0.48 & 0.19 & -0.29 &  \\ 
+		2 & ARTR & MSE & 0.30 & 0.30 & 0.00 &  \\ 
+		3 & HECO & cor & 0.29 & 0.22 & -0.07 &  \\ 
+		4 & HECO & MSE & 0.49 & 0.57 & 0.07 &  \\ 
+		5 & POSE & cor & 0.45 & 0.53 & 0.07 & *** \\ 
+		6 & POSE & MSE & 0.42 & 0.41 & -0.01 & *** \\ 
+		7 & PSSP & cor & 0.36 & 0.38 & 0.03 & *** \\ 
+		8 & PSSP & MSE & 0.39 & 0.39 & -0.01 & *** \\ 
+		\hline
+	\end{tabular}
+	\caption{MSE of predicted log cover changes and correlations between log cover changes predicted and observed. Predictions for the cover changes in the experimental plots were generated either from the year effects or the climate models. Instances where the climate model made better predictions than the year effects model are indicated with the "***". ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
+	\label{table:corPGR}
+\end{table}
+
 
 \clearpage
 \newpage
@@ -574,7 +651,7 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 \section*{Figures}
 
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{VWC_spot_measurements}
 	\caption{Soil moisture in the upper 5 cm of drought and irrigated plots compared to ambient controls. Soil moisture was measured at six locations around each plot at five different dates during the spring. Control plots were nearby areas of experiencing ambient soil moisture. Box plots show the median soil moisture and the interquartile range.  Dots show individual soil moisture measurements. Readings of volumetric soil moisture less than zero were occasionally obtained in very dry soil.}
@@ -582,7 +659,7 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 \end{figure}
 
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{avg_daily_soil_moisture}
 	\caption{Average soil moisture in the control, drought, and irrigation treatments during each year of the experiment.  Soil moisture was monitored in four drought plots, four irrigated plots and four ambient control plots. Two sensors were installed at 5 cm depth at each plot and two at 25 cm and data was logged every 2 hours.}
@@ -590,7 +667,7 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 \end{figure}
 
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{modern_soil_moisture_comparison}
 	\caption{Average seasonal soil moisture in the control, drought, and irrigation treatments during each year of the experiment. The dashed gray lines give the 5th percentile and 95th percentile limits for seasonal soil moisture in the historical record (1929 to 2010). }
@@ -598,49 +675,42 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 \end{figure}
 
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{start_to_finish_cover_change}
 	\caption{Log change in cover in each of the experimental plots from the pre-treatment monitoring in 2011 to the last year of the experiment in 2016. Box plots show the median cover change and the interquartile range. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.}
 	\label{fig:coverChange}
 \end{figure}
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{treatment_effect_growth}
 	\caption{Parameter estimates for the effects of treatment on growth of all four species. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero. Size by treatment interactions were only fit for ARTR, and POSE. Plant size was centered on mean size and scaled by its standard deviation. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
 	\label{fig:growthTreat}
 \end{figure}
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{treatment_effect_survival}
 	\caption{Parameter estimates for the effects of treatment on survival of all four species. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero. Size by treatment interactions were only fit for POSE. Plant size was centered on mean size and scaled by its standard deviation.  ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
 	\label{fig:survivalTreat}
 \end{figure}
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{treatment_effect_recruitment}
 	\caption{Parameter estimates for the effects of treatment on recruitment of all four species. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.  ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
 	\label{fig:recruitmentTreat}
 \end{figure}
 
-\begin{figure}[tbp]
-	\centering
-	\includegraphics[width=1\textwidth]{treatment_trends_cover}
-	\caption{Average cover of each of the focal species in the control, drought, and irrigation treatments during the experiment. Percent cover of \textit{A. tripartita} refers to canopy cover, while the cover of the three grasses refers to basal cover. }
-	\label{fig:coverTrends}
-\end{figure}
-
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{climate_effect_growth}
 	\caption{Parameter estimates for the selected seasonal soil moisture covariates on the growth of all four species. Parameters are ordered chronologically from most recent to the current growing season on the right to most distant on the left. Dark blue parameters show size x climate interaction effects. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.  ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
 	\label{fig:climateGrowth}
 \end{figure}
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{climate_effect_survival}
 	\caption{Parameter estimates for the selected seasonal soil moisture covariates on the survival of all four species. Parameters are ordered chronologically from most recent to the current growing season on the right to most distant on the left. Dark blue parameters show size x climate interaction effects. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.  ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
@@ -648,12 +718,56 @@ Funding was provided by an NSF GRFP to AK, NSF grants DEB-1353078, and DEB-10540
 \end{figure}
 
 
-\begin{figure}[tbp]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{climate_effect_recruitment}
 	\caption{Parameter estimates for the selected seasonal soil moisture covariates on the survival of all four species. Parameters are ordered chronologically from most recent to the current growing season on the right to most distant on the left. Dark blue parameters show size x climate interaction effects. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.  ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}. }
 	\label{fig:climateRecruitment}
 \end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{parameter_predictions}
+	\caption{The treatment effects predicted by the climate model compared to the treatment effects observed for the intercept parameters (left side) and size by climate/treatment effects (right side).  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016).  Treatment parameters that were both observed and predicted to be significantly different from zero are shown with the "*" symbol. The correlation between predicted and observed parameters is given on each panel. \textit{P. secunda} recruitment was predicted to be positively affected by the irrigation treatment but was in fact negatively affected. The other significant effects were in the correct direction. We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredictions}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{predicted_and_observed_cover}
+	\caption{Observed average cover per quadrat in the experimental and control plots and one year ahead cover predictions from the climate model. Cover predictions for each year are generated from the IBM based on the observed distribution of plants in each quadrat in the current year. Quadrat cover was not predicted for the first year of the experiment in 2011.  Note the different cover scales for ARTR and the three grass species. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.}
+	\label{fig:coverPred}
+\end{figure}
+
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{ARTR_predicted_pgr_comparison}
+	\caption{Observed and predicted one year ahead log change in \textit{A. tripartita} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the year effects model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.}
+	\label{fig:pgrART}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{HECO_predicted_pgr_comparison}
+	\caption{Observed and predicted one year ahead log change in \textit{H. comata} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the year effects model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model. }
+	\label{fig:pgrHECO}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{POSE_predicted_pgr_comparison}
+	\caption{Observed and predicted one year ahead log change in \textit{P. secunda} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the year effects model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.}
+	\label{fig:pgrPOSE}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{PSSP_predicted_pgr_comparison}
+	\caption{Observed and predicted one year ahead log change in \textit{P. spicata} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the year effects model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.}
+	\label{fig:pgrPSSP}
+\end{figure}
+
 
 
 
@@ -751,465 +865,160 @@ This integral is again finite and computable because the kernels $F$ fall to 0 a
 \clearpage 
 \newpage  
 \section{Additional Tables} 
-
-% supplementary tables
-
-\begin{table}[h]
-\caption{Cover change models}
-\centering
-%\begin{center}
-\begin{tabular}{l c c c c }
-\hline
-Species & ARTR & HECO & POSE & PSSP \\
-\hline
-(Intercept)           & $0.00$           & $-0.05$          & $0.01$           & $-0.10$          \\
-                      & $[-0.41;\ 0.42]$ & $[-0.21;\ 0.10]$ & $[-0.26;\ 0.28]$ & $[-0.28;\ 0.08]$ \\
-TreatmentNo\_grass    & $-0.09$          &                  &                  &                  \\
-                      & $[-0.75;\ 0.56]$ &                  &                  &                  \\
-TreatmentNo\_shrub    &                  & $0.33^{*}$       & $-0.08$          & $0.21^{*}$       \\
-                      &                  & $[0.01;\ 0.65]$  & $[-0.41;\ 0.25]$ & $[0.01;\ 0.40]$  \\
-\hline
-AIC                   & 284.97           & 160.41           & 337.77           & 253.15           \\
-BIC                   & 298.99           & 172.62           & 352.65           & 268.46           \\
-Log Likelihood        & -137.49          & -75.20           & -163.88          & -121.57          \\
-Num. obs.             & 122              & 85               & 145              & 158              \\
-Num. groups: quad     & 19               & 11               & 21               & 22               \\
-Num. groups: year     & 9                & 9                & 9                & 9                \\
-Var: quad (Intercept) & 0.43             & 0.00             & 0.02             & 0.00             \\
-Var: year (Intercept) & 0.00             & 0.02             & 0.12             & 0.06             \\
-Var: Residual         & 0.41             & 0.32             & 0.48             & 0.24             \\
-\hline
-\multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
-\label{table:coefficients}
-%\end{center}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:32:17 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{A. tripartita} survival model} 
-\label{ARTRsurvival}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & -0.0207 & 0.2261 & -0.4554 & -0.0246 & 0.4367 & -0.0321 & 0.0000 \\ 
-  logarea & 0.7208 & 0.0575 & 0.6109 & 0.7195 & 0.8378 & 0.7171 & 0.0000 \\ 
-  TreatmentNo\_grass & -1.3218 & 0.7343 & -2.7293 & -1.3340 & 0.1563 & -1.3591 & 0.0000 \\ 
-  W.ARTR & -1.5214 & 0.2075 & -1.9391 & -1.5179 & -1.1237 & -1.5107 & 0.0000 \\ 
-  W.HECO & -0.0694 & 0.0423 & -0.1485 & -0.0708 & 0.0178 & -0.0738 & 0.0000 \\ 
-  W.POSE & -0.0049 & 0.0761 & -0.1469 & -0.0077 & 0.1525 & -0.0134 & 0.0000 \\ 
-  W.PSSP & 0.0281 & 0.0275 & -0.0235 & 0.0271 & 0.0849 & 0.0252 & 0.0000 \\ 
-  W.allcov & -0.0055 & 0.0083 & -0.0219 & -0.0054 & 0.0109 & -0.0054 & 0.0000 \\ 
-  W.allpts & 0.1694 & 0.1579 & -0.1386 & 0.1686 & 0.4812 & 0.1672 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:33:00 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{H. comata} survival model} 
-\label{HECOsurvival}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 1.4189 & 0.2115 & 0.9991 & 1.4190 & 1.8371 & 1.4192 & 0.0000 \\ 
-  logarea & 1.2885 & 0.0813 & 1.1399 & 1.2843 & 1.4601 & 1.2758 & 0.0000 \\ 
-  TreatmentNo\_shrub & 0.3958 & 0.4175 & -0.4193 & 0.3942 & 1.2190 & 0.3909 & 0.0000 \\ 
-  W.ARTR & -0.0064 & 0.0028 & -0.0120 & -0.0064 & -0.0009 & -0.0064 & 0.0000 \\ 
-  W.HECO & -0.6647 & 0.0673 & -0.7996 & -0.6638 & -0.5351 & -0.6619 & 0.0000 \\ 
-  W.POSE & 0.0732 & 0.0534 & -0.0304 & 0.0728 & 0.1790 & 0.0720 & 0.0000 \\ 
-  W.PSSP & 0.0190 & 0.0184 & -0.0167 & 0.0188 & 0.0554 & 0.0185 & 0.0000 \\ 
-  W.allcov & 0.0021 & 0.0047 & -0.0072 & 0.0021 & 0.0113 & 0.0021 & 0.0000 \\ 
-  W.allpts & -0.1185 & 0.0919 & -0.2998 & -0.1183 & 0.0610 & -0.1177 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:34:30 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{Poa secunda} survival model} 
-\label{POSEsurvival}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 1.3162 & 0.1965 & 0.9242 & 1.3171 & 1.7024 & 1.3186 & 0.0000 \\ 
-  logarea & 1.0585 & 0.0640 & 0.9365 & 1.0569 & 1.1902 & 1.0537 & 0.0000 \\ 
-  TreatmentNo\_shrub & -0.2572 & 0.1723 & -0.5949 & -0.2573 & 0.0811 & -0.2576 & 0.0000 \\ 
-  W.ARTR & 0.0001 & 0.0019 & -0.0036 & 0.0001 & 0.0038 & 0.0001 & 0.0000 \\ 
-  W.HECO & -0.0153 & 0.0138 & -0.0424 & -0.0154 & 0.0119 & -0.0154 & 0.0000 \\ 
-  W.POSE & -1.2632 & 0.0816 & -1.4260 & -1.2623 & -1.1053 & -1.2605 & 0.0000 \\ 
-  W.PSSP & 0.0249 & 0.0122 & 0.0011 & 0.0249 & 0.0490 & 0.0247 & 0.0000 \\ 
-  W.allcov & -0.0024 & 0.0026 & -0.0075 & -0.0024 & 0.0029 & -0.0024 & 0.0000 \\ 
-  W.allpts & 0.0018 & 0.0524 & -0.1009 & 0.0018 & 0.1048 & 0.0017 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:35:48 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{P. spicata} survival model} 
-\label{PSSPsurvival}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 1.2121 & 0.1699 & 0.8815 & 1.2103 & 1.5533 & 1.2066 & 0.0000 \\ 
-  logarea & 1.5492 & 0.0976 & 1.3612 & 1.5474 & 1.7473 & 1.5437 & 0.0000 \\ 
-  TreatmentNo\_shrub & -0.1885 & 0.2208 & -0.6237 & -0.1879 & 0.2431 & -0.1867 & 0.0000 \\ 
-  W.ARTR & 0.0101 & 0.0021 & 0.0061 & 0.0101 & 0.0142 & 0.0101 & 0.0000 \\ 
-  W.HECO & 0.0046 & 0.0185 & -0.0319 & 0.0046 & 0.0406 & 0.0047 & 0.0000 \\ 
-  W.POSE & 0.0245 & 0.0384 & -0.0502 & 0.0242 & 0.1007 & 0.0236 & 0.0000 \\ 
-  W.PSSP & -0.4430 & 0.0291 & -0.5010 & -0.4427 & -0.3867 & -0.4420 & 0.0000 \\ 
-  W.allcov & 0.0100 & 0.0028 & 0.0046 & 0.0100 & 0.0155 & 0.0100 & 0.0000 \\ 
-  W.allpts & 0.0943 & 0.0605 & -0.0246 & 0.0944 & 0.2129 & 0.0944 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:36:00 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{A. tripartita} growth model} 
-\label{ARTRgrowth}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 0.7378 & 0.2437 & 0.2591 & 0.7378 & 1.2161 & 0.7377 & 0.0000 \\ 
-  logarea.t0 & 0.8663 & 0.0393 & 0.7892 & 0.8663 & 0.9434 & 0.8663 & 0.0000 \\ 
-  TreatmentNo\_grass & 0.1037 & 0.1436 & -0.1783 & 0.1037 & 0.3854 & 0.1037 & 0.0000 \\ 
-  W.ARTR & -0.0364 & 0.0892 & -0.2116 & -0.0364 & 0.1387 & -0.0364 & 0.0000 \\ 
-  W.HECO & 0.0033 & 0.0136 & -0.0233 & 0.0033 & 0.0299 & 0.0033 & 0.0000 \\ 
-  W.POSE & -0.0573 & 0.0268 & -0.1100 & -0.0573 & -0.0047 & -0.0573 & 0.0000 \\ 
-  W.PSSP & 0.0062 & 0.0084 & -0.0102 & 0.0062 & 0.0226 & 0.0062 & 0.0000 \\ 
-  W.allcov & -0.0055 & 0.0030 & -0.0114 & -0.0055 & 0.0004 & -0.0055 & 0.0000 \\ 
-  W.allpts & 0.0029 & 0.0477 & -0.0908 & 0.0029 & 0.0965 & 0.0029 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:36:24 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{H. comata} growth model} 
-\label{HECOgrowth}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 0.3782 & 0.0797 & 0.2212 & 0.3783 & 0.5343 & 0.3784 & 0.0000 \\ 
-  logarea.t0 & 0.8272 & 0.0205 & 0.7869 & 0.8272 & 0.8674 & 0.8272 & 0.0000 \\ 
-  TreatmentNo\_shrub & -0.0162 & 0.1336 & -0.2785 & -0.0162 & 0.2460 & -0.0162 & 0.0000 \\ 
-  W.ARTR & -0.0031 & 0.0010 & -0.0051 & -0.0031 & -0.0010 & -0.0031 & 0.0000 \\ 
-  W.HECO & -0.0479 & 0.0195 & -0.0862 & -0.0479 & -0.0098 & -0.0479 & 0.0000 \\ 
-  W.POSE & 0.0242 & 0.0162 & -0.0077 & 0.0242 & 0.0560 & 0.0242 & 0.0000 \\ 
-  W.PSSP & -0.0151 & 0.0065 & -0.0279 & -0.0151 & -0.0023 & -0.0151 & 0.0000 \\ 
-  W.allcov & -0.0038 & 0.0019 & -0.0076 & -0.0038 & 0.0000 & -0.0038 & 0.0000 \\ 
-  W.allpts & -0.0513 & 0.0380 & -0.1258 & -0.0513 & 0.0232 & -0.0513 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:36:58 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{Poa secunda} growth model} 
-\label{POSEgrowth}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 0.4923 & 0.0681 & 0.3581 & 0.4923 & 0.6259 & 0.4924 & 0.0000 \\ 
-  logarea.t0 & 0.6750 & 0.0232 & 0.6292 & 0.6750 & 0.7203 & 0.6751 & 0.0000 \\ 
-  TreatmentNo\_shrub & 0.2161 & 0.0644 & 0.0897 & 0.2161 & 0.3425 & 0.2161 & 0.0000 \\ 
-  W.ARTR & -0.0002 & 0.0008 & -0.0019 & -0.0002 & 0.0014 & -0.0002 & 0.0000 \\ 
-  W.HECO & 0.0039 & 0.0063 & -0.0084 & 0.0039 & 0.0161 & 0.0039 & 0.0000 \\ 
-  W.POSE & -0.2641 & 0.0387 & -0.3400 & -0.2641 & -0.1883 & -0.2641 & 0.0000 \\ 
-  W.PSSP & -0.0073 & 0.0056 & -0.0183 & -0.0073 & 0.0038 & -0.0073 & 0.0000 \\ 
-  W.allcov & -0.0003 & 0.0012 & -0.0026 & -0.0003 & 0.0020 & -0.0003 & 0.0000 \\ 
-  W.allpts & -0.0254 & 0.0231 & -0.0709 & -0.0254 & 0.0200 & -0.0254 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:37:48 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the \textit{P. spicata} growth model} 
-\label{PSSPgrowth}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 0.3987 & 0.0660 & 0.2690 & 0.3987 & 0.5281 & 0.3988 & 0.0000 \\ 
-  logarea.t0 & 0.8249 & 0.0149 & 0.7956 & 0.8249 & 0.8543 & 0.8249 & 0.0000 \\ 
-  TreatmentNo\_shrub & 0.1948 & 0.0714 & 0.0546 & 0.1948 & 0.3349 & 0.1948 & 0.0000 \\ 
-  W.ARTR & -0.0025 & 0.0008 & -0.0041 & -0.0025 & -0.0010 & -0.0025 & 0.0000 \\ 
-  W.HECO & -0.0118 & 0.0072 & -0.0260 & -0.0118 & 0.0023 & -0.0118 & 0.0000 \\ 
-  W.POSE & -0.0067 & 0.0130 & -0.0323 & -0.0067 & 0.0189 & -0.0067 & 0.0000 \\ 
-  W.PSSP & -0.1480 & 0.0133 & -0.1740 & -0.1480 & -0.1220 & -0.1480 & 0.0000 \\ 
-  W.allcov & -0.0036 & 0.0011 & -0.0057 & -0.0036 & -0.0015 & -0.0036 & 0.0000 \\ 
-  W.allpts & -0.0522 & 0.0236 & -0.0984 & -0.0522 & -0.0060 & -0.0522 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-\begin{table}
-\caption{\textit{Poa secunda} growth with \textit{Artemisia} canopy effect}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.49^{*}$        \\
-                                 & $[0.36;\ 0.62]$   \\
-logarea.t0                       & $0.68^{*}$        \\
-                                 & $[0.63;\ 0.72]$   \\
-TreatmentNo\_shrub               & $0.24^{*}$        \\
-                                 & $[0.09;\ 0.38]$   \\
-W.ARTR                           & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.HECO                           & $0.00$            \\
-                                 & $[-0.01;\ 0.02]$  \\
-W.POSE                           & $-0.26^{*}$       \\
-                                 & $[-0.34;\ -0.19]$ \\
-W.PSSP                           & $-0.01$           \\
-                                 & $[-0.02;\ 0.00]$  \\
-W.allcov                         & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.allpts                         & $-0.02$           \\
-                                 & $[-0.07;\ 0.02]$  \\
-inARTR                           & $-0.06$           \\
-                                 & $[-0.28;\ 0.16]$  \\
-\hline
-AIC                              & 15641.80          \\
-BIC                              & 15734.29          \\
-Log Likelihood                   & -7806.90          \\
-Num. obs.                        & 5469              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.11              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.02             \\
-Var: Residual                    & 0.98              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
-\label{table:POSEgrowth-inARTR}
-\end{center}
-\end{table}
-
-
-\begin{table}
-\caption{\textit{P. spicata} growth with \textit{Artemisia} canopy effect}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.42^{*}$        \\
-                                 & $[0.29;\ 0.56]$   \\
-logarea.t0                       & $0.82^{*}$        \\
-                                 & $[0.79;\ 0.86]$   \\
-TreatmentNo\_shrub               & $0.24^{*}$        \\
-                                 & $[0.09;\ 0.40]$   \\
-W.ARTR                           & $-0.00^{*}$       \\
-                                 & $[-0.00;\ -0.00]$ \\
-W.HECO                           & $-0.01^{*}$       \\
-                                 & $[-0.03;\ -0.00]$ \\
-W.POSE                           & $-0.01$           \\
-                                 & $[-0.03;\ 0.02]$  \\
-W.PSSP                           & $-0.14^{*}$       \\
-                                 & $[-0.16;\ -0.11]$ \\
-W.allcov                         & $-0.00^{*}$       \\
-                                 & $[-0.01;\ -0.00]$ \\
-W.allpts                         & $-0.06^{*}$       \\
-                                 & $[-0.10;\ -0.01]$ \\
-inARTR                           & $-0.14$           \\
-                                 & $[-0.35;\ 0.08]$  \\
-\hline
-AIC                              & 15282.37          \\
-BIC                              & 15376.25          \\
-Log Likelihood                   & -7627.18          \\
-Num. obs.                        & 6039              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.12              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.03             \\
-Var: Residual                    & 0.71              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
-\label{table:PSSPgrowth-inARTR}
-\end{center}
-\end{table}
-
-
-\begin{table}
-\caption{\textit{Poa secunda} growth with year-by-treatment interaction}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.49^{*}$        \\
-                                 & $[0.37;\ 0.62]$   \\
-trtYears1                        & $0.06$            \\
-                                 & $[-0.17;\ 0.29]$  \\
-trtYears2                        & $0.24$            \\
-                                 & $[-0.01;\ 0.49]$  \\
-trtYears3                        & $0.23$            \\
-                                 & $[-0.05;\ 0.51]$  \\
-trtYears4                        & $0.25$            \\
-                                 & $[-0.07;\ 0.56]$  \\
-trtYears5                        & $0.45^{*}$        \\
-                                 & $[0.11;\ 0.79]$   \\
-logarea.t0                       & $0.68^{*}$        \\
-                                 & $[0.63;\ 0.72]$   \\
-W.ARTR                           & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.HECO                           & $0.00$            \\
-                                 & $[-0.01;\ 0.02]$  \\
-W.POSE                           & $-0.26^{*}$       \\
-                                 & $[-0.34;\ -0.19]$ \\
-W.PSSP                           & $-0.01$           \\
-                                 & $[-0.02;\ 0.00]$  \\
-W.allcov                         & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.allpts                         & $-0.03$           \\
-                                 & $[-0.07;\ 0.02]$  \\
-\hline
-AIC                              & 15648.62          \\
-BIC                              & 15760.94          \\
-Log Likelihood                   & -7807.31          \\
-Num. obs.                        & 5469              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.11              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.02             \\
-Var: Residual                    & 0.98              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
-\label{table:POSEgrowth-byYr}
-\end{center}
-\end{table}
-
-\begin{table}
-\caption{\textit{P. spicata} growth with year-by-treatment interaction}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.42^{*}$        \\
-                                 & $[0.28;\ 0.55]$   \\
-trtYears1                        & $0.26$            \\
-                                 & $[-0.01;\ 0.54]$  \\
-trtYears2                        & $-0.05$           \\
-                                 & $[-0.32;\ 0.22]$  \\
-trtYears3                        & $0.44^{*}$        \\
-                                 & $[0.14;\ 0.73]$   \\
-trtYears4                        & $0.42^{*}$        \\
-                                 & $[0.12;\ 0.72]$   \\
-trtYears5                        & $-0.11$           \\
-                                 & $[-0.42;\ 0.20]$  \\
-logarea.t0                       & $0.82^{*}$        \\
-                                 & $[0.79;\ 0.86]$   \\
-W.ARTR                           & $-0.00^{*}$       \\
-                                 & $[-0.00;\ -0.00]$ \\
-W.HECO                           & $-0.01^{*}$       \\
-                                 & $[-0.03;\ -0.00]$ \\
-W.POSE                           & $-0.01$           \\
-                                 & $[-0.03;\ 0.02]$  \\
-W.PSSP                           & $-0.14^{*}$       \\
-                                 & $[-0.16;\ -0.11]$ \\
-W.allcov                         & $-0.00^{*}$       \\
-                                 & $[-0.01;\ -0.00]$ \\
-W.allpts                         & $-0.06^{*}$       \\
-                                 & $[-0.10;\ -0.01]$ \\
-\hline
-AIC                              & 15281.67          \\
-BIC                              & 15395.67          \\
-Log Likelihood                   & -7623.83          \\
-Num. obs.                        & 6039              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.12              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.03             \\
-Var: Residual                    & 0.71              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
-\label{table:PSSPgrowth-byYr}
-\end{center}
-\end{table}
-
-
-% latex table generated in R 3.2.2 by xtable 1.8-2 package
-% Mon Sep 19 08:37:48 2016
-\begin{table}[ht]
-\centering
-\caption{Summary of fixed effects for the recruitment model (symbols correspond to Eqns. \ref{eqn:recrDataModel} and \ref{eqn:recrProcessModel})} 
-\label{table:recruitment}
-\begin{tabular}{rrrrrrr}
-  \hline
- & mean & sd & X2.5. & X97.5. & Rhat & n.eff \\ 
-  \hline
- $\gamma$[1] & 0.3341 & 0.7071 & -1.1262 & 1.6391 & 1.0018 &  1100 \\ 
-  $\gamma$[2] & 3.4488 & 0.4468 & 2.5010 & 4.3401 & 1.0904 &    25 \\ 
-  $\gamma$[3] & 3.2440 & 0.3650 & 2.4840 & 3.9190 & 1.0536 &    34 \\ 
- $\gamma$[4] & 2.9054 & 0.3689 & 2.1820 & 3.6160 & 1.0149 &   110 \\ 
-  $\chi$[2,2] & -0.0953 & 0.4093 & -0.8854 & 0.7570 & 1.0010 &  2000 \\ 
- $\chi$[2,3] & -1.2787 & 0.3325 & -1.9370 & -0.6392 & 1.0041 &   420 \\ 
-   $\chi$[2,4] & 0.0951 & 0.2617 & -0.4121 & 0.6063 & 1.0023 &   810 \\ 
-  $\chi$[3,1] & -1.4366 & 0.8544 & -3.1491 & 0.1132 & 1.0006 &  2000 \\ 
-  $\omega$[1,1] & -0.5881 & 0.1018 & -0.7639 & -0.3720 & 1.0197 &    82 \\ 
-  $\omega$[1,2] & 0.0635 & 0.0651 & -0.0528 & 0.1997 & 1.0329 &    59 \\ 
-  $\omega$[1,3] & 0.0220 & 0.0422 & -0.0610 & 0.1040 & 1.0036 &   920 \\ 
-  $\omega$[1,4] & 0.1164 & 0.0456 & 0.0347 & 0.2123 & 1.0197 &    96 \\ 
-  $\omega$[2,1] & -0.4800 & 0.1522 & -0.7746 & -0.1906 & 1.0029 &  2000 \\ 
-  $\omega$[2,2] & -1.7368 & 0.1297 & -1.9841 & -1.4819 & 1.0006 &  2000 \\ 
-  $\omega$[2,3] & 0.0388 & 0.0865 & -0.1287 & 0.2138 & 1.0152 &   100 \\ 
-  $\omega$[2,4] & -0.3682 & 0.0926 & -0.5434 & -0.1881 & 1.0005 &  2000 \\ 
-  $\omega$[3,1] & -0.6589 & 0.3342 & -1.3131 & -0.0155 & 1.0096 &   280 \\ 
-  $\omega$[3,2] & -0.1021 & 0.1981 & -0.4828 & 0.2936 & 1.0089 &   210 \\ 
-  $\omega$[3,3] & -1.8943 & 0.1611 & -2.2060 & -1.5850 & 1.0084 &  2000 \\ 
-  $\omega$[3,4] & -0.1953 & 0.1508 & -0.4968 & 0.0995 & 1.0074 &  2000 \\ 
-  $\omega$[4,1] & -0.1867 & 0.3000 & -0.7608 & 0.4486 & 1.0099 &   190 \\ 
-  $\omega$[4,2] & -0.3746 & 0.1896 & -0.7224 & -0.0115 & 1.0453 &    55 \\ 
-  $\omega$[4,3] & 0.1131 & 0.1437 & -0.1583 & 0.4170 & 1.0321 &    55 \\ 
-  $\omega$[4,4] & -1.7379 & 0.1549 & -2.0400 & -1.4409 & 1.0116 &  1400 \\ 
-   $\theta$[1] & 0.6198 & 0.0740 & 0.4835 & 0.7766 & 1.0008 &  2000 \\ 
-   $\theta$[2] & 1.1197 & 0.1428 & 0.8666 & 1.4450 & 1.0008 &  2000 \\ 
-   $\theta$[3] & 1.1718 & 0.1068 & 0.9685 & 1.3890 & 1.0008 &  2000 \\ 
-  $\theta$[4] & 1.0961 & 0.1060 & 0.9009 & 1.3280 & 1.0022 &   890 \\ 
-  $p$[1] & 0.8137 & 0.1228 & 0.4813 & 0.9525 & 1.0399 &    60 \\ 
-  $p$[2] & 0.9996 & 0.0005 & 0.9984 & 1.0000 & 1.0007 &  2000 \\ 
-  $p$[3] & 0.7906 & 0.1288 & 0.4273 & 0.9382 & 1.0176 &  2000 \\ 
-  $p$[4] & 0.7502 & 0.1480 & 0.3920 & 0.9453 & 1.0150 &  2000 \\ 
-   \hline
-\end{tabular}
-\end{table}
+% latex table generated in R 3.3.1 by xtable 1.8-2 package
+% Tue Dec 20 13:32:53 2016
+\begin{longtable}{rllllrrrl}
+	\hline
+	& species & vital\_rate & Treatment & score & climate model & year effects model & diff & improved \\ 
+	\hline
+	\endhead
+	\hline
+	\multicolumn{9}{l}{\footnotesize Continued on next page}
+	\endfoot
+	\endlastfoot
+	1 & ARTR & growth & Control & lppd & -107.53 & -108.40 & 0.87 & *** \\ 
+	2 & ARTR & growth & Control & MSE & 0.57 & 0.56 & 0.01 &  \\ 
+	3 & ARTR & growth & Drought & lppd & -39.71 & -40.01 & 0.30 & *** \\ 
+	4 & ARTR & growth & Drought & MSE & 0.53 & 0.49 & 0.03 &  \\ 
+	5 & ARTR & growth & Irrigation & lppd & -38.85 & -40.75 & 1.91 & *** \\ 
+	6 & ARTR & growth & Irrigation & MSE & 0.50 & 0.57 & -0.07 & *** \\ 
+	7 & ARTR & recruitment & Control & lppd & -32.61 & -31.05 & -1.56 &  \\ 
+	8 & ARTR & recruitment & Control & MSE & 61.88 & 10.59 & 51.29 &  \\ 
+	9 & ARTR & recruitment & Drought & lppd & -28.93 & -26.52 & -2.41 &  \\ 
+	10 & ARTR & recruitment & Drought & MSE & 523.95 & 11.62 & 512.33 &  \\ 
+	11 & ARTR & recruitment & Irrigation & lppd & -17.51 & -20.24 & 2.73 & *** \\ 
+	12 & ARTR & recruitment & Irrigation & MSE & 4.72 & 5.34 & -0.62 & *** \\ 
+	13 & ARTR & survival & Control & lppd & -24.19 & -23.06 & -1.13 &  \\ 
+	14 & ARTR & survival & Control & MSE & 0.07 & 0.07 & 0.00 &  \\ 
+	15 & ARTR & survival & Drought & lppd & -5.48 & -5.34 & -0.13 &  \\ 
+	16 & ARTR & survival & Drought & MSE & 0.04 & 0.04 & -0.00 & *** \\ 
+	17 & ARTR & survival & Irrigation & lppd & -7.88 & -8.01 & 0.13 & *** \\ 
+	18 & ARTR & survival & Irrigation & MSE & 0.06 & 0.06 & -0.00 & *** \\ 
+	19 & HECO & growth & Control & lppd & -377.77 & -369.46 & -8.31 &  \\ 
+	20 & HECO & growth & Control & MSE & 1.11 & 1.09 & 0.02 &  \\ 
+	21 & HECO & growth & Drought & lppd & -8.74 & -10.97 & 2.23 & *** \\ 
+	22 & HECO & growth & Drought & MSE & 3.12 & 4.35 & -1.23 & *** \\ 
+	23 & HECO & growth & Irrigation & lppd & -89.03 & -73.93 & -15.10 &  \\ 
+	24 & HECO & growth & Irrigation & MSE & 2.02 & 1.47 & 0.55 &  \\ 
+	25 & HECO & recruitment & Control & lppd & -93.35 & -93.47 & 0.12 & *** \\ 
+	26 & HECO & recruitment & Control & MSE & 613.41 & 499.11 & 114.29 &  \\ 
+	27 & HECO & recruitment & Drought & lppd & -25.39 & -27.56 & 2.17 & *** \\ 
+	28 & HECO & recruitment & Drought & MSE & 1.94 & 2.33 & -0.38 & *** \\ 
+	29 & HECO & recruitment & Irrigation & lppd & -30.69 & -30.56 & -0.12 &  \\ 
+	30 & HECO & recruitment & Irrigation & MSE & 5.21 & 7.62 & -2.41 & *** \\ 
+	31 & HECO & survival & Control & lppd & -124.59 & -112.70 & -11.90 &  \\ 
+	32 & HECO & survival & Control & MSE & 0.12 & 0.11 & 0.01 &  \\ 
+	33 & HECO & survival & Drought & lppd & -17.89 & -20.82 & 2.93 & *** \\ 
+	34 & HECO & survival & Drought & MSE & 0.22 & 0.26 & -0.05 & *** \\ 
+	35 & HECO & survival & Irrigation & lppd & -16.51 & -13.54 & -2.97 &  \\ 
+	36 & HECO & survival & Irrigation & MSE & 0.09 & 0.07 & 0.02 &  \\ 
+	37 & POSE & growth & Control & lppd & -1117.20 & -1117.29 & 0.08 & *** \\ 
+	38 & POSE & growth & Control & MSE & 1.50 & 1.51 & -0.00 & *** \\ 
+	39 & POSE & growth & Drought & lppd & -254.17 & -257.32 & 3.16 & *** \\ 
+	40 & POSE & growth & Drought & MSE & 2.66 & 2.69 & -0.03 & *** \\ 
+	41 & POSE & growth & Irrigation & lppd & -452.34 & -456.95 & 4.61 & *** \\ 
+	42 & POSE & growth & Irrigation & MSE & 1.87 & 1.90 & -0.03 & *** \\ 
+	43 & POSE & recruitment & Control & lppd & -127.64 & -128.73 & 1.09 & *** \\ 
+	44 & POSE & recruitment & Control & MSE & 35.20 & 44.82 & -9.61 & *** \\ 
+	45 & POSE & recruitment & Drought & lppd & -60.34 & -63.15 & 2.80 & *** \\ 
+	46 & POSE & recruitment & Drought & MSE & 23.60 & 33.88 & -10.28 & *** \\ 
+	47 & POSE & recruitment & Irrigation & lppd & -72.06 & -65.58 & -6.48 &  \\ 
+	48 & POSE & recruitment & Irrigation & MSE & 85.04 & 27.63 & 57.41 &  \\ 
+	49 & POSE & survival & Control & lppd & -366.49 & -380.49 & 14.00 & *** \\ 
+	50 & POSE & survival & Control & MSE & 0.12 & 0.12 & -0.00 & *** \\ 
+	51 & POSE & survival & Drought & lppd & -175.29 & -187.88 & 12.59 & *** \\ 
+	52 & POSE & survival & Drought & MSE & 0.21 & 0.22 & -0.01 & *** \\ 
+	53 & POSE & survival & Irrigation & lppd & -156.28 & -150.23 & -6.05 &  \\ 
+	54 & POSE & survival & Irrigation & MSE & 0.13 & 0.13 & 0.00 &  \\ 
+	55 & PSSP & growth & Control & lppd & -627.07 & -625.63 & -1.44 &  \\ 
+	56 & PSSP & growth & Control & MSE & 1.38 & 1.36 & 0.02 &  \\ 
+	57 & PSSP & growth & Drought & lppd & -292.90 & -297.61 & 4.71 & *** \\ 
+	58 & PSSP & growth & Drought & MSE & 1.82 & 1.85 & -0.03 & *** \\ 
+	59 & PSSP & growth & Irrigation & lppd & -312.96 & -314.67 & 1.71 & *** \\ 
+	60 & PSSP & growth & Irrigation & MSE & 1.51 & 1.51 & -0.00 & *** \\ 
+	61 & PSSP & recruitment & Control & lppd & -123.81 & -125.23 & 1.42 & *** \\ 
+	62 & PSSP & recruitment & Control & MSE & 30.59 & 34.79 & -4.20 & *** \\ 
+	63 & PSSP & recruitment & Drought & lppd & -87.34 & -86.58 & -0.77 &  \\ 
+	64 & PSSP & recruitment & Drought & MSE & 222.16 & 54.58 & 167.58 &  \\ 
+	65 & PSSP & recruitment & Irrigation & lppd & -60.18 & -62.12 & 1.94 & *** \\ 
+	66 & PSSP & recruitment & Irrigation & MSE & 20.90 & 44.57 & -23.67 & *** \\ 
+	67 & PSSP & survival & Control & lppd & -148.69 & -140.15 & -8.54 &  \\ 
+	68 & PSSP & survival & Control & MSE & 0.10 & 0.09 & 0.01 &  \\ 
+	69 & PSSP & survival & Drought & lppd & -83.26 & -78.09 & -5.17 &  \\ 
+	70 & PSSP & survival & Drought & MSE & 0.11 & 0.11 & 0.01 &  \\ 
+	71 & PSSP & survival & Irrigation & lppd & -100.52 & -89.02 & -11.50 &  \\ 
+	72 & PSSP & survival & Irrigation & MSE & 0.13 & 0.11 & 0.01 &  \\ 
+	\hline
+	\caption{Comparison of model predictions from climate model and year effects model for each species and vital rate and treatment.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the random year effects model are marked with "***" in the last column. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
+	\label{table:treatmentPreds}
+\end{longtable}
 
 
 \clearpage
-
+\newpage
+\clearpage
+\newpage
 \section{Additional Figures} 
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_ARTR_growth}
+	\caption{Comparison of treatment effects predicted and observed for \textit{A. tripartita} growth.  Upper figure shows each parameter estimate separately while the lower figure shows the effect of treatment as a function of plant size.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredARTRGrowth}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_HECO_growth}
+	\caption{Comparison of treatment effects predicted and observed for \textit{H. comata} growth.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredHECOGrowth}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_POSE_growth}
+	\caption{Comparison of treatment effects predicted and observed for \textit{P. secunda} growth.  Upper figure shows each parameter estimate separately while the lower figure shows the effect of treatment as a function of plant size.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredPOSEGrowth}
+\end{figure}
+
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_PSSP_growth}
+	\caption{Comparison of treatment effects predicted and observed for \textit{P. spicata} growth.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredPSSPGrowth}
+\end{figure}
+
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_ARTR_survival}
+	\caption{Comparison of treatment effects predicted and observed for \textit{A. survival} survival.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredARTRSurvival}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_HECO_survival}
+	\caption{Comparison of treatment effects predicted and observed for \textit{H. comata} survival.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredHECOSurvival}
+\end{figure}
+
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_POSE_survival}
+	\caption{Comparison of treatment effects predicted and observed for \textit{P. secunda} survival.  Upper figure shows each parameter estimate separately while the lower figure shows the effect of treatment as a function of plant size.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredPOSESurvival}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{pred_v_obs_treatment_PSSP_survival}
+	\caption{Comparison of treatment effects predicted and observed for \textit{P. spicata} survival.  The observed treatment effects come from the treatment model fitted to all the data including the five years of the experiment.  The predicted parameters come from the climate model fitted to all years of observational data but do not include the five years of the experiment (2011 to 2016). We assessed a parameter as significant when the 95\% Bayesian credible intervals did not overlap zero.}
+	\label{fig:parPredPSSPSurvival}
+\end{figure}
+
 
 
 \end{document}

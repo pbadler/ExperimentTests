@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.30)  19 DEC 2016 22:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.30)  20 DEC 2016 21:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -205,17 +205,35 @@ Package: enumitem 2011/09/28 v3.5.2 Customized lists
 (/usr/share/texlive/texmf-dist/tex/latex/was/gensymb.sty
 Package: gensymb 2003/07/02 v1.0 (WaS)
 )
+(/usr/share/texlive/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
+\LTleft=\skip51
+\LTright=\skip52
+\LTpre=\skip53
+\LTpost=\skip54
+\LTchunksize=\count116
+\LTcapwidth=\dimen128
+\LT@head=\box32
+\LT@firsthead=\box33
+\LT@foot=\box34
+\LT@lastfoot=\box35
+\LT@cols=\count117
+\LT@rows=\count118
+\c@LT@tables=\count119
+\c@LT@chunks=\count120
+\LT@p@ftn=\toks25
+)
 (/usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2016/03/15 v2.10.1 Sectioning titles
-\ttl@box=\box32
-\beforetitleunit=\skip51
-\aftertitleunit=\skip52
-\ttl@plus=\dimen128
-\ttl@minus=\dimen129
-\ttl@toksa=\toks25
-\titlewidth=\dimen130
-\titlewidthlast=\dimen131
-\titlewidthfirst=\dimen132
+\ttl@box=\box36
+\beforetitleunit=\skip55
+\aftertitleunit=\skip56
+\ttl@plus=\dimen129
+\ttl@minus=\dimen130
+\ttl@toksa=\toks26
+\titlewidth=\dimen131
+\titlewidthlast=\dimen132
+\titlewidthfirst=\dimen133
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/bm.sty
 Package: bm 2014/10/28 v1.1c Bold Symbol Support (DPC/FMi)
@@ -283,37 +301,37 @@ File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
 Package color Info: Driver file: pdftex.def on input line 143.
 )
-\@float@every@Box=\toks26
-\c@Box=\count116
+\@float@every@Box=\toks27
+\c@Box=\count121
 
 (./precip_ms.aux)
 \openout1 = `precip_ms.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
  (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count117
-\scratchdimen=\dimen133
-\scratchbox=\box33
-\nofMPsegments=\count118
-\nofMParguments=\count119
-\everyMPshowfont=\toks27
-\MPscratchCnt=\count120
-\MPscratchDim=\dimen134
-\MPnumerator=\count121
-\makeMPintoPDFobject=\count122
-\everyMPtoPDFconversion=\toks28
+\scratchcounter=\count122
+\scratchdimen=\dimen134
+\scratchbox=\box37
+\nofMPsegments=\count123
+\nofMParguments=\count124
+\everyMPshowfont=\toks28
+\MPscratchCnt=\count125
+\MPscratchDim=\dimen135
+\MPnumerator=\count126
+\makeMPintoPDFobject=\count127
+\everyMPtoPDFconversion=\toks29
 )
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -349,117 +367,117 @@ LaTeX Font Info:    ... okay on input line 70.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \celsius on input line 70.
-Package gensymb Info: Faking symbols for \degree and \celsius on input line 70.
+LaTeX Info: Redefining \celsius on input line 74.
+Package gensymb Info: Faking symbols for \degree and \celsius on input line 74.
 
 
 Package gensymb Warning: Not defining \perthousand.
 
-LaTeX Info: Redefining \ohm on input line 70.
-Package gensymb Info: Using \Omega for \ohm on input line 70.
+LaTeX Info: Redefining \ohm on input line 74.
+Package gensymb Info: Using \Omega for \ohm on input line 74.
 
 Package gensymb Warning: Not defining \micro.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 72.
+LaTeX Font Info:    Try loading font information for U+msa on input line 76.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 72.
+LaTeX Font Info:    Try loading font information for U+msb on input line 76.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 72.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 76.
 
 (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 72.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 76.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 72.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 76.
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <6> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 72.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 76.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
 
 Package natbib Warning: Citation `teller_linking_2016' on page 3 undefined on i
-nput line 107.
+nput line 112.
 
 
 Package natbib Warning: Citation `parmesan' on page 3 undefined on input line 1
-07.
+12.
 
 
-Package natbib Warning: Citation `davis' on page 3 undefined on input line 107.
+Package natbib Warning: Citation `davis' on page 3 undefined on input line 112.
 
 
 
 Package natbib Warning: Citation `teller_linking_2016' on page 3 undefined on i
-nput line 109.
+nput line 114.
 
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 3 undefined on
- input line 109.
+ input line 114.
 
 
 Package natbib Warning: Citation `dalgleish_climate_2010' on page 3 undefined o
-n input line 109.
+n input line 114.
 
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 3 undefined on
- input line 109.
+ input line 114.
 
 
 Package natbib Warning: Citation `teller_linking_2016' on page 3 undefined on i
-nput line 109.
+nput line 114.
 
 
 Package natbib Warning: Citation `gerber_optimal_2015' on page 3 undefined on i
-nput line 109.
+nput line 114.
 
 
 Package natbib Warning: Citation `adler_can_the_past_2014' on page 3 undefined 
-on input line 109.
+on input line 114.
 
 [3]
 
 Package natbib Warning: Citation `knapp and smith' on page 4 undefined on input
- line 113.
+ line 118.
 
 
 Package natbib Warning: Citation `Hsu and Adler' on page 4 undefined on input l
-ine 113.
+ine 118.
 
 
-Package natbib Warning: Citation `yang' on page 4 undefined on input line 113.
+Package natbib Warning: Citation `yang' on page 4 undefined on input line 118.
 
 
 Package natbib Warning: Citation `Franklin' on page 4 undefined on input line 1
-13.
+18.
 
 
-Package natbib Warning: Citation `Srur' on page 4 undefined on input line 113.
+Package natbib Warning: Citation `Srur' on page 4 undefined on input line 118.
 
 
 Package natbib Warning: Citation `venables' on page 4 undefined on input line 1
-13.
+18.
 
 
 Package natbib Warning: Citation `crone_ability_2013' on page 4 undefined on in
-put line 116.
+put line 121.
 
 
 Package natbib Warning: Citation `ehrlen_advancing_2016' on page 4 undefined on
- input line 116.
+ input line 121.
 
 
 Package natbib Warning: Citation `adler byrn and leiker' on page 4 undefined on
- input line 116.
+ input line 121.
 
 [4]
 Missing character: There is no â in font cmr10!
@@ -468,229 +486,175 @@ Missing character: There is no “ in font cmr10!
  [5]
 
 Package natbib Warning: Citation `zachmann_mapped_2010' on page 6 undefined on 
-input line 128.
+input line 133.
 
 
 Package natbib Warning: Citation `lauenroth_demography_2008' on page 6 undefine
-d on input line 130.
+d on input line 135.
 
 
 Package natbib Warning: Citation `gherardi' on page 6 undefined on input line 1
-33.
+38.
 
 
 Package natbib Warning: Citation `yahdjian_rainout_2002' on page 6 undefined on
- input line 133.
+ input line 138.
 
 [6]
 
-Package natbib Warning: Citation `bates' on page 7 undefined on input line 135.
+Package natbib Warning: Citation `bates' on page 7 undefined on input line 140.
 
+
+
+Package natbib Warning: Citation `Parton 1978' on page 7 undefined on input lin
+e 146.
+
+
+Package natbib Warning: Citation `Bradford' on page 7 undefined on input line 1
+46.
 
 [7]
 
-Package natbib Warning: Citation `Parton 1978' on page 8 undefined on input lin
-e 141.
-
-
-Package natbib Warning: Citation `Bradford' on page 8 undefined on input line 1
-41.
-
-
-Package natbib Warning: Citation `bates' on page 8 undefined on input line 143.
+Package natbib Warning: Citation `bates' on page 8 undefined on input line 148.
 
 
 [8]
 
 Package natbib Warning: Citation `adler_coexistence_2010' on page 9 undefined o
-n input line 150.
+n input line 155.
 
 
 Package natbib Warning: Citation `chu_large_2015' on page 9 undefined on input 
-line 150.
+line 155.
 
 [9] [10]
 
 Package natbib Warning: Citation `chu_large_2015' on page 11 undefined on input
- line 202.
+ line 207.
 
 
 Package natbib Warning: Citation `teller_linking_2016' on page 11 undefined on 
-input line 202.
+input line 207.
 
 
 Package natbib Warning: Citation `adler_in_prep' on page 11 undefined on input 
-line 202.
-
-[11]
-
-Package natbib Warning: Citation `teller_linking_2016' on page 12 undefined on 
-input line 225.
+line 207.
 
 
-Package natbib Warning: Citation `adler_coexistence_2010' on page 12 undefined 
-on input line 227.
+Package natbib Warning: Citation `teller_linking_2016' on page 11 undefined on 
+input line 230.
 
 
-Package natbib Warning: Citation `adler_in_prep' on page 12 undefined on input 
-line 228.
+Package natbib Warning: Citation `adler_coexistence_2010' on page 11 undefined 
+on input line 232.
 
-[12]
+
+Package natbib Warning: Citation `adler_in_prep' on page 11 undefined on input 
+line 233.
+
+[11] [12]
 
 Package natbib Warning: Citation `adler_coexistence_2010' on page 13 undefined 
-on input line 245.
-
-[13]
-
-Package natbib Warning: Citation `stan' on page 14 undefined on input line 262.
+on input line 250.
 
 
+Package natbib Warning: Citation `stan' on page 13 undefined on input line 267.
 
-Package natbib Warning: Citation `rstan' on page 14 undefined on input line 262
+
+
+Package natbib Warning: Citation `rstan' on page 13 undefined on input line 267
 .
 
 
-Package natbib Warning: Citation `stan manual' on page 14 undefined on input li
-ne 262.
+Package natbib Warning: Citation `stan manual' on page 13 undefined on input li
+ne 267.
 
+[13]
 
 Package natbib Warning: Citation `vetari_practical_2015' on page 14 undefined o
-n input line 264.
+n input line 269.
+
+
+Package natbib Warning: Citation `dalgleish_climate_2010' on page 14 undefined 
+on input line 275.
+
+
+Package natbib Warning: Citation `wang trees' on page 14 undefined on input lin
+e 275.
+
+
+Package natbib Warning: Citation `dredging' on page 14 undefined on input line 
+275.
 
 [14]
 
-Package natbib Warning: Citation `dalgleish_climate_2010' on page 15 undefined 
-on input line 270.
-
-
-Package natbib Warning: Citation `wang trees' on page 15 undefined on input lin
-e 270.
-
-
-Package natbib Warning: Citation `dredging' on page 15 undefined on input line 
-270.
+LaTeX Warning: Reference `eqn:' on page 15 undefined on input line 285.
 
 [15]
 
-LaTeX Warning: Reference `eqn:' on page 16 undefined on input line 280.
+Package natbib Warning: Citation `gelman_understanding_2014' on page 16 undefin
+ed on input line 296.
 
 
 Package natbib Warning: Citation `gelman_understanding_2014' on page 16 undefin
-ed on input line 291.
+ed on input line 296.
+
+[16] [17] [18]
+
+Package natbib Warning: Citation `adler_coexistence_2010' on page 19 undefined 
+on input line 338.
 
 
-Package natbib Warning: Citation `gelman_understanding_2014' on page 16 undefin
-ed on input line 291.
-
-[16] [17] [18] [19] [20]
-
-Package natbib Warning: Citation `chu_direct_2016' on page 21 undefined on inpu
-t line 344.
+Package natbib Warning: Citation `chu_direct_2016' on page 19 undefined on inpu
+t line 338.
 
 
-Package natbib Warning: Citation `treddenick_' on page 21 undefined on input li
-ne 344.
+Package natbib Warning: Citation `chu_large_2015' on page 19 undefined on input
+ line 338.
 
-[21]
+[19]
 
-Package natbib Warning: Citation `adler_coexistence_2010' on page 22 undefined 
-on input line 350.
-
-
-Package natbib Warning: Citation `chu_direct_2016' on page 22 undefined on inpu
-t line 350.
+Package natbib Warning: Citation `adler_coexistence_2010' on page 20 undefined 
+on input line 348.
 
 
-Package natbib Warning: Citation `chu_large_2015' on page 22 undefined on input
- line 350.
+Package natbib Warning: Citation `chu_direct_2016' on page 20 undefined on inpu
+t line 348.
 
 
-Package natbib Warning: Citation `adler_coexistence_2010' on page 22 undefined 
-on input line 357.
+Package natbib Warning: Citation `chu_large_2015' on page 20 undefined on input
+ line 348.
+
+[20]
+
+LaTeX Warning: Reference `fig:parPredPSSPRecruitment' on page 21 undefined on i
+nput line 356.
 
 
-Package natbib Warning: Citation `chu_large_2015' on page 22 undefined on input
- line 357.
+LaTeX Warning: Reference `fig:parPredPOSERecruitment' on page 21 undefined on i
+nput line 356.
 
 
-LaTeX Warning: Reference `fig:IBM1step' on page 22 undefined on input line 359.
+LaTeX Warning: Reference `fig:pgrARTR' on page 21 undefined on input line 358.
+
+[21] [22]
+
+Package natbib Warning: Citation `chu_direct_2016' on page 23 undefined on inpu
+t line 376.
 
 
+Package natbib Warning: Citation `kleinhesselink_indirect_2015' on page 23 unde
+fined on input line 376.
 
-LaTeX Warning: Reference `fig:IPMresults' on page 22 undefined on input line 35
-9.
+[23] [24] (./precip_ms.bbl) [25
 
-[22]
-
-LaTeX Warning: Reference `fig:CoverTrends' on page 23 undefined on input line 3
-61.
-
-
-LaTeX Warning: Reference `fig:W-by-treatment' on page 23 undefined on input lin
-e 361.
-
-
-Package natbib Warning: Citation `chesson_mechanisms_2000' on page 23 undefined
- on input line 363.
-
-
-Package natbib Warning: Citation `adler_weak_2009' on page 23 undefined on inpu
-t line 363.
-
-
-Package natbib Warning: Citation `hersh_evaluating_2011' on page 23 undefined o
-n input line 363.
-
-
-Package natbib Warning: Citation `janzen_herbivores_1970' on page 23 undefined 
-on input line 363.
-
-
-Package natbib Warning: Citation `connell_role_1971' on page 23 undefined on in
-put line 363.
-
-
-Package natbib Warning: Citation `Barbier2008' on page 23 undefined on input li
-ne 363.
-
-[23]
-
-Package natbib Warning: Citation `adler_forecasting_2012' on page 24 undefined 
-on input line 365.
-
-
-Package natbib Warning: Citation `kleinhesselink_indirect_2015' on page 24 unde
-fined on input line 365.
-
-
-Package natbib Warning: Citation `yenni_strong_2012' on page 24 undefined on in
-put line 365.
-
-
-Package natbib Warning: Citation `comita_asymmetric_2010' on page 24 undefined 
-on input line 367.
-
-
-Package natbib Warning: Citation `kunstler_plant_2015' on page 24 undefined on 
-input line 367.
-
-
-Package natbib Warning: Citation `johnson_conspecific_2012' on page 24 undefine
-d on input line 367.
-
-
-Package natbib Warning: Citation `kokkoris_patterns_1999' on page 24 undefined 
-on input line 367.
-
-[24] [25] (./precip_ms.bbl) [26
-
-] [27] [28] [29]
+] [26] [27] [28] [29]
 <../figures/VWC_spot_measurements.png, id=115, 505.89pt x 361.35pt>
 File: ../figures/VWC_spot_measurements.png Graphic file (type png)
 
 <use ../figures/VWC_spot_measurements.png>
 Package pdftex.def Info: ../figures/VWC_spot_measurements.png used on input lin
-e 579.
+e 656.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
 <../figures/avg_daily_soil_moisture.png, id=116, 361.35pt x 433.62pt>
@@ -698,7 +662,7 @@ File: ../figures/avg_daily_soil_moisture.png Graphic file (type png)
 
 <use ../figures/avg_daily_soil_moisture.png>
 Package pdftex.def Info: ../figures/avg_daily_soil_moisture.png used on input l
-ine 587.
+ine 664.
 (pdftex.def)             Requested size: 469.75502pt x 563.71255pt.
 
 <../figures/modern_soil_moisture_comparison.png, id=117, 433.62pt x 433.62pt>
@@ -706,7 +670,7 @@ File: ../figures/modern_soil_moisture_comparison.png Graphic file (type png)
 
 <use ../figures/modern_soil_moisture_comparison.png>
 Package pdftex.def Info: ../figures/modern_soil_moisture_comparison.png used on
- input line 595.
+ input line 672.
 (pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
 
 <../figures/start_to_finish_cover_change.png, id=118, 722.7pt x 433.62pt>
@@ -714,7 +678,7 @@ File: ../figures/start_to_finish_cover_change.png Graphic file (type png)
 
 <use ../figures/start_to_finish_cover_change.png>
 Package pdftex.def Info: ../figures/start_to_finish_cover_change.png used on in
-put line 603.
+put line 680.
 (pdftex.def)             Requested size: 469.75502pt x 281.85628pt.
 
 <../figures/treatment_effect_growth.png, id=119, 505.89pt x 361.35pt>
@@ -722,7 +686,7 @@ File: ../figures/treatment_effect_growth.png Graphic file (type png)
 
 <use ../figures/treatment_effect_growth.png>
 Package pdftex.def Info: ../figures/treatment_effect_growth.png used on input l
-ine 610.
+ine 687.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
 <../figures/treatment_effect_survival.png, id=120, 505.89pt x 361.35pt>
@@ -730,7 +694,7 @@ File: ../figures/treatment_effect_survival.png Graphic file (type png)
 
 <use ../figures/treatment_effect_survival.png>
 Package pdftex.def Info: ../figures/treatment_effect_survival.png used on input
- line 617.
+ line 694.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
 <../figures/treatment_effect_recruitment.png, id=121, 505.89pt x 289.08pt>
@@ -738,96 +702,269 @@ File: ../figures/treatment_effect_recruitment.png Graphic file (type png)
 
 <use ../figures/treatment_effect_recruitment.png>
 Package pdftex.def Info: ../figures/treatment_effect_recruitment.png used on in
-put line 624.
+put line 701.
 (pdftex.def)             Requested size: 469.75502pt x 268.43579pt.
 
-<../figures/treatment_trends_cover.png, id=122, 578.16pt x 198.7425pt>
-File: ../figures/treatment_trends_cover.png Graphic file (type png)
-
-<use ../figures/treatment_trends_cover.png>
-Package pdftex.def Info: ../figures/treatment_trends_cover.png used on input li
-ne 631.
-(pdftex.def)             Requested size: 469.75502pt x 161.47787pt.
-
-<../figures/climate_effect_growth.png, id=123, 505.89pt x 361.35pt>
+<../figures/climate_effect_growth.png, id=122, 505.89pt x 361.35pt>
 File: ../figures/climate_effect_growth.png Graphic file (type png)
 
 <use ../figures/climate_effect_growth.png>
 Package pdftex.def Info: ../figures/climate_effect_growth.png used on input lin
-e 638.
+e 708.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/climate_effect_survival.png, id=124, 505.89pt x 361.35pt>
+<../figures/climate_effect_survival.png, id=123, 505.89pt x 361.35pt>
 File: ../figures/climate_effect_survival.png Graphic file (type png)
 
 <use ../figures/climate_effect_survival.png>
 Package pdftex.def Info: ../figures/climate_effect_survival.png used on input l
-ine 645.
+ine 715.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/climate_effect_recruitment.png, id=125, 505.89pt x 361.35pt>
+<../figures/climate_effect_recruitment.png, id=124, 505.89pt x 361.35pt>
 File: ../figures/climate_effect_recruitment.png Graphic file (type png)
 
 <use ../figures/climate_effect_recruitment.png>
 Package pdftex.def Info: ../figures/climate_effect_recruitment.png used on inpu
-t line 653.
+t line 723.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
- [30
 
- <../figures/VWC_spot_measurements.png (PNG copy)>] [31 <../figures/avg_daily_s
-oil_moisture.png (PNG copy)>] [32 <../figures/modern_soil_moisture_comparison.p
-ng (PNG copy)>] [33 <../figures/start_to_finish_cover_change.png (PNG copy)>] [
-34 <../figures/treatment_effect_growth.png (PNG copy)>] [35 <../figures/treatme
-nt_effect_survival.png (PNG copy)>] [36 <../figures/treatment_effect_recruitmen
-t.png (PNG copy)> <../figures/treatment_trends_cover.png (PNG copy)>] [37 <../f
-igures/climate_effect_growth.png (PNG copy)>] [38 <../figures/climate_effect_su
-rvival.png (PNG copy)>]
-[39 <../figures/climate_effect_recruitment.png>]
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 689
+<../figures/parameter_predictions.png, id=125, 578.16pt x 433.62pt>
+File: ../figures/parameter_predictions.png Graphic file (type png)
+
+<use ../figures/parameter_predictions.png>
+Package pdftex.def Info: ../figures/parameter_predictions.png used on input lin
+e 730.
+(pdftex.def)             Requested size: 469.75502pt x 352.31538pt.
+
+<../figures/predicted_and_observed_cover.png, id=126, 867.24pt x 505.89pt>
+File: ../figures/predicted_and_observed_cover.png Graphic file (type png)
+
+<use ../figures/predicted_and_observed_cover.png>
+Package pdftex.def Info: ../figures/predicted_and_observed_cover.png used on in
+put line 737.
+(pdftex.def)             Requested size: 469.75502pt x 274.02563pt.
+
+<../figures/ARTR_predicted_pgr_comparison.png, id=127, 578.16pt x 722.7pt>
+File: ../figures/ARTR_predicted_pgr_comparison.png Graphic file (type png)
+
+<use ../figures/ARTR_predicted_pgr_comparison.png>
+Package pdftex.def Info: ../figures/ARTR_predicted_pgr_comparison.png used on i
+nput line 745.
+(pdftex.def)             Requested size: 469.75502pt x 587.1923pt.
+
+
+LaTeX Warning: Float too large for page by 1.16232pt on input line 748.
+
+<../figures/HECO_predicted_pgr_comparison.png, id=128, 578.16pt x 722.7pt>
+File: ../figures/HECO_predicted_pgr_comparison.png Graphic file (type png)
+
+<use ../figures/HECO_predicted_pgr_comparison.png>
+Package pdftex.def Info: ../figures/HECO_predicted_pgr_comparison.png used on i
+nput line 752.
+(pdftex.def)             Requested size: 469.75502pt x 587.1923pt.
+
+
+LaTeX Warning: Float too large for page by 1.16232pt on input line 755.
+
+<../figures/POSE_predicted_pgr_comparison.png, id=129, 578.16pt x 722.7pt>
+File: ../figures/POSE_predicted_pgr_comparison.png Graphic file (type png)
+
+<use ../figures/POSE_predicted_pgr_comparison.png>
+Package pdftex.def Info: ../figures/POSE_predicted_pgr_comparison.png used on i
+nput line 759.
+(pdftex.def)             Requested size: 469.75502pt x 587.1923pt.
+
+
+LaTeX Warning: Float too large for page by 1.16232pt on input line 762.
+
+<../figures/PSSP_predicted_pgr_comparison.png, id=130, 578.16pt x 722.7pt>
+File: ../figures/PSSP_predicted_pgr_comparison.png Graphic file (type png)
+
+<use ../figures/PSSP_predicted_pgr_comparison.png>
+Package pdftex.def Info: ../figures/PSSP_predicted_pgr_comparison.png used on i
+nput line 766.
+(pdftex.def)             Requested size: 469.75502pt x 587.1923pt.
+
+
+LaTeX Warning: Float too large for page by 1.16232pt on input line 769.
+
+[30
+
+ <../figures/VWC_spot_measurements.png (PNG copy)>]
+
+LaTeX Warning: Text page 31 contains only floats.
+
+
+Overfull \vbox (6.81174pt too high) has occurred while \output is active []
+
+
+[31 <../figures/avg_daily_soil_moisture.png (PNG copy)>] [32 <../figures/modern
+_soil_moisture_comparison.png (PNG copy)>] [33 <../figures/start_to_finish_cove
+r_change.png (PNG copy)>] [34 <../figures/treatment_effect_growth.png (PNG copy
+)>] [35 <../figures/treatment_effect_survival.png (PNG copy)>] [36 <../figures/
+treatment_effect_recruitment.png (PNG copy)>] [37 <../figures/climate_effect_gr
+owth.png (PNG copy)>] [38 <../figures/climate_effect_survival.png (PNG copy)>]
+[39 <../figures/climate_effect_recruitment.png>] [40 <../figures/parameter_pred
+ictions.png (PNG copy)>] [41 <../figures/predicted_and_observed_cover.png (PNG 
+copy)>] [42 <../figures/ARTR_predicted_pgr_comparison.png (PNG copy)>] [43 <../
+figures/HECO_predicted_pgr_comparison.png (PNG copy)>] [44 <../figures/POSE_pre
+dicted_pgr_comparison.png (PNG copy)>] [45 <../figures/PSSP_predicted_pgr_compa
+rison.png (PNG copy)>]
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 803
 .
-
-(/usr/share/texmf/tex/latex/R/tex/latex/omscmtt.fd
+ (/usr/share/texmf/tex/latex/R/tex/latex/omscmtt.fd
 File: omscmtt.fd 
 )
 LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 689.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 803.
 
 
 Package natbib Warning: Citation `adler_coexistence_2010' on page 1 undefined o
-n input line 692.
+n input line 806.
 
 
 Package natbib Warning: Citation `adler_coexistence_2010' on page 1 undefined o
-n input line 694.
+n input line 808.
 
 
 Package natbib Warning: Citation `Ellner2016' on page 1 undefined on input line
- 694.
+ 808.
 
 [1
 
 
-] [2] [3
+] [2]
+Overfull \hbox (38.9547pt too wide) in alignment at lines 870--874
+ [] [] [] [] [] [] [] [] [] 
+ []
 
-] [4] [5] [6] [7] [8] [9] [10]
+
+Overfull \hbox (38.9547pt too wide) in alignment at lines 874--877
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (38.9547pt too wide) in alignment at lines 877--878
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (38.9547pt too wide) in alignment at lines 878--899
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (38.9547pt too wide) in alignment at lines 899--919
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (38.9547pt too wide) in alignment at lines 919--939
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+[3
+
+]
+Overfull \hbox (38.9547pt too wide) in alignment at lines 939--954
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+[4] [5]
+<../figures/pred_v_obs_treatment_ARTR_growth.png, id=199, 433.62pt x 433.62pt>
+File: ../figures/pred_v_obs_treatment_ARTR_growth.png Graphic file (type png)
+
+<use ../figures/pred_v_obs_treatment_ARTR_growth.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_ARTR_growth.png used o
+n input line 965.
+(pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
+
+<../figures/pred_v_obs_treatment_HECO_growth.png, id=200, 433.62pt x 289.08pt>
+File: ../figures/pred_v_obs_treatment_HECO_growth.png Graphic file (type png)
+
+<use ../figures/pred_v_obs_treatment_HECO_growth.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_HECO_growth.png used o
+n input line 972.
+(pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
+
+<../figures/pred_v_obs_treatment_POSE_growth.png, id=201, 433.62pt x 433.62pt>
+File: ../figures/pred_v_obs_treatment_POSE_growth.png Graphic file (type png)
+
+<use ../figures/pred_v_obs_treatment_POSE_growth.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_POSE_growth.png used o
+n input line 979.
+(pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
+
+<../figures/pred_v_obs_treatment_PSSP_growth.png, id=202, 433.62pt x 289.08pt>
+File: ../figures/pred_v_obs_treatment_PSSP_growth.png Graphic file (type png)
+
+<use ../figures/pred_v_obs_treatment_PSSP_growth.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_PSSP_growth.png used o
+n input line 987.
+(pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
+
+<../figures/pred_v_obs_treatment_ARTR_survival.png, id=203, 433.62pt x 289.08pt
+>
+File: ../figures/pred_v_obs_treatment_ARTR_survival.png Graphic file (type png)
+
+ <use ../figures/pred_v_obs_treatment_ARTR_survival.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_ARTR_survival.png used
+ on input line 995.
+(pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
+
+<../figures/pred_v_obs_treatment_HECO_survival.png, id=204, 433.62pt x 289.08pt
+>
+File: ../figures/pred_v_obs_treatment_HECO_survival.png Graphic file (type png)
+
+ <use ../figures/pred_v_obs_treatment_HECO_survival.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_HECO_survival.png used
+ on input line 1002.
+(pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
+
+<../figures/pred_v_obs_treatment_POSE_survival.png, id=205, 433.62pt x 433.62pt
+>
+File: ../figures/pred_v_obs_treatment_POSE_survival.png Graphic file (type png)
+
+ <use ../figures/pred_v_obs_treatment_POSE_survival.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_POSE_survival.png used
+ on input line 1010.
+(pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
+
+<../figures/pred_v_obs_treatment_PSSP_survival.png, id=206, 433.62pt x 289.08pt
+>
+File: ../figures/pred_v_obs_treatment_PSSP_survival.png Graphic file (type png)
+
+ <use ../figures/pred_v_obs_treatment_PSSP_survival.png>
+Package pdftex.def Info: ../figures/pred_v_obs_treatment_PSSP_survival.png used
+ on input line 1017.
+(pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
+
 
 Package natbib Warning: There were undefined citations.
 
-[11
+[6
 
-] (./precip_ms.aux)
+
+ <../figures/pred_v_obs_treatment_ARTR_growth.png (PNG copy)>] [7 <../figures/p
+red_v_obs_treatment_HECO_growth.png (PNG copy)>] [8 <../figures/pred_v_obs_trea
+tment_POSE_growth.png (PNG copy)>] [9 <../figures/pred_v_obs_treatment_PSSP_gro
+wth.png (PNG copy)>] [10 <../figures/pred_v_obs_treatment_ARTR_survival.png (PN
+G copy)>] [11 <../figures/pred_v_obs_treatment_HECO_survival.png (PNG copy)>] [
+12 <../figures/pred_v_obs_treatment_POSE_survival.png (PNG copy)>] [13 <../figu
+res/pred_v_obs_treatment_PSSP_survival.png (PNG copy)>] (./precip_ms.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4569 strings out of 494953
- 63668 string characters out of 6180977
- 187817 words of memory out of 5000000
- 7722 multiletter control sequences out of 15000+600000
+ 4712 strings out of 494953
+ 67609 string characters out of 6180977
+ 164030 words of memory out of 5000000
+ 7849 multiletter control sequences out of 15000+600000
  20256 words of font info for 77 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 42i,11n,31p,1734b,318s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,11n,31p,1764b,318s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share
@@ -848,10 +985,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmtt10.pfb>
-Output written on precip_ms.pdf (50 pages, 1986849 bytes).
+Output written on precip_ms.pdf (58 pages, 4434596 bytes).
 PDF statistics:
- 263 PDF objects out of 1000 (max. 8388607)
- 176 compressed objects within 2 object streams
+ 301 PDF objects out of 1000 (max. 8388607)
+ 193 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 56 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 121 words of extra memory for PDF output out of 10000 (max. 10000000)
 

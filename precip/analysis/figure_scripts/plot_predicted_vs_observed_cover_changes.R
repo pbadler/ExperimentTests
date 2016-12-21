@@ -16,7 +16,7 @@ grd2 <- grd
 grd2$model <- 'year_effects'
 grd <- rbind(grd,grd2)
 i = 1
-out <- labels <- list(NA)
+out <- labels <- stats <-  list(NA)
 
 for(i in 1:nrow(grd)){ 
   
@@ -64,19 +64,22 @@ for(i in 1:nrow(grd)){
   # get mean squared error ---- 
   df <- merge(obs_pgr, pred_pgr)
   
-  df$Period <- ifelse(df$year > 2010, 'Modern', 'Historical')
-  T2 <- as.character( df$Treatment)
-  T2 <- ifelse(df$Period == 'Historical' , 'Historical', T2)
-  df$Treatment <- T2
-  df$Treatment <- factor( df$Treatment, levels = c('Historical', 'Control', 'Drought', 'Irrigation'), ordered = T)
-  df$Treatment <- factor( df$Treatment, labels = c('Training Data', 'Control', 'Drought', 'Irrigation'))
+  df$Period <- ifelse(df$year > 2011, 'Modern', 'Historical')
   
   df <- 
     df %>% 
     filter( obs*100/10000 > cover_threshholds, 
             pred*100/10000 > cover_threshholds )  # only use plots with greater than cover threshold 
   
-  allcombos <- expand.grid(Treatment = c('Training Data', 'Control', 'Drought', 'Irrigation'), year = c(1925:2016))
+  allcombos <- expand.grid(Treatment = c('Control', 'Drought', 'Irrigation'), year = c(1925:2016))
+  
+  df <- subset( df , Period == 'Modern' ) # confine it to the experimental years only 
+  
+  overall_MSE <- 
+    df %>% ungroup %>% summarise( MSE = mean((observed-predicted)^2))
+  
+  overall_cor <- 
+    df %>% ungroup %>% summarise( cor = cor(predicted, observed))
   
   MSE <- 
     df %>% 
@@ -87,10 +90,9 @@ for(i in 1:nrow(grd)){
     df %>% 
     group_by( Treatment ) %>% 
     summarise( cor = cor(predicted, observed))
-  
+
   xlim <- max( df$predicted )
   ylim <- min(  df$observed)
-  
   
   label_df <- merge(cor, MSE)
   
@@ -103,7 +105,6 @@ for(i in 1:nrow(grd)){
   
   df <- merge(allcombos, df, all.x = T)
   
-  
   pts <- 
     ggplot( df, aes( x = predicted, y = observed, color = Treatment) ) + 
     geom_point(aes(alpha = Treatment)) +
@@ -114,8 +115,8 @@ for(i in 1:nrow(grd)){
     ylab( 'Annual population growth rate observed') + 
     # scale_y_continuous(limits = c(-ylim, ylim)) + 
     # scale_x_continuous(limits = c(-ylim, ylim)) + 
-    scale_color_manual(values = my_colors) + 
-    scale_alpha_manual(values = c(0.4, 1, 1, 1)) + 
+    scale_color_manual(values = my_colors[2:4]) + 
+    scale_alpha_manual(values = c(1, 1, 1)) + 
     my_theme +
     ggtitle(paste(spp))
     # coord_fixed()
@@ -123,6 +124,10 @@ for(i in 1:nrow(grd)){
   pdf(paste0( 'figures/predictions/', spp, '_', model , '_model_predicted_and_observed_population_growth_rates.pdf'), height = 8, width = 8)
   print( pts )
   dev.off()
+  
+  overall_stats <- data.frame(species = spp, model = paste0( model, ' model') )
+  overall_stats$MSE <- as.numeric(overall_MSE)
+  overall_stats$cor <- as.numeric(overall_cor)
   
   label_df$species <- spp
   label_df$model <- paste0( model, ' model' )
@@ -132,6 +137,8 @@ for(i in 1:nrow(grd)){
   
   labels[[i]] <- label_df
   out[[i]] <- df 
+  stats[[i]] <- overall_stats
+  
   rm(df)
   
 }
@@ -140,6 +147,8 @@ for(i in 1:nrow(grd)){
 
 out <- do.call(rbind, out)
 label_df <- do.call(rbind, labels )
+stats <- do.call(rbind, stats)
+
 
 i = 1
 for( i in 1:length(species_list)) { 
@@ -149,19 +158,35 @@ for( i in 1:length(species_list)) {
   png(paste0('figures/', spp, '_predicted_pgr_comparison.png'), width = 8, height = 10, res = 300, units = 'in')
   print( 
   ggplot( subset( out, species == spp), aes(x = predicted, y = observed, color = Treatment )) +
-    geom_point(aes(alpha = Treatment)) +
-    geom_smooth(method = 'lm', se = F, alpha = 1, linetype = 1, color = 1, size = 1) +
+    geom_point() +
+    geom_smooth(method = 'lm', se = F, alpha = 0.2, linetype = 2, color = 1, size = 1) +
     geom_text( data = subset(label_df, species == spp), aes( x = pos.x, y = pos.y , color = NULL , label = unique(label)), hjust = 1, vjust = -0.5 , show.legend = F) +
     facet_grid(  Treatment ~ model  )+
     xlab( 'Annual population growth rate predicted') +
     ylab( 'Annual population growth rate observed') +
     # scale_y_continuous(limits = c(-ylim, ylim)) +
     # scale_x_continuous(limits = c(-ylim, ylim)) +
-    scale_color_manual(values = my_colors) +
-    scale_alpha_manual(values = c(0.4, 1, 1, 1)) +
+    scale_color_manual(values = my_colors[2:4]) +
     my_theme +
     ggtitle(species_names[[i]])
   )
   dev.off()
 }
 
+# make stats table 
+stats$model <- str_replace(stats$model, '_', ' ')
+stats <- stats %>% gather( stat , val, MSE:cor)
+
+
+fit_table <- 
+  stats %>% 
+  spread(model, val) %>% 
+  mutate(diff = `climate model` - `year effects model`) %>% 
+  mutate( improved = ifelse(diff > 0 & stat == 'cor', '***', '')) %>% 
+  mutate( improved = ifelse(diff < 0 & stat == 'MSE', '***', improved))
+
+fit_table <- fit_table %>% dplyr::select(species, stat, `year effects model` , `climate model` , diff , improved )
+
+corxt <- xtable(fit_table, caption = 'MSE of predicted log cover changes and correlations between log cover changes predicted and observed. Predictions for the cover changes in the experimental plots were generated either from the year effects or the climate models. Instances where the climate model made better predictions than the year effects model are indicated with the "***". ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.',
+       label = 'table:corPGR')
+print(corxt, 'output/results_tables/pgr_predictions.text', type = 'latex')

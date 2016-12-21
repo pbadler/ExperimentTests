@@ -82,11 +82,14 @@ all_cors <- all_cors %>% rename(`climate variable` = var , `Int. cor.` = Interce
 all_cors <- all_cors %>% arrange( vital_rate, species, desc(abs(`Int. cor.`)))
 
 all_cors$`climate variable` <- str_replace( all_cors$`climate variable` , 'l', 'lag')
+all_cors$`climate variable` <- str_replace(all_cors$`climate variable`, 'VWC.', '')
+
 
 library(xtable)
 
+
 xtcor <- xtable(all_cors, 
-                caption = 'Correlations between intercept of year effects and soil moisture variables. P-values of correlations are given next to correlations. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given.', 
+                caption = 'Selected climate variables for each vital rate model for each species. Correlations and p-values between the choosen variables and the intercept of year effects model are shown. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given. "f" = fall, "su" = summer, "sp" = spring. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.', 
                 label = 'table:strongCor')
 
 print(xtcor, 'output/results_tables/strong_correlations.txt', type = 'latex', include.rownames = F)

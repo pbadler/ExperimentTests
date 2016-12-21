@@ -212,17 +212,20 @@ for( i in 1:length(gs_fits)){
     ylab( 'Treatment effect') + 
     xlab( 'Plant size (s.d. from mean)') + 
     scale_color_manual(values = my_colors[3:4]) + 
-    my_theme + 
-    ggtitle(paste0( 'Treatment effects on ', spp, ' ', vr ))
-  
-  
-  pdf( paste( 'figures/predictions/predicted_vs_observed_treatment_effects_on_', spp,'_', vr, '.pdf' ),  width = 8, height = 6)
-  
-  print( p1 )
-  print( p2 )
-    
-  dev.off()  
+    my_theme
 
+
+  if( nlevels( p1$data$par) == 2 ) {   
+    png( paste0( 'figures/pred_v_obs_treatment_', spp, '_', vr, '.png'), width = 6, height = 6, res = 300, units = 'in')
+    print( grid.arrange(p1, p2, nrow = 2) )
+    dev.off()
+  }else{
+    png( paste0( 'figures/pred_v_obs_treatment_', spp, '_', vr, '.png'), width = 6, height = 4, res = 300, units = 'in')
+    print(p1)
+    dev.off()
+  }
+
+  
   rm( p1, p2, predicted_and_observed_effects, predicted_effect, pred_matrix, observed_effect, pred_df, pfx )   
 }
 
@@ -323,7 +326,7 @@ for( i in 1:length(r_fits)){
   df$vital_rate <- vr
   write.csv(df, paste0('output/predicted_and_observed_par_estimates_for_', spp, '_', vr, '.csv') )
   
-  pdf( paste( 'figures/predictions/predicted_vs_observed_treatment_effects_on_', spp,'_', vr, '.pdf' ),  width = 8, height = 6)
+  png( paste( 'figures/pred_v_ob_treatment_', spp,'_', vr, '.png' ),  width = 6, height = 4, units = 'in', res = 300)
   
   print( p1 )
 

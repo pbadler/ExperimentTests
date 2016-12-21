@@ -68,7 +68,7 @@ generate_cover_predictions <- function( spp, model ) {
   predicted_cover$area <- predicted_cover$rec_area + predicted_cover$total_size
   
   predicted_cover$model <- model
-  
+  predicted_cover$species <- spp 
   saveRDS( predicted_cover, paste0( 'output/ibm/simulations/', spp, '_one_step_ahead_', model, '_model_quadrat_cover.RDS'))
   
   return(predicted_cover)
@@ -89,8 +89,7 @@ ylims <- list( c(0,25), c(0,4), c(0,4), c(0,4))
 names(ylims) <- species_list
 iter <- expand.grid( species = species_list, model = model_list )
 
-for( i in 1:nrow(iter) ) { 
-  
+for( i in 7:nrow(iter) ) { 
   spp <- as.character( iter$species[i])
   model <- as.character( iter$model[i] )
   
@@ -143,6 +142,8 @@ for( i in 1:nrow(iter) ) {
   qarea <- merge( qarea, qarea2[, c('year', 'quad', 'Treatment', 'area')], by = c('quad', 'year', 'Treatment' ), all.x = T, all.y = T)
   qarea$area <- ifelse( is.na( qarea$area.x ), qarea$area.y, qarea$area.x)  # fill in missing area for second year 
   
+  qarea$species <- spp 
+  
   write.csv(qarea, paste0( 'output/ibm/simulations/', spp, '_observed_cover_per_quadrat.csv'), row.names = F)
   
   # merge observed and predicted cover ---------------------------------------------------
@@ -173,7 +174,7 @@ for( i in 1:nrow(iter) ) {
   
   plot_df <- 
     merge( observed_cover, predicted_cover, all.x = T) %>% 
-    mutate( predicted = ifelse(is.na(predicted), observed, predicted))
+    mutate( predicted = ifelse(is.na(predicted), observed, predicted)) ### fill in predicted cover with observed for first year in series 
   
   plot_df$Period <- ifelse( plot_df$year < 2011 , 'Historical', 'Modern')
   
