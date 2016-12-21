@@ -6,6 +6,7 @@ library(ggplot2 )
 library(dplyr)
 library(tidyr)
 library(lme4)
+library(texreg)
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
