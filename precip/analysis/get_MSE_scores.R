@@ -10,8 +10,6 @@ library(rstan)
 #
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
-#setwd('~/Documents/ExperimentTests/precip/')
-
 years <- expand.grid(year = 1925:2017, Treatment = c(1:3), stat = c('true_cov', 'pred_cover'))
 years$Period[ years$year > 2010 ] <- 'Modern'
 years$Period[ years$year <= 2010 ] <- 'Historical'
