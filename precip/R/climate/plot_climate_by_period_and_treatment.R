@@ -13,20 +13,23 @@ library(ggplot2)
 library(stringr)
 
 climate <- readRDS('data/temp_data/seasonal_climate.RDS')
-
+load('analysis/figure_scripts/my_plotting_theme.Rdata')
 #------------------------------------------------------------------------ 
+climate$Period[ climate$year <= 1925 ] <- 'not monitored'
 
-my_colors <- c('#fc8d62', 'gray', '#8da0cb')
-climate$Period[ climate$year == 1925 ] <- 'not monitored'
+climate <- climate %>% mutate( Period = ifelse( year < 2011, 'Historical', 'Modern'))
+climate <- climate %>% filter( !(Treatment != 'Control' & year < 2011))
+climate <- climate %>% unite( var, season, var) %>% spread(var, val  )
+
 
 climate_long <- 
   climate %>% 
   filter( year < 2016) %>% 
-  rename( `Fall Temperature` = fall_TMEAN_l0, `Spring Temperature` = spring_TMEAN_l0, `Summer Temperature` = summer_TMEAN_l0, `Winter Temperature` = winter_TMEAN_l0) %>%
+  rename( `Fall Temperature` = fall_TAVG_avg, `Spring Temperature` = spring_TAVG_avg, `Summer Temperature` = summer_TAVG_avg, `Winter Temperature` = winter_TAVG_avg) %>%
   rename( `Mean Annual Temperature` = MAT) %>% 
-  rename( `Cool Season PPT` = cool_PRCP_l0, `Warm Season PPT` = warm_PRCP_l0) %>% 
-  mutate( `Total Annual PPT` = `Cool Season PPT` + `Warm Season PPT`) %>%
-  select( year, Period, Treatment,  `Mean Annual Temperature`, `Total Annual PPT`, `Cool Season PPT`, `Warm Season PPT`, `Spring Temperature`, `Summer Temperature`, `Fall Temperature`, `Winter Temperature`) %>% 
+  rename( `Winter PPT` = winter_PRCP_ttl, `Spring PPT` = spring_PRCP_ttl, `Summer PPT` = summer_PRCP_ttl, `Fall PPT` = fall_PRCP_ttl) %>% 
+  mutate( `Total Annual PPT` = `Winter PPT` + `Spring PPT` + `Summer PPT` + `Fall PPT`) %>%
+  select( year, Period, Treatment,  `Mean Annual Temperature`, `Total Annual PPT`, `Winter PPT`, `Spring PPT`, `Summer PPT`, `Fall PPT`, `Spring Temperature`, `Summer Temperature`, `Fall Temperature`, `Winter Temperature`) %>% 
   gather( season, value , `Mean Annual Temperature`:`Winter Temperature`) %>% 
   mutate( ylabel = ifelse( str_detect(season, pattern = 'PPT'), 'Total~precipitation~(mm)', 'Average ~ air~temperature~degree*C')) 
 
@@ -45,14 +48,16 @@ annual_plots <-
           ymin = min(value) - 0.2*(max(value)- min(value))) 
 
 base_ts <- function( x ) { 
+  
   g <- ggplot( x, aes( x = year, y = value, group = 1)) +
-  geom_ribbon( data = subset( x , Period == 'Historical'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = my_colors[3], alpha = 0.3, color = my_colors[3])  + 
-  geom_ribbon( data = subset( x , Period == 'Modern'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = my_colors[1], alpha = 0.3, color = my_colors[1]) + 
+  geom_ribbon( data = subset( x , Period == 'Historical'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = 'gray', alpha = 0.01, color = 'gray')  + 
+  geom_ribbon( data = subset( x , Period == 'Modern'), aes( x = as.numeric(year), ymax = ymax, ymin = ymin), fill = 'orange', alpha = 0.01, color = 'orange') + 
   geom_label(aes( x = as.numeric(label_x), y = label_y, label = period_label)) + 
   xlim( 1924, 2019) + 
   ylab(label =  parse( text = x$ylabel[1])) + 
     ggtitle( label = x$season[1]) + 
-  scale_color_manual(values = c('black', 'red', 'blue')) 
+  scale_color_manual(values = c('black', 'red', 'blue')) + 
+    my_theme
   
   if(str_detect(x$season[1], "PPT")){ 
     g +   
@@ -66,6 +71,7 @@ base_ts <- function( x ) {
 }
 
 ts_plots <- annual_plots %>% group_by( season ) %>% do( p = base_ts(.) )
+ts_plots$p[1]
 
 pdf('figures/annual_climate_comparison_timeseries.pdf', height = 8 , width = 10)
 print( ts_plots$p ) 
@@ -88,9 +94,10 @@ rank_plots <- function( x ) {
       ylab(label =  parse( text = x$ylabel[1])) +
       xlab(label =  x$xlab[1]) + 
       scale_shape_manual(values = c('-', '+')) + 
-      scale_fill_manual(values = my_colors) +  
+      scale_fill_manual(values = c('gray', 'red')) +  
       guides(fill = guide_legend('Period', override.aes = list(size = 0, color = NA)), colour = 'none', shape = guide_legend('Treatment') )  + 
-    ggtitle( label = x$season[1]) 
+    ggtitle( label = x$season[1]) + 
+    my_theme
     
 }
 

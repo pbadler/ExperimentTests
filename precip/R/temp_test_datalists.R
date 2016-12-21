@@ -1,6 +1,6 @@
 rm(list = ls())
-gtest <- readRDS('data/temp_data/modified_growth_data_lists_for_stan2.RDS')[[1]]
-stest <- readRDS('data/temp_data/modified_survival_data_lists_for_stan2.RDS')[[1]]
+gtest <- readRDS('data/temp_data/modified_growth_data_lists_for_stan.RDS')[[1]]
+stest <- readRDS('data/temp_data/modified_survival_data_lists_for_stan.RDS')[[1]]
 
 gdf <- readRDS('data/temp_data/ARTR_growth_cleaned_dataframe.RDS')
 sdf <- readRDS('data/temp_data/ARTR_survival_cleaned_dataframe.RDS')
