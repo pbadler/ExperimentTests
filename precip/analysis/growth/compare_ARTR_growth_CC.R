@@ -3,7 +3,6 @@ library(dplyr)
 library(tidyr)
 rm(list = ls())
 
-setwd('~/Documents/ExperimentTests/precip/')
 ccmod <- readRDS('data/temp_data/cc_ARTR_growth_model.RDS')
 mydat <- readRDS('data/temp_data/ARTR_scaled_growth_dataframe.RDS')
 ccdat <- ccmod@frame

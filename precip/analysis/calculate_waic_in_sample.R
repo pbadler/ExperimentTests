@@ -4,7 +4,6 @@ library(stringr)
 library(rstan)
 
 # input ------------------------------------------------------------------------------------# 
-setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', 'fit.RDS', full.names = TRUE)
 

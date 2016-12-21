@@ -1,5 +1,4 @@
 
-setwd('~/Documents/ExperimentTests/precip/')
 myclim <- readRDS('data/temp_data/all_clim_covs.RDS')
 mydat <- readRDS('data/temp_data/growth_data_lists_for_stan.RDS')
 ccdat <- read.csv('~/Desktop/Data & Scripts/wrapper-ID/climateData/Climate.csv')

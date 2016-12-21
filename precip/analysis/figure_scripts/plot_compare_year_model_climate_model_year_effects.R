@@ -28,7 +28,6 @@ plot_posterior_year_effects <- function(df){
 }
 
 # input ------------------------------------------------------------------------------------# 
-setwd('~/Documents/ExperimentTests/precip/')
 
 mfiles <- dir('output/stan_fits', '_year_effects_fit.RDS', full.names = TRUE)
 cfiles <- dir('output/stan_fits', '_climate_fit.RDS', full.names = T)
