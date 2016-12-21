@@ -6,6 +6,10 @@ library(stringr)
 library(ggplot2)
 library(lme4)
 library(zoo)
+library(texreg)
+library(xtable)
+library(gridExtra)
+
 # run data preparation files first --------------------------- # 
 
 source('R/prepare_datalists_for_STAN.R')
