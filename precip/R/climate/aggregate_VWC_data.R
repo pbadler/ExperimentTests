@@ -115,6 +115,8 @@ modern <- merge( modern, historical_avgs )
 
 modern$season <- factor(modern$season, levels = c('winter', 'spring', 'summer', 'fall'), ordered = T)
 
+# make plot of seasonal moisture during the experiment  ------------------------------------------- # 
+
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 png('figures/modern_soil_moisture_comparison.png', width = 6, height = 6, res = 300, units  = 'in')
 
