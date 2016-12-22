@@ -71,7 +71,7 @@ effect_plot <-
   ylab ( 'Mean effect (+/- 95% Bayesian Credible Interval)') + 
   xlab( '') + 
   labs(color = '') + 
-  scale_color_manual(values = c(1,'darkblue')) + 
+  scale_color_manual(values = c(1,'red')) + 
   my_theme
 
 gg <- clim %>% group_by(vital_rate) %>% do(gg =  effect_plot %+% .  + ggtitle( paste0('Effects on ', .$vital_rate)))

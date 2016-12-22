@@ -268,10 +268,10 @@ xt3 <- xtable(lc.POSE, caption = 'Treatment effects on log cover change for \tex
 xt4 <- xtable(lc.PSSP, caption = 'Treatment effects on log cover change for \textit{P. spicata} from 2011 to 2016. Intercept gives control effects.', 
               label = 'table:changePSSP')
 
-print(xt1, 'output/results_tables/ARTR_cover_change.txt', type = 'latex')
-print(xt2, 'output/results_tables/HECO_cover_change.txt', type = 'latex')
-print(xt3, 'output/results_tables/POSE_cover_change.txt', type = 'latex')
-print(xt4, 'output/results_tables/PSSP_cover_change.txt', type = 'latex')
+print(xt1, 'manuscript/ARTR_cover_change.tex', type = 'latex', caption.placement ="top")
+print(xt2, 'manuscript/HECO_cover_change.tex', type = 'latex', caption.placement ="top")
+print(xt3, 'manuscript/POSE_cover_change.tex', type = 'latex', caption.placement ="top")
+print(xt4, 'manuscript/PSSP_cover_change.tex', type = 'latex', caption.placement ="top")
 
 temp$percent_change <- 100*(temp$coverDiff/temp$cover.2011 )
 

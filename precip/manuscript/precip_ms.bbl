@@ -1,5 +1,14 @@
-\begin{thebibliography}{42}
+\begin{thebibliography}{54}
 \providecommand{\natexlab}[1]{#1}
+
+\bibitem[{_st(2015{\natexlab{{\em a\/}}})}]{_stan:_2015}
+ 2015{\natexlab{{\em a\/}}}.
+\newblock Stan: {A} {C}++ {Library} for {Probability} and {Sampling}.
+
+\bibitem[{_st(2015{\natexlab{{\em b\/}}})}]{_stan_2015}
+ 2015{\natexlab{{\em b\/}}}.
+\newblock Stan {Modeling} {Language} {User}'s {Guide} and {Reference} {Manual},
+  {Version} 2.10.0.
 
 \bibitem[{Adler et~al.(2013)Adler, Byrne, and Leiker}]{adler_can_2013}
 Adler, P.~B., K.~M. Byrne, and J.~Leiker. 2013.
@@ -41,6 +50,24 @@ Aubry, L.~M., R.~F. Rockwell, E.~G. Cooch, R.~W. Brook, C.~P.~H. Mulder, and
   gosling body condition and juvenile survival in lesser snow geese.
 \newblock Global Change Biology, {\bf 19}:149--160.
 
+\bibitem[{Bates et~al.(2015)Bates, Mächler, Bolker, and
+  Walker}]{bates_fitting_2015}
+Bates, D., M.~Mächler, B.~Bolker, and S.~Walker. 2015.
+\newblock Fitting {Linear} {Mixed}-{Effects} {Models} {Using} lme4.
+\newblock Journal of Statistical Software, {\bf 67}:1--48.
+
+\bibitem[{Bazzaz(1979)}]{bazzaz_physiological_1979}
+Bazzaz, F.~A. 1979.
+\newblock The {Physiological} {Ecology} of {Plant} {Succession}.
+\newblock Annual Review of Ecology and Systematics, {\bf 10}:351--371.
+
+\bibitem[{Caldwell et~al.(1987)Caldwell, Richards, Manwaring, and
+  Eissenstat}]{caldwell_rapid_1987}
+Caldwell, M.~M., J.~H. Richards, J.~H. Manwaring, and D.~M. Eissenstat. 1987.
+\newblock Rapid shifts in phosphate acquisition show direct competition between
+  neighbouring plants.
+\newblock Nature, {\bf 327}:615--616.
+
 \bibitem[{Chu and Adler(2015)}]{chu_large_2015}
 Chu, C. and P.~B. Adler. 2015.
 \newblock Large niche differences emerge at the recruitment stage to stabilize
@@ -81,12 +108,6 @@ Doak, D.~F. and W.~F. Morris. 2010.
   shifts.
 \newblock Nature, {\bf 467}:959--962.
 
-\bibitem[{Drake(2005)}]{drake_population_2005}
-Drake, J.~M. 2005.
-\newblock Population effects of increased climate variation.
-\newblock Proceedings of the Royal Society of London B: Biological Sciences,
-  {\bf 272}:1823--1827.
-
 \bibitem[{Ehrlén et~al.(2016)Ehrlén, Morris, von Euler, and
   Dahlgren}]{ehrlen_advancing_2016}
 Ehrlén, J., W.~F. Morris, T.~von Euler, and J.~P. Dahlgren. 2016.
@@ -113,6 +134,12 @@ Franklin, R.~S. 2013.
   {California}, {USA}.
 \newblock Quaternary International, {\bf 310}:20--33.
 
+\bibitem[{Franks(2011)}]{franks_plasticity_2011}
+Franks, S.~J. 2011.
+\newblock Plasticity and evolution in drought avoidance and escape in the
+  annual plant {Brassica} rapa.
+\newblock New Phytologist, {\bf 190}:249--257.
+
 \bibitem[{Gelman et~al.(2014)Gelman, Hwang, and
   Vehtari}]{gelman_understanding_2014}
 Gelman, A., J.~Hwang, and A.~Vehtari. 2014.
@@ -127,17 +154,37 @@ Gerber, B.~D., W.~L. Kendall, M.~B. Hooten, J.~A. Dubovsky, and R.~C. Drewien.
   climate-mediated habitat limitations.
 \newblock Journal of Animal Ecology, {\bf 84}:1299--1310.
 
+\bibitem[{Germino and Reinhardt(2014)}]{germino_desert_2014}
+Germino, M.~J. and K.~Reinhardt. 2014.
+\newblock Desert shrub responses to experimental modification of precipitation
+  seasonality and soil depth: relationship to the two-layer hypothesis and
+  ecohydrological niche.
+\newblock Journal of Ecology, {\bf 102}:989--997.
+
 \bibitem[{Gherardi and Sala(2013)}]{gherardi_automated_2013}
 Gherardi, L.~A. and O.~E. Sala. 2013.
 \newblock Automated rainfall manipulation system: a reliable and inexpensive
   tool for ecologists.
 \newblock Ecosphere, {\bf 4}:1--10.
 
+\bibitem[{Gherardi and Sala(2015)}]{gherardi_enhanced_2015}
+Gherardi, L.~A. and O.~E. Sala. 2015.
+\newblock Enhanced precipitation variability decreases grass- and increases
+  shrub-productivity.
+\newblock Proceedings of the National Academy of Sciences, {\bf
+  112}:12735--12740.
+
 \bibitem[{Hilborn(2016)}]{hilborn_correlation_2016}
 Hilborn, R. 2016.
 \newblock Correlation and {Causation} in {Fisheries} and {Watershed}
   {Management}.
 \newblock Fisheries, {\bf 41}:18--25.
+
+\bibitem[{Houlahan et~al.(2016)Houlahan, McKinney, Anderson, and
+  McGill}]{houlahan_priority_2016}
+Houlahan, J.~E., S.~T. McKinney, T.~M. Anderson, and B.~J. McGill. 2016.
+\newblock The priority of prediction in ecological understanding.
+\newblock Oikos, pages n/a--n/a.
 
 \bibitem[{Hsu and Adler(2014)}]{hsu_anticipating_2014}
 Hsu, J.~S. and P.~B. Adler. 2014.
@@ -196,6 +243,12 @@ Lauenroth, W.~K. and P.~B. Adler. 2008.
   and life span.
 \newblock Journal of Ecology, {\bf 96}:1023--1032.
 
+\bibitem[{Levine et~al.(2010)Levine, McEachern, and
+  Cowan}]{levine_competitors_2010}
+Levine, J.~M., A.~K. McEachern, and C.~Cowan. 2010.
+\newblock Do competitors modulate rare plant response to precipitation change?
+\newblock Ecology, {\bf 91}:130--140.
+
 \bibitem[{Lunn et~al.(2016)Lunn, Servanty, Regehr, Converse, Richardson, and
   Stirling}]{lunn_demography_2016}
 Lunn, N.~J., S.~Servanty, E.~V. Regehr, S.~J. Converse, E.~Richardson, and
@@ -209,6 +262,13 @@ Parmesan, C. and G.~Yohe. 2003.
 \newblock A globally coherent fingerprint of climate change impacts across
   natural systems.
 \newblock Nature, {\bf 421}:37--42.
+
+\bibitem[{Perfors et~al.(2003)Perfors, Harte, and
+  Alter}]{perfors_enhanced_2003}
+Perfors, T., J.~Harte, and S.~E. Alter. 2003.
+\newblock Enhanced growth of sagebrush ({Artemisia} tridentata) in response to
+  manipulated ecosystem warming.
+\newblock Global Change Biology, {\bf 9}:736--742.
 
 \bibitem[{Petchey et~al.(2015)Petchey, Pontarp, Massie, Kéfi, Ozgul,
   Weilenmann, Palamara, Altermatt, Matthews, Levine, Childs, McGill, Schaepman,
@@ -232,6 +292,14 @@ Srur, A.~M. and R.~Villalba. 2009.
   {Patagonia}: {Interannual} variations and relationships with climate.
 \newblock Journal of Arid Environments, {\bf 73}:1074--1083.
 
+\bibitem[{Sturges(1989)}]{sturges_response_1989}
+Sturges, D.~L. 1989.
+\newblock Response of {Mountain} {Big} {Sagebrush} to {Induced} {Snow}
+  {Accumulation}.
+\newblock Journal of Applied Ecology, {\bf 26}:1035--1041.
+\newblock ArticleType: research-article / Full publication date: Dec., 1989 /
+  Copyright © 1989 British Ecological Society.
+
 \bibitem[{Teller et~al.(2016)Teller, Adler, Edwards, Hooker, and
   Ellner}]{teller_linking_2016}
 Teller, B.~J., P.~B. Adler, C.~B. Edwards, G.~Hooker, and S.~P. Ellner. 2016.
@@ -243,6 +311,12 @@ Teller, B.~J., P.~B. Adler, C.~B. Edwards, G.~Hooker, and S.~P. Ellner. 2016.
 Tredennick, A.~T., M.~B. Hooten, and P.~B. Adler. 2016.
 \newblock Do we need demographic data to forecast plant population dynamics?
 \newblock Methods in Ecology and Evolution, pages n/a--n/a.
+
+\bibitem[{Tylianakis et~al.(2008)Tylianakis, Didham, Bascompte, and
+  Wardle}]{tylianakis_global_2008}
+Tylianakis, J.~M., R.~K. Didham, J.~Bascompte, and D.~A. Wardle. 2008.
+\newblock Global change and species interactions in terrestrial ecosystems.
+\newblock Ecology Letters, {\bf 11}:1351--1363.
 
 \bibitem[{Venable(2007)}]{venable_bet_2007}
 Venable, D.~L. 2007.

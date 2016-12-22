@@ -21,7 +21,7 @@ overall_score_table <-
 oaxt <- xtable(overall_score_table, caption = 'Comparison of model predictions from climate model and year effects model for each species and vital rate.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the random year effects model are marked with "***" in the last column. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.' , 
 label = 'table:overallPreds')
 
-print(oaxt, 'output/results_tables/overall_prediction_score.text', type = 'latex', include.rownames = F)
+print(oaxt, 'manuscript/overall_prediction_score.tex', type = 'latex', include.rownames = F, caption.placement ="top")
 
 # ---------- predictions by treatment level ------------------------------------------------------- # 
 
@@ -61,8 +61,8 @@ command <- paste0("\\hline\n\\endhead\n",
                   "\\endlastfoot\n")
 add.to.row$command <- command
 
-print(txt, 'output/results_tables/treatment_prediction_score.text', type = 'latex', show.rownames = F, hline.after=c(-1), add.to.row = add.to.row,
-      tabular.environment = "longtable", floating = F) 
+print(txt, 'manuscript/treatment_prediction_score.tex', type = 'latex', show.rownames = F, hline.after=c(-1), add.to.row = add.to.row,
+      tabular.environment = "longtable", floating = F, caption.placement ="top") 
 
 
 species_improvement <- 

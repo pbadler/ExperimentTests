@@ -143,7 +143,7 @@ for(i in 1:nrow(grd)){
   
 }
  
- 
+tail(out)
 
 out <- do.call(rbind, out)
 label_df <- do.call(rbind, labels )
@@ -161,6 +161,7 @@ for( i in 1:length(species_list)) {
     geom_point() +
     geom_smooth(method = 'lm', se = F, alpha = 0.2, linetype = 2, color = 1, size = 1) +
     geom_text( data = subset(label_df, species == spp), aes( x = pos.x, y = pos.y , color = NULL , label = unique(label)), hjust = 1, vjust = -0.5 , show.legend = F) +
+    geom_abline(aes(intercept = 0, slope = 1), color = 'gray') + 
     facet_grid(  Treatment ~ model  )+
     xlab( 'Annual population growth rate predicted') +
     ylab( 'Annual population growth rate observed') +
@@ -189,4 +190,35 @@ fit_table <- fit_table %>% dplyr::select(species, stat, `year effects model` , `
 
 corxt <- xtable(fit_table, caption = 'MSE of predicted log cover changes and correlations between log cover changes predicted and observed. Predictions for the cover changes in the experimental plots were generated either from the year effects or the climate models. Instances where the climate model made better predictions than the year effects model are indicated with the "***". ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.',
        label = 'table:corPGR')
-print(corxt, 'output/results_tables/pgr_predictions.text', type = 'latex')
+
+print(corxt, 'manuscript/pgr_predictions.tex', type = 'latex', caption.placement ="top", table.placement = 'H')
+
+# ----------- all treatments and species ---------------
+out$model <- str_replace(out$model, '_', ' ')
+
+out$model <- factor(out$model, labels = c('climate model', 'no climate model'))
+
+out <- out[complete.cases(out),]
+
+
+levels(out$model)
+
+scores_by_treatment <- 
+  out %>% 
+  group_by( Treatment, species, model)  %>% 
+  summarise( cor = cor( predicted , observed ), MSE = mean((predicted-observed)^2)) %>% 
+  gather( stat, val, cor:MSE) %>% 
+  spread(model, val) %>% 
+  ungroup() %>% 
+  mutate(diff = `climate model` - `no climate model`) %>% 
+  mutate( improved = ifelse( stat == 'cor' & diff > 0 , '***', '')) %>% 
+  mutate( improved = ifelse( stat == 'MSE' & diff < 0 , '***', improved))
+
+fit_table2 <- 
+  scores_by_treatment %>% dplyr::select(species, Treatment, stat, `no climate model` , `climate model` , diff , improved ) %>% arrange( species, Treatment, stat )
+
+corxt2 <- xtable(fit_table2, caption = 'MSE of predicted log cover changes and correlations between log cover changes predicted and observed. Predictions for the cover changes in the experimental plots were generated either from the year effects or the climate models. Instances where the climate model made better predictions than the year effects model are indicated with the "***". ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.',
+                label = 'table:corPGR')
+
+print(corxt2, 'manuscript/pgr_predictions_by_treatment.tex', type = 'latex', caption.placement ="top", table.placement = 'H')
+

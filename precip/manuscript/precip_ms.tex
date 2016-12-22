@@ -94,17 +94,12 @@
 
 \linenumbers
 
-\section*{Summary}
-
+\section*{Abstract}
 
 Climate is an important driver of population ecology however there have been few tests of whether observational data correlating population performance with climate variation can be used to predict how populations respond to climate change experiments. We tested whether longterm observational data relating the effects of climate variation to the survival, growth and recruitment of four common plants in a sagebrush steppe could be produce accurate predictions for how each species would respond to a drought and irrigation experiment. 
 We used rainout shelters and automatic sprinklers to manipulate the soil moisture in sixteen new plots established at the same field site as the longterm observational data. After running the experiment for five years, we analyzed how the growth, survival and recruitment of each species responded to the experimental drought and irrigation treatments. We made predictions using two types of models fit to the observational data collected prior to the experiment: a no climate model that only included the effects of plant size and competition on plant performance in each plot in each year; and a climate model that also included the effects of three seasonal soil moisture variables. We then used these models to predict the performance of each species during the course of the experiment. We also generated one step a head predictions of population size in each experimental plot using an individual based population model. We compared predictions made by the the no climate and climate models to the observed experimental responses. 
 Over the course of the experiment, average cover of the perennial grasses, \textit{Hesperostipa comata} and \textit{Pseudoroegneria spicata} declined significantly in the drought treatment. At the level of individual vital rates, experimental drought reduced the survival of \textit{Hesperostipa comata} and \textit{P. spicata}  and the growth of the grass \textit{Poa secunda}. In contrast, drought increased the growth of the shrub \textit{A. tripartita}. The climate model better predicted the response to the experiment than the no climate model in six out of twelve cases. Across all species and vital rates, there was a strong positive correlation between the observed effects of the experiment and the effects predicted by the climate model fit to the observational data. At the population-level, the climate model made better predictions of the changes in species cover than the no climate model for \textit{P. secunda} and \textit{P. spicata}. 
 Observational climate data held valuable information for predicting species' responses to a climate change experiment in this ecosystem. Treatment responses often matched the direction of predicted responses even when the effects were not significant. We were better able to predict species' responses to the drought treatment than to the control and irrigation treatments. This suggests that soil moisture is an important factor in predicting the population dynamics of these species but only when water is truly limiting.
-  
-
-\end{enumerate}
-
 
 \section*{Introduction}
 
@@ -137,7 +132,7 @@ We extracted data on survival, growth, and recruitment from the mapped quadrats 
 \subsection*{Precipitation experiment}
 In spring 2011, we selected locations for an additional 16 quadrats for the precipitation experiment. We located these in a large exclosure containing six of the historical permanent quadrats.  We avoided plots falling on hill slopes, areas with greater than 20\% bare rock, or with over 10\% cover of the woody shrubs \textit{Purshia tridentata} or \textit{Amelanchier utahensis}. New plots were established in pairs, and one plot per pair was randomly assigned to either the precipitation reduction or the precipitation addition treatment. We mapped the quadrats in June, 2011 and then built the rainfall shelters and set-up the irrigation systems in the fall of 2011. We used a rain-out shelter and automatic irrigation design described in \citep{gherardi_automated_2013}. Each rain-out shelter covered an area of 2.5 by 2 m and consisted of transparent acrylic shingles held up 1.5 to 1 m over the plot to channel 50\% of incoming rainfall off of the plot and into 75 l reservoirs. The collected water was pumped out of reservoirs and sprayed onto paired irrigation treatment plots. Pumping was initiated automatically with float switches that were triggered when water levels in the reservoirs were approximately 20 l, or equivalently irrigation was triggered once for every 6 mm of rainfall collected. We disconnected the irrigation pumps in late fall each year and re-connected them in April.  The drought shelters remained in place throughout the year.  
 
-We monitored soil moisture and air temperature in four of the precipitation experiment plot pairs using Decagon Devices (Pulman Washington) 5TM and EC-5 soil moisture sensors and 5TE temperature sensors.  We installed two soil moisture sensors in each monitored plot at 5 cm and two at 25 cm deep in the soil.  Air temperature was measured underneath the roofing of the shelter at 30 cm above ground. For each pair of manipulated plots, we also installed sensors in a nearby area to measure ambient rainfall and temperature. Data were logged automatically every four hours. We augmented automatic monitoring of the climate in these plots with direct measurements of soil moisture with a handheld EC-5 soil moisture sensor at six points around all 16 plots on 6/6/2012, 4/29/2015, 5/7/2015, 6/9/2015 and 5/10/2016. We analyzed these spot measurements for significant treatment effects on soil moisture using a linear mixed effects model with the \textit{lmer} package in \textit{R} \citep{bates}, with plot, plot group, and date as random effects in the model.    
+We monitored soil moisture and air temperature in four of the precipitation experiment plot pairs using Decagon Devices (Pulman Washington) 5TM and EC-5 soil moisture sensors and 5TE temperature sensors.  We installed two soil moisture sensors in each monitored plot at 5 cm and two at 25 cm deep in the soil.  Air temperature was measured underneath the roofing of the shelter at 30 cm above ground. For each pair of manipulated plots, we also installed sensors in a nearby area to measure ambient rainfall and temperature. Data were logged automatically every four hours. We augmented automatic monitoring of the climate in these plots with direct measurements of soil moisture with a handheld EC-5 soil moisture sensor at six points around all 16 plots on 6/6/2012, 4/29/2015, 5/7/2015, 6/9/2015 and 5/10/2016. We analyzed these spot measurements for significant treatment effects on soil moisture using a linear mixed effects model with the \textit{lmer} package in \textit{R}, with plot, plot group, and date as random effects in the model (\citep{bates_fitting_2015}).    
 
 We conducted a simple statistical to determine the net effect of the experimental treatments on cover in the experiment. First we calculated the log change in cover for each of the four focal species in each quadrat from from the start of the experiment in spring prior to manipulation, to the last year of the experiment. Log change in cover was defined as , $log(Cover_{2016}/Cover_{2011})$ where $Cover_{2016}$ is the cover of each species in 2011 and $Cover_{2015}$ is cover in 2011. We tested for the effect of precipitation treatment on this measure with a linear model in \textit{R}.
 
@@ -225,7 +220,7 @@ In the treatment model for recruitment, a new term is added to the exponential t
 
 Likewise in the climate model this term is replaced by $\boldsymbol{C}\xi_{j}^R$ where the $\boldsymbol{\xi}$ gives a set of coefficients for the year, and treatment specific soil moisture covariates in $\boldsymbol{C}$.
 
-We fit all vital rate models using Hamiltonian-Markov Chain Monte Carlo (HMCMC) simulations in the programs STAN 10.1 and rStan (\citep{stan} and  \citep{rstan}). The priors and model code are described more completely in appendix A. Each model was run for 2,000 iterations and four independent chains with different initial values for parameters. We discarded the initial 1,000 samples. Convergence was observed graphically for all parameters, and confirmed by assessing the split $\widehat{R}$ statistic which at convergence is equal to one \citep{stan_manual}. 
+We fit all vital rate models using Hamiltonian-Markov Chain Monte Carlo (HMCMC) simulations in the programs STAN 10.1 and rStan \citep{}. The priors and model code are described more completely in appendix A. Each model was run for 2,000 iterations and four independent chains with different initial values for parameters. We discarded the initial 1,000 samples. Convergence was observed graphically for all parameters, and confirmed by assessing the split $\widehat{R}$ statistic which at convergence is equal to one \citep{}. 
 
 We fit the treatment models for species survival and growth with and without the size by treatment interactions in the treatment effect term $\chi$. We then judged whether including the interaction terms improved model fit by comparing the Watanabe-Aikake Information Criteria (WAIC) scores of each version of the model and retained the version with the lower WAIC score \citep{vetari_practical_2015}. WAIC are similar to AIC scores and allow for comparison of Bayesian models. Lower WAIC scores indicate a more parsimonious model. When a treatment model for survival or growth of a species included a size by treatment effect in $\chi$, we also included a size by soil moisture effect in the $\xi$ term in the climate model for that species and vital rate. This allowed us to more directly compare the predictions from the climate model to the effects in the treatment model.
 
@@ -321,25 +316,25 @@ Using the vital rate models for each species we generated one step ahead cover p
 
 Our experiment showed that observational data on the response of plant populations to interannual climate variation can indeed help us predict the direction of species responses to experimental climate manipulations (fig \ref{fig:parPredictions}). This was true even though adding climate parameters to the demographic models only improved vital rate predictions for half of the models (fig \ref{table:overallPreds}). This should give us some hope that even when climate effects in demographic models fit to observational data are weak or not significant, they may contain useful qualitative information on the direction of climate effects in the future. 
 
-*Although a number of previous studies of the plants in this system have looked the effects of climate on demography and survival, this is the first study to demonstrate effects of climate experimentally. The significant decline in \textit{H. comata} cover we report in the experiment (fig \ref{fig:coverChange}) is consistent with the population-level sensitivities to precipitation estimated by previous studies (\citep{chu_direct_2016},\citep{dalgleish_climate_2010}, \citep{adler_forecasting_2012}). Each of these studies report \textit{H. comata} having the strongest positive population response to increased precipitation among all the species. The response of this species' vital rates to drought in the experiment also matches this result (fig \ref{fig:growthTreat}, \ref{fig:survivalTreat}). On the other hand if we had only conducted an irrigation experiment our results may not have shown this consistency with previous work as \textit{H. comata} showed no positive response to irrigation. Previous work has also generally reported postive population responses to precipitation for the other grasses, \textit{P. secunda} and \textit{P. spicata} (\citep{adler_forecasting_2012}, \citep{chu_direct_2016}, \citep{dalgleish_climate_2010}). These results are consistent with significant decrease we saw in \textit{P. spicata} cover and survival and \textit{P. secunda} growth and survival in the drought plots in our experiment (figs \ref{fig:coverChange}, \ref{fig:growthTreat}, \ref{fig:survivalTreat}). As for \textit{H. comata} the magnitudes of the negative drought effects were greater than the magnitudes of the positive irrigation effects on these species. 
+Although a number of previous studies of the plants in this system have looked the effects of climate on demography and survival, this is the first study to demonstrate effects of climate experimentally. The significant decline in \textit{H. comata} cover we report in the experiment (fig \ref{fig:coverChange}) is consistent with the population-level sensitivities to precipitation estimated by previous studies (\citep{chu_direct_2016},\citep{dalgleish_climate_2010}, \citep{adler_forecasting_2012}). Each of these studies report \textit{H. comata} having the strongest positive population response to increased precipitation among all the species; this is matched by our finding that this species has the strongest negative response to experimental drought (fig \ref{fig:growthTreat}, \ref{fig:survivalTreat}). On the other hand if we had only conducted an irrigation experiment our results may not have shown this consistency with previous work as \textit{H. comata} showed no positive response to irrigation. Previous work has also generally reported postive population responses to precipitation for the other grasses, \textit{P. secunda} and \textit{P. spicata} (\citep{adler_forecasting_2012}, \citep{chu_direct_2016}, \citep{dalgleish_climate_2010}). These results are consistent with significant decrease we saw in \textit{P. spicata} cover and survival and \textit{P. secunda} growth and survival in the drought plots in our experiment (figs \ref{fig:coverChange}, \ref{fig:growthTreat}, \ref{fig:survivalTreat}). The magnitudes of the negative drought effects were greater than the magnitudes of the positive irrigation effects on these grasses. 
 
-In contrast to the effects on the grasses the effects on \textit{A. tripartita} are more complicated. The effects of drought and irrigation on \textit{A. tripartita} growth were highly dependent on plant size (figs \ref{fig:growthTreat}): drought had a positive effect except possibly for the largest plants (fig \ref{fig:parPredARTRGrowth}). This result matches the negative effects of precipitation on this species estimated by \citep{adler_forecasting_2012} and \citep{chu_direct_2016}. These studies also report relative strong indirect effects of precipitation on \textit{A. tripartita} mediated by its competition with grasses. It is possible that some of the positive effect on \textit{A. tripartita} growth we see in the drought plots is the result of reduced grass competition these plots (fig \ref{fig:coverPred}; \citep{chu_direct_2016}). Our growth model should take into account any changes in grass abundance that could be driving a positive response from \textit{A. tripartita}. So this leaves us with the question of why this species would show a positive direct response to drought? Although there is some evidence that saturated soils can be detrimental to sagebrush growth \citep{} there was no evidence in our data that ambient moisture would have been so wet as to be limiting to sagebrush during this experiment (fig \ref{fig:dailyVWC}). Alternatively our drought treatments could be reducing snow cover in the winter in spring and allowing for earlier growth of sagebrush.  In a high elevation sagebrush meadow earlier snowmelt was correlated with increased sagebrush performance \citep{harte_}. 
+In contrast to the effects on the grasses, the effects on \textit{A. tripartita} are more complicated. The effects of drought and irrigation on \textit{A. tripartita} growth were highly dependent on plant size (figs \ref{fig:growthTreat}): drought had a positive effect except possibly for the largest plants (fig \ref{fig:parPredARTRGrowth}). This result matches the negative effects of precipitation on this species estimated by \citep{adler_forecasting_2012} and \citep{chu_direct_2016}. These studies also report relative strong indirect effects of precipitation on \textit{A. tripartita} mediated by its competition with grasses. It is possible that some of the positive effect on \textit{A. tripartita} growth we see in the drought plots is the result of reduced grass competition these plots (fig \ref{fig:coverPred}; \citep{chu_direct_2016}). However, our growth model includes interspecific crowding and so should take into account any changes in grass abundance that could be driving a positive response from \textit{A. tripartita}. So this leaves us with the question of why this species would show a positive direct response to drought? Although there is some evidence that saturated soils can be detrimental to big sagebrush (\textit{A. tridentata}), a closely related species \citep{sturges_response_1989}, there was no evidence in our data that soils were saturated with moisture in the ambient or irrigation treatments (fig \ref{fig:dailyVWC}). In a similar study to ours, \citep{germino_desert_2014} showed that big sagebrush increased in response to deep soil moisture but actually decreased in response to shallow soil moisture. Perhaps \textit{A. tripartita} responds similarly and benefits directly from the drier soils. Another possible explanation is that our drought treatments reduced snow cover in the winter and early spring, an effect that has been shown to benefit big sagebrush in other ecosystems \citep{perfors_enhanced_2003}. 
 
-One trend that appears to stand out in these results is the relatively asymmetrical effects of drought and irrigation. Although our irrigation plots raised soil moisture, we saw little positive effect of added moisture on the same species that were reduced by drought (figs \ref{fig:growthTreat}, \ref{fig:survivalTreat}). We expected that in this water limited system, increasing soil moisture would lead to a stronger increase in plant performance. But perhaps we should not have been surprised by this result. It is possible that adding water to this system does little to increase grass growth and survival for a number of reasons.  First, these species are presumably able to escape drought, by growing early in the year, or avoid drought stress through high water use efficiency \citep{bazzaz, franks}. Indeed our soil moisture data generally show a pulse of soil moisture in the spring when many grasses are actively growing (fig \ref{fig:dailyVWC}). During this window of active growth soil moisture in sagebrush steppe may be quite high and perhaps other resources become limiting \citep{caldwell} \citep{ino}. Moreover, our treatments had relatively smaller effects on soil moisture during this period \ref{table:soil_moisture_model}. If the species in our system are well adapted to the ambient water limitation, it makes some sense that they would show relatively small responses to increased moisture. 
+One trend that appears to stand out in these results is the relatively asymmetrical effects of drought and irrigation. Although our irrigation plots raised soil moisture, we saw little positive effect of added moisture on the same species that were reduced by drought (figs \ref{fig:growthTreat}, \ref{fig:survivalTreat}). We expected that in this water limited system, increasing soil moisture would lead to a stronger increase in plant performance. But perhaps we should not have been surprised by this result. It is possible that adding water to this system does little to increase grass growth and survival for a number of reasons.  First, these species are presumably able to escape drought, by growing early in the year, or avoid drought stress later in the year through high water use efficiency \citep{bazzaz_physiological_1979,franks_plasticity_2011}. If the species in our system are well adapted to the ambient water limitation, it makes some sense that they would show relatively small responses to increased moisture. Indeed our soil moisture data generally show a pulse of soil moisture in the spring when many grasses are actively growing (fig \ref{fig:dailyVWC}). During this window of active growth soil moisture in sagebrush steppe may be quite high and perhaps other resources become limiting \citep{caldwell_rapid_1987}. Moreover, our treatments had relatively smaller effects on soil moisture during the spring (table ). 
 
-A possibly related result was recently observed by \citep{gherardi_} in a warm desert grassland: the effect of increased soil moisture on grass productivity in that system showed a concave down pattern of response to increased soil moisture.  Increasing soil moisture had weaker effects on grass productivity than decreasing soil moisture in equal proportion. This pattern could explain why we repeatedly saw large decreases in either the cover or performance of the three grasses in drought plots but did not see any statistically significant increase in performance in the irrigated plots.  
+A similar result was recently reported from another precipitation experiment in a warm desert grassland: the effect of increased soil moisture on grass productivity in that system showed a concave down pattern of response to increased soil moisture \citep{gherardi_enhanced_2015}.  Increasing precipitation had a weaker effect on annual grass productivity than decreasing precipitation by an equal amount. A pattern like this is qualitatively similar to our finding significant decreases in either the cover or performance of the three grasses in drought plots, but not seeing any statistically significant increase in performance in the irrigated plots.  
 
-Reflecting on the possible mechanisms by which soil moisture could have affected these species sheds some light on our sucesses and failures of prediction.  The drought effects we observed on the three grasses were often stronger than the effects we predicted, while the irrigation responses observed were often weaker than predicted (figs \ref{fig:parPredHECOGrowth}, \ref{fig:parPredHECOSurvival}, \ref{fig:parPredPOSEGrowth}, \ref{fig:parPredPOSESurvival}, \ref{fig:parPredPSSPGrowth}, \ref{fig:parPredPSSPSurvival}). If we had fit our growth and survival models with a non-linear function for soil moisture, perhaps informed by more mechanistic understanding of water limitation in this system, they may have made more accurate predictions of the drought and irrigation effects \citep{ehrlen_advancing_2016}.
+Reflecting on the possible mechanisms by which soil moisture could have affected these species may also shed some light on our sucesses and failures at prediction. The drought effects we observed on the three grasses were often stronger than the effects we predicted, while the irrigation responses observed were often weaker than predicted (figs \ref{fig:parPredHECOGrowth}, \ref{fig:parPredHECOSurvival}, \ref{fig:parPredPOSEGrowth}, \ref{fig:parPredPOSESurvival}, \ref{fig:parPredPSSPGrowth}, \ref{fig:parPredPSSPSurvival}). If we had fit our growth and survival models with a non-linear function for soil moisture, perhaps informed by more mechanistic understanding of water limitation in this system, we may have made more accurate predictions of the drought and irrigation effects \citep{ehrlen_advancing_2016}.
 
-Out of all the climate effects we predicted and observed, we only observed four cases where vital rate predictions and observations were both significantly different from zero (fig  \ref{fig:parPredictions}). In three of these cases, we successfully predicted the direction of the treatment effect. However, in one cases we predicted a treatment effect that was significantly  
+Out of all the climate effects we predicted and observed, we only observed four cases where vital rate predictions and observations were both significantly different from zero (fig  \ref{fig:parPredictions}). In three of these cases, we successfully predicted the direction of the treatment effects. However, for \textit{P. secunda} recruitment we predicted a response to irrigation that was significantly positive and yet observed a significantly negative response (figs \ref{fig:parPredictions}). This is arguably our greatest error in prediction. But there may be some mitigating factors that can excuse our error. First we note that we observed decreases in recruitment in both the drought and irrigation plots for \textit{P. secunda} and also for \textit{P. spicata} (fig \ref{fig:recruitmentTreat}). So while we observed a significant decrease in \textit{P. secunda} recruitment in the irrigated plots this may have been due to underlying differences in the experimental plots from the historical control plots. Because recruitment is modeled at the quadrat level we also had fewer observations and predictions to work with for these recruitment models than we had for the other vital rates.    
 
-Using the IBM, we also demonstrated that the climate model predictions of the vital rates could be used to generate population-level predictions that were also better than the no climate models in some cases: the climate model improved one step ahead predictions of cover changes of \textit{P. spicata} and \textit{P. secunda} (table \ref{table:corPGR}). In the drought treatment our one step ahead cover predictions for \textit{H. comata} and \textit{P. secunda} were also better than the no climate model. In this analysis, we either used the climate model, or the no climate model to generate predictions for the IBM. In theory we could have refined our predictions by  climate model to predict all three vital rates in the IBM. Improvements of our cover predictions may have been possible if we only included climate models in the IBM when those models improved vital rate predictions--for instance, the \textit{A tripartita} IBM would only include the climate model for growth but not for survival and recruitment.   
+Using the IBM, we demonstrated that the climate model predictions of the vital rates could be used to generate population-level predictions that were also better than the no climate models in some cases: the climate model improved one step ahead predictions of cover changes of \textit{P. spicata} and \textit{P. secunda} (table \ref{table:corPGR}). In the drought treatment our one step ahead cover predictions for \textit{H. comata} and \textit{P. secunda} were also better than the no climate model. In this analysis, we either used the climate model, or the no climate model to generate predictions for the IBM. In theory we could have refined our predictions by  climate model to predict all three vital rates in the IBM. Improvements of our cover predictions may have been possible if we only included climate models in the IBM when those models improved vital rate predictions--for instance, the \textit{A tripartita} IBM would only include the climate model for growth but not for survival and recruitment.   
 
-*Mixed success at predicting species responses to high and low moisture availability has interesting implications.  On the one hand it is re-assuring that observational data is sometimes useful. On the other hand, for predictions to be truly useful we would also like more information to help us sort out why our predictions for some species were good and for others no better than a no climate model.  In other words, we have little ability to predict when our predictions are likely to be accurate.  Among plants detailed physiological ecology may give us a guide to which factors and climate conditions are likely to affect which species.  In our system, for instance, it may make sense that the grasses showed a stronger response to the drought treatment than the a woody shrub.  Although these grasses are adapted to the arid conditions that characterize the sagebrush steppe, they thrive during the brief window in spring and early summer when the soil moisture and temperatures are warmer.  \textit{A. tripartita} on the other hand grows throughout the summer and generally has deeper roots than the grasses. These traits may help it tolerate the water stress induced by drought. 
+Mixed success at predicting species responses to high and low moisture availability has interesting implications.  On the one hand it is reassuring that observational data captures important climate effects. On the other hand, will knowing that some species' responses are unpredictable, but not knowing which ones, discourage ecologists from making any predictions at all? Among plants, perhaps improved ecophysiological models or trait data can be used as a screen to generate hypothesis about which species are more likely to be affected by climate and in which ways. In our system, for instance, it may make sense that the grasses showed a stronger response to the drought treatment than the a woody shrub. Although these grasses are adapted to the arid conditions that characterize the sagebrush steppe, they thrive during the brief window in spring and early summer when the soil moisture and temperatures are warmer.  \textit{A. tripartita} on the other hand grows throughout the summer and has deeper roots than the grasses, these traits may buffer it from some of the annual variability in soil moisture experienced by the grasses. 
 
-*Will our predictions be useful for the predicting the effects of climate change in the future? Because these species compete, one could argue that our predictions for any one species in this community will only be as good as the predictions we make for their competitors \citep{tylianakis}. For instance, while we observed weak treatment effects on \textit{A. tripartita} in our experiment (fig \ref{fig:coverChange}) could drought ultimately lead to a decline in the cover of its competitors which will then allow it to increase in abundance in the future?  While this is possible for some species, research at our site and several other grasslands suggest that species are more limited by intra-specific competition than inter-specific competition \cite{chu_direct_2016,adler_weak_2016}. In theory this fact should mean that direct effects rather than indirect effects dominate species responses to climate change (\citep{levine_competitors_2010,kleinhesselink_indirect_2015,adler_forecasting_2012}).  
+Will our predictions be useful for the predicting the effects of climate change in the future? Because these species compete, one could argue that our predictions for any one species in this community will only be as good as the predictions we make for their competitors, pathogens and predators \citep{tylianakis_global_2008}. For instance, while we observed weak treatment effects on \textit{A. tripartita} in our experiment (fig \ref{fig:coverChange}) could drought ultimately lead to a decline in the cover of its competitors which will cause it to increase in abundance in the future?  While this is possible for some species, research at our site and several other grasslands suggest that species are more limited by intra-specific competition than inter-specific competition \cite{chu_direct_2016,adler_weak_2016}. In theory, this should mean that we can predict species short term responses to climate change with single species models (\citep{levine_competitors_2010,kleinhesselink_indirect_2015,adler_forecasting_2012}).  
 
-*Our results give us more confidence that historical observational data can be used to detect and predict the demographic effects of climate change. This should encourage more researchers to try and use observational data to predict the future in both experimental and natural settings \citep{houlahan_priority_2016}. Making quantitative predictions, however humble they are, and testing them is arguably a key to scientific progress in all fields.  Nevertheless, our success at predicting the short-term response of two species to a small-scale climate manipulation is not likely to be very reassuring to applied ecologists and resource managers wishing to make accurate predictions about the effects of climate change in large complex systems.  Clearly more work is needed to distinguish which predictions are worth having confidence in and which predictions we should have less confidence in. Towards that goal, perhaps the best way forward is to conduct more tests like this one.   
+Our results give us more confidence that historical observational data can be used to detect and predict the demographic effects of climate change among sagebrush steppe plants. This should encourage more researchers to try and use observational data to predict the future in both experimental and natural settings \citep{houlahan_priority_2016}. Nevertheless, our success at predicting the short-term response of two species to a small-scale climate manipulation is not likely to be very reassuring to applied ecologists and resource managers wishing to make accurate predictions about the effects of climate change in large complex systems. Clearly more work is needed to learn how best to meet the challenge of prediction in ecological systems. Towards that goal, perhaps the best way forward is to conduct more tests like this one.   
   
 \section*{Acknowledgements}
 
@@ -357,255 +352,16 @@ Funding was provided by NSF grants DEB-1353078, and DEB-1054040 to PBA, an NSF G
 
 \section*{Tables}
 
-\begin{table}[h]
-	\caption{Treatment effects on spring soil moisture}
-	\centering
-	%\begin{center}
-	\begin{tabular}{l c c }
-		\hline
-		& Model 1 \\
-		\hline
-		(Intercept)                  & $8.81^{*}$    	& $[5.78;\ 11.83]$  \\
-		TreatmentDrought             & $-3.97^{*}$      & $[-4.84;\ -3.09]$ \\
-		TreatmentIrrigation          & $3.26^{*}$       & $[2.39;\ 4.14]$   \\
-		\hline
-		AIC                          & 3191.87           \\
-		BIC                          & 3222.92           \\
-		Log Likelihood               & -1588.93          \\
-		Num. obs.                    & 624               \\
-		Num. groups: plot            & 24                \\
-		Num. groups: PrecipGroup     & 8                 \\
-		Num. groups: date            & 5                 \\
-		Var: plot (Intercept)        & 0.45              \\
-		Var: PrecipGroup (Intercept) & 0.23              \\
-		Var: date (Intercept)        & 11.24             \\
-		Var: Residual                & 8.90              \\
-		\hline
-		\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-	\end{tabular}
-	\label{table:spotVWC}
-	%\end{center}
-\end{table}
 
-\begin{table}
-	\caption{Model of treatment effects on soil moisture}
-	\begin{center}
-		\begin{tabular}{l c c }
-			\hline
-			& Model 1 \\
-			\hline
-			(Intercept)                       & $-0.57^{*}$       & $[-0.89;\ -0.26]$ \\
-			TreatmentIrrigation               & $1.23^{*}$        & $[1.18;\ 1.29]$   \\
-			rainfallrainy                     & $-0.05$           & $[-0.12;\ 0.01]$  \\
-			seasonspring                      & $0.27^{*}$        & $[0.23;\ 0.32]$   \\
-			seasonsummer                      & $0.15^{*}$        & $[0.10;\ 0.19]$   \\
-			seasonwinter                      & $0.25^{*}$        & $[0.21;\ 0.29]$   \\
-			TreatmentIrrigation:rainfallrainy & $0.18^{*}$        & $[0.13;\ 0.24]$   \\
-			TreatmentIrrigation:seasonspring  & $-0.23^{*}$       & $[-0.29;\ -0.16]$ \\
-			TreatmentIrrigation:seasonsummer  & $-0.26^{*}$       & $[-0.33;\ -0.20]$ \\
-			TreatmentIrrigation:seasonwinter  & $-0.33^{*}$       & $[-0.40;\ -0.27]$ \\
-			rainfallrainy:seasonspring        & $-0.23^{*}$       & $[-0.31;\ -0.16]$ \\
-			rainfallrainy:seasonsummer        & $-0.07$           & $[-0.14;\ 0.01]$  \\
-			rainfallrainy:seasonwinter        & $-0.07$           & $[-0.20;\ 0.07]$  \\
-			\hline
-			AIC                               & 14581.58          \\
-			BIC                               & 14695.49          \\
-			Log Likelihood                    & -7274.79          \\
-			Num. obs.                         & 9133              \\
-			Num. groups: date                 & 1596              \\
-			Num. groups: PrecipGroup          & 8                 \\
-			Var: date (Intercept)      		  & 0.00              \\
-			Var: PrecipGroup (Intercept)      & 0.19              \\
-			Var: Residual                     & 2.50              \\
-			\hline
-			\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-		\end{tabular}
-		\label{table:soil_moisture_model}
-	\end{center}
-\end{table}
-
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Mon Dec 19 18:10:15 2016
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{rrrrr}
-		\hline
-		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
-		\hline
-		(Intercept) & -0.2835 & 0.4627 & -0.61 & 0.5487 \\ 
-		TreatmentDrought & 0.9378 & 0.7743 & 1.21 & 0.2434 \\ 
-		TreatmentIrrigation & 0.8882 & 0.7743 & 1.15 & 0.2682 \\ 
-		\hline
-	\end{tabular}
-	\caption{Treatment effects on log cover change for \textit{A. tripartita} from 2011 to 2016. Intercept gives control effects.} 
-	\label{table:changeARTR}
-\end{table}
-
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Mon Dec 19 18:10:16 2016
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{rrrrr}
-		\hline
-		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
-		\hline
-		(Intercept) & 0.3982 & 0.2587 & 1.54 & 0.1548 \\ 
-		TreatmentDrought & -2.9951 & 0.5784 & -5.18 & 0.0004 \\ 
-		TreatmentIrrigation & -0.1219 & 0.4953 & -0.25 & 0.8105 \\ 
-		\hline
-	\end{tabular}
-	\caption{Treatment effects on log cover change for \textit{H. comata} from 2011 to 2016. Intercept gives control effects.} 
-	\label{table:changeHECO}
-\end{table}
-
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Mon Dec 19 18:10:16 2016
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{rrrrr}
-		\hline
-		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
-		\hline
-		(Intercept) & -0.7247 & 0.4613 & -1.57 & 0.1298 \\ 
-		TreatmentDrought & 0.0273 & 0.8208 & 0.03 & 0.9737 \\ 
-		TreatmentIrrigation & 1.1459 & 0.7797 & 1.47 & 0.1552 \\ 
-		\hline
-	\end{tabular}
-	\caption{Treatment effects on log cover change for \textit{P. secunda} from 2011 to 2016. Intercept gives control effects.} 
-	\label{table:changePOSE}
-\end{table}
-
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Mon Dec 19 18:10:16 2016
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{rrrrr}
-		\hline
-		& Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
-		\hline
-		(Intercept) & 0.0188 & 0.2124 & 0.09 & 0.9303 \\ 
-		TreatmentDrought & -0.8851 & 0.3780 & -2.34 & 0.0287 \\ 
-		TreatmentIrrigation & 0.1453 & 0.3780 & 0.38 & 0.7044 \\ 
-		\hline
-	\end{tabular}
-	\caption{Treatment effects on log cover change for \textit{P. spicata} from 2011 to 2016. Intercept gives control effects.} 
-	\label{table:changePSSP}
-\end{table}
-
-
-
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Tue Dec 20 12:39:32 2016
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{lllrrrr}
-		\hline
-		vital\_rate & species & climate variable & Int. cor. & p val. & Size cor. & Size p. val. \\ 
-		\hline
-		growth & ARTR & su.0 & -0.49 & 0.02 & 0.26 & 0.26 \\ 
-		growth & ARTR & f.0 & -0.28 & 0.23 & 0.40 & 0.08 \\ 
-		growth & ARTR & sp.1 & 0.17 & 0.45 & -0.33 & 0.14 \\ 
-		growth & HECO & su.1 & 0.69 & 0.00 &  &  \\ 
-		growth & HECO & su.0 & 0.50 & 0.02 &  &  \\ 
-		growth & HECO & f.lag & 0.37 & 0.10 &  &  \\ 
-		growth & POSE & f.lag & 0.31 & 0.17 & -0.11 & 0.64 \\ 
-		growth & POSE & su.lag & 0.29 & 0.20 & -0.20 & 0.38 \\ 
-		growth & POSE & sp.1 & 0.26 & 0.25 & -0.20 & 0.38 \\ 
-		growth & PSSP & f.lag & 0.34 & 0.13 &  &  \\ 
-		growth & PSSP & su.lag & 0.25 & 0.27 &  &  \\ 
-		growth & PSSP & f.0 & -0.22 & 0.34 &  &  \\ 
-		recruitment & ARTR & su.lag & -0.32 & 0.16 &  &  \\ 
-		recruitment & ARTR & su.0 & -0.26 & 0.25 &  &  \\ 
-		recruitment & ARTR & sp.1 & 0.22 & 0.34 &  &  \\ 
-		recruitment & HECO & su.lag & -0.31 & 0.18 &  &  \\ 
-		recruitment & HECO & su.0 & -0.30 & 0.18 &  &  \\ 
-		recruitment & HECO & f.lag & 0.19 & 0.40 &  &  \\ 
-		recruitment & POSE & sp.1 & 0.49 & 0.02 &  &  \\ 
-		recruitment & POSE & f.lag & 0.34 & 0.13 &  &  \\ 
-		recruitment & POSE & f.1 & 0.32 & 0.16 &  &  \\ 
-		recruitment & PSSP & su.lag & -0.52 & 0.02 &  &  \\ 
-		recruitment & PSSP & su.0 & -0.48 & 0.03 &  &  \\ 
-		recruitment & PSSP & sp.0 & 0.30 & 0.19 &  &  \\ 
-		survival & ARTR & su.0 & -0.60 & 0.00 &  &  \\ 
-		survival & ARTR & sp.0 & -0.41 & 0.06 &  &  \\ 
-		survival & ARTR & su.1 & -0.40 & 0.07 &  &  \\ 
-		survival & HECO & sp.0 & 0.44 & 0.04 &  &  \\ 
-		survival & HECO & sp.lag & 0.43 & 0.05 &  &  \\ 
-		survival & HECO & f.1 & 0.33 & 0.14 &  &  \\ 
-		survival & POSE & sp.0 & 0.44 & 0.04 & 0.22 & 0.34 \\ 
-		survival & POSE & sp.1 & 0.27 & 0.23 & -0.46 & 0.04 \\ 
-		survival & POSE & f.lag & -0.00 & 0.99 & 0.30 & 0.19 \\ 
-		survival & PSSP & sp.0 & 0.36 & 0.11 &  &  \\ 
-		survival & PSSP & sp.lag & 0.34 & 0.13 &  &  \\ 
-		survival & PSSP & su.1 & 0.26 & 0.26 &  &  \\ 
-		\hline
-	\end{tabular}
-	\caption{Selected climate variables for each vital rate model for each species. Correlations and p-values between the choosen variables and the intercept of the no climate model are shown. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given. "f" = fall, "su" = summer, "sp" = spring. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
-	\label{table:strongCor}
-\end{table}
-
-
-
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Tue Dec 20 12:38:30 2016
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{lllrrrl}
-		\hline
-		species & vital\_rate & score & climate model & no climate model & diff & improved \\ 
-		\hline
-		ARTR & growth & lppd & -186.08 & -189.17 & 3.09 & *** \\ 
-		ARTR & growth & MSE & 0.55 & 0.55 & -0.00 & *** \\ 
-		ARTR & recruitment & lppd & -79.05 & -77.81 & -1.24 &  \\ 
-		ARTR & recruitment & MSE & 169.86 & 9.47 & 160.39 &  \\ 
-		ARTR & survival & lppd & -37.55 & -36.42 & -1.13 &  \\ 
-		ARTR & survival & MSE & 0.06 & 0.06 & 0.00 &  \\ 
-		HECO & growth & lppd & -475.54 & -454.36 & -21.18 &  \\ 
-		HECO & growth & MSE & 1.26 & 1.18 & 0.09 &  \\ 
-		HECO & recruitment & lppd & -149.43 & -151.60 & 2.17 & *** \\ 
-		HECO & recruitment & MSE & 288.16 & 235.57 & 52.59 &  \\ 
-		HECO & survival & lppd & -158.99 & -147.06 & -11.93 &  \\ 
-		HECO & survival & MSE & 0.12 & 0.11 & 0.01 &  \\ 
-		POSE & growth & lppd & -1823.71 & -1831.56 & 7.85 & *** \\ 
-		POSE & growth & MSE & 1.72 & 1.73 & -0.01 & *** \\ 
-		POSE & recruitment & lppd & -260.05 & -257.46 & -2.59 &  \\ 
-		POSE & recruitment & MSE & 45.40 & 37.32 & 8.08 &  \\ 
-		POSE & survival & lppd & -698.06 & -718.60 & 20.54 & *** \\ 
-		POSE & survival & MSE & 0.14 & 0.14 & -0.00 & *** \\ 
-		PSSP & growth & lppd & -1232.93 & -1237.92 & 4.99 & *** \\ 
-		PSSP & growth & MSE & 1.51 & 1.51 & 0.00 &  \\ 
-		PSSP & recruitment & lppd & -271.34 & -273.94 & 2.60 & *** \\ 
-		PSSP & recruitment & MSE & 79.09 & 42.68 & 36.41 &  \\ 
-		PSSP & survival & lppd & -332.47 & -307.26 & -25.21 &  \\ 
-		PSSP & survival & MSE & 0.11 & 0.10 & 0.01 &  \\ 
-		\hline
-	\end{tabular}
-	\caption{Comparison of model predictions from climate model and no climate model for each species and vital rate.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the random no climate model are marked with "***" in the last column. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
-	\label{table:overallPreds}
-\end{table}
-
-
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Tue Dec 20 19:24:15 2016
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{rllrrrl}
-		\hline
-		& species & stat & no climate model & climate model & diff & improved \\ 
-		\hline
-		1 & ARTR & cor & 0.48 & 0.19 & -0.29 &  \\ 
-		2 & ARTR & MSE & 0.30 & 0.30 & 0.00 &  \\ 
-		3 & HECO & cor & 0.29 & 0.22 & -0.07 &  \\ 
-		4 & HECO & MSE & 0.49 & 0.57 & 0.07 &  \\ 
-		5 & POSE & cor & 0.45 & 0.53 & 0.07 & *** \\ 
-		6 & POSE & MSE & 0.42 & 0.41 & -0.01 & *** \\ 
-		7 & PSSP & cor & 0.36 & 0.38 & 0.03 & *** \\ 
-		8 & PSSP & MSE & 0.39 & 0.39 & -0.01 & *** \\ 
-		\hline
-	\end{tabular}
-	\caption{MSE of predicted log cover changes and correlations between log cover changes predicted and observed. Predictions for the cover changes in the experimental plots were generated either from the no climate or the climate models. Instances where the climate model made better predictions than the no climate model are indicated with the "***". ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
-	\label{table:corPGR}
-\end{table}
+\input{spot_measurements}
+\input{soil_moisture_model}
+\input{ARTR_cover_change}
+\input{HECO_cover_change}
+\input{POSE_cover_change}
+\input{PSSP_cover_change}
+\input{strong_correlations}
+\input{overall_prediction_score}
+\input{pgr_predictions}
 
 
 \clearpage
@@ -707,28 +463,28 @@ Funding was provided by NSF grants DEB-1353078, and DEB-1054040 to PBA, an NSF G
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{ARTR_predicted_pgr_comparison}
-	\caption{Observed and predicted one step ahead log change in \textit{A. tripartita} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.}
+	\caption{Observed and predicted one step ahead log change in \textit{A. tripartita} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model. Gray line shows 1:1 line.}
 	\label{fig:pgrART}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{HECO_predicted_pgr_comparison}
-	\caption{Observed and predicted one step ahead log change in \textit{H. comata} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model. }
+	\caption{Observed and predicted one step ahead log change in \textit{H. comata} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model. Gray line shows 1:1 line.}
 	\label{fig:pgrHECO}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{POSE_predicted_pgr_comparison}
-	\caption{Observed and predicted one step ahead log change in \textit{P. secunda} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.}
+	\caption{Observed and predicted one step ahead log change in \textit{P. secunda} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.Gray line shows 1:1 line.}
 	\label{fig:pgrPOSE}
 \end{figure}
 
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1\textwidth]{PSSP_predicted_pgr_comparison}
-	\caption{Observed and predicted one step ahead log change in \textit{P. spicata} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.}
+	\caption{Observed and predicted one step ahead log change in \textit{P. spicata} cover in the experiment. Changes in cover predicted by the climate model are shown on the left and those predicted by the no climate model are shown on the right. Correlations coefficients between predictions and observations and MSE are shown for each treatment and model.Gray line shows 1:1 line.}
 	\label{fig:pgrPSSP}
 \end{figure}
 
@@ -828,95 +584,8 @@ This integral is again finite and computable because the kernels $F$ fall to 0 a
 
 \clearpage 
 \newpage  
-\section{Additional Tables} 
-% latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Tue Dec 20 13:32:53 2016
-\begin{longtable}{rllllrrrl}
-	\hline
-	& species & vital\_rate & Treatment & score & climate model & no climate model & diff & improved \\ 
-	\hline
-	\endhead
-	\hline
-	\multicolumn{9}{l}{\footnotesize Continued on next page}
-	\endfoot
-	\endlastfoot
-	1 & ARTR & growth & Control & lppd & -107.53 & -108.40 & 0.87 & *** \\ 
-	2 & ARTR & growth & Control & MSE & 0.57 & 0.56 & 0.01 &  \\ 
-	3 & ARTR & growth & Drought & lppd & -39.71 & -40.01 & 0.30 & *** \\ 
-	4 & ARTR & growth & Drought & MSE & 0.53 & 0.49 & 0.03 &  \\ 
-	5 & ARTR & growth & Irrigation & lppd & -38.85 & -40.75 & 1.91 & *** \\ 
-	6 & ARTR & growth & Irrigation & MSE & 0.50 & 0.57 & -0.07 & *** \\ 
-	7 & ARTR & recruitment & Control & lppd & -32.61 & -31.05 & -1.56 &  \\ 
-	8 & ARTR & recruitment & Control & MSE & 61.88 & 10.59 & 51.29 &  \\ 
-	9 & ARTR & recruitment & Drought & lppd & -28.93 & -26.52 & -2.41 &  \\ 
-	10 & ARTR & recruitment & Drought & MSE & 523.95 & 11.62 & 512.33 &  \\ 
-	11 & ARTR & recruitment & Irrigation & lppd & -17.51 & -20.24 & 2.73 & *** \\ 
-	12 & ARTR & recruitment & Irrigation & MSE & 4.72 & 5.34 & -0.62 & *** \\ 
-	13 & ARTR & survival & Control & lppd & -24.19 & -23.06 & -1.13 &  \\ 
-	14 & ARTR & survival & Control & MSE & 0.07 & 0.07 & 0.00 &  \\ 
-	15 & ARTR & survival & Drought & lppd & -5.48 & -5.34 & -0.13 &  \\ 
-	16 & ARTR & survival & Drought & MSE & 0.04 & 0.04 & -0.00 & *** \\ 
-	17 & ARTR & survival & Irrigation & lppd & -7.88 & -8.01 & 0.13 & *** \\ 
-	18 & ARTR & survival & Irrigation & MSE & 0.06 & 0.06 & -0.00 & *** \\ 
-	19 & HECO & growth & Control & lppd & -377.77 & -369.46 & -8.31 &  \\ 
-	20 & HECO & growth & Control & MSE & 1.11 & 1.09 & 0.02 &  \\ 
-	21 & HECO & growth & Drought & lppd & -8.74 & -10.97 & 2.23 & *** \\ 
-	22 & HECO & growth & Drought & MSE & 3.12 & 4.35 & -1.23 & *** \\ 
-	23 & HECO & growth & Irrigation & lppd & -89.03 & -73.93 & -15.10 &  \\ 
-	24 & HECO & growth & Irrigation & MSE & 2.02 & 1.47 & 0.55 &  \\ 
-	25 & HECO & recruitment & Control & lppd & -93.35 & -93.47 & 0.12 & *** \\ 
-	26 & HECO & recruitment & Control & MSE & 613.41 & 499.11 & 114.29 &  \\ 
-	27 & HECO & recruitment & Drought & lppd & -25.39 & -27.56 & 2.17 & *** \\ 
-	28 & HECO & recruitment & Drought & MSE & 1.94 & 2.33 & -0.38 & *** \\ 
-	29 & HECO & recruitment & Irrigation & lppd & -30.69 & -30.56 & -0.12 &  \\ 
-	30 & HECO & recruitment & Irrigation & MSE & 5.21 & 7.62 & -2.41 & *** \\ 
-	31 & HECO & survival & Control & lppd & -124.59 & -112.70 & -11.90 &  \\ 
-	32 & HECO & survival & Control & MSE & 0.12 & 0.11 & 0.01 &  \\ 
-	33 & HECO & survival & Drought & lppd & -17.89 & -20.82 & 2.93 & *** \\ 
-	34 & HECO & survival & Drought & MSE & 0.22 & 0.26 & -0.05 & *** \\ 
-	35 & HECO & survival & Irrigation & lppd & -16.51 & -13.54 & -2.97 &  \\ 
-	36 & HECO & survival & Irrigation & MSE & 0.09 & 0.07 & 0.02 &  \\ 
-	37 & POSE & growth & Control & lppd & -1117.20 & -1117.29 & 0.08 & *** \\ 
-	38 & POSE & growth & Control & MSE & 1.50 & 1.51 & -0.00 & *** \\ 
-	39 & POSE & growth & Drought & lppd & -254.17 & -257.32 & 3.16 & *** \\ 
-	40 & POSE & growth & Drought & MSE & 2.66 & 2.69 & -0.03 & *** \\ 
-	41 & POSE & growth & Irrigation & lppd & -452.34 & -456.95 & 4.61 & *** \\ 
-	42 & POSE & growth & Irrigation & MSE & 1.87 & 1.90 & -0.03 & *** \\ 
-	43 & POSE & recruitment & Control & lppd & -127.64 & -128.73 & 1.09 & *** \\ 
-	44 & POSE & recruitment & Control & MSE & 35.20 & 44.82 & -9.61 & *** \\ 
-	45 & POSE & recruitment & Drought & lppd & -60.34 & -63.15 & 2.80 & *** \\ 
-	46 & POSE & recruitment & Drought & MSE & 23.60 & 33.88 & -10.28 & *** \\ 
-	47 & POSE & recruitment & Irrigation & lppd & -72.06 & -65.58 & -6.48 &  \\ 
-	48 & POSE & recruitment & Irrigation & MSE & 85.04 & 27.63 & 57.41 &  \\ 
-	49 & POSE & survival & Control & lppd & -366.49 & -380.49 & 14.00 & *** \\ 
-	50 & POSE & survival & Control & MSE & 0.12 & 0.12 & -0.00 & *** \\ 
-	51 & POSE & survival & Drought & lppd & -175.29 & -187.88 & 12.59 & *** \\ 
-	52 & POSE & survival & Drought & MSE & 0.21 & 0.22 & -0.01 & *** \\ 
-	53 & POSE & survival & Irrigation & lppd & -156.28 & -150.23 & -6.05 &  \\ 
-	54 & POSE & survival & Irrigation & MSE & 0.13 & 0.13 & 0.00 &  \\ 
-	55 & PSSP & growth & Control & lppd & -627.07 & -625.63 & -1.44 &  \\ 
-	56 & PSSP & growth & Control & MSE & 1.38 & 1.36 & 0.02 &  \\ 
-	57 & PSSP & growth & Drought & lppd & -292.90 & -297.61 & 4.71 & *** \\ 
-	58 & PSSP & growth & Drought & MSE & 1.82 & 1.85 & -0.03 & *** \\ 
-	59 & PSSP & growth & Irrigation & lppd & -312.96 & -314.67 & 1.71 & *** \\ 
-	60 & PSSP & growth & Irrigation & MSE & 1.51 & 1.51 & -0.00 & *** \\ 
-	61 & PSSP & recruitment & Control & lppd & -123.81 & -125.23 & 1.42 & *** \\ 
-	62 & PSSP & recruitment & Control & MSE & 30.59 & 34.79 & -4.20 & *** \\ 
-	63 & PSSP & recruitment & Drought & lppd & -87.34 & -86.58 & -0.77 &  \\ 
-	64 & PSSP & recruitment & Drought & MSE & 222.16 & 54.58 & 167.58 &  \\ 
-	65 & PSSP & recruitment & Irrigation & lppd & -60.18 & -62.12 & 1.94 & *** \\ 
-	66 & PSSP & recruitment & Irrigation & MSE & 20.90 & 44.57 & -23.67 & *** \\ 
-	67 & PSSP & survival & Control & lppd & -148.69 & -140.15 & -8.54 &  \\ 
-	68 & PSSP & survival & Control & MSE & 0.10 & 0.09 & 0.01 &  \\ 
-	69 & PSSP & survival & Drought & lppd & -83.26 & -78.09 & -5.17 &  \\ 
-	70 & PSSP & survival & Drought & MSE & 0.11 & 0.11 & 0.01 &  \\ 
-	71 & PSSP & survival & Irrigation & lppd & -100.52 & -89.02 & -11.50 &  \\ 
-	72 & PSSP & survival & Irrigation & MSE & 0.13 & 0.11 & 0.01 &  \\ 
-	\hline
-	\caption{Comparison of model predictions from climate model and no climate model for each species and vital rate and treatment.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the no climate model are marked with "***" in the last column. ARTR = \textit{A. tripartita}, HECO = \textit{H. comata}, POSE = \textit{P. secunda}, PSSP = \textit{P. spicata}.} 
-	\label{table:treatmentPreds}
-\end{longtable}
 
+\input{treatment_prediction_score}
 
 \clearpage
 \newpage
