@@ -273,8 +273,6 @@ print(xt2, 'output/results_tables/HECO_cover_change.txt', type = 'latex')
 print(xt3, 'output/results_tables/POSE_cover_change.txt', type = 'latex')
 print(xt4, 'output/results_tables/PSSP_cover_change.txt', type = 'latex')
 
-
-
 temp$percent_change <- 100*(temp$coverDiff/temp$cover.2011 )
 
 aggregate(data = temp, percent_change ~ Treatment + species, 'mean')
@@ -300,10 +298,6 @@ ggplot ( temp, aes( x  = Treatment, y = lc, color = Treatment )) +
 )
 dev.off()
 
-summary(m2[[1]])
-summary(m2[[2]])
-summary(m2[[3]])
-summary(m2[[4]])
 
 # #3. log change
 # # hard wire ylims
