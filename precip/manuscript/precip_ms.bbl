@@ -1,14 +1,5 @@
-\begin{thebibliography}{54}
+\begin{thebibliography}{56}
 \providecommand{\natexlab}[1]{#1}
-
-\bibitem[{_st(2015{\natexlab{{\em a\/}}})}]{_stan:_2015}
- 2015{\natexlab{{\em a\/}}}.
-\newblock Stan: {A} {C}++ {Library} for {Probability} and {Sampling}.
-
-\bibitem[{_st(2015{\natexlab{{\em b\/}}})}]{_stan_2015}
- 2015{\natexlab{{\em b\/}}}.
-\newblock Stan {Modeling} {Language} {User}'s {Guide} and {Reference} {Manual},
-  {Version} 2.10.0.
 
 \bibitem[{Adler et~al.(2013)Adler, Byrne, and Leiker}]{adler_can_2013}
 Adler, P.~B., K.~M. Byrne, and J.~Leiker. 2013.
@@ -60,6 +51,19 @@ Bates, D., M.~Mächler, B.~Bolker, and S.~Walker. 2015.
 Bazzaz, F.~A. 1979.
 \newblock The {Physiological} {Ecology} of {Plant} {Succession}.
 \newblock Annual Review of Ecology and Systematics, {\bf 10}:351--371.
+
+\bibitem[{Blaisdell(1958)}]{blaisdell_seasonal_1958}
+Blaisdell, J.~P. 1958.
+\newblock Seasonal development and yield of native plants on the upper {Snake}
+  {River} {Plains} and their relation to certain climatic factors.
+\newblock U.S. Dept. of Agriculture.
+
+\bibitem[{Bradford et~al.(2014)Bradford, Schlaepfer, and
+  Lauenroth}]{bradford_ecohydrology_2014}
+Bradford, J.~B., D.~R. Schlaepfer, and W.~K. Lauenroth. 2014.
+\newblock Ecohydrology of {Adjacent} {Sagebrush} and {Lodgepole} {Pine}
+  {Ecosystems}: {The} {Consequences} of {Climate} {Change} and {Disturbance}.
+\newblock Ecosystems, {\bf 17}:590--605.
 
 \bibitem[{Caldwell et~al.(1987)Caldwell, Richards, Manwaring, and
   Eissenstat}]{caldwell_rapid_1987}
@@ -286,6 +290,11 @@ Post, E. and M.~C. Forchhammer. 2002.
 \newblock Synchronization of animal population dynamics by large-scale climate.
 \newblock Nature, {\bf 420}:168--171.
 
+\bibitem[{Sala et~al.(1992)Sala, Lauenroth, and Parton}]{sala_long-term_1992}
+Sala, O.~E., W.~K. Lauenroth, and W.~J. Parton. 1992.
+\newblock Long-{Term} {Soil} {Water} {Dynamics} in the {Shortgrass} {Steppe}.
+\newblock Ecology, {\bf 73}:1175--1181.
+
 \bibitem[{Srur and Villalba(2009)}]{srur_annual_2009}
 Srur, A.~M. and R.~Villalba. 2009.
 \newblock Annual growth rings of the shrub {Anarthrophyllum} rigidum across
@@ -365,5 +374,12 @@ Yang, B., C.~Qin, J.~Wang, M.~He, T.~M. Melvin, T.~J. Osborn, and K.~R. Briffa.
   northeastern {Tibetan} {Plateau}.
 \newblock Proceedings of the National Academy of Sciences, {\bf
   111}:2903--2908.
+
+\bibitem[{Zachmann et~al.(2010)Zachmann, Moffet, and
+  Adler}]{zachmann_mapped_2010}
+Zachmann, L., C.~Moffet, and P.~Adler. 2010.
+\newblock Mapped quadrats in sagebrush steppe: long-term data for analyzing
+  demographic rates and plant–plant interactions.
+\newblock Ecology, {\bf 91}:3427.
 
 \end{thebibliography}
