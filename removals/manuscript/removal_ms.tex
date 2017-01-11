@@ -282,7 +282,7 @@ adequately predicted by models fit to observational data on non-removal plots.
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=1\textwidth]{treatment_trends_cover}
-\caption{Cover trends by treatment for the four dominant species.  Note the difference in y-axis scale between the canopy cover of \textit{A. tripartita} and the basal cover of the dominant grasses. ``Shrub removal'' refers to removal of \textit{A. tripartita}, and ``Grass removal'' refers to removal of all perennial grasses. The cover of species in treatments from which they are removed (e.g. \textit{A. tripartita} cover in shrub removal plots) is included to show values at the start of the experiment in 2011 and the efficacy of the removal treatments. Source file: \texttt{treatment\_trends\_removals.r}.}
+\caption{Cover trends by treatment for the four dominant species.  Note the difference in y-axis scale between the canopy cover of \textit{A. tripartita} and the basal cover of the dominant grasses. ``Shrub removal'' refers to removal of \textit{A. tripartita}, and ``Grass removal'' refers to removal of all perennial grasses. The cover of species in treatments from which they are removed (e.g. \textit{A. tripartita} cover in shrub removal plots) is included to show values at the start of the experiment in 2011 and the efficacy of the removal treatments. Source file: \texttt{treatment\textunderscore trends\textunderscore removals.r}.}
 \label{fig:CoverTrends}
 \end{figure}
 
@@ -290,7 +290,7 @@ adequately predicted by models fit to observational data on non-removal plots.
 \begin{figure}[tbp]
 \centering
 \includegraphics[width=1\textwidth]{cover_change_chrono}
-\caption{Observed and predicted year-to-year changes in cover for the four dominant species. Mean observed changes (averaged across quadrats) are shown in solid symbols, mean predicted changes are shown in open symbols. Values for control and removal plots are blue and red, respectively. Predictions from the ``Baseline'' model do account for effects of local species composition on vital rates, but do not include additional effects of removals. Predictions from the ``Removal'' model include additional treatment effects on vital rates. Source file: \texttt{ibm\\summarize\_sims1step.r}. }
+\caption{Observed and predicted year-to-year changes in cover for the four dominant species. Mean observed changes (averaged across quadrats) are shown in black for control (solid symbols) and removal (open symbols) treatment. Predictions from the ``Baseline'' model (blue) account for effects of local species composition on vital rates, but do not include additional effects of removals. Predictions from the ``Removal'' model (red) include additional treatment effects on vital rates. Source file: \texttt{ibm\textbackslash summarize\textunderscore sims1step.r}. }
 \label{fig:CoverChange}
 \end{figure}
 
@@ -301,13 +301,14 @@ Our vital rate models take into account the effects of local species composition
  \begin{figure}[tbp]
  \centering
  \includegraphics[width=1\textwidth]{treatment_tests}
- \caption{Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% confidence intervals. The removal effect shows response of \textit{A. tripartita} ("ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. }
+ \caption{Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% confidence intervals. The removal effect shows response of \textit{A. tripartita} (``ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. 
+ Source file: \texttt{treatment\textunderscore test\textunderscore figure.r}.}
  \label{fig:VitalRateTest}
  \end{figure}
 
 The positive removal effects on \textit{Poa secunda}  and \textit{P. spicata} growth are particularly interesting, because they suggest that models based on observational data may underestimate competitive release. We conducted additional analyses to further explore removal effects on the growth of these two species. First, we classified all individuals of these species as located either inside or outside the limits of \textit{A. tripartita} canopies present in 2011 (before removal). If removal is releasing grasses from \textit{A. tripartita} competition, we would expect individuals located under the shrub canopies to experience a greater effect of removal. However, the location of individuals with respect to \textit{A. tripartita} canopies had no effect on growth of either species (Tables \ref{table:POSEgrowth-inARTR} and \ref{table:PSSPgrowth-inARTR}), meaning that individuals located outside \textit{A. tripartita} canopies responded to removals as much as individuals underneath (removed) canopies. 
 
-Second, we evaluated the possibility that removal effects might be transient. We removed aboveground plant material, but roots of the removed plants remain in the ground and decompose, potentially creating a flush of mineral nutrients. We tested for a transient removal effect by adding a year-by-treatment interaction. For both  \textit{Poa secunda}  and \textit{P. spicata} , we found no sign of a decrease in the removal effect over time (Tables \ref{table:POSEgrowth-byYr} and \ref{table:PSSPgrowth-byYr}).
+Second, we evaluated the possibility that removal effects might be transient. We removed aboveground plant material, but roots of the removed plants remain in the ground and decompose, potentially creating a flush of mineral nutrients. We tested for a transient removal effect by adding a year-by-treatment interaction. For both  \textit{Poa secunda}  and \textit{P. spicata}, we found no sign of a decrease in the removal effect over time (Tables \ref{table:POSEgrowth-trtYears} and \ref{table:PSSPgrowth-trtYears}).
 
 Third, responses to removals might be poorly predicted by models based on observational data if the removals create local crowding outside the range of historical variation or if the removals break covariances in crowding among species. However, the distribution of crowding observed within control plots easily spans the crowding values observed in removal plots (Fig. \ref{fig:Wscatters}), and we failed to find evidence for strong interspecific covariances in crowding (\ref{suppMethods}).
 
@@ -320,7 +321,7 @@ To quantify the short-term population-level consequences of removals, we used an
  \begin{figure}[tbp]
  \centering
  \includegraphics[width=1\textwidth]{cover_projections_1step}
- \caption{Observed and predicted cover for each of the four modeled species. Solid lines show mean observed cover averaged across control (blue) and removal treatment (red) quadrats. Dashed lines show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Dotted lines show one-step-ahead predictions from an IBM that includes removal treatment coefficients. Source file: \texttt{ibm\\summarize\_sims1step.r} }
+ \caption{Observed and predicted cover for each of the four modeled species. Solid black lines show mean observed cover averaged across control (closed symbols) and removal treatment (open symbols) quadrats. Blue lines and symbols show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Red lines and symbols show one-step-ahead predictions from an IBM that includes removal treatment coefficients. Source file: \texttt{ibm\textbackslash summarize\textunderscore sims1step.r} }
  \label{fig:IBM1step}
  \end{figure}
 
@@ -329,7 +330,7 @@ To quantify the long-term population-level consequences of removals, we used an 
  \begin{figure}[tbp]
  \centering
  \includegraphics[width=1\textwidth]{boxplots}
- \caption{Equilibrium cover of the four dominant species simulated by the IPM. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), and green boxes show results from a model with  \textit{A. tripartita} set to zero and removal treatment coefficients included.  }
+ \caption{Equilibrium cover of the four dominant species simulated by the IPM. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), and green boxes show results from a model with  \textit{A. tripartita} set to zero and removal treatment coefficients included. Source file: \texttt{ipm\textbackslash IPM-figures.r}}
  \label{fig:IPMresults}
  \end{figure}
  
@@ -669,193 +670,101 @@ Var: Residual         & 0.41             & 0.32             & 0.48             &
 \end{table}
 
 \begin{table}
-\caption{\textit{Poa secunda} growth with \textit{Artemisia} canopy effect}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.49^{*}$        \\
-                                 & $[0.36;\ 0.62]$   \\
-logarea.t0                       & $0.68^{*}$        \\
-                                 & $[0.63;\ 0.72]$   \\
-TreatmentNo\_shrub               & $0.24^{*}$        \\
-                                 & $[0.09;\ 0.38]$   \\
-W.ARTR                           & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.HECO                           & $0.00$            \\
-                                 & $[-0.01;\ 0.02]$  \\
-W.POSE                           & $-0.26^{*}$       \\
-                                 & $[-0.34;\ -0.19]$ \\
-W.PSSP                           & $-0.01$           \\
-                                 & $[-0.02;\ 0.00]$  \\
-W.allcov                         & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.allpts                         & $-0.02$           \\
-                                 & $[-0.07;\ 0.02]$  \\
-inARTR                           & $-0.06$           \\
-                                 & $[-0.28;\ 0.16]$  \\
-\hline
-AIC                              & 15641.80          \\
-BIC                              & 15734.29          \\
-Log Likelihood                   & -7806.90          \\
-Num. obs.                        & 5469              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.11              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.02             \\
-Var: Residual                    & 0.98              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
+\centering
+\caption{Summary of fixed effects for the \textit{Po. secunda} growth model with individual-level \textit{A. tripartita removal} data} 
 \label{table:POSEgrowth-inARTR}
-\end{center}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.4932 & 0.0622 & 0.3700 & 0.4934 & 0.6154 & 0.4937 & 0.0000 \\ 
+  logarea.t0 & 0.6746 & 0.0220 & 0.6306 & 0.6747 & 0.7177 & 0.6750 & 0.0000 \\ 
+  TreatmentNo\_shrub & 0.2370 & 0.0739 & 0.0919 & 0.2370 & 0.3820 & 0.2370 & 0.0000 \\ 
+  W.ARTR & -0.0002 & 0.0008 & -0.0018 & -0.0002 & 0.0014 & -0.0002 & 0.0000 \\ 
+  W.HECO & 0.0038 & 0.0062 & -0.0083 & 0.0038 & 0.0160 & 0.0038 & 0.0000 \\ 
+  W.POSE & -0.2644 & 0.0383 & -0.3395 & -0.2644 & -0.1893 & -0.2644 & 0.0000 \\ 
+  W.PSSP & -0.0075 & 0.0056 & -0.0184 & -0.0075 & 0.0034 & -0.0075 & 0.0000 \\ 
+  W.allcov & -0.0003 & 0.0012 & -0.0026 & -0.0003 & 0.0020 & -0.0003 & 0.0000 \\ 
+  W.allpts & -0.0258 & 0.0229 & -0.0707 & -0.0258 & 0.0191 & -0.0258 & 0.0000 \\ 
+  inARTR & -0.0592 & 0.1133 & -0.2817 & -0.0592 & 0.1632 & -0.0592 & 0.0000 \\ 
+   \hline
+\end{tabular}
 \end{table}
 
-
 \begin{table}
-\caption{\textit{P. spicata} growth with \textit{Artemisia} canopy effect}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.42^{*}$        \\
-                                 & $[0.29;\ 0.56]$   \\
-logarea.t0                       & $0.82^{*}$        \\
-                                 & $[0.79;\ 0.86]$   \\
-TreatmentNo\_shrub               & $0.24^{*}$        \\
-                                 & $[0.09;\ 0.40]$   \\
-W.ARTR                           & $-0.00^{*}$       \\
-                                 & $[-0.00;\ -0.00]$ \\
-W.HECO                           & $-0.01^{*}$       \\
-                                 & $[-0.03;\ -0.00]$ \\
-W.POSE                           & $-0.01$           \\
-                                 & $[-0.03;\ 0.02]$  \\
-W.PSSP                           & $-0.14^{*}$       \\
-                                 & $[-0.16;\ -0.11]$ \\
-W.allcov                         & $-0.00^{*}$       \\
-                                 & $[-0.01;\ -0.00]$ \\
-W.allpts                         & $-0.06^{*}$       \\
-                                 & $[-0.10;\ -0.01]$ \\
-inARTR                           & $-0.14$           \\
-                                 & $[-0.35;\ 0.08]$  \\
-\hline
-AIC                              & 15282.37          \\
-BIC                              & 15376.25          \\
-Log Likelihood                   & -7627.18          \\
-Num. obs.                        & 6039              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.12              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.03             \\
-Var: Residual                    & 0.71              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
-\end{tabular}
+\centering
+\caption{Summary of fixed effects for the \textit{Ps. spicata} growth model with individual-level \textit{A. tripartita} removal data} 
 \label{table:PSSPgrowth-inARTR}
-\end{center}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.4129 & 0.0633 & 0.2885 & 0.4128 & 0.5381 & 0.4124 & 0.0000 \\ 
+  logarea.t0 & 0.8261 & 0.0173 & 0.7919 & 0.8262 & 0.8602 & 0.8262 & 0.0000 \\ 
+  TreatmentNo\_shrub & 0.2444 & 0.0798 & 0.0878 & 0.2444 & 0.4009 & 0.2444 & 0.0000 \\ 
+  W.ARTR & -0.0029 & 0.0008 & -0.0044 & -0.0029 & -0.0015 & -0.0029 & 0.0000 \\ 
+  W.HECO & -0.0138 & 0.0068 & -0.0272 & -0.0138 & -0.0005 & -0.0138 & 0.0000 \\ 
+  W.POSE & -0.0071 & 0.0127 & -0.0319 & -0.0071 & 0.0178 & -0.0071 & 0.0000 \\ 
+  W.PSSP & -0.1372 & 0.0126 & -0.1619 & -0.1372 & -0.1125 & -0.1372 & 0.0000 \\ 
+  W.allcov & -0.0039 & 0.0010 & -0.0059 & -0.0039 & -0.0018 & -0.0039 & 0.0000 \\ 
+  W.allpts & -0.0576 & 0.0224 & -0.1017 & -0.0576 & -0.0136 & -0.0576 & 0.0000 \\ 
+  inARTR & -0.1301 & 0.1102 & -0.3465 & -0.1301 & 0.0862 & -0.1301 & 0.0000 \\ 
+   \hline
+\end{tabular}
 \end{table}
 
 
 \begin{table}
-\caption{\textit{Poa secunda} growth with year-by-treatment interaction}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.49^{*}$        \\
-                                 & $[0.37;\ 0.62]$   \\
-trtYears1                        & $0.06$            \\
-                                 & $[-0.17;\ 0.29]$  \\
-trtYears2                        & $0.24$            \\
-                                 & $[-0.01;\ 0.49]$  \\
-trtYears3                        & $0.23$            \\
-                                 & $[-0.05;\ 0.51]$  \\
-trtYears4                        & $0.25$            \\
-                                 & $[-0.07;\ 0.56]$  \\
-trtYears5                        & $0.45^{*}$        \\
-                                 & $[0.11;\ 0.79]$   \\
-logarea.t0                       & $0.68^{*}$        \\
-                                 & $[0.63;\ 0.72]$   \\
-W.ARTR                           & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.HECO                           & $0.00$            \\
-                                 & $[-0.01;\ 0.02]$  \\
-W.POSE                           & $-0.26^{*}$       \\
-                                 & $[-0.34;\ -0.19]$ \\
-W.PSSP                           & $-0.01$           \\
-                                 & $[-0.02;\ 0.00]$  \\
-W.allcov                         & $-0.00$           \\
-                                 & $[-0.00;\ 0.00]$  \\
-W.allpts                         & $-0.03$           \\
-                                 & $[-0.07;\ 0.02]$  \\
-\hline
-AIC                              & 15648.62          \\
-BIC                              & 15760.94          \\
-Log Likelihood                   & -7807.31          \\
-Num. obs.                        & 5469              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.11              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.02             \\
-Var: Residual                    & 0.98              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\centering
+\caption{Summary of fixed effects for the \textit{Po. secunda} model with treatment*year effects} 
+\label{table:POSEgrowth-trtYears}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.4963 & 0.0616 & 0.3752 & 0.4963 & 0.6172 & 0.4964 & 0.0000 \\ 
+  trtYears1 & 0.0798 & 0.1272 & -0.1699 & 0.0798 & 0.3293 & 0.0798 & 0.0000 \\ 
+  trtYears2 & 0.2425 & 0.1350 & -0.0225 & 0.2425 & 0.5073 & 0.2425 & 0.0000 \\ 
+  trtYears3 & 0.2512 & 0.1554 & -0.0539 & 0.2512 & 0.5561 & 0.2512 & 0.0000 \\ 
+  trtYears4 & 0.2988 & 0.1693 & -0.0337 & 0.2988 & 0.6310 & 0.2988 & 0.0000 \\ 
+  trtYears5 & 0.4787 & 0.1845 & 0.1164 & 0.4787 & 0.8407 & 0.4787 & 0.0000 \\ 
+  logarea.t0 & 0.6731 & 0.0234 & 0.6270 & 0.6732 & 0.7191 & 0.6732 & 0.0000 \\ 
+  W.ARTR & -0.0003 & 0.0009 & -0.0019 & -0.0003 & 0.0014 & -0.0003 & 0.0000 \\ 
+  W.HECO & 0.0035 & 0.0064 & -0.0090 & 0.0035 & 0.0160 & 0.0035 & 0.0000 \\ 
+  W.POSE & -0.2624 & 0.0394 & -0.3398 & -0.2624 & -0.1851 & -0.2624 & 0.0000 \\ 
+  W.PSSP & -0.0080 & 0.0057 & -0.0192 & -0.0080 & 0.0032 & -0.0080 & 0.0000 \\ 
+  W.allcov & -0.0004 & 0.0012 & -0.0027 & -0.0004 & 0.0020 & -0.0004 & 0.0000 \\ 
+  W.allpts & -0.0267 & 0.0236 & -0.0730 & -0.0267 & 0.0196 & -0.0267 & 0.0000 \\ 
+  inARTR & -0.0563 & 0.1169 & -0.2859 & -0.0563 & 0.1730 & -0.0563 & 0.0000 \\ 
+   \hline
 \end{tabular}
-\label{table:POSEgrowth-byYr}
-\end{center}
 \end{table}
 
+
 \begin{table}
-\caption{\textit{P. spicata} growth with year-by-treatment interaction}
-\begin{center}
-\begin{tabular}{l c }
-\hline
- & Model 1 \\
-\hline
-(Intercept)                      & $0.42^{*}$        \\
-                                 & $[0.28;\ 0.55]$   \\
-trtYears1                        & $0.26$            \\
-                                 & $[-0.01;\ 0.54]$  \\
-trtYears2                        & $-0.05$           \\
-                                 & $[-0.32;\ 0.22]$  \\
-trtYears3                        & $0.44^{*}$        \\
-                                 & $[0.14;\ 0.73]$   \\
-trtYears4                        & $0.42^{*}$        \\
-                                 & $[0.12;\ 0.72]$   \\
-trtYears5                        & $-0.11$           \\
-                                 & $[-0.42;\ 0.20]$  \\
-logarea.t0                       & $0.82^{*}$        \\
-                                 & $[0.79;\ 0.86]$   \\
-W.ARTR                           & $-0.00^{*}$       \\
-                                 & $[-0.00;\ -0.00]$ \\
-W.HECO                           & $-0.01^{*}$       \\
-                                 & $[-0.03;\ -0.00]$ \\
-W.POSE                           & $-0.01$           \\
-                                 & $[-0.03;\ 0.02]$  \\
-W.PSSP                           & $-0.14^{*}$       \\
-                                 & $[-0.16;\ -0.11]$ \\
-W.allcov                         & $-0.00^{*}$       \\
-                                 & $[-0.01;\ -0.00]$ \\
-W.allpts                         & $-0.06^{*}$       \\
-                                 & $[-0.10;\ -0.01]$ \\
-\hline
-AIC                              & 15281.67          \\
-BIC                              & 15395.67          \\
-Log Likelihood                   & -7623.83          \\
-Num. obs.                        & 6039              \\
-Num. groups: year                & 31                \\
-Var: year (Intercept)            & 0.12              \\
-Var: year logarea.t0             & 0.01              \\
-Cov: year (Intercept) logarea.t0 & -0.03             \\
-Var: Residual                    & 0.71              \\
-\hline
-\multicolumn{2}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\centering
+\caption{Summary of fixed effects for the \textit{Ps. spicata} model with treatment*year effects} 
+\label{table:PSSPgrowth-trtYears}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+  \hline
+(Intercept) & 0.4122 & 0.0626 & 0.2892 & 0.4120 & 0.5364 & 0.4115 & 0.0000 \\ 
+  trtYears1 & 0.3256 & 0.1440 & 0.0428 & 0.3256 & 0.6081 & 0.3257 & 0.0000 \\ 
+  trtYears2 & -0.0353 & 0.1467 & -0.3235 & -0.0353 & 0.2525 & -0.0353 & 0.0000 \\ 
+  trtYears3 & 0.4829 & 0.1586 & 0.1714 & 0.4829 & 0.7940 & 0.4829 & 0.0000 \\ 
+  trtYears4 & 0.5059 & 0.1602 & 0.1915 & 0.5059 & 0.8202 & 0.5059 & 0.0000 \\ 
+  trtYears5 & -0.0588 & 0.1682 & -0.3890 & -0.0588 & 0.2712 & -0.0588 & 0.0000 \\ 
+  logarea.t0 & 0.8266 & 0.0173 & 0.7922 & 0.8267 & 0.8607 & 0.8268 & 0.0000 \\ 
+  W.ARTR & -0.0030 & 0.0008 & -0.0044 & -0.0030 & -0.0015 & -0.0030 & 0.0000 \\ 
+  W.HECO & -0.0139 & 0.0068 & -0.0272 & -0.0139 & -0.0005 & -0.0139 & 0.0000 \\ 
+  W.POSE & -0.0064 & 0.0127 & -0.0313 & -0.0064 & 0.0185 & -0.0064 & 0.0000 \\ 
+  W.PSSP & -0.1362 & 0.0126 & -0.1609 & -0.1362 & -0.1115 & -0.1362 & 0.0000 \\ 
+  W.allcov & -0.0040 & 0.0010 & -0.0061 & -0.0040 & -0.0020 & -0.0040 & 0.0000 \\ 
+  W.allpts & -0.0579 & 0.0224 & -0.1020 & -0.0579 & -0.0139 & -0.0579 & 0.0000 \\ 
+  inARTR & -0.1235 & 0.1104 & -0.3403 & -0.1235 & 0.0931 & -0.1235 & 0.0000 \\ 
+   \hline
 \end{tabular}
-\label{table:PSSPgrowth-byYr}
-\end{center}
 \end{table}
 
 
@@ -910,45 +819,47 @@ Var: Residual                    & 0.71              \\
 
 \section{Additional Figures} 
 
+
  \begin{figure}[h]
  \centering
  \includegraphics[width=0.7\textwidth]{CompKernels}
- \caption{Competition kernels for the four dominant species.  }
+ \caption{Competition kernels for the four dominant species. Source file: \texttt{Wdistrib\textbackslash exploreSurvivalWs.r} }
  \label{fig:CompKernels}
  \end{figure}
  
   \begin{figure}[h]
   \centering
   \includegraphics[width=1\textwidth]{climate}
-  \caption{Annual precipitation (a) and mean temperature (b) during the period of the experiment, shown against the long-term (1927-2016) means (solid blue and red lines) and 5\% and 95\% quantiles (dashed lines).  }
+  \caption{Annual precipitation (a) and mean temperature (b) during the period of the experiment, shown against the long-term (1927-2016) means (solid blue and red lines) and 5\% and 95\% quantiles (dashed lines). Source file:  \texttt{climate\textunderscore fig.r}}
   \label{fig:climate}
   \end{figure}
  
   \begin{figure}[tbp]
   \centering
   \includegraphics[width=1\textwidth]{PSSP_W_scatters}
-  \caption{Bivariate scatter plots comparing crowding exerted by each neighbor species on \textit{P. spicata}. Blue symbols show values from controls plots, red symbols show values from \textit{Artemisia} removal plots.``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  }
+  \caption{Bivariate scatter plots comparing crowding exerted by each neighbor species on \textit{P. spicata}. Blue symbols show values from controls plots, red symbols show values from \textit{Artemisia} removal plots.``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  \texttt{Wdistrib\textbackslash exploreSurvivalWs.r} }
   \label{fig:Wscatters}
   \end{figure}
   
   \begin{figure}[tbp]
  \centering
  \includegraphics[width=1\textwidth]{PSSP_W_byTrt}
- \caption{Distribution of crowding exerted by each neighbor species on \textit{P. spicata} individuals in controls plots (blue) and removal quadrats (red) in 2011, before \textit{Artemisia}  removals were conducted. Inset bar graphs show the probability that a particular neighbor species was present ($W>0$) in a focal plant's local neighborhood in control (blue) and removal (red) quadrats. ``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  }
+ \caption{Distribution of crowding exerted by each neighbor species on \textit{P. spicata} individuals in controls plots (blue) and removal quadrats (red) in 2011, before \textit{Artemisia}  removals were conducted. Inset bar graphs show the probability that a particular neighbor species was present ($W>0$) in a focal plant's local neighborhood in control (blue) and removal (red) quadrats. ``W.allcov'' refers to the aggregated crowding by all shrubs and perennial grasses beyond the focal dominant species, and ``W.allpts'' refers to the aggregated crowding by forb species.  \texttt{Wdistrib\textbackslash exploreSurvivalWs.r} }
  \label{fig:W-by-treatment}
  \end{figure}
 
  \begin{figure}[tbp]
  \centering
  \includegraphics[width=1\textwidth]{cover_projections_1step_maxCI}
- \caption{Observed and predicted cover for each of the four modeled species assuming maximum effects of removal. Solid lines show mean observed cover averaged across control (blue) and removal treatment (red) quadrats. Dashed lines show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Dotted lines show one-step-ahead predictions from an IBM that includes removal treatment coefficients representing the outermost values of the 95\% confidence intervals. Source file: \texttt{ibm\\summarize\_sims1step.r} }
+ \caption{Observed and predicted cover for each of the four modeled species assuming maximum effects of removal. 
+  Solid black lines show mean observed cover averaged across control (closed symbols) and removal treatment (open symbols) quadrats. Blue lines and symbols show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Red lines and symbols show one-step-ahead predictions from an IBM that includes removal treatment coefficients. Source file: \texttt{ibm\textbackslash summarize\textunderscore sims1step.r} }
  \label{fig:IBM1step-maxCI}
  \end{figure}
  
   \begin{figure}[tbp]
   \centering
   \includegraphics[width=1\textwidth]{boxplots-maxCI}
-  \caption{Equilibrium cover of the four dominant species simulated by the IPM with maximum removal treatment effects. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), green boxes show results from a model with  \textit{A. tripartita} set to zero and (mean) removal treatment coefficients included, and blue boxes show results with removal treatments coefficients assigned the outermost value of the 95\% confidence intervals.  }
+  \caption{Equilibrium cover of the four dominant species simulated by the IPM with maximum removal treatment effects. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), green boxes show results from a model with  \textit{A. tripartita} set to zero and (mean) removal treatment coefficients included, and blue boxes show results with removal treatments coefficients assigned the outermost value of the 95\% confidence intervals.  Source file: \texttt{ipm\textbackslash IPM-figures.r}}
   \label{fig:IPMresults-maxCI}
   \end{figure}
 
