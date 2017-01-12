@@ -1,4 +1,4 @@
-\begin{thebibliography}{40}
+\begin{thebibliography}{41}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Aarssen and Epp(1990)}]{aarssen_neighbour_1990}
@@ -90,6 +90,24 @@ Ellner, S.~P., D.~Z. Childs, and M.~Rees. 2016.
 \newblock Data-driven {Modelling} of {Structured} {Populations}.
 \newblock Lecture {Notes} on {Mathematical} {Modelling} in the {Life}
   {Sciences}, Springer International Publishing, Cham.
+
+\bibitem[{Firn et~al.(2011)Firn, Moore, MacDougall, Borer, Seabloom,
+  HilleRisLambers, Harpole, Cleland, Brown, Knops, Prober, Pyke, Farrell,
+  Bakker, Oâ€™Halloran, Adler, Collins, Dâ€™Antonio, Crawley,
+  Wolkovich, La~Pierre, Melbourne, Hautier, Morgan, Leakey, Kay, McCulley,
+  Davies, Stevens, Chu, Holl, Klein, Fay, Hagenah, Kirkman, and
+  Buckley}]{firn_abundance_2011}
+Firn, J., J.~L. Moore, A.~S. MacDougall, E.~T. Borer, E.~W. Seabloom,
+  J.~HilleRisLambers, W.~S. Harpole, E.~E. Cleland, C.~S. Brown, J.~M.~H.
+  Knops, S.~M. Prober, D.~A. Pyke, K.~A. Farrell, J.~D. Bakker, L.~R.
+  Oâ€™Halloran, P.~B. Adler, S.~L. Collins, C.~M. Dâ€™Antonio, M.~J.
+  Crawley, E.~M. Wolkovich, K.~J. La~Pierre, B.~A. Melbourne, Y.~Hautier, J.~W.
+  Morgan, A.~D.~B. Leakey, A.~Kay, R.~McCulley, K.~F. Davies, C.~J. Stevens,
+  C.-J. Chu, K.~D. Holl, J.~A. Klein, P.~A. Fay, N.~Hagenah, K.~P. Kirkman, and
+  Y.~M. Buckley. 2011.
+\newblock Abundance of introduced species at home predicts abundance away in
+  herbaceous communities.
+\newblock Ecology Letters, {\bf 14}:274--281.
 
 \bibitem[{Gilbert et~al.(2009)Gilbert, Turkington, Srivastava, Schmitz, and
   DeAngelis}]{gilbert_dominant_2009}
