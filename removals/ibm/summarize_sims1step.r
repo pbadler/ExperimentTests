@@ -4,7 +4,7 @@ setwd("ibm/")
 
 sppList=c("ARTR","HECO","POSE","PSSP")
 Nspp=length(sppList)
-sppNames=c("A. tripartita","H. comata","Poa secunda","P. spicata")
+sppNames=c("A. tripartita","H. comata","P. secunda","P. spicata")
 myCol=c("black","forestgreen","blue","red")
 
 infile <- ifelse(max.CI==F,"simulations1step/ObsPred_1step.csv","simulations1step/ObsPred_1step_maxCI.csv")
@@ -163,7 +163,7 @@ matplot(obs.pgr.mean[1:5,3:6],pred.pgr.mean[1:5,3:6],ylim=myLims,xlim=myLims,
         type="p",pch=myPch,col=myCols,pty="s")
 abline(0,1)
 mtext("(A)",side=3,adj=0,line=0.5)
-legend("topleft",sppNames,pch=myPch,col=myCols,bty="n")
+legend("topleft",sppNames,pch=myPch,col=myCols,bty="n",text.font=4)
 matplot(obs.pgr.mean[6:10,3:6],pred.pgr.mean[6:10,3:6],ylim=myLims,xlim=myLims,
         xlab="",ylab="",
         type="p",pch=myPch,col=myCols,pty="s")
