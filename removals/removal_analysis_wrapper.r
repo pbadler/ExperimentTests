@@ -37,7 +37,7 @@ library(INLA)
 trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
 
 # read in distance weights
-dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
 ###
 ### fit survival models (takes ~ 10 minutes)
@@ -102,7 +102,8 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-#source("call_recruit_m1.r")
+
+source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 
 pars.summary <- read.csv("recruit_params_m1.csv")
@@ -167,7 +168,7 @@ rm(list=tmp)
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
 # read in distance weights
-dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
 max.CI <- F  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
