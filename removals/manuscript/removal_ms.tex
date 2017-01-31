@@ -130,86 +130,100 @@ Although the primary focus of our analysis is comparison of observed removal res
 
 \subsection*{Statistical models of vital rates}
 
-Our regression models for survival, growth and recruitment follow previous work \citep{adler_coexistence_2010,chu_large_2015}. We model the survival probability of an individual genet as a function of genet size, the neighborhood-scale crowding experienced by the genet from both conspecific and heterospecific genets, temporal variation among years, and permanent spatial variation among groups of quadrats (`group'; here means a set of nearby quadrats located within one pasture or grazing exclosure). Where the current analysis departs from previous work is the inclusion of a categorical removal treatment effect. If the conspecific and heterospecific crowding effects explain demographic rates in removal treatment plots as well as they do in control plots, then there will be no need for the removal treatment effect, and the estimated coefficient will be small and not significantly different from zero. However, if demographic rates in removal plots differ from control plots even after accounting for crowding effects, then the removal treatment effect will be significant. For example, we might find that, holding crowding constant, grasses grow more quickly in the removal plots than in the control plots. This result would indicate that our ``baseline model," a model including all estimated parameters except for the removal treatment effect, underestimates competitive release. We refer to the model that includes the estimated removal treatment effect as the ``removal model."
+Our regression models for survival, growth and recruitment follow previous work \citep{adler_coexistence_2010,chu_large_2015}. We model the survival probability of an individual genet as a function of genet size, the neighborhood-scale crowding experienced by the genet from both conspecific and heterospecific genets, temporal variation among years, and permanent spatial variation among groups of quadrats (`group'; here means a set of nearby quadrats located within one pasture or grazing exclosure). Where the current analysis departs from previous work is the inclusion of a categorical removal treatment effect. If the conspecific and heterospecific crowding effects explain demographic rates in removal treatment plots as well as they do in control plots, then there will be no need for the removal treatment effect, and the estimated coefficient will be small and not significantly different from zero. However, if demographic rates in removal plots differ from control plots even after accounting for crowding effects, then the removal treatment effect will be significant. For example, we might find that, holding crowding constant, grasses grow more quickly in the removal plots than in the control plots. This result would indicate that our ``baseline model'', a model including all estimated parameters except for the removal treatment effect, underestimates competitive release. We refer to the model that includes the estimated removal treatment effect as the ``removal model". 
 
-Formally, we modeled the survival probability, $S$, of genet $i$ in species $j$, group $g$, and removal treatment $h$, from time $t$ to $t+1$  as
+Formally, we modeled the survival probability, $S$, of genet $i$ in species $j$ (which is in quadrat group $g$ and removal treatment $h$), 
+from time $t$ to $t+1$  as
 \begin{equation}
-\mbox{logit}(S_{ijgh,t+1}) = \gamma_{j,t}^S + \varphi_{jg}^S+  \chi_{jh}^S  + \beta_{j,t}^S u_{ij,t} +  
-% \left \langle \boldsymbol{\omega}_{j,t}^S, \boldsymbol{W}_{ij,t} \right \rangle 
-\sum \limits_{j} \omega_{j}^S {W}_{ij,t}
+\mbox{logit}(S_{ij,t+1}) = \gamma_{j,t}^S + \varphi_{jg}^S+  \chi_{jh}^S  + \beta_{j,t}^S u_{ij,t} +  
+\sum \limits_{m} \omega_{jm}^S {W}_{ijm,t}
 \label{eqn:survReg}
 \end{equation}
-where $\gamma$ is a time-dependent intercept, $\varphi$ is the coefficient for the effect of spatial location group, $\chi$ is the removal treatment effect, $\beta$ is the coefficient that represents the effect of log genet size, $u$, on survival. 
-%$\boldsymbol{\omega}$ is a vector of interaction coefficients which determine the impact of crowding, $\boldsymbol{W}$, by each species on the focal species. 
-$\omega_j$ is an interaction coefficient which determines the impact of crowding, $W_j$, by species $j$ on the focal species. 
-Our model includes crowding from the four dominant species,  \textit{A. tripartita}, \textit{H. comata}, \textit{P. spicata}, and \textit{P. secunda}, as well as two covariates representing total crowding from (1) all other perennial grasses and shrubs, which were mapped as polygons, and (2) all forb species, which were mapped as points. 
-%$\left \langle \boldsymbol{x, y} \right \rangle$ denotes the inner product of vectors $\boldsymbol{x}$ and $\boldsymbol{y}$, 
-%calculated as \texttt{sum(x*y)} in R.
+where $\gamma$ is a time-dependent intercept (year effect), $\varphi$ is the coefficient for the 
+effect of spatial location group, $\chi$ is the removal treatment effect,and  $\beta$ is the coefficient that 
+represents the effect of log genet size, $u$, on survival. 
+$W_{ijm,t}$ is the crowding of individual $i$ in species $j$ by neighbors of species $m$ (explained below), and 
+$\omega_{jm}$ is an interaction coefficient which determines the impact of crowding by species $m$ on the focal species $j$. 
 
 Our growth model has a similar structure. The change in genet size from time $t$ to $t+1$ , conditional on survival, is given by:
 \begin{equation}
-u_{ijgh,t+1} = \gamma_{j,t}^G + \varphi_{jg}^G+  \chi_{jh}^G  + \beta_{j,t}^G u_{ij,t} + 
-%\left \langle  \boldsymbol{\omega}_{j,t}^G, \boldsymbol{W}_{ij,t} \right \rangle + \varepsilon_{ij,t}^G .
-\sum \limits_{j} \omega_{j}^G {W}_{ij,t} + \varepsilon_{ij,t}^G .
+u_{ij,t+1} = \gamma_{j,t}^G + \varphi_{jg}^G+  \chi_{jh}^G  + \beta_{j,t}^G u_{ij,t} + 
+\sum \limits_{m} \omega_{jm}^G {W}_{ijm,t} + \varepsilon_{ij,t}^G .
 \label{eqn:growReg}
 \end{equation}
-To capture non-constant error variance in growth, we modeled the variance $\varepsilon$  about the growth curve (\ref{eqn:growReg})  as a nonlinear function of predicted genet size:
+To capture the non-constant error variance in growth, we modeled the variance $\varepsilon$ about the growth 
+curve (\ref{eqn:growReg}) as a nonlinear function of predicted genet size:
 \begin{equation}
-Var(\varepsilon_{ij,t}^G) = a \exp ^{(bu_{ij,t+1})} .
+Var(\varepsilon_{ij,t}^G) = a \exp(b\hat{u}_{ij,t+1}).
 \label{eqn:growVar}
 \end{equation}
+where $\hat{u}_{ij,t+1}$ is the right-hand side of (\ref{eqn:growReg}) without $\varepsilon$. 
 
-We model the crowding experienced by a focal genet as a function of the distance to and size of neighbor genets. In previous work, we assumed that the decay of crowding with neighbor distance followed a Gaussian function \citep{chu_large_2015}, but here we use a data-driven approach \citep{teller_linking_2016}. We model the crowding experienced by genet $i$ of species $j$ from neighbors of species $m$ as the sum of neighbor areas across a set of concentric annuli, $k$, centered at the plant,
+Our model includes crowding from the four dominant species, \textit{A. tripartita}, \textit{H. comata}, \textit{P. spicata}, and \textit{P. secunda}, as well as two covariates representing total crowding from (1) all other perennial grasses and shrubs, which were mapped as polygons, and (2) all forb species, which were mapped as points. 
+
+We modeled the crowding experienced by a focal genet in each year $t$ as a function of the distance to and size of neighbor genets. In previous work, 
+we assumed that the decay of crowding with neighbor distance followed a Gaussian function \citep{chu_large_2015}, but here we use a data-driven 
+approach \citep{teller_linking_2016}. We model the crowding experienced by genet $i$ of species $j$ from neighbors of species $m$ as the sum of neighbor 
+areas across a set of concentric annuli, $k$, centered at the plant,
 \begin{equation}
-w_{ijm,k} = F_{jm}(d_{k})A_{i,k}     
+w_{ijmk,t} = F_{jm}(d_{k})A_{ijmk,t}     
 \label{eqn:wik}
 \end{equation}
 where $F_{jm}$ is the competition kernel (described below) for effects of species $m$ on species $j$, 
 $d_{k}$ is the average of the inner and outer radii of annulus $k$, 
-and $A_{im,k}$ is the total area of genets of species $m$ in annulus $k$ around genet $i$. The total crowding on 
-genet $i$ exerted by species $m$ is
+and $A_{ijmk,t}$ is the total area of genets of species $m$ in annulus $k$ around the focal genet in year $t$. The total crowding on 
+the focal genet exerted by species $m$ is
 \begin{equation}
-W_{ijm}  =\sum_k {w_{ijm,k}} .
+W_{ijm,t}  =\sum_k {w_{ijmk,t}} .
 \label{eqn:wijm}
 \end{equation} 
-Note that $W_{ijj}$ gives intraspecific crowding. The $W$'s are then % the components of the $\boldsymbol{W}$ vectors 
-introduced as covariates in the survival (\ref{eqn:survReg}) and growth (\ref{eqn:growReg}) regressions.
+Note that $W_{ijj,t}$ gives intraspecific crowding. The $W$'s are then 
+included as covariates in the survival (\ref{eqn:survReg}) and growth (\ref{eqn:growReg}) regressions.
 
 We assume that competition kernels $F_{jm}(d)$ are non-negative and decreasing, so that distant plants have less effect 
 than close plants. Otherwise, we let the data dictate the shape of the kernel by fitting a spline model 
-using the methods of Teller et al. (2016). The shape of $F_{jm}$ is determined by a set of spline basis coefficients $\vec{b}_{jm}$
+using the methods of \citep{teller_linking_2016}. The shape of $F_{jm}$ is determined by a set of spline basis coefficients $\vec{b}_{jm}$
 and a smoothing parameter $\eta$ that controls the complexity of the fitted kernel. 
 Demographic models such as \eqref{eqn:survReg} then have $\gamma$, $\varphi$, $\chi$ , 
 $\beta$, $\boldsymbol{\omega}$, $\vec{b}$ and $\eta$ as parameters to be fitted. We implemented this in the statistical computing environment, \texttt{R}, 
-by making the spline coefficients and $\eta$ the arguments of an objective function that computes ${W}$ using the input spline coefficients, 
+by making the spline coefficients and $\eta$ the arguments of an objective function that calculates  each $w_{ijmk,t}$ value using the input spline coefficients, 
 calls the model-fitting functions \texttt{lmer} and/or \texttt{glmer} to fit the other parameters in the survival and growth regressions, 
 and returns an approximate AIC value and model degrees of freedom ($df$) for survival and growth combined. We used the $\vec{b}$ values at the smoothest 
-local minimum of AIC as a function of $df$, as in \cite{teller_linking_2016}. This approach assumes that one measure of crowding affects 
+(smallest $df$) local minimum of AIC as a function of $df$, as in \cite{teller_linking_2016}. This approach assumes that one measure of crowding affects 
 survival and growth. In addition, for fitting the kernels we assumed that survival and growth depended only on intraspecific crowding, and thus only fitted the
-within-species competition kernels $F_{jj}$. Based on previous work with parametric kernels, \citep{adler_coexistence_2010}, we know that interspecific effects are rarely significantly different from zero, and there is not enough signal to fit interspecific kernels nonparametrically. Therefore, we set all $F_{mj}$ equal to $F_{jj}$, meaning that 
-the within-species competition kernel for species $j$ is also used to determine the effect of species $j$ on all other species. We used data from all historical plots and contemporary control-treatment plots to estimate the competition kernels, which are shown in Fig. \ref{fig:CompKernels}. 
+within-species competition kernels $F_{jj}$. Based on previous work with parametric kernels, \citep{adler_coexistence_2010}, we know that interspecific effects are rarely significantly different from zero, so there is not enough signal to fit interspecific kernels nonparametrically. Therefore, we set all $F_{mj}$ equal to $F_{jj}$, meaning that 
+the within-species competition kernel for species $j$ is also used to determine the distance-dependence of species $j$ neighbors on all other species. 
+We used data from all historical plots and contemporary control-treatment plots to estimate the competition kernels, which are shown in Fig. \ref{fig:CompKernels}. 
 
-Once we had estimated the competitions kernels, we used them to calculate the values of all ${W_j}$ for each individual, 
-and fitted the full survival and growth regressions, which include the interspecific interaction coefficients, $\omega_j$. 
-All genets in a quadrat were included in calculating the $W$'s, but plants located within 5 cm of quadrat edges were not used in fitting. 
-We fit the models using the \texttt{R-INLA} package for R \citep{rue_approximate_2009}. We used the same approach wen exploring variations on the growth regressions, such as the addition of a year-by-treatment interaction or information about the locations of individual grasses relative to removed \textit{A. tripartita}. We also compared the species composition of the control and removal plots at both the quadrat and neighborhood ($W$) scales.
+Once we had estimated the competitions kernels, we used them to calculate the $w_{ijmk,t}$ values for each individual in each year, 
+and fitted the full survival and growth regressions, which include the interspecific interaction coefficients, $\omega_{jm}$. 
+All genets in a quadrat were included in calculating the $w$'s, but plants located within 5 cm of quadrat edges were not used in fitting the regressions. 
+We fit the models using the \texttt{R-INLA} package for R \citep{rue_approximate_2009}. We used the same approach when exploring variations 
+on the growth regressions, such as the addition of a year-by-treatment interaction or information about the locations of 
+individual grasses relative to removed \textit{A. tripartita}. We also compared the species composition of the control and removal plots at both 
+the quadrat and neighborhood ($W$) scales.
 
-We model recruitment at the quadrat level rather than at the individual genet level because the mapped data do not allow us to determine which recruits were produced by which potential parent genets. We assume that the number of individuals, $y$, of species $j$ recruiting at time $t+1$ in the location $q$ follows a negative binomial distribution:
+We model recruitment at the quadrat level rather than at the individual genet level because the mapped data do not allow 
+us to determine which recruits were produced by which potential parent genets. We assume that the number of individuals, $y$, of species $j$ recruiting at 
+time $t+1$ in the location $q$ follows a negative binomial distribution:
 \begin{equation}
 y_{jq,t+1}= NegBin(\lambda_{jq,t+1},\theta) 	   
 \label{eqn:recrDataModel}
 \end{equation}
-where $\lambda$ is the mean intensity and $\theta$ is the size parameter. In turn, $\lambda$ depends on the composition of the quadrat in the previous year:
+where $\lambda$ is the mean and $\theta$ is the size parameter (\texttt{dnegbin(p,$\theta$)} in the BUGS language, with $p=\theta/(\theta+\lambda)$). 
+In turn, $\lambda$ depends on the composition of the quadrat in the previous year:
 \begin{equation}
-\lambda_{jq,t+1} = C'_{jq,t} \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jm}^R + 
-%\left \langle \boldsymbol{\omega}^R , \boldsymbol{\sqrt{C'}_{q,t}} \right \rangle \right) }
-\sum \limits_{j} \omega_{j}^R \sqrt{C'}_{ij,t} \right)}
+\lambda_{jq,t+1} = C'_{jq,t} \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jh}^R + 
+\sum \limits_{m} \omega_{jm}^R \sqrt{C'_{mq,t}} \right)}
 \label{eqn:recrProcessModel}
 \end{equation}
-where the superscript $R$ refers to Recruitment, $C'_{jq,t}$ is the `effective cover' (cm$^2$) of species $j$ in quadrat $q$ at time $t$, $\gamma$ is a time-dependent intercept, $\varphi$ is a coefficient for the effect of spatial location,
-$\chi$ is the removal treatment effect, $\omega_j$ is the coefficient that determines the density-dependent effect of species $j$ on the focal species, and $C'_j$ is the ``effective'' cover of species $j$ in the quadrat. Eqn (\ref{eqn:recrProcessModel}) is essentially the Ricker model for discrete time population growth \citep{ricker_stock_1954}, except that we use the square root of cover in the density-dependent term. We previously used a Ricker equation \citep{adler_coexistence_2010}, but using the square-root transformation instead gave a lower Deviance Information Criterion (DIC) value \citep{spiegelhalter_bayesian_2002} for the recruitment model. Following previous work \citep{adler_coexistence_2010}, we treated year and spatial group variables as random factors, allowing intercepts to vary among years and spatial locations. 
+where the superscript $R$ refers to Recruitment, $C'_{jq,t}$ is the `effective cover' (cm$^2$) of species $j$ in quadrat $q$ at time $t$, $\gamma$ 
+is a time-dependent intercept, $\varphi$ is a coefficient for the effect of spatial location group,
+$\chi$ is the removal treatment effect, and $\omega_{jm}$ is the coefficient that determines the effect of species $m$ cover on recruitment by species $j$. 
+Eqn (\ref{eqn:recrProcessModel}) is essentially the Ricker model for discrete time population growth \citep{ricker_stock_1954}, except that we use the square root of cover in the density-dependent term. We previously used a Ricker equation \citep{adler_coexistence_2010}, but using the square-root transformation instead gave a lower Deviance Information Criterion (DIC) value \citep{spiegelhalter_bayesian_2002} for the recruitment model. Following previous work \citep{adler_coexistence_2010}, we treated year and spatial group variables as random factors, allowing intercepts to vary among years and spatial locations. 
 
-Due to the possibility that plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location, $g$, in which the quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
+Due to the possibility that plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location group, $g$, in which the 
+quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
 
 We ran Markov Chain Monte Carlo (MCMC) simulations in WinBUGS 1.4 \citep{lunn_winbugs_2000} to estimate the recruitment model parameters. Each model was run for 20,000 iterations and two independent chains with different initial values for parameters. We discarded the initial 10,000 samples. Convergence was observed graphically for all parameters, and confirmed by the Brooks-Gelman statistic \citep{brooks_general_1998}. For all three vital rate models, we considered the effect of removal treatments, or other coefficients of interest, to be significant when the 95\% confidence interval (or posterior interval) on the estimate of $\chi$ did not overlap zero.  
 
