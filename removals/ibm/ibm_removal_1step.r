@@ -29,7 +29,7 @@ plants=NULL
 neighborList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
 dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
 dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
-dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
+dataDir2 <- paste(root,"/ExperimentTests/data/idaho_modern",sep="")
 
 for(i in 1:length(sppList)){
   

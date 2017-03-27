@@ -1,5 +1,5 @@
 
-dat <- read.csv("../../driversdata/data/idaho_modern/climateData/monthly_climate_from_daily.csv")
+dat <- read.csv("../data/idaho_modern/climateData/monthly_climate_from_daily.csv")
 
 dat$climYr <- ifelse(dat$month>9,dat$year+1,dat$year)
 

@@ -7,8 +7,8 @@
 setwd("Wdistrib")
 
 sppList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
-dataDir1 <- paste(root,"/driversdata/data/idaho",sep="")
-dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
+dataDir1 <- paste(root,"/ExperimentTests/data/idaho",sep="")
+dataDir2 <- paste(root,"/ExperimentTests/data/idaho_modern",sep="")
 
 # set up distance weights
 dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights_noExptl.csv",sep=""));

@@ -2,7 +2,7 @@
 # call from removal_analysis_wrapper.r
 
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
-dataDir <- paste(root,"/driversdata/data/idaho_modern/",sep="")
+dataDir <- paste(root,"/ExperimentTests/data/idaho_modern/",sep="")
 
 
 # import data and calculate treatment trends ######################################
