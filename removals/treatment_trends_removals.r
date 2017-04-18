@@ -99,26 +99,28 @@ logSingularity<-function(mydata){
   legend("topright",c("control","removal"),pch=1,col=c("black","red"))
 }
 
-dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub")
+dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub" & year>2011 )
 logSingularity(dARTR)
 dARTR$year <- as.factor(dARTR$year)
 #mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
 mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dARTR) # with weighting
 
-dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass")
+dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dHECO)
 dHECO$year <- as.factor(dHECO$year)
 #mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
 mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dHECO)
 
-dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass")
+dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
+logSingularity(dPOSE)
 dPOSE$year <- as.factor(dPOSE$year)
 #mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
 mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPOSE)
 
-dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass")
+dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
+logSingularity(dPSSP)
 dPSSP$year <- as.factor(dPSSP$year)
-#mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
+# mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
 mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPSSP)
 
 texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
