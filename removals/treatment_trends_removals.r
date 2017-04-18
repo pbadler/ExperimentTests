@@ -102,8 +102,20 @@ logSingularity<-function(mydata){
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub" & year>2011 )
 logSingularity(dARTR)
 dARTR$year <- as.factor(dARTR$year)
-#mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
-mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dARTR) # with weighting
+mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
+mARTR_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),data=dARTR) # with weighting
+
+####### Another way of looking at population growth rate 
+plot(log(cover)~log(lag.cover), data=dARTR); 
+mARTR_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year), weights=sqrt(cover), data=dARTR) # 
+
+############### should really look at weighted residuals
+par(mfrow=c(2,2)); 
+scatter.smooth(fitted(mARTR),(residuals(mARTR))); title(main="ARTR, PCGR, no weights");
+scatter.smooth(fitted(mARTR_wt),(residuals(mARTR_wt))); title(main="ARTR, PCGR, weighted"); 
+scatter.smooth(fitted(mARTR_wt2),(residuals(mARTR_wt2))); title(main="ARTR, log(cover) ~ log(lag.cover), weights"); 
+
+
 
 dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dHECO)
