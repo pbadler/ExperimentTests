@@ -91,20 +91,34 @@ spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
 
 stop("check weighting schemes")
 
+# function to plot growth rates by lag cover
+logSingularity<-function(mydata){
+  plot(mydata$lag.cover,mydata$pcgr,col="red")
+  k=which(mydata$Treatment=="Control")
+  points(mydata$lag.cover[k],mydata$pcgr[k],col="black")
+  legend("topright",c("control","removal"),pch=1,col=c("black","red"))
+}
+
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub")
+logSingularity(dARTR)
 dARTR$year <- as.factor(dARTR$year)
-mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dARTR)
+#mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
+mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dARTR) # with weighting
 
 dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass")
+logSingularity(dHECO)
 dHECO$year <- as.factor(dHECO$year)
-mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=(lag.cover^(1/4)),data=dHECO)
+#mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
+mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dHECO)
 
 dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass")
 dPOSE$year <- as.factor(dPOSE$year)
+#mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
 mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPOSE)
 
 dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass")
 dPSSP$year <- as.factor(dPSSP$year)
+#mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
 mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPSSP)
 
 texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
