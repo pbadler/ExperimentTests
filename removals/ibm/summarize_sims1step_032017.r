@@ -19,7 +19,7 @@ covMeans <- aggregate(simD[,3:14],by=list(Treatment=simD$Treatment,year=simD$yea
 covMeans[1:3,7:14] <- covMeans[1:3,3:6] # copy initial values across
 covMeans <- covMeans[order(covMeans$Treatment),]
 
-### calculate per capita growth rates
+### calculate per capita growth rates at the quadrat level
 
 get.pgr <- function(myname){
   tmp<- simD[,c("quad","year",paste0(myname,sppList))]
@@ -35,7 +35,7 @@ obs.pgr <- get.pgr("obs.")
 pred.pgr <- get.pgr("pred.")
 pred.trt.pgr <- get.pgr("pred.trt.")
 
-# aggregate by treatment and year
+# aggregate growth rates by treatment and year
 
 get.trt.means<-function(mydat){
   mydat<-merge(mydat,quad.info)
@@ -54,7 +54,31 @@ obs.pgr.mean <- get.trt.means(obs.pgr)
 pred.pgr.mean <- get.trt.means(pred.pgr)
 pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 
-# aggregate 
+# calculate relative change in pgr, removal vs control
+obs.pgr.mean <-obs.pgr.mean[order(obs.pgr.mean[,1],obs.pgr.mean[,2]),]
+obs.pgr.delta <- colMeans(obs.pgr.mean[6:10,3:6] - obs.pgr.mean[1:5,3:6])
+pred.pgr.mean <-pred.pgr.mean[order(pred.pgr.mean[,1],pred.pgr.mean[,2]),]
+pred.pgr.delta <- colMeans(pred.pgr.mean[6:10,3:6] - pred.pgr.mean[1:5,3:6])
+pred.trt.pgr.mean <-pred.trt.pgr.mean[order(pred.trt.pgr.mean[,1],pred.trt.pgr.mean[,2]),]
+pred.trt.pgr.delta <- colMeans(pred.trt.pgr.mean[6:10,3:6] - pred.trt.pgr.mean[1:5,3:6])
+  
+# calculate observed and predicted growth rates on an annual basis (after
+# averaging cover across quads within years). This reduces influence of quads 
+# with very low cover and large relative changes in cover.
+covMeans <- covMeans[order(covMeans$Treatment,covMeans$year),]
+covMeans0 <- subset(covMeans, year<2016)
+covMeans1 <-subset(covMeans,year>2011)
+pgrMeans2.yr <- cbind(covMeans0[,1:2],log(covMeans1[,3:NCOL(covMeans1)]/covMeans0[,3:NCOL(covMeans0)]))
+# combine No_grass and No_shrub into one Removal treatment
+pgrMeans2.yr[c(6:10),c(4,5,6,8,9,10,12,13,14)] = pgrMeans2.yr[c(11:15),c(4,5,6,8,9,10,12,13,14)]
+pgrMeans2.yr = subset(pgrMeans2.yr,Treatment!="No_shrub")
+pgrMeans2.yr$Treatment = as.character(pgrMeans2.yr$Treatment)
+pgrMeans2.yr$Treatment[pgrMeans2.yr$Treatment=="No_grass"]="Removal"
+pgrMeans2.yr$Treatment = as.factor(pgrMeans2.yr$Treatment)
+pgrMeans2 <- aggregate(pgrMeans2.yr[,3:NCOL(pgrMeans2.yr)],by=list("Treatment"=pgrMeans2.yr$Treatment),FUN=mean)
+# calculate difference between removals and controls
+deltaPgr2<-pgrMeans2[2,2:NCOL(pgrMeans2)] - pgrMeans2[1,2:NCOL(pgrMeans2)] 
+rm(covMeans1,covMeans0)
 
 ###
 ### plot observed and predicted cover chronologically
@@ -101,11 +125,11 @@ dev.off()
 plotObsPred<-function(doSpp,mytitle,doLegend=F){
   
   # format data
-  newD=data.frame(year=2011:2015,obs.pgr.mean[obs.pgr.mean$Treatment=="Control",2 + doSpp],
-                 pred.pgr.mean[pred.pgr.mean$Treatment=="Control",2+doSpp], 
-                 obs.pgr.mean[obs.pgr.mean$Treatment=="Removal",2+doSpp],
-                 pred.pgr.mean[pred.pgr.mean$Treatment=="Removal",2+doSpp],
-                 pred.trt.pgr.mean[pred.trt.pgr.mean$Treatment=="Removal",2+doSpp])                               # removal pred (with TRT effect)
+  newD=data.frame(year=2011:2015,pgrMeans2.yr[pgrMeans2.yr$Treatment=="Control",2 + doSpp],
+                 pgrMeans2.yr[pgrMeans2.yr$Treatment=="Control",6+doSpp], 
+                 pgrMeans2.yr[pgrMeans2.yr$Treatment=="Removal",2+doSpp],
+                 pgrMeans2.yr[pgrMeans2.yr$Treatment=="Removal",6+doSpp],
+                 pgrMeans2.yr[pgrMeans2.yr$Treatment=="Removal",10+doSpp])                               # removal pred (with TRT effect)
   names(newD)=c("year","control.obs","control.pred","remove.obs","remove.pred","remove.predTRT")
   
   my.y <- c(-1.2,1.1) # hard wire ylims
@@ -129,7 +153,7 @@ plotObsPred<-function(doSpp,mytitle,doLegend=F){
   }
 }
 
-figName <- ifelse(max.CI==F,"cover_change_chrono.png","cover_change_chrono_maxCI.png" )
+figName <- ifelse(max.CI==F,"cover_change_chrono2.png","cover_change_chrono_maxCI2.png" )
 png(figName,units="in",height=6,width=8.5,res=600)
   
   par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
@@ -156,21 +180,21 @@ myPch=c(15:18)
 myPch2=c(0,1,2,5)
 myLims=c(-1.5,1.25)
 
-figName <- ifelse(max.CI==F,"cover_change_1to1.png","cover_change_1to1_maxCI.png" )
+figName <- ifelse(max.CI==F,"cover_change_1to12.png","cover_change_1to1_maxCI2.png" )
 png(figName,units="in",height=4,width=8,res=600)
 
 par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
-matplot(obs.pgr.mean[1:5,3:6],pred.pgr.mean[1:5,3:6],ylim=myLims,xlim=myLims,
+matplot(pgrMeans2.yr[1:5,3:6],pgrMeans2.yr[1:5,7:10],ylim=myLims,xlim=myLims,
         xlab="",ylab="",
         type="p",pch=myPch,col=myCols,pty="s")
 abline(0,1)
 mtext("(A)",side=3,adj=0,line=0.5)
 legend("topleft",sppNames,pch=myPch,col=myCols,bty="n",text.font=4)
-matplot(obs.pgr.mean[6:10,3:6],pred.pgr.mean[6:10,3:6],ylim=myLims,xlim=myLims,
+matplot(pgrMeans2.yr[6:10,3:6],pgrMeans2.yr[6:10,7:10],ylim=myLims,xlim=myLims,
         xlab="",ylab="",
         type="p",pch=myPch,col=myCols,pty="s")
 for(i in 1:4){
-  points(obs.pgr.mean[6:10,2+i],pred.trt.pgr.mean[6:10,2+i],pch=myPch2[i],col=myCols[i])
+  points(pgrMeans2.yr[6:10,2+i],pgrMeans2.yr[6:10,10+i],pch=myPch2[i],col=myCols[i])
 }
 abline(0,1)
 mtext("(B)",side=3,adj=0, line=0.5)
@@ -181,5 +205,69 @@ mtext("Predicted",side=2,outer=T,line=0.5,cex=1.2)
 dev.off()
 
 
+###
+### plot relative difference in control vs removal growth rates
+###
+pdf("deltaPgr.pdf",height=4,width=6)
+par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,4,1,1))
+x = rbind(as.numeric(deltaPgr2[1:4]),as.numeric(deltaPgr2[5:8]),as.numeric(deltaPgr2[9:12]))
+myCol=c("black","white","gray")
+barplot(x,beside=T,ylim=c(-0.05,0.30),ylab=expression(paste("log ",lambda[s]," removal - ","log ",lambda[s]," control")),
+        names.arg=sppList,col=myCol)
+legend("topright",c("Observed","Predicted (baseline)","Predicted (treatment)"),
+       fill=myCol,bty="n",cex=0.9)
+dev.off()
+
+
+###
+### plot mean growth rates in controls vs removals, for observations and predictions
+
+pdf("meanPgr-removalVScontrol.pdf",height=7,width=8)
+par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+myYlims=c(min(pgrMeans2[,2:NCOL(pgrMeans2)],na.rm=T),max(pgrMeans2[,2:NCOL(pgrMeans2)],na.rm=T))
+for(i in 1:4){
+  x=rbind(c(pgrMeans2[c(1,2),(i+1)]),c(pgrMeans2[1,(i+5)],pgrMeans2[2,(i+5)]),c(NA,pgrMeans2[2,(i+9)]))
+  barplot(x,ylim=myYlims,ylab=expression(paste("log ",lambda[s])),
+      beside=T,names.arg=c("Control","Removal"), col=c("black","white","lightgray"))
+  title(main=sppNames[i],font.main=4)
+  if(i==1){
+    legend("topleft",c("Observed","Predicted (baseline)","Predicted (treatment)"),
+       fill=c("black","white","lightgray"),bty="n")
+    mtext(expression(paste("log ",lambda[s])),side=2,outer=T,line=0.5)
+  }
+}
+dev.off()
+
+###
+###  plot quadrat level observations and predictions by year
+###
+
+png("obsVpred_quad_year.png",height=8,width=8,units="in",res=450)
+
+par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+
+for(i in 1:4){
+  if(i==1) {myTrt="No_grass"}else{myTrt="No_shrub"}
+  control=cbind(simD[simD$Treatment=="Control",(6+i)],simD[simD$Treatment=="Control",(2+i)])
+  removal.base=cbind(simD[simD$Treatment==myTrt,(6+i)],simD[simD$Treatment==myTrt,(2+i)])
+  removal.trt=cbind(simD[simD$Treatment==myTrt,(10+i)],simD[simD$Treatment==myTrt,(2+i)])
+  maxCov=1.05*max(c(control,removal.base,removal.trt),na.rm=T)
+  plot(control,ylim=c(0,maxCov),xlim=c(0,maxCov),xlab="",ylab="")
+  title(sppNames[i],font.main=4)
+  abline(0,1,lty="dashed")
+  points(removal.base,pch=1,col="blue2")
+  points(removal.trt,pch=1,col="red")
+  abline(lm(control[,2]~0+control[,1]),col="black")
+  abline(lm(removal.base[,2]~0+removal.base[,1]),col="blue2")
+  abline(lm(removal.trt[,2]~0+removal.trt[,1]),col="red")
+
+}
+legend("topleft",c("Control","Removal (baseline)","Removal (treatment)"),pch=1,
+      col=c("black","blue2","red"),lty="solid",bty="n")
+mtext("Observed cover (%)",2,outer=T,line=0.5,cex=1.2)
+mtext("Predicted cover (%)",1,outer=T,line=0.5,cex=1.2)
+
+dev.off()
+
+
 setwd("..")
- 

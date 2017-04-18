@@ -194,6 +194,20 @@ sppList <-  c("ARTR","HECO","POSE","PSSP")
 
 source("ipm/get_W_functions.r")  # get neighbor distance decay functions
 
+#start with all 4 species, remove ARTR
+init.species <- c(1:4)
+tlimit <- 400
+burn.in <- 0
+totReps=100
+trtEffects=F
+source("ipm/IPM-setup.r")
+output <- array(NA,c(tlimit,4,totReps))
+for(doRep in 1:totReps){
+  source("ipm/IPM-removeARTR.r")
+  output[,,doRep] <- covSave
+}
+meanCov <- apply(output,MARGIN=c(1,2),FUN=mean)
+
 #no treatment effects, all species
 init.species <- c(1:4)
 tlimit <- 2500

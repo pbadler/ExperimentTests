@@ -89,21 +89,23 @@ spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
 
 #library(lme4)
 
+stop("check weighting schemes")
+
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub")
 dARTR$year <- as.factor(dARTR$year)
-mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
+mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dARTR)
 
 dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass")
 dHECO$year <- as.factor(dHECO$year)
-mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
+mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=(lag.cover^(1/4)),data=dHECO)
 
 dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass")
 dPOSE$year <- as.factor(dPOSE$year)
-mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
+mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPOSE)
 
 dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass")
 dPSSP$year <- as.factor(dPSSP$year)
-mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
+mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPSSP)
 
 texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
       caption.above=TRUE,file=statsOutput)
