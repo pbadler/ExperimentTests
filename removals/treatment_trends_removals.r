@@ -90,7 +90,7 @@ spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
 #library(lme4)
 
 ####################################### Weighting schemes 
-stop("check weighting schemes")
+# stop("check weighting schemes")
 
 # function to plot growth rates by lag cover
 logSingularity<-function(mydata){
