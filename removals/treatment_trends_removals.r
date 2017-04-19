@@ -99,41 +99,77 @@ logSingularity<-function(mydata){
   legend("topright",c("control","removal"),pch=1,col=c("black","red"))
 }
 
+### ARTR
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub" & year>2011 )
 logSingularity(dARTR)
 dARTR$year <- as.factor(dARTR$year)
 mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
 mARTR_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),data=dARTR) # with weighting
 
-####### Another way of looking at population growth rate 
+# alternative model
 plot(log(cover)~log(lag.cover), data=dARTR); 
 mARTR_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year), weights=sqrt(cover), data=dARTR) # 
 
-############### should really look at weighted residuals
+# look at residuals
 par(mfrow=c(2,2)); 
 scatter.smooth(fitted(mARTR),(residuals(mARTR))); title(main="ARTR, PCGR, no weights");
 scatter.smooth(fitted(mARTR_wt),(residuals(mARTR_wt))); title(main="ARTR, PCGR, weighted"); 
 scatter.smooth(fitted(mARTR_wt2),(residuals(mARTR_wt2))); title(main="ARTR, log(cover) ~ log(lag.cover), weights"); 
 
 
-
+### HECO
 dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dHECO)
 dHECO$year <- as.factor(dHECO$year)
-#mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
-mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dHECO)
+mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
+mHECO_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dHECO)
+
+# alternative model
+plot(log(cover)~log(lag.cover), data=dHECO); 
+mHECO_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year),  data=dHECO) # 
+
+# look at residuals
+par(mfrow=c(2,2)); 
+scatter.smooth(fitted(mHECO),(residuals(mHECO))); title(main="HECO, PCGR, no weights");
+scatter.smooth(fitted(mHECO_wt),(residuals(mHECO_wt))); title(main="HECO, PCGR, weighted"); 
+scatter.smooth(fitted(mHECO_wt2),(residuals(mHECO_wt2))); title(main="HECO, log(cover) ~ log(lag.cover), weights"); 
+
+### POSE
 
 dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dPOSE)
 dPOSE$year <- as.factor(dPOSE$year)
-#mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
-mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPOSE)
+mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
+mPOSE_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPOSE)
+
+# alternative model
+plot(log(cover)~log(lag.cover), data=dPOSE); 
+mPOSE_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year),  data=dPOSE) # 
+
+# look at residuals
+par(mfrow=c(2,2)); 
+scatter.smooth(fitted(mPOSE),(residuals(mPOSE))); title(main="POSE, PCGR, no weights");
+scatter.smooth(fitted(mPOSE_wt),(residuals(mPOSE_wt))); title(main="POSE, PCGR, weighted"); 
+scatter.smooth(fitted(mPOSE_wt2),(residuals(mPOSE_wt2))); title(main="POSE, log(cover) ~ log(lag.cover), weights"); 
+
+### PSSP
 
 dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dPSSP)
 dPSSP$year <- as.factor(dPSSP$year)
-# mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
-mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPSSP)
+mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
+mPSSP_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPSSP)
+
+# alternative model
+plot(log(cover)~log(lag.cover), data=dPSSP); 
+mPSSP_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),  data=dPSSP) # 
+
+# look at residuals
+par(mfrow=c(2,2)); 
+scatter.smooth(fitted(mPSSP),(residuals(mPSSP))); title(main="PSSP, PCGR, no weights");
+scatter.smooth(fitted(mPSSP_wt),(residuals(mPSSP_wt))); title(main="PSSP, PCGR, weighted"); 
+scatter.smooth(fitted(mPSSP_wt2),(residuals(mPSSP_wt2))); title(main="PSSP, log(cover) ~ log(lag.cover), weights"); 
+
 
 texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
       caption.above=TRUE,file=statsOutput)
