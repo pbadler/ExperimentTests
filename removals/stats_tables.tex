@@ -1,4 +1,8 @@
 
+\documentclass[11pt]{article}
+
+\begin{document} 
+
 \begin{table}
 \caption{Cover change models}
 \begin{center}
@@ -6,22 +10,22 @@
 \hline
  & Model 1 & Model 2 & Model 3 & Model 4 \\
 \hline
-(Intercept)           & $0.00$           & $-0.05$          & $0.01$           & $-0.10$          \\
-                      & $[-0.41;\ 0.42]$ & $[-0.21;\ 0.10]$ & $[-0.26;\ 0.28]$ & $[-0.28;\ 0.08]$ \\
-TreatmentNo\_grass    & $-0.09$          &                  &                  &                  \\
-                      & $[-0.75;\ 0.56]$ &                  &                  &                  \\
-TreatmentNo\_shrub    &                  & $0.33^{*}$       & $-0.08$          & $0.21^{*}$       \\
-                      &                  & $[0.01;\ 0.65]$  & $[-0.41;\ 0.25]$ & $[0.01;\ 0.40]$  \\
+(Intercept)           & $0.02$           & $-0.03$          & $-0.14$          & $-0.05$          \\
+                      & $[-0.09;\ 0.13]$ & $[-0.29;\ 0.24]$ & $[-0.56;\ 0.27]$ & $[-0.29;\ 0.20]$ \\
+TreatmentNo\_grass    & $-0.06$          &                  &                  &                  \\
+                      & $[-0.16;\ 0.05]$ &                  &                  &                  \\
+TreatmentNo\_shrub    &                  & $0.18$           & $-0.05$          & $0.15$           \\
+                      &                  & $[-0.15;\ 0.51]$ & $[-0.35;\ 0.25]$ & $[-0.03;\ 0.32]$ \\
 \hline
-AIC                   & 284.97           & 160.41           & 337.77           & 253.15           \\
-BIC                   & 298.99           & 172.62           & 352.65           & 268.46           \\
-Log Likelihood        & -137.49          & -75.20           & -163.88          & -121.57          \\
-Num. obs.             & 122              & 85               & 145              & 158              \\
+AIC                   & 80.09            & 104.75           & 205.41           & 162.82           \\
+BIC                   & 92.36            & 114.79           & 218.18           & 176.04           \\
+Log Likelihood        & -35.04           & -47.38           & -97.70           & -76.41           \\
+Num. obs.             & 86               & 55               & 95               & 104              \\
 Num. groups: quad     & 19               & 11               & 21               & 22               \\
-Num. groups: year     & 9                & 9                & 9                & 9                \\
-Var: quad (Intercept) & 0.43             & 0.00             & 0.02             & 0.00             \\
-Var: year (Intercept) & 0.00             & 0.02             & 0.12             & 0.06             \\
-Var: Residual         & 0.41             & 0.32             & 0.48             & 0.24             \\
+Num. groups: year     & 5                & 5                & 5                & 5                \\
+Var: quad (Intercept) & 0.00             & 0.00             & 0.02             & 0.00             \\
+Var: year (Intercept) & 0.01             & 0.07             & 0.19             & 0.06             \\
+Var: Residual         & 1.42             & 0.25             & 0.38             & 0.26             \\
 \hline
 \multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
 \end{tabular}
@@ -29,6 +33,4 @@ Var: Residual         & 0.41             & 0.32             & 0.48             &
 \end{center}
 \end{table}
 
-
-
-
+\end{document} 

@@ -89,6 +89,7 @@ spp.mean.diff <- spp.mean.diff[order(spp.mean.diff$species,spp.mean.diff$year),]
 
 #library(lme4)
 
+####################################### Weighting schemes 
 stop("check weighting schemes")
 
 # function to plot growth rates by lag cover
@@ -100,80 +101,85 @@ logSingularity<-function(mydata){
 }
 
 ### ARTR
+dev.new(); par(mfrow=c(3,2)); 
 dARTR <- subset(logChange,species=="Artemisia tripartita" & !is.na(pcgr) & Treatment!="No_shrub" & year>2011 )
-logSingularity(dARTR)
 dARTR$year <- as.factor(dARTR$year)
-mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR)
-mARTR_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),data=dARTR) # with weighting
 
-# alternative model
-plot(log(cover)~log(lag.cover), data=dARTR); 
-mARTR_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year), weights=sqrt(cover), data=dARTR) # 
+logSingularity(dARTR)
+mARTR <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dARTR) # fit unscaled 
 
-# look at residuals
-par(mfrow=c(2,2)); 
-scatter.smooth(fitted(mARTR),(residuals(mARTR))); title(main="ARTR, PCGR, no weights");
-scatter.smooth(fitted(mARTR_wt),(residuals(mARTR_wt))); title(main="ARTR, PCGR, weighted"); 
-scatter.smooth(fitted(mARTR_wt2),(residuals(mARTR_wt2))); title(main="ARTR, log(cover) ~ log(lag.cover), weights"); 
+# Does a scaling by sqrt(sqrt(lag.cover)) stabilize the magnitude of residuals? 
+scatter.smooth(dARTR$lag.cover,abs(residuals(mARTR))*sqrt(sqrt(dARTR$lag.cover)),xlab="lag.cover",ylab="Scaled residuals"); 
 
+# Not quite. Try sqrt(lag.cover). 
+scatter.smooth(dARTR$lag.cover,abs(residuals(mARTR))*sqrt(dARTR$lag.cover),xlab="lag.cover",ylab="Scaled residuals"); 
+
+# That's better. This says that the residual variance is inversely proportional to lag.cover, 
+# so we should fit with weights = lag.cover. 
+mARTR_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year), weights=lag.cover,data=dARTR) 
+
+# residual plots for the two fits 
+scatter.smooth(fitted(mARTR),residuals(mARTR,type="pearson"),ylab="Pearson residuals"); title(main="ARTR, PCGR, no weights");
+scatter.smooth(fitted(mARTR_wt),residuals(mARTR_wt,type="pearson"),ylab="Pearson residuals"); title(main="ARTR, PCGR, weighted"); 
 
 ### HECO
+dev.new(); par(mfrow=c(2,2)); 
 dHECO <- subset(logChange,species=="Hesperostipa comata" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dHECO)
 dHECO$year <- as.factor(dHECO$year)
-mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO)
-mHECO_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dHECO)
 
-# alternative model
-plot(log(cover)~log(lag.cover), data=dHECO); 
-mHECO_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year),  data=dHECO) # 
+mHECO <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dHECO) # fit unscaled 
 
-# look at residuals
-par(mfrow=c(2,2)); 
-scatter.smooth(fitted(mHECO),(residuals(mHECO))); title(main="HECO, PCGR, no weights");
-scatter.smooth(fitted(mHECO_wt),(residuals(mHECO_wt))); title(main="HECO, PCGR, weighted"); 
-scatter.smooth(fitted(mHECO_wt2),(residuals(mHECO_wt2))); title(main="HECO, log(cover) ~ log(lag.cover), weights"); 
+# Does a scaling by sqrt(sqrt(lag.cover)) stabilize the magnitude of residuals? 
+scatter.smooth(dHECO$lag.cover,abs(residuals(mHECO))*sqrt(sqrt(dHECO$lag.cover)),xlab="lag.cover",ylab="Scaled residuals"); 
+
+# Not bad. Let's say that it does. Then the residual variance is inversely proportional to sqrt(lag.cover), 
+# so we should fit with weights = sqrt(lag.cover). 
+mHECO_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),data=dHECO) 
+
+# residual plots for the two fits 
+scatter.smooth(fitted(mHECO),residuals(mHECO,type="pearson"),ylab="Pearson residuals"); title(main="HECO, PCGR, no weights");
+scatter.smooth(fitted(mHECO_wt),residuals(mHECO_wt,type="pearson"),ylab="Pearson residuals"); title(main="HECO, PCGR, weighted"); 
 
 ### POSE
-
+dev.new(); par(mfrow=c(2,2)); 
 dPOSE <- subset(logChange,species=="Poa secunda" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dPOSE)
 dPOSE$year <- as.factor(dPOSE$year)
-mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE)
-mPOSE_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPOSE)
 
-# alternative model
-plot(log(cover)~log(lag.cover), data=dPOSE); 
-mPOSE_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year),  data=dPOSE) # 
+mPOSE <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPOSE) # fit unscaled 
 
-# look at residuals
-par(mfrow=c(2,2)); 
-scatter.smooth(fitted(mPOSE),(residuals(mPOSE))); title(main="POSE, PCGR, no weights");
-scatter.smooth(fitted(mPOSE_wt),(residuals(mPOSE_wt))); title(main="POSE, PCGR, weighted"); 
-scatter.smooth(fitted(mPOSE_wt2),(residuals(mPOSE_wt2))); title(main="POSE, log(cover) ~ log(lag.cover), weights"); 
+# Does a scaling by sqrt(sqrt(lag.cover)) stabilize the magnitude of residuals? 
+scatter.smooth(dPOSE$lag.cover,abs(residuals(mPOSE))*sqrt(sqrt(dPOSE$lag.cover)),xlab="lag.cover",ylab="Scaled residuals"); 
+
+# Not really. The unweighted fit seems to be more appropriate.  
+mPOSE_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),data=dPOSE) 
+
+# residual plots for the two fits 
+scatter.smooth(fitted(mPOSE),residuals(mPOSE,type="pearson"),ylab="Pearson residuals"); title(main="POSE, PCGR, no weights");
+scatter.smooth(fitted(mPOSE_wt),residuals(mPOSE_wt,type="pearson"),ylab="Pearson residuals"); title(main="POSE, PCGR, weighted"); 
 
 ### PSSP
-
+dev.new(); par(mfrow=c(2,2)); 
 dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Treatment!="No_grass" & year>2011)
 logSingularity(dPSSP)
 dPSSP$year <- as.factor(dPSSP$year)
-mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP)
-mPSSP_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),weights=sqrt(lag.cover),data=dPSSP)
 
-# alternative model
-plot(log(cover)~log(lag.cover), data=dPSSP); 
-mPSSP_wt2 <- lmer(log(cover) ~ offset(log(lag.cover)) + Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),  data=dPSSP) # 
+mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP) # fit unscaled 
 
-# look at residuals
-par(mfrow=c(2,2)); 
-scatter.smooth(fitted(mPSSP),(residuals(mPSSP))); title(main="PSSP, PCGR, no weights");
-scatter.smooth(fitted(mPSSP_wt),(residuals(mPSSP_wt))); title(main="PSSP, PCGR, weighted"); 
-scatter.smooth(fitted(mPSSP_wt2),(residuals(mPSSP_wt2))); title(main="PSSP, log(cover) ~ log(lag.cover), weights"); 
+# Does a scaling by sqrt(sqrt(lag.cover)) stabilize the magnitude of residuals? 
+scatter.smooth(dPSSP$lag.cover,abs(residuals(mPSSP))*sqrt(sqrt(dPSSP$lag.cover)),xlab="lag.cover",ylab="Scaled residuals"); 
 
+# Not bad, though it might be excessive. So again use wts=sqrt(lag.cover)
+mPSSP_wt <- lmer(pcgr ~ Treatment + (1|quad) + (1|year), weights=sqrt(lag.cover),data=dPSSP) 
 
-texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
+# Residual plots for the two fits 
+# The unweighted fit doesn't look so bad, but the weighted fit looks a bit better. 
+scatter.smooth(fitted(mPSSP),residuals(mPSSP,type="pearson"),ylab="Pearson residuals"); title(main="PSSP, PCGR, no weights");
+scatter.smooth(fitted(mPSSP_wt),residuals(mPSSP_wt,type="pearson"),ylab="Pearson residuals"); title(main="PSSP, PCGR, weighted"); 
+
+texreg(list(mARTR_wt,mHECO_wt,mPOSE,mPSSP_wt), ci.force=TRUE,caption="Cover change models",
       caption.above=TRUE,file=statsOutput)
-
 
 # figures ########################################################################
 
