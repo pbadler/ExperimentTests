@@ -60,8 +60,8 @@ pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 ### plot observed and predicted cover chronologically
 ###
 color1="black"
-color2="dodgerblue3" #rgb(0,100,255,alpha=175,maxColorValue = 255)
-color3="firebrick4" #rgb(153,0,0,alpha=175,maxColorValue = 255)
+color2="blue2" #rgb(0,100,255,alpha=175,maxColorValue = 255)
+color3="red" #rgb(153,0,0,alpha=175,maxColorValue = 255)
 
 figName <- ifelse(max.CI==F,"cover_projections_1step.png","cover_projections_1step_maxCI.png" )
 png(figName,res=400,width=8.5,height=6,units="in")
@@ -145,38 +145,39 @@ png(figName,units="in",height=6,width=8.5,res=600)
 dev.off()
 
 
-
 ###
-### plot observations vs predictions 1:1
+### plot quadrat level observed vs predicted cover
 ###
 
+figName <- ifelse(max.CI==F,"obsVpred_quad_year.png","obsVpred_quad_year_maxCI.png" )
+png(figName,height=7,width=7,units="in",res=450)
 
-myCols=c("black","dodgerblue3","firebrick4","darkorange")
-myPch=c(15:18)
-myPch2=c(0,1,2,5)
-myLims=c(-1.5,1.25)
+par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 
-figName <- ifelse(max.CI==F,"cover_change_1to1.png","cover_change_1to1_maxCI.png" )
-png(figName,units="in",height=4,width=8,res=600)
-
-par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
-matplot(obs.pgr.mean[1:5,3:6],pred.pgr.mean[1:5,3:6],ylim=myLims,xlim=myLims,
-        xlab="",ylab="",
-        type="p",pch=myPch,col=myCols,pty="s")
-abline(0,1)
-mtext("(A)",side=3,adj=0,line=0.5)
-legend("topleft",sppNames,pch=myPch,col=myCols,bty="n",text.font=4)
-matplot(obs.pgr.mean[6:10,3:6],pred.pgr.mean[6:10,3:6],ylim=myLims,xlim=myLims,
-        xlab="",ylab="",
-        type="p",pch=myPch,col=myCols,pty="s")
 for(i in 1:4){
-  points(obs.pgr.mean[6:10,2+i],pred.trt.pgr.mean[6:10,2+i],pch=myPch2[i],col=myCols[i])
-}
-abline(0,1)
-mtext("(B)",side=3,adj=0, line=0.5)
+  if(i==1) {myTrt="No_grass"}else{myTrt="No_shrub"}
+  control=cbind(simD[simD$Treatment=="Control",(6+i)],simD[simD$Treatment=="Control",(2+i)])
+  removal.base=cbind(simD[simD$Treatment==myTrt,(6+i)],simD[simD$Treatment==myTrt,(2+i)])
+  removal.trt=cbind(simD[simD$Treatment==myTrt,(10+i)],simD[simD$Treatment==myTrt,(2+i)])
+  maxCov=1.05*max(c(control,removal.base,removal.trt),na.rm=T)
+  plot(control,ylim=c(0,maxCov),xlim=c(0,maxCov),xlab="",ylab="")
+  title(sppNames[i],font.main=4)
+  abline(0,1,lty="dashed")
+  points(removal.base,pch=1,col="blue2")
+  points(removal.trt,pch=1,col="red")
+  abline(lm(control[,2]~0+control[,1]),col="black")
+  abline(lm(removal.base[,2]~0+removal.base[,1]),col="blue2")
+  abline(lm(removal.trt[,2]~0+removal.trt[,1]),col="red")
+  
+  if(i==1){
+    legend("topleft",c("Control","Removal (baseline)","Removal (treatment)"),pch=1,
+      col=c("black","blue2","red"),lty="solid",bty="n")
+  }
 
-mtext("Observed",side=1,outer=T,line=0.5,cex=1.2)
-mtext("Predicted",side=2,outer=T,line=0.5,cex=1.2)
+}
+
+mtext("Observed cover (%)",2,outer=T,line=0.5,cex=1.2)
+mtext("Predicted cover (%)",1,outer=T,line=0.5,cex=1.2)
 
 dev.off()
 

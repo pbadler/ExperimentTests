@@ -1,3 +1,7 @@
+# this version makes the "deltaPgr" type figures by
+# comparing observed and predicted year-to-year growth rates.
+# first aggregating across quad within year
+
 
 # call from validate wrapper
 setwd("ibm/")
