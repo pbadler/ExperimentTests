@@ -99,9 +99,11 @@ Stable coexistence requires that intraspecific interactions must limit populatio
 
 Competitive release provides an intuitive, population-level measure of the strength of interspecific competition. Following removal of one or more species from a community, how much will the abundance of the remaining species increase? Large increases in the abundance of the remaining species represent a large competitive release, and imply strong interspecific interaction. Plant ecologists have conducted dozens of removal experiments and have observed almost every possible result. In some cases, competitive release is complete: remaining species fully compensate for removed biomass \citep{leps_nutrient_1999,jutila_effects_2002}. In other cases, the degree of competitive release depended on the functional group or dominance of the removed and remaining species \citep{smith_dominant_2003,sala_resource_1989,belsky_effects_1992}. Finally, even negative effects of removals have been observed \citep{keddy_effects_1989,gilbert_dominant_2009}, consistent with the recent facilitation literature. Results from removal experiments do come with caveats. Experiments typically do not run long enough to document long-term outcomes, responses may only be measured at one life stage whereas population responses depend on the whole life cycle, and removal treatments require disturbance which may cause a variety of impacts unrelated to resource competition \citep{aarssen_neighbour_1990}.
 
-An alternative approach to studying competitive release is to fit multispecies population models that estimate species interactions using long-term, observational data, and then simulate population responses to removals. Applying this approach to arid and semiarid plant communities, we found evidence of strong intraspecific limitation and weak interspecific interactions, leading to very stable coexistence and implying little competitive release \citep{adler_coexistence_2010,chu_large_2015}. In fact, at our sagebrush steppe study site  \citep{adler_coexistence_2010}, our model predicts removal of sagebrush would actually decrease the equilibrium cover of the three dominant grass species by 0.8 to 5.5\%, reflecting the facilitative effect of sagebrush on grass recruitment and very weak competitive effects on growth and survival.  Since we only studied the most common, co-occurring species, we expected to find evidence of stable coexistence, but the predicted negative effect of sagebrush removal on grass cover is surprising given the long history of sagebrush eradication to increase grass forage production in sagebrush rangelands \citep{Cook1963, Mueggler1958, Robertson1947}. Compared to traditional field experiments, our approach has the advantage of projecting full life-cycle responses over long time periods, but its reliance on observational data sets limits the strength of our inference. We would have more confidence in our model's projections of competitive release if we could experimentally confirm the ability of our models to describe interspecific interactions.
+An alternative approach to studying competitive release is to fit multispecies population models that estimate species interactions using long-term, observational data, and then simulate population responses to removals. Applying this approach to arid and semiarid plant communities, we found evidence of strong intraspecific limitation and weak interspecific interactions, leading to very stable coexistence and implying little competitive release \citep{adler_coexistence_2010,chu_large_2015}.\new{ In fact, at our sagebrush steppe study site  \citep{adler_coexistence_2010}, our model predicts removal of sagebrush would actually decrease the equilibrium cover of the three dominant grass species by 0.8 to 5.5\%, reflecting the facilitative effect of sagebrush on grass recruitment and very weak competitive effects on growth and survival.  Since we only studied the most common, co-occurring species, we expected to find evidence of stable coexistence, but the predicted negative effect of sagebrush removal on grass cover is surprising given the long history of sagebrush eradication to increase grass forage production in
+ sagebrush rangelands \citep{Cook1963, Mueggler1958, Robertson1947}.} % end new
+Compared to traditional field experiments, our approach has the advantage of projecting full life-cycle responses over long time periods, but its reliance on observational data sets limits the strength of our inference. We would have more confidence in our model's projections of competitive release if we could experimentally confirm the ability of our models to describe interspecific interactions.
 
-To test whether our sagebrush community model, which is based on observational data, underestimates the strength of interspecific competition and competitive release, we conducted a removal experiment in a sagebrush steppe. We studied the responses of three perennial grass species to removal of sagebrush, and the response of sagebrush to removal of all grasses. The primary purpose of the experiment was not to directly measure competitive release, which is difficult to do over a short time period in a semiarid ecosystem with low and variable plant cover, but rather to validate the parameters in our model that represent key interspecific interactions and ultimately determine the magnitude of competitive release. We addressed two research questions: First, are the survival, growth or recruitment of our target species significantly different in control vs. removal treatments after accounting for differences in local species composition? Because our demographic models include the effects of neighborhood crowding, they should be able to predict how experimental removal of neighbors alters demographic performance. If the full effect of experimental removals is stronger than predicted, it means that our statistical models underestimate competitive release.  Our second question integrates across the full life cycle: how do short and long-term population-level responses to removals compare to projections from multispecies population models based on observational data? If models based on observational data adequately describe facilitative and competitive interactions, the population dynamics they project should be similar to projections from models that include information from the experimental removal treatments, a result which would validate the use of models and long-term data sets to study interspecific interactions. 
+To test whether our sagebrush community model, which is based on observational data, \new{underestimates the strength of interspecific competition and competitive release}, we conducted a removal experiment in a sagebrush steppe. We studied the responses of three perennial grass species to removal of sagebrush, and the response of sagebrush to removal of all grasses. \new{The primary purpose of the experiment was not to directly measure competitive release, which is difficult to do over a short time period in a semiarid ecosystem with low and variable plant cover, but rather to validate the parameters in our model that represent key interspecific interactions and ultimately determine the magnitude of competitive release.} We addressed two research questions: First, are the survival, growth or recruitment of our target species significantly different in control vs. removal treatments after accounting for differences in local species composition? Because our demographic models include the effects of neighborhood crowding, they should be able to predict how experimental removal of neighbors alters demographic performance. If the full effect of experimental removals is stronger than predicted, it means that our statistical models underestimate competitive release.  Our second question integrates across the full life cycle: how do short and long-term population-level responses to removals compare to projections from multispecies population models based on observational data? If models based on observational data adequately describe facilitative and competitive interactions, the population dynamics they project should be similar to projections from models that include information from the experimental removal treatments, a result which would validate the use of models and long-term data sets to study interspecific interactions. 
 
 \section*{Methods}
 
@@ -120,75 +122,36 @@ In spring 2011, in a large exclosure containing six of the historical permanent 
 
 Although the primary focus of our analysis is comparison of observed removal responses with responses predicted by our population models, we also conducted a more traditional statistical analysis of differences in cover trends on control vs. removal plots. The response variable for this analysis was year-to-year change in cover at the quadrat scale, calculated as $log(Cover_{t+1}/Cover_t)$. We tested for the effect of removal treatment on this measure of cover change with a linear mixed effects model implemented in the \texttt{lme4} package \citep{Bates2015} of R, including year and quadrat as random effects. We considered the removal treatment effect to be significant when the 95\% confidence interval on the estimated coefficient did not overlap zero.  Because variance in residuals of plots with low cover was high, we explored fitting by weighted least squares, to account for the apparent heteroscedasiticity. The results of these tests were qualitatively similar, so opted to only report the simpler analysis.
 
-\subsection*{Statistical models of vital rates}
 
-Our regression models for survival, growth and recruitment follow previous work \citep{adler_coexistence_2010,chu_large_2015}. We model the survival probability and the growth of individual genets as a function of genet size, the neighborhood-scale crowding experienced by the genet from both conspecific and heterospecific genets, temporal variation among years, and permanent spatial variation among groups of quadrats (`group'; here means a set of nearby quadrats located within one pasture or grazing exclosure). The current analysis departs from previous work with the inclusion of a categorical removal treatment effect. If the conspecific and heterospecific crowding effects explain demographic rates in removal treatment plots as well as they do in control plots, then there will be no need for the removal treatment effect, and the estimated coefficient will be small and not significantly different from zero. However, if demographic rates in removal plots differ from control plots even after accounting for crowding effects, then the removal treatment effect will be significant. For example, we might find that, holding crowding constant, grasses grow more quickly in the removal plots than in the control plots. This result would indicate that our ``baseline model'', a model including all estimated parameters except for the removal treatment effect, underestimates competitive release. We refer to the model that includes the estimated removal treatment effect as the ``removal model". 
+\subsection*{Overview of statistical models of vital rates}
 
-More formally, we modeled the survival probability, $S$, of genet $i$ in species $j$ (which is in quadrat group $g$ and removal treatment $h$), 
-from time $t$ to $t+1$  as
+\new{
+Our regression models for survival, growth and recruitment follow previous work \citep{adler_coexistence_2010,chu_large_2015}. The current analysis departs from previous work with the inclusion of a categorical removal treatment effect. Although the three vital rate models differ in functional form (see Appendix A for complete model descriptions), all of them have a linear predictor, $\mu$, containing the following terms:}
+
 \begin{equation}
-\mbox{logit}(S_{ij,t+1}) = \gamma_{j,t}^S + \varphi_{jg}^S+  \chi_{jh}^S  + \beta_{j,t}^S u_{ij,t} +  
-\sum \limits_{m} \omega_{jm}^S {W}_{ijm,t}
+\mu_ij = \gamma_j+ \varphi_{jg}+  \chi_j  + \sum \limits_{m} \omega_{jm} {W}_{ijm}
 \label{eqn:survReg}
 \end{equation}
-where $\gamma$ is a time-dependent intercept (year effect), $\varphi$ is the coefficient for the 
-effect of spatial location group, $\chi$ is the removal treatment effect,and  $\beta$ is the coefficient that 
-represents the effect of log genet size, $u$, on survival. 
-$W_{ijm,t}$ is the crowding of individual $i$ in species $j$ by neighbors of species $m$ (explained below), and 
-$\omega_{jm}$ is an interaction coefficient which determines the impact of crowding by species $m$ on the focal species $j$. 
 
-Our growth model has a similar structure. The change in genet size from time $t$ to $t+1$ , conditional on survival, is given by:
-\begin{equation}
-u_{ij,t+1} = \gamma_{j,t}^G + \varphi_{jg}^G+  \chi_{jh}^G  + \beta_{j,t}^G u_{ij,t} + 
-\sum \limits_{m} \omega_{jm}^G {W}_{ijm,t} + \varepsilon_{ij,t}^G .
-\label{eqn:growReg}
-\end{equation}
-To capture the non-constant error variance in growth, we modeled the variance $\varepsilon$ about the growth 
-curve (\ref{eqn:growReg}) as a nonlinear function of predicted genet size:
-\begin{equation}
-Var(\varepsilon_{ij,t}^G) = a \exp(b\hat{u}_{ij,t+1}).
-\label{eqn:growVar}
-\end{equation}
-where $\hat{u}_{ij,t+1}$ is the right-hand side of (\ref{eqn:growReg}) without $\varepsilon$. 
+\new{where $i$ refers to an individual genet (for survival and growth) or quadrat (for recruitment) of species $j$, $\gamma$ is a time-dependent intercept (year effect), $\varphi$ is the coefficient for the effect of spatial location (`$g$' represents a group of nearby quadrats located within one pasture or grazing exclosure), $\chi$ is the removal treatment effect, 
+$W_{ijm,t}$ is the crowding on species $j$ exerted by neighbors of species $m$ at the individual (survival and growth) or
+quadrat (recruitment) scale, and $\omega_{jm}$ is an interaction coefficient which determines the impact of crowding by species $m$ on the 
+focal species $j$. }
 
-Our model includes crowding from the four dominant species, \textit{A. tripartita}, \textit{H. comata}, \textit{P. spicata}, and \textit{P. secunda}, as well as two covariates representing total crowding from (1) all other perennial grasses and shrubs, which were mapped as polygons, and (2) all forb species, which were mapped as points. Appendix A provides a detailed explanation of how we modeled crowding based on the size of and distance to neighboring plants around each focal genet.
-
-We model recruitment at the quadrat level rather than at the individual genet level because the mapped data do not allow 
-us to determine which recruits were produced by which potential parent genets. We assume that the number of individuals, $y$, of species $j$ recruiting at 
-time $t+1$ in the location $q$ follows a negative binomial distribution:
-\begin{equation}
-y_{jq,t+1}= NegBin(\lambda_{jq,t+1},\theta) 	   
-\label{eqn:recrDataModel}
-\end{equation}
-where $\lambda$ is the mean and $\theta$ is the size parameter (\texttt{dnegbin(p,$\theta$)} in the BUGS language, with $p=\theta/(\theta+\lambda)$). 
-In turn, $\lambda$ depends on the composition of the quadrat in the previous year:
-\begin{equation}
-\lambda_{jq,t+1} = C'_{jq,t} \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jh}^R + 
-\sum \limits_{m} \omega_{jm}^R \sqrt{C'_{mq,t}} \right)}
-\label{eqn:recrProcessModel}
-\end{equation}
-where the superscript $R$ refers to Recruitment, $C'_{jq,t}$ is the `effective cover' (cm$^2$) of species $j$ in quadrat $q$ at time $t$, $\gamma$ 
-is a time-dependent intercept, $\varphi$ is a coefficient for the effect of spatial location group,
-$\chi$ is the removal treatment effect, and $\omega_{jm}$ is the coefficient that determines the effect of species $m$ cover on recruitment by species $j$. 
-Eqn (\ref{eqn:recrProcessModel}) is essentially the Ricker model for discrete time population growth \citep{ricker_stock_1954}, except that we use the square root of cover in the density-dependent term. We previously used a Ricker equation \citep{adler_coexistence_2010}, but using the square-root transformation instead gave a lower Deviance Information Criterion (DIC) value \citep{spiegelhalter_bayesian_2002} for the recruitment model. Following previous work \citep{adler_coexistence_2010}, we treated year and spatial group variables as random factors, allowing intercepts to vary among years and spatial locations. 
-
-Due to the possibility that plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location group, $g$, in which the 
-quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
-
-We ran Markov Chain Monte Carlo (MCMC) simulations in WinBUGS 1.4 \citep{lunn_winbugs_2000} to estimate the recruitment model parameters. Each model was run for 20,000 iterations and two independent chains with different initial values for parameters. We discarded the initial 10,000 samples. Convergence was observed graphically for all parameters, and confirmed by the Brooks-Gelman statistic \citep{brooks_general_1998}. For all three vital rate models, we considered the effect of removal treatments, or other coefficients of interest, to be significant when the 95\% confidence interval (or posterior interval) on the estimate of $\chi$ did not overlap zero.  
+\new{If the conspecific and heterospecific crowding effects, the $\omega_{jm}$'s, explain demographic rates in removal treatment plots as well as they do in control plots, then there will be no need for the removal treatment effect, and the estimated coefficient will be small and not significantly different from zero. However, if demographic rates in removal plots differ from control plots even after accounting for crowding effects, then the removal treatment effect will be significant. For example, we might find that, holding crowding constant, grasses grow more quickly in the sagebrush removal plots than in the control plots. This result would indicate that predictions from a ``baseline model'', a model including all estimated parameters except for the removal treatment effect, underestimates competitive release. We refer to the model that includes the estimated removal treatment effect as the ``removal model". Note that these are not estimated as separate models; we estimate all parameters together, but when we generate predictions from the baseline model, we simply set the removal treatment effects to zero.} % end new
 
 \subsection*{Individual-based models}
 
 The vital rate regressions provide a qualitative test of removal treatment effects: Does removal have an effect on a vital rate that goes above and beyond the effects of species interactions that are explicit in the model? However, the population-level effects of removal integrate the effects of the removal treatment on all three vital rates. We used an individual-based model (IBM) to predict changes in population size (cover) from one year to the next in removal and control quadrats, and compared these predictions with observed changes. 
 
-To simulate changes in cover in each quadrat from year $t$ to year $t+1$, we initialized the IBM with the actual configuration of the four focal species (genet sizes and locations) observed in year $t$. We then projected the model forward one year, applying the random year effects corresponding to year $t$ and the spatial random effects corresponding to the quadrat of interest. Because the main goal of this comparison is to look for systematic deviations between model predictions and observations, we used a deterministic version of the model (e.g., recruitment is the $\lambda$ of (\ref{eqn:recrProcessModel}), rather than a random draw from a Poisson distribution with a mean of $\lambda$).
-We first applied the recruitment regression to determine the expected number of new recruits at time $t+1$, which we then multiplied by the mean size of recruits observed for the focal species to get expected cover of new recruits. We then used the survival regression to predict the survival probability of each genet, and the growth regression to predict the change in size of each genet. Expected cover at $t+1$ is expected area of new recruits, plus the sum of the survival probabilities multiplied by the expected sizes. Because we do not carry these simulations forward beyond one time step, we do not need to assign locations to the new recruits.
+To simulate changes in cover in each quadrat from year $t$ to year $t+1$, we initialized the IBM with the actual configuration of the four focal species (genet sizes and locations) observed in year $t$. We then projected the model forward one year, applying the random year effects corresponding to year $t$ and the spatial random effects corresponding to the quadrat of interest. Because the main goal of this comparison is to look for systematic deviations between model predictions and observations, we used a deterministic version of the model (e.g., recruitment is the $\lambda$ of (\ref{eqn:recrProcessModel}), rather than a random draw from a Poisson distribution with a mean of $\lambda$). \comment{STEVE DO WE NEED TO EXPLAIN OUR JENSEN'S INEQUALITY CORRECTION HERE?}
+We first applied the recruitment regression to determine the expected number of new recruits at time $t+1$, which we then multiplied by the mean size of recruits observed for the focal species to get expected cover of new recruits. We then used the survival regression to predict the survival probability of each genet, and the growth regression to predict the change in size of each genet. Expected cover at $t+1$ is expected area of new recruits, plus the sum of the survival probabilities multiplied by the expected sizes. Because we do not carry these simulations forward beyond one time step, we do not need to assign locations to the new recruits. For control plots, we used the baseline version of the model with all removal treatment effects set to zero. For removal treatment plots, we generated predictions from both the baseline and removal versions of the model, with and without treatment effects set to zero, respectively.  
 
-For control plots, we used a version of the model with all removal treatment effects set to zero. For removal treatment plots, we generated predictions from two versions of the model, with and without treatment effects set to zero.  We calculated the mean across quadrats of observed log cover change, $log(Cover_{t+1}/Cover_t)$ and compared it to the mean across quadrats of the predicted cover change.
-
-One reason we might observe small effects of the removal treatment is the limited power of our experiment. Perhaps large uncertainty in the estimates of these effects makes it difficult to reject the null hypothesis represented by our baseline model. To address this possibility, we also simulated a version of the model in which we replaced the mean estimate of each removal treatment effect with the parameter value at either the 5\% or 95\% confidence interval, whichever was farthest from zero. This version of the model shows the population-level changes we would expect given maximum removal effects.
+One reason we might observe small effects of the removal treatment is the limited power of our experiment. Perhaps large uncertainty in the estimates of these effects makes it difficult to reject the null hypothesis represented by our baseline model. To address this possibility, we also simulated a version of the model in which we replaced the mean estimate of each removal treatment effect with the parameter value at either the 5\% or 95\% confidence limit, whichever was farthest from zero. This version of the model shows the population-level changes we would expect given maximum removal effects.
 
 \subsection*{Integral projection models}
+
+\comment{Should we move much of this to Appendix A?}
 
 To quantify the long-term, population-level consequences of the removal effects, we built and then simulated an integral projection model (IPM). In our IPM, the population of species $j$ is represented by a density function $n(u_{j,t})$ which gives the density of genets of size $u$ at time $t$, with genet size on a natural-log scale, i.e. $n(u_{j,t})du$ is the number of genets whose log area is between $u$ and $u+du$, hence their area 
 (on arithmetic scale) is between $exp(u_j)$ and $exp(u_j+du)$. The size distribution function at time $t+1$ is given by
@@ -210,8 +173,7 @@ index calculated from the size distributions of the competing species. In the vi
 individual has a unique neighborhood crowding index based on the spatial locations and sizes of neighboring plants. This 
 measure cannot be extended to the IPM, which tracks individual size but not location. Instead we used a 
 mean-field approximation that captures the essential features of spatially-explicit neighborhood interactions \citep{adler_coexistence_2010}. 
-We found that in both the observed data and IBM simulations, heterospecific individuals were approximately randomly distributed with respect to each other, 
-but conspecific individuals displayed a non-random, size-dependent patterns: small genets were randomly distributed, while large genets 
+We found that in both the observed data and IBM simulations, heterospecific individuals were approximately randomly distributed with respect to each other, but conspecific individuals displayed a non-random, size-dependent patterns: small genets were randomly distributed, while large genets 
 were segregated from each other. The overdispersion of large conspecific genets was introduced into the IPM 
 with a `no-overlap' rule \citep{adler_coexistence_2010}. In \ref{suppMethods} we explain how the spline competition kernels with the no-overlap rule were used to compute neighborhood crowding index as a function of individual size for the IPM.  
 
@@ -222,7 +184,7 @@ area of new recruits per quadrat, per unit area of parents. To incorporate this 
 $R_j(v_j,u_j,\vec{n})=c_{0,j}(v_j)e^{u_j}\Phi_j$ \citep{adler_coexistence_2010} where $c_{0,j}$ is the
 size distribution of new recruits. $\Phi_j$ is calculated from eqn. (\ref{eqn:recrDataModel}) with total cover values computed from the population densities as $C'_{j,t} = \int e^u n(u_{j,t}) du$. 
 
-We simulated the IPM to estimate equilibrium abundances under three different scenarios. For all IPM simulations, we set the spatial random effects to zero, meaning that we are simulating dynamics on a hypothetical, average site. The first scenario featured all four species and our ``baseline'' model for control plots (no removal effects). We initialized all species with arbitrarily low cover and ran the model for 500 time steps (years) to allow the community to reach an equilibrium. To incorporate temporal environmental variation, at each time step we randomly selected one of the 30 sets of random year effects for the survival, growth and recruitment models (``kernel selection'' in the terminology of \citealt{metcalf_statistical_2015}). We calculated the equilibrium cover for each species by simulating an additional 2000 time steps and averaging each species' cover over this period. For the second scenario, we set the cover of \textit{A. tripartita} to zero and then repeated the procedure. This simulation estimates the competitive release of grasses following \textit{A. tripartita} removal according to the baseline model (no removal effects). For the third scenario, we again set  \textit{A. triparitia} cover to zero, but this time we projected the model using the vital rate regressions that include removal effects. If our baseline model successfully predicts competitive release observed in the removal experiment, then the results of the second and third scenarios should be similar. To the extent that the baseline model underestimates (or overestimates) the actual competitive release, the results of the second and third scenarios will differ. As with the IBM, we repeated these simulations using maximum removal treatment effects represented by parameters values at the 5\% or 95\% confidence limit farthest from zero. We did not simulate long-term \textit{A. tripartita} response to grass removal because the removal treatment effects in the vital rate regressions were never significantly different from zero, indicating that the baseline model effectively predicted competitive release.
+We simulated the IPM to estimate equilibrium abundances under three different scenarios. For all IPM simulations, we set the spatial random effects to zero, meaning that we are simulating dynamics on a hypothetical, average site. The first scenario featured all four species and our baseline model for control plots (no removal effects). We initialized all species with arbitrarily low cover and ran the model for 500 time steps (years) to allow the community to reach an equilibrium. To incorporate temporal environmental variation, at each time step we randomly selected one of the 30 sets of random year effects for the survival, growth and recruitment models (``kernel selection'' in the terminology of \citealt{metcalf_statistical_2015}). We calculated the equilibrium cover for each species by simulating an additional 2000 time steps and averaging each species' cover over this period. For the second scenario, we set the cover of \textit{A. tripartita} to zero and then repeated the procedure. This simulation projects the competitive release of grasses following \textit{A. tripartita} removal according to the baseline model (no removal effects). For the third scenario, we again set  \textit{A. triparitia} cover to zero, but this time we projected the model using the vital rate regressions that include removal effects. If our baseline model successfully predicts competitive release observed in the removal experiment, then the results of the second and third scenarios should be similar. To the extent that the baseline model underestimates (or overestimates) the actual competitive release, the results of the second and third scenarios will differ. As with the IBM, we repeated these simulations using maximum removal treatment effects represented by parameters values at the 5\% or 95\% confidence limit farthest from zero. We do not show simulations of long-term \textit{A. tripartita} response to grass removal because the removal treatment effects in the vital rate regressions were never significantly different from zero, indicating that the baseline model effectively predicted competitive release. \comment{Just do it?}
 
 
 \section*{Results}
@@ -233,12 +195,7 @@ During the period of our experiment, annual water-year (October-September) preci
 
 Trends in cover by species and removal treatment were variable. For example, grass removal had little effect on the cover of \textit{A. tripartita} 
 (Fig. \ref{fig:CoverTrends}), but shrub removal did appear to cause an increase in the cover of \textit{P. spicata}. 
-We tested the effects of removal on cover by analyzing year-to-year changes in (log) cover, a measure of population growth rate (Fig. \ref{fig:CoverChange}). The removal treatments had no significant effect on 
-\textit{A. tripartita} (95\% confidence interval on removal treatment effect: -0.75, 0.56) or 
-\textit{P. secunda} (95\% CI: -0.41, 0.25) population growth, but did increase 
-\textit{H. comata} (95\% CI: 0.01, 0.65) and
- \textit{P. spicata} (95\% CI: 0.01, 0.40) population growth 
-(Table \ref{table:coefficients}). However, these treatment comparisons do not address our questions about whether responses to removal were 
+However, when we tested the effects of removal on cover by analyzing year-to-year changes in (log) cover, a measure of population growth rate (Fig. \ref{fig:CoverChange}), none of the removal treatment effects were significantly different from zero (Table \ref{table:coefficients}). For \textit{P. spicata}, the 95\% confidence interval only just contained zero (95\% CI: 0.01, 0.40), providing marginal evidence for a positive effect of removal on population growth. Fitting with weighted least squares to address heteroscedasticity in residuals indicated even less evidence for a positive response of  \textit{P. spicata} to removal. However, these treatment comparisons do not directly address our questions about whether responses to removal were 
 adequately predicted by models fit to historical, observational data. 
 
 \begin{figure}[tbp]
@@ -344,6 +301,61 @@ Funding was provided by NSF grants DEB-1353078,and  DEB-1054040 to PBA and DEB-1
 \vspace{0.4in} 
 
 \section*{Appendix A. Detailed Methods} \label{suppMethods}
+
+\subsection*{Statistical models of vital rates}
+
+We modeled the survival probability, $S$, of genet $i$ in species $j$ (which is in quadrat group $g$ and removal treatment $h$), 
+from time $t$ to $t+1$  as
+\begin{equation}
+\mbox{logit}(S_{ij,t+1}) = \gamma_{j,t}^S + \varphi_{jg}^S+  \chi_{jh}^S  + \beta_{j,t}^S u_{ij,t} +  
+\sum \limits_{m} \omega_{jm}^S {W}_{ijm,t}
+\label{eqn:survReg}
+\end{equation}
+where $\gamma$ is a time-dependent intercept (year effect), $\varphi$ is the coefficient for the 
+effect of spatial location group, $\chi$ is the removal treatment effect,and  $\beta$ is the coefficient that 
+represents the effect of log genet size, $u$, on survival. 
+$W_{ijm,t}$ is the crowding of individual $i$ in species $j$ by neighbors of species $m$ (explained below), and 
+$\omega_{jm}$ is an interaction coefficient which determines the impact of crowding by species $m$ on the focal species $j$. 
+
+Our growth model has a similar structure. The change in genet size from time $t$ to $t+1$ , conditional on survival, is given by:
+\begin{equation}
+u_{ij,t+1} = \gamma_{j,t}^G + \varphi_{jg}^G+  \chi_{jh}^G  + \beta_{j,t}^G u_{ij,t} + 
+\sum \limits_{m} \omega_{jm}^G {W}_{ijm,t} + \varepsilon_{ij,t}^G .
+\label{eqn:growReg}
+\end{equation}
+To capture the non-constant error variance in growth, we modeled the variance $\varepsilon$ about the growth 
+curve (\ref{eqn:growReg}) as a nonlinear function of predicted genet size:
+\begin{equation}
+Var(\varepsilon_{ij,t}^G) = a \exp(b\hat{u}_{ij,t+1}).
+\label{eqn:growVar}
+\end{equation}
+where $\hat{u}_{ij,t+1}$ is the right-hand side of (\ref{eqn:growReg}) without $\varepsilon$. 
+
+Our model includes crowding from the four dominant species, \textit{A. tripartita}, \textit{H. comata}, \textit{P. spicata}, and \textit{P. secunda}, as well as two covariates representing total crowding from (1) all other perennial grasses and shrubs, which were mapped as polygons, and (2) all forb species, which were mapped as points. The next section (\textit{Modeling local crowding}) provides a detailed explanation of how we modeled crowding based on the size of and distance to neighboring plants around each focal genet.
+
+We model recruitment at the quadrat level rather than at the individual genet level because the mapped data do not allow 
+us to determine which recruits were produced by which potential parent genets. We assume that the number of individuals, $y$, of species $j$ recruiting at 
+time $t+1$ in the location $q$ follows a negative binomial distribution:
+\begin{equation}
+y_{jq,t+1}= NegBin(\lambda_{jq,t+1},\theta) 	   
+\label{eqn:recrDataModel}
+\end{equation}
+where $\lambda$ is the mean and $\theta$ is the size parameter (\texttt{dnegbin(p,$\theta$)} in the BUGS language, with $p=\theta/(\theta+\lambda)$). 
+In turn, $\lambda$ depends on the composition of the quadrat in the previous year:
+\begin{equation}
+\lambda_{jq,t+1} = C'_{jq,t} \exp{\left(\gamma_{j,t}^R +  \varphi_{jg}^R + \chi_{jh}^R + 
+\sum \limits_{m} \omega_{jm}^R \sqrt{C'_{mq,t}} \right)}
+\label{eqn:recrProcessModel}
+\end{equation}
+where the superscript $R$ refers to Recruitment, $C'_{jq,t}$ is the `effective cover' (cm$^2$) of species $j$ in quadrat $q$ at time $t$, $\gamma$ 
+is a time-dependent intercept, $\varphi$ is a coefficient for the effect of spatial location group,
+$\chi$ is the removal treatment effect, and $\omega_{jm}$ is the coefficient that determines the effect of species $m$ cover on recruitment by species $j$. 
+Eqn (\ref{eqn:recrProcessModel}) is essentially the Ricker model for discrete time population growth \citep{ricker_stock_1954}, except that we use the square root of cover in the density-dependent term. We previously used a Ricker equation \citep{adler_coexistence_2010}, but using the square-root transformation instead gave a lower Deviance Information Criterion (DIC) value \citep{spiegelhalter_bayesian_2002} for the recruitment model. Following previous work \citep{adler_coexistence_2010}, we treated year and spatial group variables as random factors, allowing intercepts to vary among years and spatial locations. 
+
+Due to the possibility that plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location group, $g$, in which the 
+quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
+
+We ran Markov Chain Monte Carlo (MCMC) simulations in WinBUGS 1.4 \citep{lunn_winbugs_2000} to estimate the recruitment model parameters. Each model was run for 20,000 iterations and two independent chains with different initial values for parameters. We discarded the initial 10,000 samples. Convergence was observed graphically for all parameters, and confirmed by the Brooks-Gelman statistic \citep{brooks_general_1998}. For all three vital rate models, we considered the effect of removal treatments, or other coefficients of interest, to be significant when the 95\% confidence interval (or posterior interval) on the estimate of $\chi$ did not overlap zero.  
 
 \subsection*{Modeling local crowding}
 
@@ -462,29 +474,30 @@ This integral is again finite and computable because the kernels $F$ fall to 0 a
 % supplementary tables
 
 \begin{table}[h]
-\caption{Statistical models of year-to-year changes in log(cover) for the four focal species.}
+\caption{Statistical models of year-to-year changes in log(cover) for the four focal species. Values in square brackets show 95\%
+ confidence intervals.}
 \centering
 %\begin{center}
 \begin{tabular}{l c c c c }
 \hline
 Species & \textit{A. tripartita} & \textit{H. comata} & \textit{P. secunda} & \textit{P. spicata} \\
 \hline
-(Intercept)           & $0.00$           & $-0.05$          & $0.01$           & $-0.10$          \\
-                      & $[-0.41;\ 0.42]$ & $[-0.21;\ 0.10]$ & $[-0.26;\ 0.28]$ & $[-0.28;\ 0.08]$ \\
-TreatmentNo\_grass    & $-0.09$          &                  &                  &                  \\
-                      & $[-0.75;\ 0.56]$ &                  &                  &                  \\
-TreatmentNo\_shrub    &                  & $0.33^{*}$       & $-0.08$          & $0.21^{*}$       \\
-                      &                  & $[0.01;\ 0.65]$  & $[-0.41;\ 0.25]$ & $[0.01;\ 0.40]$  \\
+(Intercept)           & $-0.03$          & $0.08$           & $-0.14$          & $0.02$           \\
+                      & $[-0.48;\ 0.41]$ & $[-0.14;\ 0.30]$ & $[-0.56;\ 0.27]$ & $[-0.24;\ 0.29]$ \\
+TreatmentNo\_grass    & $-0.05$          &                  &                  &                  \\
+                      & $[-0.74;\ 0.64]$ &                  &                  &                  \\
+TreatmentNo\_shrub    &                  & $0.24$           & $-0.05$          & $0.18$           \\
+                      &                  & $[-0.12;\ 0.60]$ & $[-0.35;\ 0.25]$ & $[-0.01;\ 0.38]$ \\
 \hline
-AIC                   & 284.97           & 160.41           & 337.77           & 253.15           \\
-BIC                   & 298.99           & 172.62           & 352.65           & 268.46           \\
-Log Likelihood        & -137.49          & -75.20           & -163.88          & -121.57          \\
-Num. obs.             & 122              & 85               & 145              & 158              \\
+AIC                   & 227.74           & 114.65           & 205.41           & 168.17           \\
+BIC                   & 240.01           & 124.69           & 218.18           & 181.40           \\
+Log Likelihood        & -108.87          & -52.33           & -97.70           & -79.09           \\
+Num. obs.             & 86               & 55               & 95               & 104              \\
 Num. groups: quad     & 19               & 11               & 21               & 22               \\
-Num. groups: year     & 9                & 9                & 9                & 9                \\
-Var: quad (Intercept) & 0.43             & 0.00             & 0.02             & 0.00             \\
-Var: year (Intercept) & 0.00             & 0.02             & 0.12             & 0.06             \\
-Var: Residual         & 0.41             & 0.32             & 0.48             & 0.24             \\
+Num. groups: year     & 5                & 5                & 5                & 5                \\
+Var: quad (Intercept) & 0.44             & 0.00             & 0.02             & 0.00             \\
+Var: year (Intercept) & 0.00             & 0.02             & 0.19             & 0.07             \\
+Var: Residual         & 0.52             & 0.36             & 0.38             & 0.24             \\
 \hline
 \multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
 \end{tabular}

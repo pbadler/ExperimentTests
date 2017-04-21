@@ -109,7 +109,7 @@ dPSSP <- subset(logChange,species=="Pseudoroegneria spicata" & !is.na(pcgr) & Tr
 dPSSP$year <- as.factor(dPSSP$year)
 mPSSP <- lmer(pcgr ~ Treatment + (1|quad) + (1|year),data=dPSSP) # fit unscaled 
 
-texreg(list(mARTR_wt,mHECO_wt,mPOSE,mPSSP_wt), ci.force=TRUE,caption="Cover change models",
+texreg(list(mARTR,mHECO,mPOSE,mPSSP), ci.force=TRUE,caption="Cover change models",
       caption.above=TRUE,file=statsOutput)
 
 # figures ########################################################################
