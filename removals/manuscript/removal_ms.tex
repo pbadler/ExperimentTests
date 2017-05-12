@@ -104,7 +104,7 @@ An alternative approach to studying competitive release is to fit multispecies p
  sagebrush rangelands \citep{Cook1963, Mueggler1958, Robertson1947}.} % end new
 Compared to traditional field experiments, our approach has the advantage of projecting full life-cycle responses over long time periods, but its reliance on observational data sets limits the strength of our inference. We would have more confidence in our model's projections of competitive release if we could experimentally confirm the ability of our models to describe interspecific interactions.
 
-To test whether our sagebrush community model, which is based on observational data, \new{underestimates the strength of interspecific competition and competitive release}, we conducted a removal experiment in a sagebrush steppe. We studied the responses of three perennial grass species to removal of sagebrush, and the response of sagebrush to removal of all grasses. \new{The primary purpose of the experiment was not to directly measure competitive release, which is difficult to do over a short time period in a semiarid ecosystem with low and variable plant cover, but rather to validate the parameters in our model that represent key interspecific interactions and ultimately determine the magnitude of competitive release.} We addressed two research questions: First, are the survival, growth or recruitment of our target species significantly different in control vs. removal treatments after accounting for differences in local species composition? Because our demographic models include the effects of neighborhood crowding, they should be able to predict how experimental removal of neighbors alters demographic performance. If the full effect of experimental removals is stronger than predicted, it means that our statistical models underestimate competitive release.  Our second question integrates across the full life cycle: how do short and long-term population-level responses to removals compare to projections from multispecies population models based on observational data? If models based on observational data adequately describe facilitative and competitive interactions, the population dynamics they project should be similar to projections from models that include information from the experimental removal treatments, a result which would validate the use of models and long-term data sets to study interspecific interactions. 
+To test whether our sagebrush community model, which is based on observational data, \new{underestimates the strength of interspecific competition and competitive release}, we conducted a removal experiment in a sagebrush steppe. We studied the responses of three perennial grass species to removal of sagebrush, and the response of sagebrush to removal of all grasses. \new{The primary purpose of the experiment was not to directly measure competitive release, which is difficult to do over a short time period in a semiarid ecosystem with low and variable plant cover, but rather to validate the parameters in our model that represent key interspecific interactions and ultimately determine the magnitude of competitive release.} We addressed two research questions: First, are the survival, growth or recruitment of our target species significantly different in control vs. removal treatments after accounting for differences in local species composition? Because our demographic models include the effects of neighborhood crowding, they should be able to predict how experimental removal of neighbors alters demographic performance. If the full effect of experimental removals is stronger than predicted, it means that our statistical models underestimate competitive release. Our second question integrates across the full life cycle: how do short and long-term population-level responses to removals compare to projections from multispecies population models based on observational data? If models based on observational data adequately describe facilitative and competitive interactions, the population dynamics they project should be similar to projections from models that include information from the experimental removal treatments, a result which would validate the use of models and long-term data sets to study interspecific interactions. 
 
 \section*{Methods}
 
@@ -204,7 +204,9 @@ We simulated the IPM to estimate equilibrium abundances under three different sc
 
 \section*{Results}
 
-During the period of our experiment, annual water-year (October-September) precipitation fell within the 5\% - 95\% quantiles of the long-term mean, although more years fell below the mean than above it (\ref{fig:climate}a). However, annual mean temperatures were consistently warm relative to the long-term mean, and two years were warmer than the 95\% quantile (Figure \ref{fig:climate}b).  
+During the period of our experiment, annual water-year (October-September) precipitation fell within the 5\% - 95\% quantiles of the 
+long-term mean, although more years fell below the mean than above it (\ref{fig:climate}a). However, annual mean temperatures 
+were consistently warm relative to the long-term mean, and two years were warmer than the 95\% quantile (Figure \ref{fig:climate}b).  
 
 \subsection*{Cover trends}
 
@@ -219,7 +221,8 @@ response of  \textit{P. spicata} to removal.}
 covariates? I think reviewers will also want to know what was done. And without that information, 
 it's not clear what the residuals would be, or what weighted least squares would entail. } 
 However, these treatment comparisons do not directly address our questions about whether 
-responses to removal were adequately predicted by models fit to historical, observational data. 
+responses to removal were adequately predicted by models fit to historical, observational data. \comment{SPE: is it ``historical, observational data'' or was the ``baseline'' model
+fitted to observational data both historical and modern?} 
 
 \begin{figure}[tbp]
 \centering
@@ -234,17 +237,22 @@ of the experiment in 2011 and the efficacy of the removal treatments. Source fil
 
 \subsection*{Vital rates}
 
-Our vital rate models take into account the effects of local species composition and should therefore be able to explain the effect of removals on survival, growth and recruitment without any additional parameters. 
-If the removal treatment effects that we added to these models are statistically significant, it would indicate an effect of removals either larger or smaller than the effect predicted by a model based on data 
-from the historical control plots. 
-\comment{SPE: is the baseline model just based on the historical control plots data, or also on the modern data from control plots?} 
+Our vital rate models take into account the effects of local species composition and should therefore be able 
+to explain the effect of removals on survival, growth and recruitment without any additional parameters. 
+\new{SPE: As in our previous studies using only historical data, the neighborhood competition coefficients in the 
+fitted models imply that interspecific competition is much weaker than intraspecific competition, in many
+cases by 1-2 orders of magnitude (Table \ref{table:alphas}).}  
+If the removal treatment effects that we added to these models are statistically significant, it would indicate an effect of 
+removals either larger or smaller than the effect predicted by a model based on data from the historical control plots. 
+\comment{SPE: is the baseline model just based on the historical data, or also on the modern data from control plots? 
+For me, ``historical control plots'' is ambiguous on this point.} 
 For the survival models, the 95\% confidence intervals on the removal effects overlapped zero for all four species (Fig. \ref{fig:VitalRateTest}; 
 Tables \ref{ARTRsurvival} to \ref{PSSPsurvival}), meaning that the survival probabilities of plants in removal plots can be predicted based on data 
 from control plots. For the growth models, the 95\% confidence intervals on the removal effects were positive for \textit{P. secunda}  and \textit{P. spicata},
  meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions 
  (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). In contrast, \textit{Poa secunda} had lower recruitment in removal 
  than controls plots (upper limit of 95\% CI $<0$; Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}). For the other species, 
- we could not detect significant removal treatment effects on recruitment.
+ we could not detect significant removal treatment effects on recruitment. 
 
  \begin{figure}[tbp]
  \centering
@@ -307,7 +315,8 @@ data, we were suspicious of our model's ability to accurately describe interspec
 The results provide substantial support for our model's predictions, and for the weakness of interspecific interactions in this community. \comment{SPE has
 revised this paragraph. The previous version is in the tex file, commented out.}
 
-For three of the four species, we find little or no evidence that models based on observational data underestimate the intensity of interspecific competition. After accounting 
+For three of the four species, we find little or no evidence that models based on observational data underestimate 
+the intensity of interspecific competition. After accounting 
 for local neighborhood crowding, the removal treatment effects were never significant for \textit{A. tripartita} or \textit{H. comata}; 
 our baseline model, which accounts for local neighborhood composition, adequately explained vital rate responses to removal.  
 \textit{P. secunda} showed mixed responses to \textit{A. tripartita} removal: removal effects were not significant at the survival stage, 
@@ -885,7 +894,7 @@ and column headers.}
 
 \begin{table}
 \centering
-\caption{Summary of fixed effects for the \textit{P. secunda} model with treatment*year effects (the ``trtYears*" coefficients). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column header.} 
+\caption{Summary of fixed effects for the \textit{P. secunda} growth model with treatment*year effects (the ``trtYears*" coefficients). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column header.} 
 \label{table:POSEgrowth-trtYears}
 \begin{tabular}{rrrrrrrr}
   \hline
@@ -912,7 +921,7 @@ and column headers.}
 
 \begin{table}
 \centering
-\caption{Summary of fixed effects for the \textit{P. spicata} model with treatment*year effects (the ``trtYears*" coefficients). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column headers.} 
+\caption{Summary of fixed effects for the \textit{P. spicata} growth model with treatment*year effects (the ``trtYears*" coefficients). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column headers.} 
 \label{table:PSSPgrowth-trtYears}
 \begin{tabular}{rrrrrrrr}
   \hline
@@ -983,6 +992,38 @@ and column headers.}
 \end{tabular}
 \end{table}
 
+\newpage 
+\begin{table}[ht]
+\centering
+\caption{Summary of competition coefficients in the demographic models. These are the ``W.abcd'' fixed effects coefficients from
+the Tables in this section summarizing the survival, growth and recruitment models for each species.  
+In each $4 \times 4$ array of coefficients, the entry in row $i$, column $j$ is the 
+coefficient for the effect of species $j$ cover on species $i$. Intraspecific competition is weak relative to intraspecific competition if each
+species affects itself more than others, i.e. if the largest (in magnitude) element in each column is the element on the diagonal of the array.
+The one exception to this pattern is the effect of ARTR on recruitment by POSE, but the nonconforming
+coefficient ($\omega$[3,1] = -0.6589 in Table \ref{table:recruitment}) has low imprecision (sd = 0.3342, Table \ref{table:recruitment}.} 
+\label{table:alphas}
+\begin{tabular}{lrrrr}
+       & ARTR &  HECO &  POSE &  PSSP \\
+\hline 
+\underline{Survival} & & & & \\        
+ARTR   & -1.5214  & -0.0694  & -0.0049 &  0.0281\\
+HECO   & -0.0064  &  -0.6647 &  0.0732 &  0.0190\\
+POSE  &   0.0001&  -0.0153 &  -1.2632&   0.0249\\
+PSSP  &  0.0101 &  0.0046 & 0.0245 &  -0.4430\\
+\underline{Growth} & & & & \\ 
+ARTR   & -0.0364 &  0.0033& -0.0573&  0.0062\\
+HECO   &  -0.0031 & -0.0479& 0.0242 & -0.0151\\
+POSE  &  -0.0002& 0.0039&  -0.2641&   -0.0073\\
+PSSP  & -0.0025 & -0.0118 & -0.0067 & -0.1480\\
+\underline{Recruitment} & & & & \\ 
+ARTR  & -0.5881 & 0.0635 & 0.0220 & 0.1164 \\
+HECO   &  -0.4800 & -1.7368& 0.0388 &  -0.3682\\
+POSE  &  -0.6589& -0.1021& -1.8943 &   -0.1953\\
+PSSP  & -0.1867 &-0.3746  & 0.1131& -1.7379\\
+\hline
+\end{tabular}
+\end{table}
 
 \clearpage
 
