@@ -155,7 +155,7 @@ One reason we might observe small effects of the removal treatment is the limite
 
 To quantify the long-term population-level consequences of the removal effects, we built and simulated an integral projection model (IPM). The population 
 of species $j$ is represented by a density function $n_j(u,t)$ which gives the density of genets of size $u$ at time $t$ (``size'' is natural log of genet area, so 
-that $n_j(u,t)h$ is the number of genets whose area is between between $\exp(u)$ and $\exp(u+h)$). The size distribution function at time $t+1$ is given by
+that $n_j(u,t)h$ is the number of genets whose area is between between $\exp(u)$ and $\exp(u+h)$ for $h \ll 1$). The size distribution function at time $t+1$ is given by
 \begin{equation}
 n_j(v,t+1)=\int\limits_{L_j}^{U_j} k_j (v,u,{\vec{n}})n_j(u,t)du   
 \label{eqn:IPM}
@@ -171,7 +171,7 @@ k_j(v,u,\vec{n})=S_j(u,\vec{n})G_j(v,u,\vec{n})+R_j(v,u,\vec{n})
 \end{equation}
 which are very similar to those used in our previous studies of this system \citep{adler_coexistence_2010,adler_forecasting_2012}; see 
 Appendix \ref{AppendixA} for a complete description. As in these previous studies, the IPM uses a mean-field approximation for
-neighborhood comeptition that captures the essential features of spatially-explicit local interactions; 
+neighborhood competition that captures the essential features of spatially-explicit local interactions; 
 in Appendix \ref{sec:kernelMethods} we explain how the spline competition kernels were used 
 to compute neighborhood competition as a function of individual size for the IPM.  
 
