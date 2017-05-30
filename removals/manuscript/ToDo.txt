@@ -1,5 +1,0 @@
-
--ask Steve for Metcalfe et al. 2016
--Giles edits
--Appendix text edits
-	-add extended no-overlap
