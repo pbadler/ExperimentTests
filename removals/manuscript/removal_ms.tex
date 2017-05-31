@@ -119,7 +119,7 @@ All data and R code necessary to reproduce our analysis will be deposited in the
 
 In spring 2011, in a large exclosure containing six of the historical permanent quadrats, we established an additional 16 quadrats for the removal treatments. New quadrats were selected to be similar to historical plots, but also needed to have enough of the focal species present so that removal experiments could be conducted. We evaluated potential locations for the new quadrats near the original quadrats and then used only those locations with at least 5\% canopy cover of \textit{Artemisia tripartita} and at least 3\% combined basal cover of the three focal perennial grasses. We rejected locations falling on hill slopes, areas with greater than 20\% bare rock, or with over 10\% cover of the woody shrubs \textit{Purshia tridentata} or \textit{Amelanchier utahensis}. We mapped the new quadrats in June, 2011 and then implemented the removal treatments in September, 2011. We randomly assigned 8 of the sixteen new quadrats to the sagebrush removal treatment, and the remaining 8 to the grass removal treatment. We cut sagebrush stems at ground level and applied a 5\% solution of Roundup Pro (Glyphosate, Monsanto) to the cut stems. In the grass removal plots, we painted the same herbicide solution on all perennial grasses. We removed plants 50 cm beyond the quadrat boundaries to minimize edge effects. The sagebrush removal was virtually 100\% effective; grass removals required additional herbicide applications in April and May of each year, with fewer grasses remaining each year.
 
-Although the primary focus of our analysis is comparison of observed removal responses with responses predicted by our population models, we also conducted a more traditional statistical analysis of differences in cover trends on control vs. removal plots. The response variable for this analysis was year-to-year change in cover at the quadrat scale, calculated as $log(Cover_{t+1}/Cover_t)$. We tested for the effect of removal treatment on this measure of cover change with a linear mixed effects model implemented in the \texttt{lme4} package \citep{Bates2015} of R, including year and quadrat as random effects. We considered the removal treatment effect to be significant when the 95\% confidence interval on the estimated coefficient did not overlap zero.  Because variance in residuals of plots with low cover was high for two species, we explored fitting by weighted least squares, to account for the apparent heteroscedasiticity. The results of these tests were qualitatively similar, so opted to only report the simpler analysis.
+Although the primary focus of our analysis is comparison of observed removal responses with responses predicted by our population models, we also conducted a more traditional statistical analysis of differences in cover trends on control vs. removal plots. The response variable for this analysis was year-to-year change in cover at the quadrat scale, calculated as $log(Cover_{t+1}/Cover_t)$. We tested for the effect of removal treatment on this measure of cover change with a linear mixed effects model implemented in the \texttt{lme4} package \citep{Bates2015} of R, including year and quadrat as random effects. We considered the removal treatment effect to be significant when the 95\% credible interval on the estimated coefficient did not overlap zero.  Because variance in residuals of plots with low cover was high for two species, we explored fitting by weighted least squares, to account for the apparent heteroscedasiticity. The results of these tests were qualitatively similar, so opted to only report the simpler analysis.
 
 \subsection*{Overview of statistical models for vital rates}
 
@@ -149,7 +149,7 @@ Because we do not project forward beyond one time step, we do not need to assign
 removal treatment effects set to zero. For removal treatment plots, we generated predictions from both the baseline and removal versions of the model, 
 with and without treatment effects set to zero, respectively.  
 
-One reason we might observe small effects of the removal treatment is the limited power of our experiment. Perhaps large uncertainty in the estimates of these effects makes it difficult to reject the null hypothesis represented by our baseline model. To address this possibility, we also simulated a version of the model in which we replaced the point estimate of each removal treatment effect with either the 5\% or 95\% confidence limit for the treatment effect,whichever was farthest from zero. This version of the model shows the population-level changes we would expect given maximum removal effects.
+One reason we might observe small effects of the removal treatment is the limited power of our experiment. Perhaps large uncertainty in the estimates of these effects makes it difficult to reject the null hypothesis represented by our baseline model. To address this possibility, we also simulated a version of the model in which we replaced the point estimate of each removal treatment effect with either the 5\% or 95\% credible limit for the treatment effect, whichever was farthest from zero. This version of the model shows the population-level changes we would expect given maximum removal effects.
 
 \subsection*{Integral projection models}
 
@@ -175,7 +175,7 @@ neighborhood competition that captures the essential features of spatially-expli
 in Appendix \ref{sec:kernelMethods} we explain how the spline competition kernels were used 
 to compute neighborhood competition as a function of individual size for the IPM.  
 
-We simulated the IPM to estimate equilibrium abundances under three different scenarios. For all IPM simulations, we set the spatial random effects to zero, meaning that we are simulating dynamics on a hypothetical, average site. The first scenario featured all four species and our baseline model for control plots (no removal effects). We initialized all species with arbitrarily low cover and ran the model for 500 time steps (years) to allow the community to reach an equilibrium. To incorporate temporal environmental variation, at each time step we randomly selected one of the 30 sets of random year effects for the survival, growth and recruitment models (``kernel selection'' in the terminology of \citealt{metcalf_statistical_2015}). We calculated the equilibrium cover for each species by simulating an additional 2000 time steps and averaging each species' cover over this period. For the second scenario, we set the cover of \textit{A. tripartita} to zero and then repeated the procedure. This simulation projects the competitive release of grasses following \textit{A. tripartita} removal according to the baseline model (no removal effects). For the third scenario, we again set \textit{A. triparitia} cover to zero, but this time we projected the model using the vital rate regressions that include removal effects. If our baseline model successfully predicts competitive release observed in the removal experiment, then the results of the second and third scenarios should be similar. To the extent that the baseline model underestimates (or overestimates) the actual competitive release, the results of the second and third scenarios will differ. As with the IBM, we repeated these simulations using maximum removal treatment effects represented by parameters values at the 5\% or 95\% confidence limit farthest from zero. We do not show simulations of long-term \textit{A. tripartita} response to grass removal because the removal treatment effects in the vital rate regressions were never significantly different from zero, indicating that the baseline model effectively predicted competitive release. 
+We simulated the IPM to estimate equilibrium abundances under three different scenarios. For all IPM simulations, we set the spatial random effects to zero, meaning that we are simulating dynamics on a hypothetical, average site. The first scenario featured all four species and our baseline model for control plots (no removal effects). We initialized all species with arbitrarily low cover and ran the model for 500 time steps (years) to allow the community to reach an equilibrium. To incorporate temporal environmental variation, at each time step we randomly selected one of the 30 sets of random year effects for the survival, growth and recruitment models (``kernel selection'' in the terminology of \citealt{metcalf_statistical_2015}). We calculated the equilibrium cover for each species by simulating an additional 2000 time steps and averaging each species' cover over this period. For the second scenario, we set the cover of \textit{A. tripartita} to zero and then repeated the procedure. This simulation projects the competitive release of grasses following \textit{A. tripartita} removal according to the baseline model (no removal effects). For the third scenario, we again set \textit{A. triparitia} cover to zero, but this time we projected the model using the vital rate regressions that include removal effects. If our baseline model successfully predicts competitive release observed in the removal experiment, then the results of the second and third scenarios should be similar. To the extent that the baseline model underestimates (or overestimates) the actual competitive release, the results of the second and third scenarios will differ. As with the IBM, we repeated these simulations using maximum removal treatment effects represented by parameters values at the 5\% or 95\% credible limit farthest from zero. We do not show simulations of long-term \textit{A. tripartita} response to grass removal because the removal treatment effects in the vital rate regressions were never significantly different from zero, indicating that the baseline model effectively predicted competitive release. 
 
 \section*{Results}
 
@@ -189,7 +189,7 @@ Trends in cover by species and removal treatment were variable. For example, gra
 (Fig. \ref{fig:CoverTrends}), but shrub removal did appear to cause an increase in the cover of \textit{P. spicata}. 
 However, when we tested the effects of removal treatments on year-to-year population growth rates ($log(Cover_{t+1}/Cover_t)$) at the quadrat level,
  none of the removal treatment effects were significantly different from zero (Table \ref{table:coefficients}). For \textit{P. spicata}, 
-the 95\% confidence interval only just contained zero (95\% CI: -0.01, 0.38), providing marginal evidence for a positive effect of removal on population growth. 
+the 95\% credible interval only just contained zero (95\% CI: -0.01, 0.38), providing marginal evidence for a positive effect of removal on population growth. 
 Fitting with weighted least squares to address the high variance in residuals for plots with very low cover indicated even less evidence for a positive 
 response of  \textit{P. spicata} to removal. However, these treatment comparisons do not directly address our questions about whether 
 responses to removal were adequately predicted by models fit to observational data. 
@@ -214,9 +214,9 @@ fitted models imply that interspecific competition is much weaker than intraspec
 cases by 1-2 orders of magnitude (Table \ref{table:alphas}).  
 If the removal treatment effects that we added to these models are statistically significant, it would indicate an effect of 
 removals either larger or smaller than the effect predicted by a model based on data from the control plots. 
-For the survival models, the 95\% confidence intervals on the removal effects overlapped zero for all four species (Fig. \ref{fig:VitalRateTest}; 
+For the survival models, the 95\% credible intervals on the removal effects overlapped zero for all four species (Fig. \ref{fig:VitalRateTest}; 
 Tables \ref{ARTRsurvival} to \ref{PSSPsurvival}), meaning that the survival probabilities of plants in removal plots can be predicted based on data 
-from control plots. For the growth models, the 95\% confidence intervals on the removal effects were positive for \textit{P. secunda}  and \textit{P. spicata},
+from control plots. For the growth models, the 95\% credible intervals on the removal effects were positive for \textit{P. secunda}  and \textit{P. spicata},
  meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions 
  (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). In contrast, \textit{P. secunda} had lower recruitment in removal 
  than controls plots (upper limit of 95\% CI $<0$; Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}). For the other species, 
@@ -225,7 +225,7 @@ from control plots. For the growth models, the 95\% confidence intervals on the 
  \begin{figure}[tbp]
  \centering
  \includegraphics[width=1\textwidth]{treatment_tests}
- \caption{Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% confidence intervals. The removal effect shows response of \textit{A. tripartita} (``ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. The other species codes are HECO: \textit{Hesperostipa comata}, POSE: \textit{Poa secunda}, and PSSP: \textit{Pseudoroegneria spicata}.
+ \caption{Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% credible intervals. The removal effect shows response of \textit{A. tripartita} (``ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. The other species codes are HECO: \textit{Hesperostipa comata}, POSE: \textit{Poa secunda}, and PSSP: \textit{Pseudoroegneria spicata}.
  Source file: \texttt{treatment\textunderscore test\textunderscore figure.r}.}
  \label{fig:VitalRateTest}
  \end{figure}
@@ -259,7 +259,7 @@ Time series of predicted and observed cover, averaged over quadrats, show simila
  \end{figure}
  
 
-To quantify the long-term population-level consequences of permanent competitor removals, we used an IPM to project the long-term average cover of each species. The IPM predicts little effect of \textit{A. tripartita} removal on the cover of any grass species when we simulate the baseline model with no removal treatment coeffiicients (compare gray and brown boxes in Fig. \ref{fig:IPMresults}). In fact, projected average cover of \textit{H. comata} and \textit{P. spicata} declines slightly following \textit{A. tripartita} removal. Using a model with removal treatment coefficients, the IPM predicts little effect of shrub removal on \textit{Poa secunda} and \textit{H. comata}, but a 2-fold increase in the cover of \textit{P. spicata} (Fig. \ref{fig:IPMresults}). Running a version of the model with maximum removal treatment effects (removal coefficients set to the 95\% confidence limit furthest from zero), resulted in the same qualitative outcome, but a larger increase in \textit{P. spicata} (Fig. \ref{fig:IPMresults-maxCI}). 
+To quantify the long-term population-level consequences of permanent competitor removals, we used an IPM to project the long-term average cover of each species. The IPM predicts little effect of \textit{A. tripartita} removal on the cover of any grass species when we simulate the baseline model with no removal treatment coeffiicients (compare gray and brown boxes in Fig. \ref{fig:IPMresults}). In fact, projected average cover of \textit{H. comata} and \textit{P. spicata} declines slightly following \textit{A. tripartita} removal. Using a model with removal treatment coefficients, the IPM predicts little effect of shrub removal on \textit{Poa secunda} and \textit{H. comata}, but a 2-fold increase in the cover of \textit{P. spicata} (Fig. \ref{fig:IPMresults}). Running a version of the model with maximum removal treatment effects (removal coefficients set to the 95\% credible limit furthest from zero), resulted in the same qualitative outcome, but a larger increase in \textit{P. spicata} (Fig. \ref{fig:IPMresults-maxCI}). 
 
 
  \begin{figure}[tbp]
@@ -269,18 +269,18 @@ To quantify the long-term population-level consequences of permanent competitor 
  \label{fig:IPMresults}
  \end{figure}
  
-The equilibrium cover of \textit{A. tripartita} simulated by the IPM (6.0\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%, Fig. \ref{fig:CoverTrends}). Could the small competitive release \new{of the grasses} 
-following simulated \textit{A. tripartita} removal simply reflect the low simulated \textit{A. tripartita} cover? To explore this possibility, we increased \textit{A. tripartita} cover in the baseline simulation by increasing its average fecundity. The increased fecundity led to a doubling of \textit{A. tripartita} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover), \new{implying that shrub removal from higher cover 
-would still have little effect on the grasses.} 
+The equilibrium cover of \textit{A. tripartita} simulated by the IPM (6.0\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%, Fig. \ref{fig:CoverTrends}). Could the small competitive release of the grasses
+following simulated \textit{A. tripartita} removal simply reflect the low simulated \textit{A. tripartita} cover? To explore this possibility, we increased \textit{A. tripartita} cover in the baseline simulation by increasing its average fecundity. The increased fecundity led to a doubling of \textit{A. tripartita} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover), implying that even if shrub cover were higher its removal
+would still have little effect on the grasses. 
  
-\new{The baseline model predicts more dramatic competitive release of \textit{A. tripartita} following grass removal: mean cover increases from 5.6\% to 16.2\%. Adding
+The baseline model predicts more dramatic competitive release of \textit{A. tripartita} following grass removal: mean cover increases from 5.6\% to 16.2\%. Adding
 removal treatment effects dramatically alters the outcome, with \textit{A. tripartita} decreasing towards extinction. However, these outcomes both are driven
 by parameters that are estimated with very high uncertainty (Table~\ref{table:recruitment}). The baseline model predicts an increase following grass removal because of the relatively strong negative effects of \textit{Poa secunda} and \textit{H. comata} on \textit{A. tripartita} recruitment (\ref{table:recruitment}). The estimated effect of
 \emph{Poa} is -0.66, but the standard deviation of the estimate is 0.33 and the 95\% credible interval stops just short of zero; the 95\% credible interval for the
 \textit{H. comata} effect includes values less than half of the point-estimate. The grass removal treatment effect, which leads to predicted extinction, has a credible 
 interval that broadly overlaps zero (Table~\ref{table:recruitment}). \textit{A. tripartita} recruitment parameters have exceptionally high uncertainty, presumably 
 because \textit{A. tripartita} recruitment is episodic (see \emph{Discussion}), and this produces extreme uncertainty about its long-term 
-response to grass removal.} 
+response to grass removal.
 
 \section*{Discussion}
 
@@ -296,7 +296,7 @@ our baseline model, which accounts for local neighborhood composition, adequatel
 \textit{P. secunda} showed mixed responses to \textit{A. tripartita} removal: removal effects were not significant at the survival stage, 
 were positive at the growth stage, and negative at the recruitment stage (where the estimated effect of \textit{A. tripartita} 
 on \textit{P. secunda} is positive). At the population level, models with and without removal effects projected similar patterns of 
-short (Fig. \ref{fig:IBM1step}) and long-term (Fig. \ref{fig:IPMresults}) dynamics for \textit{H. comata}. \new{ For \textit{A. tripartita}, 
+short (Fig. \ref{fig:IBM1step}) and long-term (Fig. \ref{fig:IPMresults}) dynamics for \textit{H. comata}. For \textit{A. tripartita}, 
 the experimental observations and short-term population projections show little response to removal, while the long-term simulations 
 from the baseline and removal effects models suggest strong (but opposite) effects of removal: a tripling of abundance in the baseline model, and extinction in the
 removal effects model. However, these long-term simulations primarily reflect the influence of recruitment parameters 
@@ -304,7 +304,7 @@ that are highly uncertain (see \emph{Results}). This high uncertainty
 results from \textit{A. tripartita} recruitment being low (a mean of 0.63 recruits per quadrat per year, compared to means of 2.6 to 5.3 for the grasses) and 
 very episodic (roughly half of the total recruits in the 22 years of historical data were observed in 2 of those years, and only 13 \textit{A. tripartita} 
 recruits were observed since we resumed annual censuses in 2007). Given this uncertainty, we put more weight on the direct observations 
-and short-term projections showing little effect of removal on \textit{A. tripartita} populations.}
+and short-term projections showing little effect of grass removal on \textit{A. tripartita} populations.
 For \textit{P. secunda}, the model with removal effects predicted higher population growth over the short but not the long-term, perhaps 
 because the short-term projections mostly reflect the positive effect of \textit{A. tripartita} removal on growth, while the long-term 
 equilibrium are also sensitive to the negative effects of removal on recruitment. Although the baseline model did 
@@ -465,7 +465,7 @@ Eqn (\ref{eqn:recrProcessModel}) is essentially the Ricker model for discrete ti
 Due to the possibility that plants outside the mapped quadrat could contribute recruits to the focal quadrat or interact with plants in the focal quadrat, we estimated effective cover as a mixture of the observed cover, $C$, in the focal quadrat, $q$, and the mean cover, $\bar{C}$, across the spatial location group, $g$, in which the 
 quadrat is located: $C'_{jq,t}=p_j C_{jq,t}+(1-p_j) \bar{C}_{jg,t}$, where $p$ is a mixing fraction between 0 and 1 that was estimated as part of fitting the model.
 
-We ran Markov Chain Monte Carlo (MCMC) simulations in WinBUGS 1.4 \citep{lunn_winbugs_2000} to estimate the recruitment model parameters. Each model was run for 20,000 iterations and two independent chains with different initial values for parameters. We discarded the initial 10,000 samples. Convergence was observed graphically for all parameters, and confirmed by the Brooks-Gelman statistic \citep{brooks_general_1998}. For all three vital rate models, we considered the effect of removal treatments, or other coefficients of interest, to be significant when the 95\% confidence interval (or posterior interval) on the estimate of $\chi$ did not overlap zero.  
+We ran Markov Chain Monte Carlo (MCMC) simulations in WinBUGS 1.4 \citep{lunn_winbugs_2000} to estimate the recruitment model parameters. Each model was run for 20,000 iterations and two independent chains with different initial values for parameters. We discarded the initial 10,000 samples. Convergence was observed graphically for all parameters, and confirmed by the Brooks-Gelman statistic \citep{brooks_general_1998}. For all three vital rate models, we considered the effect of removal treatments, or other coefficients of interest, to be significant when the 95\% credible interval (or posterior interval) on the estimate of $\chi$ did not overlap zero.  
 
 To incorporate the fitted recruitment function into the IPM, we assumed that individual fecundity increases 
 linearly with individual area (equal to $e^u$ for a size-$u$ individual). The recruitment kernel is thus
@@ -607,7 +607,7 @@ This integral is again finite and computable because the kernels $F$ fall to 0 a
 % supplementary tables
 \begin{table}[h]
 \caption{Statistical models of year-to-year changes in log(cover) for the four focal species. Values in square brackets show 95\%
- confidence intervals.}
+ credible intervals.}
 \centering
 %\begin{center}
 \begin{tabular}{l c c c c }
@@ -631,7 +631,7 @@ Var: quad (Intercept) & 0.44             & 0.00             & 0.02             &
 Var: year (Intercept) & 0.00             & 0.02             & 0.19             & 0.07             \\
 Var: Residual         & 0.52             & 0.36             & 0.38             & 0.24             \\
 \hline
-\multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the confidence interval}}
+\multicolumn{5}{l}{\scriptsize{$^*$ 0 outside the credible interval}}
 \end{tabular}
 \label{table:coefficients}
 %\end{center}
@@ -1059,7 +1059,7 @@ PSSP  &  0.1164 & -0.3682 & -0.1953 & -1.7379\\
   resulting from random year effects in the demographic models. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment 
   coefficients, brown boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), green boxes show results from a 
   model with  \textit{A. tripartita} set to zero and (mean) removal treatment coefficients included, and blue boxes show results with removal treatments 
-  coefficients assigned the outermost value of the 95\% confidence intervals.  Source file: \texttt{ipm\textbackslash IPM-figures.r}.}
+  coefficients assigned the outermost value of the 95\% credible intervals.  Source file: \texttt{ipm\textbackslash IPM-figures.r}.}
   \label{fig:IPMresults-maxCI}
   \end{figure}
 
