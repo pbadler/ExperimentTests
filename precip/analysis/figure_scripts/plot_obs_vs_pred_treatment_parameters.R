@@ -326,7 +326,7 @@ for( i in 1:length(r_fits)){
   df$vital_rate <- vr
   write.csv(df, paste0('output/predicted_and_observed_par_estimates_for_', spp, '_', vr, '.csv') )
   
-  png( paste( 'figures/pred_v_ob_treatment_', spp,'_', vr, '.png' ),  width = 6, height = 4, units = 'in', res = 300)
+  png( paste0( 'figures/pred_v_ob_treatment_', spp,'_', vr, '.png' ),  width = 6, height = 4, units = 'in', res = 300)
   
   print( p1 )
 

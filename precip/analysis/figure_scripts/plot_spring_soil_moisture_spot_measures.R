@@ -121,10 +121,11 @@ aggregate(data = df, VWC ~ Treatment, FUN = 'mean')
 
 # make table for stats output 
 library(xtable)
-statsOutput <- 'output/results_tables/spot_measurements.txt'
 
-texreg(spot_m, ci.force=TRUE,caption="Spring soil moisture",
-       caption.above=TRUE,file=statsOutput)
+statsOutput <- 'manuscript/spot_measurements.tex'
+
+texreg(spot_m,caption="Spring soil moisture",
+       caption.above=TRUE,file=statsOutput, label = 'table:spotVWC')
 
 
 aggregate( data = df, VWC ~ Treatment, FUN = 'mean')

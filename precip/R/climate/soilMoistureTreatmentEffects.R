@@ -89,10 +89,11 @@ library(texreg)
 
 lsmeans(mTreatment,  ~ Treatment + season + rainfall)
 
-statsOutput <- 'output/results_tables/soil_moisture_model.txt'
+statsOutput <- 'manuscript/soil_moisture_model.tex'
 
-texreg(mTreatment, ci.force=TRUE,caption="soil moisture model",
-       caption.above=TRUE,file=statsOutput)
+
+texreg(mTreatment,caption="soil moisture model",
+       caption.above=TRUE,file=statsOutput, label = 'table:soil_moisture_model')
 
 
 # data frame to view predictions 
