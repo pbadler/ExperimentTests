@@ -41,6 +41,8 @@ all_effects <-
   mutate( type = ifelse(type == 'TRUE_FALSE' | type == 'FALSE_TRUE', 'mixed', type )) %>% 
   mutate( sig_label = ifelse(type == 'TRUE_TRUE', 'significant', 'not significant'))
 
+head(all_effects)
+
 overall_cor <- all_effects %>% ungroup %>% summarise( cor = cor(mu.x, mu.y))
 overall_cor
 
@@ -55,7 +57,6 @@ cors$label <- paste0( 'r=', round( cors$cor, 2))
 all_effects <- unique(all_effects)
 
 nrow( all_effects )
-
 
 p1 <- 
   ggplot(all_effects, aes( x = mu.x, y = mu.y, color = Treatment, shape = sig_label,  group = 1 )  ) + 
@@ -78,7 +79,7 @@ p1 <- p1 + geom_text( data = cors, aes( x  = x.pos, y = y.pos , label = label , 
 p1
 
 
-p1 <- p1 + geom_text( data = subset( all_effects, type == 'TRUE_TRUE' & species == 'POSE' & vital_rate == 'recruitment' & Treatment == 'Irrigation'), 
+p1 <- p1 + geom_text( data = subset( all_effects, species == 'POSE' & vital_rate == 'recruitment' & Treatment == 'Irrigation'), 
                 aes( label = paste(species, vital_rate, sep = '\n' )) , adj = -0.1, nudge_y = -0.2, show.legend = F) 
 
 p <- 
@@ -100,6 +101,6 @@ g$p
 
 png( 'figures/parameter_predictions.png' , height = 6, width = 8 , res = 300 , units = 'in')
 
-print( p1 + labs( color = '' )) 
+print( p1 ) 
 
 dev.off()
