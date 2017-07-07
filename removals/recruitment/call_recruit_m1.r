@@ -3,8 +3,8 @@
 
 sppList=c("ARTR","HECO","POSE","PSSP")
 outfile="recruit_params_m1.csv"
-dataDir1 <- paste(root,"/driversdata/data/idaho/speciesData/",sep="")
-dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")
+dataDir1 <- paste(root,"/ExperimentTests/data/idaho/speciesData/",sep="")
+dataDir2 <- paste(root,"/ExperimentTests/data/idaho_modern/speciesData/",sep="")
 #--------------------------------------------------------
 
 # get old recruitment data

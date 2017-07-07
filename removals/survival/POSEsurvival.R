@@ -8,8 +8,8 @@
 
 doSpp <- "POSE"
 sppList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
-dataDir1 <- paste(root,"/driversdata/data/idaho",sep="")
-dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")
+dataDir1 <- paste(root,"/ExperimentTests/data/idaho",sep="")
+dataDir2 <- paste(root,"/ExperimentTests/data/idaho_modern",sep="")
 nonCompLength.s=5 #Number of columns in SppData that are not measures of competitors 
 
 # set up distance weights------------------------------------------------
