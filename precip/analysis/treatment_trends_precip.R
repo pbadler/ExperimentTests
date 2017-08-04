@@ -273,6 +273,33 @@ print(xt2, 'manuscript/HECO_cover_change.tex', type = 'latex', caption.placement
 print(xt3, 'manuscript/POSE_cover_change.tex', type = 'latex', caption.placement ="top")
 print(xt4, 'manuscript/PSSP_cover_change.tex', type = 'latex', caption.placement ="top")
 
+
+artr <- data.frame( summary(lc.ARTR)$coefficients)
+heco <- data.frame(summary(lc.HECO)$coefficients)
+pose <- data.frame(summary(lc.POSE)$coefficients)
+pssp <- data.frame(summary(lc.PSSP)$coefficients)
+
+
+table_df <- rbind( 
+  c('ARTR', '', '', '' ), 
+  colnames(artr), 
+  round(artr, 2), 
+  c('HECO', '', '', ''), 
+  colnames( heco), 
+  round( heco, 2), 
+  c('POSE', '', '', ''), 
+  colnames( pose), 
+  round( pose, 2 ) , 
+  c('PSSP', '', '', ''), 
+  colnames( pssp), 
+  round( pssp, 2)) 
+
+overall_xtable <- xtable( table_df , 
+        caption = 'Treatment effects on log cover change for each species from 2011 to 2016. Intercept gives control effects.', 
+        label = 'table:coverChange')
+
+print(overall_xtable, 'manuscript/overall_cover_change.tex', type = 'latex', caption.placement = 'top',  digits=c(2,2,2,2,2))
+
 temp$percent_change <- 100*(temp$coverDiff/temp$cover.2011 )
 
 aggregate(data = temp, percent_change ~ Treatment + species, 'mean')

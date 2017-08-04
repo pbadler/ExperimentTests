@@ -1,5 +1,8 @@
 # 
 library(stringr)
+library(dplyr)
+library(tidyr)
+
 rm(list = ls())
 
 cor_files <- dir('output', 'correlations.csv', full.names = T)
@@ -89,7 +92,7 @@ library(xtable)
 
 
 xtcor <- xtable(all_cors, 
-                caption = 'Selected climate variables for each vital rate model for each species. Correlations and p-values between the choosen variables and the intercept of year effects model are shown. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given. "f" = fall, "su" = summer, "sp" = spring. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.', 
+                caption = 'Selected climate variables for each vital rate model for each species. Correlations and p-values between the choosen variables and the intercept of the no climate model are shown. For ARTR growth and POSE growth and survival, the correlations between the year effects on size and the soil moisture variables are also given. "f" = fall, "su" = summer, "sp" = spring. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.', 
                 label = 'table:strongCor')
 
 print(xtcor, 'manuscript/strong_correlations.tex', type = 'latex', include.rownames = F, caption.placement ="top")

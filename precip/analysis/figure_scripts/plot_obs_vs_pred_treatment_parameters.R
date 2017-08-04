@@ -216,9 +216,12 @@ for( i in 1:length(gs_fits)){
 
 
   if( nlevels( p1$data$par) == 2 ) {   
-    png( paste0( 'figures/pred_v_obs_treatment_', spp, '_', vr, '.png'), width = 6, height = 6, res = 300, units = 'in')
-    print( grid.arrange(p1, p2, nrow = 2) )
+    png( paste0( 'figures/pred_v_obs_treatment_', spp, '_', vr, '.png'), width = 6, height = 4, res = 300, units = 'in')
+    print(p1 )
     dev.off()
+    png( paste0( 'figures/pred_v_obs_treatment_slopes_', spp, '_', vr, '.png'), width = 6, height = 4, res = 300, units = 'in')
+    print(  p2 )
+    dev.off( )
   }else{
     png( paste0( 'figures/pred_v_obs_treatment_', spp, '_', vr, '.png'), width = 6, height = 4, res = 300, units = 'in')
     print(p1)

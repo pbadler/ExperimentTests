@@ -3,6 +3,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+library(xtable)
 rm(list = ls() ) 
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
@@ -91,8 +92,8 @@ for(i in 1:nrow(grd)){
     group_by( Treatment ) %>% 
     summarise( cor = cor(predicted, observed))
 
-  xlim <- max( df$predicted )
-  ylim <- min(  df$observed)
+  xlim <- max(df$predicted )
+  ylim <- min(df$observed)
   
   label_df <- merge(cor, MSE)
   
@@ -149,30 +150,44 @@ out <- do.call(rbind, out)
 label_df <- do.call(rbind, labels )
 stats <- do.call(rbind, stats)
 
+out$model_label <- factor(out$model, labels = c('Climate', 'Baseline'))
+out$model_label <- factor( out$model_label , c('Baseline', 'Climate'), ordered = T)
+
+out %>% distinct( model, model_label)
+
+label_df$model
+label_df$model_label <-  factor(label_df$model, labels = c('Climate', 'Baseline'))
+label_df$model_label <- factor( label_df$model_label, c('Baseline', 'Climate'), ordered = T)
+
+label_df %>% distinct(model, model_label)
+
+label_df <- label_df %>% mutate( pos.x = ifelse ( species == 'HECO', 0.8, pos.x))
 
 i = 1
 for( i in 1:length(species_list)) { 
   
   spp <- species_list[i]
   
-  png(paste0('figures/', spp, '_predicted_pgr_comparison.png'), width = 8, height = 10, res = 300, units = 'in')
+  png(paste0('figures/', spp, '_predicted_pgr_comparison.png'), width = 8, height = 8, res = 300, units = 'in')
   print( 
   ggplot( subset( out, species == spp), aes(x = predicted, y = observed, color = Treatment )) +
     geom_point() +
     geom_smooth(method = 'lm', se = F, alpha = 0.2, linetype = 2, color = 1, size = 1) +
     geom_text( data = subset(label_df, species == spp), aes( x = pos.x, y = pos.y , color = NULL , label = unique(label)), hjust = 1, vjust = -0.5 , show.legend = F) +
     geom_abline(aes(intercept = 0, slope = 1), color = 'gray') + 
-    facet_grid(  Treatment ~ model  )+
+    facet_grid(  Treatment ~ model_label  )+
     xlab( 'Annual population growth rate predicted') +
     ylab( 'Annual population growth rate observed') +
     # scale_y_continuous(limits = c(-ylim, ylim)) +
     # scale_x_continuous(limits = c(-ylim, ylim)) +
     scale_color_manual(values = my_colors[2:4]) +
     my_theme +
+    theme( strip.text = element_text(size = 12)) +
     ggtitle(species_names[[i]])
   )
   dev.off()
 }
+
 
 # make stats table 
 stats$model <- str_replace(stats$model, '_', ' ')
@@ -188,10 +203,58 @@ fit_table <-
 
 fit_table <- fit_table %>% dplyr::select(species, stat, `year effects model` , `climate model` , diff , improved )
 
-corxt <- xtable(fit_table, caption = 'MSE of predicted log cover changes and correlations between log cover changes predicted and observed. Predictions for the cover changes in the experimental plots were generated either from the year effects or the climate models. Instances where the climate model made better predictions than the year effects model are indicated with the "***". ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.',
+fit_table <- rename(fit_table, `no climate model` = `year effects model`)
+
+corxt <- xtable(fit_table, caption = 'MSE of predicted log cover changes and correlations between log cover changes predicted and observed. Predictions for the cover changes in the experimental plots were generated either from the climate or no climate models. Instances where the climate model made better predictions than the no climate model are indicated with the "***". ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.',
        label = 'table:corPGR')
 
 print(corxt, 'manuscript/pgr_predictions.tex', type = 'latex', caption.placement ="top", table.placement = 'H')
+
+# print overall comparison 
+fit_table
+
+out$model
+
+out$model_label <- factor(out$model, labels = c('Climate', 'Baseline'))
+
+out$model_label <- factor( out$model_label , c('Baseline', 'Climate'), ordered = T)
+
+png( 'figures/overall_pgr_predictions.png', height = 6, width = 7, res = 300, units = 'in' )
+print( 
+  ggplot( out , aes(x = predicted, y = observed, color = Treatment )) +
+    geom_point() +
+    geom_smooth(method = 'lm', se = F, alpha = 0.2, color = 1, linetype = 2, size = 1) +
+    #geom_text( data = subset(label_df, species == spp), aes( x = pos.x, y = pos.y , color = NULL , label = unique(label)), hjust = 1, vjust = -0.5 , show.legend = F) +
+    geom_abline(aes(intercept = 0, slope = 1), color = 'gray') + 
+    facet_grid(  species ~ model_label  )+
+    xlab( 'Annual population growth rate predicted') +
+    ylab( 'Annual population growth rate observed') +
+    # scale_y_continuous(limits = c(-ylim, ylim)) +
+    # scale_x_continuous(limits = c(-ylim, ylim)) +
+    scale_color_manual(values = my_colors[2:4]) +
+    my_theme 
+)
+dev.off()
+
+
+png( 'figures/overall_pgr_predictions_blank.png', height = 6, width = 7, res = 300, units = 'in' )
+print( 
+  ggplot( out , aes(x = predicted, y = observed, color = Treatment )) +
+    #geom_point() +
+    #geom_smooth(method = 'lm', se = F, alpha = 0.2, color = 1, linetype = 2, size = 1) +
+    #geom_text( data = subset(label_df, species == spp), aes( x = pos.x, y = pos.y , color = NULL , label = unique(label)), hjust = 1, vjust = -0.5 , show.legend = F) +
+    geom_abline(aes(intercept = 0, slope = 1), color = 'gray') + 
+    facet_grid(  species ~ model_label  )+
+    xlab( 'Annual population growth rate predicted') +
+    ylab( 'Annual population growth rate observed') +
+    # scale_y_continuous(limits = c(-ylim, ylim)) +
+    # scale_x_continuous(limits = c(-ylim, ylim)) +
+    scale_color_manual(values = my_colors[2:4]) +
+    my_theme 
+)
+dev.off()
+
+
 
 # ----------- all treatments and species ---------------
 out$model <- str_replace(out$model, '_', ' ')

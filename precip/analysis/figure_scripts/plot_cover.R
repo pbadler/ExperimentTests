@@ -3,6 +3,7 @@ library(ggplot2)
 library(stringr)
 library(dplyr)
 library(tidyr)
+library(gridExtra)
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
@@ -24,6 +25,22 @@ obs_cover <-
   group_by(species, year, Treatment ) %>% 
   summarise( cover_obs = mean(area) )
 
+old_plot <- 
+  ggplot ( obs_cover %>% filter( year < 1960), aes( x = year, y = cover_obs*100/10000)) + 
+  geom_point() + 
+  geom_line() + 
+  ylab( 'Average Cover (%)') + 
+  scale_x_continuous(breaks = seq(1929, 1960, 5)) + 
+  my_theme + theme(strip.background = element_blank(), strip.text = element_blank()) + 
+  facet_wrap( ~ species, nrow = 2) 
+
+old_plot
+
+p <- obs_cover %>% filter(year < 1960) %>% group_by( species) %>% do(  p = old_plot  %+% . + ggtitle(unique(.$species)))
+p$p[[1]] + ylim ( 0, 13) 
+p$p[[2]] + ylim( 0, 5)
+
+
 pred_cover <- 
   pred %>% 
   group_by(species, model, year, Treatment, simulation) %>%
@@ -36,6 +53,7 @@ added <- expand.grid( year = 2011 , species = unique(pred_cover$species), model 
 pred_cover <- merge( added, pred_cover , all.x = T, all.y = T)
 
 all_cover <- merge( obs_cover, pred_cover, all.x = T)
+
 
 all_cover <- 
   all_cover %>% 
@@ -54,6 +72,7 @@ all_cover$type  <- factor( all_cover$type, labels = c('observed', 'predicted'))
 
 all_cover$val <- 100*(all_cover$val/10000)
 
+
 my_plot <- 
   ggplot( subset( all_cover, model == 'climate'), aes( x = year, y = val, linetype = type, color = Treatment)) + 
   geom_point() + 
@@ -68,13 +87,15 @@ g <- all_cover %>% filter( model == 'climate') %>% group_by(species) %>% do( p =
 
 g$p
 
-png( 'figures/predicted_and_observed_cover.png', height = 7, width = 12, units = 'in', res = 300)
+png( 'figures/predicted_and_observed_cover.png', height = 6, width = 8, units = 'in', res = 300)
 print( 
 grid.arrange( g$p[[1]] + guides( color = 'none', linetype = 'none') + ylim(0, 21), 
-              g$p[[2]] + guides( color = 'none', linetype = 'none') + scale_y_continuous(name = NULL, limits = c(0,3.2)),  
-              g$p[[3]] + guides( color = 'none', linetype = 'none') + ylim( 0, 3.2) + scale_y_continuous(name = NULL, limits = c(0,3.2)), 
-              g$p[[4]] + scale_y_continuous(name = NULL, limits = c(0,3.2)), 
-              nrow = 1)
+              g$p[[2]] + theme(legend.box = 'horizontal', legend.background = element_rect(colour = NA, fill = NA), legend.position = c(0.7, 0.8)) + 
+                scale_color_discrete('') + 
+                scale_y_continuous(name = NULL, limits = c(0,3.2)),  
+              g$p[[3]] + guides( color = 'none', linetype = 'none') + ylim( 0, 3.2), 
+              g$p[[4]] + guides( color = 'none', linetype = 'none') + scale_y_continuous(name = NULL, limits = c(0,3.2)), 
+              nrow = 2, ncol = 2)
 )
 dev.off()
 

@@ -4,7 +4,8 @@
 my_theme <- 
   theme_bw () + 
   theme ( panel.grid.major = element_blank(), 
-  panel.grid.minor = element_blank())
+  panel.grid.minor = element_blank(), 
+  strip.background = element_blank())
 
 
 # black historical 

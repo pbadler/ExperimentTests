@@ -86,13 +86,21 @@ summary(mTreatment)
 
 library(lsmeans)
 library(texreg)
+library(xtable )
+library(dplyr)
+test <- lsmeans(mTreatment,  ~ Treatment + season + rainfall)
+#test <- lsm(mTreatment, ~ Treatment + season + rainfall )
 
-lsmeans(mTreatment,  ~ Treatment + season + rainfall)
+
+tab <- summary(test)
+
+tab <-  data.frame(tab)
+
+tab <- as.data.frame(tab) %>%  dplyr::select(season, rainfall,  Treatment, lsmean, SE, asymp.LCL, asymp.UCL ) %>% arrange(season, rainfall, Treatment )
 
 statsOutput <- 'manuscript/soil_moisture_model.tex'
 
-
-texreg(mTreatment,caption="soil moisture model",
+texreg(mTreatment,caption="Treatment effects on soil moisture. Intercept refers to drought effects in fall not rainy conditions.  Model fit to the continuously logged soil moisture data as well as the spot measurements collected from all plots in the spring.",
        caption.above=TRUE,file=statsOutput, label = 'table:soil_moisture_model')
 
 

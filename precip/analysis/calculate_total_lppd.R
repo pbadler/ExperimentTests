@@ -32,7 +32,7 @@ rank_by_Treatment <-
   arrange( vital_rate, species, Treatment, lppd ) %>%  
   group_by( Treatment, species, vital_rate ) %>% 
   spread( model, lppd ) %>% 
-  mutate( climate_model_performance = climate - year )
+  mutate( climate_model_performance = climate - year , percent_change = climate_model_performance/year )
 
 rank_by_size_class <- 
   lppd_table %>%
@@ -47,7 +47,7 @@ rank_by_size_class <-
   mutate( climate_model_performance = climate - year )
 
 
-
+overall_rank %>% spread( model, lppd ) %>% mutate( performance = climate - year, percent_chage = performance/ year )
 
 write.csv(overall_rank, 'output/overall_lppd.csv', row.names = FALSE)
 write.csv(rank_by_Treatment, 'output/treatment_lppd.csv', row.names = FALSE)

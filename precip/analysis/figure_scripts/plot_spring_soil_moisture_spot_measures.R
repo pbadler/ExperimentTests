@@ -121,11 +121,16 @@ aggregate(data = df, VWC ~ Treatment, FUN = 'mean')
 
 # make table for stats output 
 library(xtable)
-
+library(lsmeans)
 statsOutput <- 'manuscript/spot_measurements.tex'
 
-texreg(spot_m,caption="Spring soil moisture",
-       caption.above=TRUE,file=statsOutput, label = 'table:spotVWC')
+test <- lsmeans(spot_m , "Treatment" )
+
+#xtlsm_spot <- xtable(test, caption = '')
+#print(xtlsm_spot, )
+
+texreg(spot_m,caption="Estimated parameters from a mixed effects model fit to the spring soil moisture data. Parameter with s.e. are shown. Intercept gives soil moisture in ambient controls.",
+        caption.above=TRUE,file=statsOutput, label = 'table:spotVWC')
 
 
 aggregate( data = df, VWC ~ Treatment, FUN = 'mean')

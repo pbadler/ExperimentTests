@@ -52,10 +52,12 @@ cors$x.pos <- c(1.5,1.5)
 cors$y.pos <- c(1.5,1.5)
 cors$label <- paste0( 'r=', round( cors$cor, 2))
 
+cors2 <- all_effects %>% group_by(Treatment) %>% summarise( cor = cor(mu.x, mu.y))
+cors2$x.pos <- c(1.5,1.5) 
+cors2$y.pos <- c(1.9,1.9)
+cors2$label <- paste0( 'r=', round( cors2$cor, 2))
+
 all_effects <- unique(all_effects)
-
-nrow( all_effects )
-
 
 p1 <- 
   ggplot(all_effects, aes( x = mu.x, y = mu.y, color = Treatment, shape = sig_label,  group = 1 )  ) + 
@@ -72,6 +74,50 @@ p1 <-
   scale_shape_manual(values = c(16,8), guide = 'none') + 
   facet_grid( . ~ par  )  + 
   coord_fixed()
+
+p2 <- 
+  ggplot(all_effects, aes( x = mu.x, y = mu.y, color = Treatment,  group = 1 )  ) + 
+  geom_abline(aes( intercept = 0, slope = 1), linetype = 2, color = 'black') + 
+  geom_point(size = 2.5, alpha = 0.7) + 
+  #geom_smooth(method = 'lm', se = F, color = 'darkgray', linetype = 2) +
+  geom_vline(aes(xintercept = 0) , linetype = 2 , alpha = 0.1) + 
+  geom_hline( aes(yintercept = 0 ), linetype = 2, alpha = 0.1)  + 
+  ylab( 'Observed Treatment Effect') + 
+  xlab( 'Predicted Treatment Effect') + 
+  scale_x_continuous(limits = c(-2, 2))  + 
+  scale_y_continuous( limits = c(-2,2)) + 
+  scale_color_manual(values = my_colors[3:4])  + 
+  my_theme + 
+  scale_shape_manual(values = c(16,8), guide = 'none') + 
+  facet_grid( . ~ Treatment  )  + 
+  coord_fixed()
+
+p2_blank <- 
+  ggplot(all_effects, aes( x = mu.x, y = mu.y, color = Treatment, shape = sig_label,  group = 1 )  ) + 
+    geom_abline(aes( intercept = 0, slope = 1), linetype = 2, color = 'black') + 
+    geom_vline(aes(xintercept = 0) , linetype = 2 , alpha = 0.1) + 
+    geom_hline( aes(yintercept = 0 ), linetype = 2, alpha = 0.1)  + 
+    ylab( 'Observed Treatment Effect') + 
+    xlab( 'Predicted Treatment Effect') + 
+    scale_x_continuous(limits = c(-2, 2))  + 
+    scale_y_continuous( limits = c(-2,2)) + 
+    scale_color_manual(values = my_colors[3:4])  + 
+    my_theme + 
+    scale_shape_manual(values = c(16,8), guide = 'none') + 
+    facet_grid( . ~ Treatment  )  + 
+    coord_fixed()
+
+
+p2 <- 
+  p2 + geom_text( data = cors2, aes( x  = x.pos, y = y.pos , label = label , color = NULL, shape = NULL), show.legend = F) 
+
+png( 'figures/significant_parameter_comparison_blank.png',height = 6, width = 8 , res = 300 , units = 'in' )
+print(p2_blank)
+dev.off()
+
+png( 'figures/significant_parameter_comparison_treatment.png',height = 6, width = 8 , res = 300 , units = 'in' )
+print( p2 )
+dev.off()
 
 
 p1 <- p1 + geom_text( data = cors, aes( x  = x.pos, y = y.pos , label = label , color = NULL, shape = NULL), show.legend = F) 

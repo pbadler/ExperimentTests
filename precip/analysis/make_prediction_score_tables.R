@@ -1,3 +1,6 @@
+library(dplyr)
+library(tidyr)
+
 # format prediction tables 
 alllppd <- read.csv('output/overall_lppd.csv')
 allMSE <- read.csv('output/all_MSE_scores.csv')
@@ -18,8 +21,10 @@ overall_score_table <-
   arrange( species, vital_rate, score )
 
 
-oaxt <- xtable(overall_score_table, caption = 'Comparison of model predictions from climate model and year effects model for each species and vital rate.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the random year effects model are marked with "***" in the last column. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.' , 
-label = 'table:overallPreds')
+overall_score_table <- rename( overall_score_table, `no climate model` = `year effects model` )
+
+oaxt <- xtable(overall_score_table, caption = 'Comparison of model predictions from climate model and no climate model for each species and vital rate.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the no climate model are marked with "***" in the last column. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.' , 
+  label = 'table:overallPreds')
 
 print(oaxt, 'manuscript/overall_prediction_score.tex', type = 'latex', include.rownames = F, caption.placement ="top")
 
@@ -48,17 +53,23 @@ treatment_score_table <-
   arrange( species, vital_rate, Treatment, score )
 
 
-txt <- xtable(treatment_score_table, caption = 'Comparison of model predictions from climate model and year effects model for each species and vital rate and treatment.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the random year effects model are marked with "***" in the last column. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.' , 
-               label = 'table:treatmentPreds')
+treatment_score_table <- treatment_score_table %>% 
+  ungroup() %>% 
+  rename(  `no climate model` = `year effects model`)
 
+head(treatment_score_table)
+
+txt <- xtable(treatment_score_table, caption = 'Comparison of model predictions from climate model and no climate model for each species and vital rate and treatment.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the no climate model are marked with "***" in the last column. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.' , 
+               label = 'table:treatmentPreds')
 
 add.to.row <- list(pos = list(0), command = NULL)
 command <- paste0("\\hline\n\\endhead\n",
                   "\\hline\n",
                   "\\multicolumn{", dim(txt)[2] + 1, "}{l}",
-                  "{\\footnotesize Continued on next page}\n",
+                  "\\footnotesize Continued on next page}\n",
                   "\\endfoot\n",
                   "\\endlastfoot\n")
+
 add.to.row$command <- command
 
 print(txt, 'manuscript/treatment_prediction_score.tex', type = 'latex', show.rownames = F, hline.after=c(-1), add.to.row = add.to.row,
