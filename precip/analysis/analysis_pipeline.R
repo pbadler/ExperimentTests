@@ -25,7 +25,7 @@ source('analysis/treatment_trends_precip.R')
 
 # 3. fit treatment models 
 
-source('analysis/fit_treatment_effects.R')
+source('analysis/fit_stan_treatment_models.R')
 
 source('analysis/figure_scripts/plot_treatment_stan_fits.R')
 
@@ -47,8 +47,6 @@ source('analysis/figure_scripts/plot_treatment_parameter_estimates.R')
 
 
 # 6. modify datalists with selected climate covariates
-
-  # select climate covariates 
 
  source('analysis/modify_climate_datalists.R')
 
@@ -79,7 +77,6 @@ source('analysis/figure_scripts/plot_treatment_parameter_estimates.R')
 source('analysis/figure_scripts/plot_obs_vs_pred_treatment_parameters.R')
 
 source('analysis/figure_scripts/plot_significant_effect_comparison.R')
-
 
 # 8. plot observed cover and predicted cover 
 

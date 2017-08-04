@@ -6,7 +6,7 @@ df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('g
 i = 1
 source('analysis/waic_fxns.R')
 
-for(i in 5:nrow(df)){ 
+for(i in 1:nrow(df)){ 
   
   spp <- df$species[i]
   vr  <- df$vital_rate[i]

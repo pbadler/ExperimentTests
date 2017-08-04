@@ -37,7 +37,7 @@ library(INLA)
 trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
 
 # read in distance weights
-dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
 ###
 ### fit survival models (takes ~ 10 minutes)
@@ -102,7 +102,8 @@ setwd("..")
 library(boot)
 library(R2WinBUGS)
 setwd("recruitment")
-#source("call_recruit_m1.r")
+
+source("call_recruit_m1.r")
 
 # add treatment test data for ARTR 
 pars.summary <- read.csv("recruit_params_m1.csv")
@@ -167,7 +168,7 @@ rm(list=tmp)
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
 # read in distance weights
-dists <- read.csv(paste0(root,"/driversdata/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
 max.CI <- F  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
@@ -235,6 +236,22 @@ meanCover4 <- meanCover
 # source("ipm/IPM-getEquilibrium.r")
 # write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTRnoPSSP.csv",row.names=F)
 
+# baseline model (no treatment effects), remove all grasses
+init.species <- c(1)
+trtEffects=F
+max.CI=F
+source("ipm/IPM-setup.r")
+source("ipm/IPM-getEquilibrium.r")
+write.csv(covSave[(burn.in+1):tlimit,],"ipm/baselineCover-noGrass.csv",row.names=F)
+
+# baseline model (with treatment effects), remove all grasses
+init.species <- c(1)
+trtEffects=T
+max.CI=F
+source("ipm/IPM-setup.r")
+source("ipm/IPM-getEquilibrium.r")
+write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noGrass.csv",row.names=F)
+
 simResults <- rbind(meanCover1,meanCover2,meanCover3) 
 colnames(simResults) <- sppList
 write.csv(simResults,"ipm/simResults-meanCover.csv",row.names=F)
@@ -254,7 +271,13 @@ Rpars$intcpt.yr[,1] <- Rpars$intcpt.yr[,1]+1
 source("ipm/IPM-getEquilibrium.r")
 print(rbind(meanCover1,meanCover)) # compare baseline run with this one
 
-simFile <- "ipm/simResults-meanCover.csv"
+source("ipm/IPM-figures.r") # plot results of ARTR removals
 
-source("ipm/IPM-figures.r")
+# eyeball results for ARTR cover following grass removals
+baseline<-mean(read.csv("ipm/baselineCover.csv")[,1])
+nograss1<-mean(read.csv("ipm/baselineCover-noGrass.csv")[,1])
+nograss2<-mean(read.csv("ipm/removalCover-noGrass.csv")[,1])
+ARTRcover<-c(baseline,nograss1,nograss2)
+names(ARTRcover)<-c("Baseline","Baseline, grass removal","Treatment effects, grass removal")
+print(ARTRcover)
 

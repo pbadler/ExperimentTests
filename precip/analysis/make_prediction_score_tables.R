@@ -57,10 +57,9 @@ treatment_score_table <- treatment_score_table %>%
   ungroup() %>% 
   rename(  `no climate model` = `year effects model`)
 
-head(treatment_score_table)
-
-txt <- xtable(treatment_score_table, caption = 'Comparison of model predictions from climate model and no climate model for each species and vital rate and treatment.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the no climate model are marked with "***" in the last column. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.' , 
+txt <- xtable(treatment_score_table, caption = 'Comparison of model predictions from climate model and no climate model for each species, vital rate and treatment.  Two prediction scores are reported, MSE and lppd. Lower MSE indicates improved predictions whereas higher lppd indicates improved predictions.  Instances where the climate model outperformed the no climate model are marked with "***" in the last column. ARTR = \\textit{A. tripartita}, HECO = \\textit{H. comata}, POSE = \\textit{P. secunda}, PSSP = \\textit{P. spicata}.' , 
                label = 'table:treatmentPreds')
+
 
 add.to.row <- list(pos = list(0), command = NULL)
 command <- paste0("\\hline\n\\endhead\n",
