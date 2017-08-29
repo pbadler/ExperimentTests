@@ -12,6 +12,8 @@ library(gridExtra)
 
 # run data preparation files first --------------------------- # 
 
+source('analysis/figure_scripts/save_plot_theme.R')
+
 source('R/prepare_datalists_for_STAN.R')
 
 # analysis pipeline ------------------------------------------ # 
