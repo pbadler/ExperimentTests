@@ -117,15 +117,18 @@ My last comment, and really the only negative thing I can say about this paper i
 removal experiments have a long tradition, they are rarely coupled with a population model and generate only short term results like changes in cover or 
 fitness components. Other thoughts?}
 
-\response{SPE: once again, Peter is being the Voice of the Apocalypse on this project, so it falls to me to be rah-rah. According to 
-\texttt{http://onlinelibrary.wiley.com/doi/10.1111/cobi.12049/abstract}, population models fitted to observational data don't do well at out-of-sample prediction, because
-conditions change and out-of-sample environments are different from in-sample. Here we have a rare, perhaps unique, opportunity to (a) test the out-of-sample predictive power of models fitted
-to observational data when effects of changing environmental conditions are accounted for (in our case, by using the control plots to estimate random year effects), 
-and (b) test the specific conclusion of Adler et al. (2010) that interspecific competition is very weak, relative to intraspecific, in this system. The latter test is important 
-because experimental comparisons of inter- vs intra-specific competition (such as Pantastico-Caldas, M. and D. L. Venable. 1993. Competition in two species of desert annuals along a topographic 
-gradient. Ecology 74: 2192-2203) often (typically?) reach the opposite conclusion. Are experimental tests too artificial, not capturing the processes that actually make 
-inter$\gg$intra, or are models based on observational data too unreliable? The answer has major implications for our understanding of how plant communities operate.} 
-
+\response{SPE: here are a few more ideas, or maybe expansions on Peter's ideas and those in the paper. According to \texttt{http://onlinelibrary.wiley.com/doi/10.1111/cobi.12049/abstract}, 
+population models fitted to observational data don't do well at out-of-sample prediction, because
+conditions change and consequently out-of-sample environments are different from in-sample environments. Here we have a rare, perhaps unique, opportunity to (a) test the out-of-sample 
+predictive power of models fitted to observational data when effects of changing environmental conditions are accounted for (in our case, by using the control plots to estimate random year effects), 
+and (b) test the specific finding of Adler et al. (2010) that interspecific competition is very weak, relative to intraspecific, in this system. Given the conflicting results 
+about the relative importance of within- and between-species competition, as reviewed in the manuscript, 
+it is very informative to test the Adler et al. (2010) specific conclusions and thereby test the reliability of conclusions from models fitted to observational
+data. Maybe it would also be worth talking about the fact that experimental comparisons of inter- vs intra-specific competition (such as Pantastico-Caldas, M. and D. L. Venable. 1993. 
+Competition in two species of desert annuals along a topographic gradient. Ecology 74: 2192-2203) often (typically?) reach the opposite conclusion from observational studies (i.e, experiments
+suggest that within- and between-species competition are comparable in strength). Are experimental tests too artificial, not capturing the processes that actually make inter$\gg$intra, or are 
+models based on observational data too unreliable? The answer is important for our understanding of how plant communities operate, and for how we should study plant communities in the future.
+The more we can say about our results having general methodological conclusions for future work, the more it will do for our ``general significance'' score.} 
 
 Minor comments:
 
@@ -227,7 +230,7 @@ contemporary quadrats, that would let you translate basal cover into canopy cove
 the total canopy cover for the grasses is higher than the canopy cover of ARTR. In fact, I think it might be useful to add to the
 SI a figure consisting of maybe 4 or 9 typical quadrats photographed from above. People reading the article seem to think (incorrectly) 
 that the community is mostly bare ground with the occasional plant here and there, and they are (partially mis-)interpreting our Results in light
-of that belief.}
+of that belief.)}
 
 Given this result for P. spicata, line 401 of the discussion is a bit surprising: “how to reconcile the
 insensitivity of grasses to sagebrush removal…..” On the other hand, it does hold for two of the grasses
@@ -269,6 +272,13 @@ equilibrium (500 time steps) and each species reaching equilibrium cover (“add
 is not clear. b) I assume the random year effects were used for all 2500 time steps? c) were the 3
 scenarios applied AFTER the community reached equilibrium but before the 2000 steps, i.e., removal
 from an equilibrium community? Or from the beginning of each set of runs?
+
+\response{SPE [I just went ahead and made some changes in the manuscript]: a) This was bad phrasing on our part. 
+The community equilibrium is not a constant level of cover for each species, as it would be in a deterministic
+model, but a steady-state pattern of fluctuations over time. The additional 2000 time steps are needed to compute the average cover of each species
+at the community steady-state. We have re-phrased and expanded these sentences to clarify this point. b) Yes, that's right. The paragraph
+has been reorganized to clarify this point. c) The scenarios were applied from the very beginning; the paragraph has been re-organized to 
+clarify this point.}
 
 Fig. 4. Is the baseline removal line missing for H. comata?
 
