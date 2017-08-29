@@ -56,8 +56,12 @@ My own main concern overlaps with Reviewer 1 regarding the clarity and interpret
 
 \response{ Thoughts: I am not opposed to their suggested test (though it is a little harder to implement), but it might come from a bit of a misunderstanding 
 about our data. The removal of species A allows us to test the model's predictions about response of species, B,C, and D to A. But because the cover of A
-will be zero in all the removal plots, we can't get an independent estimate of the effects of A on the other species just from those removal plots. Any significant removal effect will be lumped in with the intercept, which is the issue they have noticed. I guess "fixing" the competition terms as they
-suggest might help the interpretation a little, but only if the inclusion of the removal plots changes the estimated competition terms. I checked on the growth models for POSE and PSSP and there is almost no difference in any of the parameters between our full model and a model for control plots only. The treatment effect effectively soaks up all the difference. I think we just have to explain that our design does not allow us to disentangle differences in competitive effects from other effects that go into the intercept. We would need partial removal treatments to do that....}
+will be zero in all the removal plots, we can't get an independent estimate of the effects of A on the other species just from those removal plots. 
+Any significant removal effect will be lumped in with the intercept, which is the issue they have noticed. I guess "fixing" the competition terms as they
+suggest might help the interpretation a little, but only if the inclusion of the removal plots changes the estimated competition terms. I checked on the growth models 
+for POSE and PSSP and there is almost no difference in any of the parameters between our full model and a model for control plots only. The treatment effect effectively soaks 
+up all the difference. I think we just have to explain that our design does not allow us to disentangle differences in competitive effects from other 
+effects that go into the intercept. We would need partial removal treatments to do that....}
 
 
 Other suggestions:
@@ -84,6 +88,10 @@ Originally I did not realize that you were fitting one model to the survey and r
 
 \response{Giles commented via email: fitting on one data set and then testing on another will tend to magnify differences and there aren’t valid tests for them. }
 
+\response{SPE: I think the intuition we're fighting is that our way of testing for a removal effect will tend to systematically \emph{underestimate} differences, i.e. that it will have
+lower power than the suggested alternative approach to detect when there is a removal effect. In order to satisfy Miller and the reviewer, we need to argue that this intuition of theirs
+is incorrect.}  
+
 Possibly related to this – where the removal and competition parameters correlated?
 
 \response{Not sure what the reviewer means...perhaps correlated in the MCMC chains?}
@@ -92,11 +100,31 @@ Another thing that kept crossing my mind as I read the paper was about the treat
 
 \response{We can certainly do this if we have to, but it will be a programming pain in the butt...Good arguments to justify ignoring uncertainty in everything except the removal effects? (We address uncertainty in those by projecting models with the 95 \% CI values). }
 
+\response{SPE: The reviewer's suggestion would be the right thing to do, if we were were using the model to make projections about future populations with and without competitor removals. What we are
+actually doing, however, is using projections of future populations to say something about the model. That ``something'' is that the interspecific competition coefficients are small in an ecologically
+relevant sense: the shift in mean cover due to interspecific competition is (for 3 species) small compared to the natural fluctuations in cover driven by interannual environmental variability. 
+If we made the projections with parameter uncertainty (as suggested) on top of random year effects, we would be conflating parameter uncertainty with environmental variability, ``tilting'' the
+comparison in our favor by overstating the magnitude of natural fluctuations. One point of Fig. 5 is that for \emph{P. spicata} the small effect of competition with ARTR each year adds up (in the model)
+to a nontrivial long-term effect.}
+
+\response{I think the real question about parameter uncertainty is this: if you sample a parameter vector at random from the posterior distribution, and re-make Fig. 5 using that parameter vector
+in all years, would the results always look like Fig. 5, or are there other possible outcomes within the set of plausible parameter values? This would be a lot of work, and I don't see any good way to
+summarize it graphically. } 
+ 
 My last comment, and really the only negative thing I can say about this paper is that it comes across as rather confirmatory in nature. It is absolutely solid science and highly interesting and important but the writing does not punch you with novelty. I think some small changes in wording could highlight that this is quite novel and hasn't been assessed in any other systems. 
 
 \response{Seems like the novelty is in the approach--experimental validation of a model based on observational data. We could also point out that while 
 removal experiments have a long tradition, they are rarely coupled with a population model and generate only short term results like changes in cover or 
 fitness components. Other thoughts?}
+
+\response{SPE: once again, Peter is being the Voice of the Apocalypse on this project, so it falls to me to be rah-rah. According to 
+\texttt{http://onlinelibrary.wiley.com/doi/10.1111/cobi.12049/abstract}, population models fitted to observational data don't do well at out-of-sample prediction, because
+conditions change and out-of-sample environments are different from in-sample. Here we have a rare, perhaps unique, opportunity to (a) test the out-of-sample predictive power of models fitted
+to observational data when effects of changing environmental conditions are accounted for (in our case, by using the control plots to estimate random year effects), 
+and (b) test the specific conclusion of Adler et al. (2010) that interspecific competition is very weak, relative to intraspecific, in this system. The latter test is important 
+because experimental comparisons of inter- vs intra-specific competition (such as Pantastico-Caldas, M. and D. L. Venable. 1993. Competition in two species of desert annuals along a topographic 
+gradient. Ecology 74: 2192-2203) often (typically?) reach the opposite conclusion. Are experimental tests too artificial, not capturing the processes that actually make 
+inter$\gg$intra, or are models based on observational data too unreliable? The answer has major implications for our understanding of how plant communities operate.} 
 
 
 Minor comments:
@@ -128,6 +156,9 @@ Line 186: what is A-5?
 Lines 181-198: if the removal effect is not “significant” (credible intervals overlap 0) is it still included in projections?
 
 \response{Yes, this relates to the main concern about propagating uncertainty.}
+
+\response{SPE: as above, I think the issue here is that we are not actually trying to project future population trajectories or the range of possible trajectories; rather, we are
+using projections to obtain an ecologically relevant measure of whether an effect is large or small.} 
 
 Results
 
@@ -189,8 +220,14 @@ canopy cover in A. tripartita? My guess is that roots extend well beyond the can
 habitats, leaving underestimated competitive interactions as a likely explanation for the significant
 removal effect.
 
-\response{Low cover should be irrelevant as long as the populations are near equilibrium. I can remind the reviewer the 
-grasses are measured with basal cover.}
+\response{Low cover should be irrelevant as long as the populations are near equilibrium. (SPE: why? Is the logic that
+the cover at equilibrium, whatever it might be, creates enough competitive pressure to keep each of the species
+from increasing?) I can remind the reviewer the grasses are measured with basal cover (SPE: do you also have data, from the
+contemporary quadrats, that would let you translate basal cover into canopy cover for the grasses? In the pictures I've seen,
+the total canopy cover for the grasses is higher than the canopy cover of ARTR. In fact, I think it might be useful to add to the
+SI a figure consisting of maybe 4 or 9 typical quadrats photographed from above. People reading the article seem to think (incorrectly) 
+that the community is mostly bare ground with the occasional plant here and there, and they are (partially mis-)interpreting our Results in light
+of that belief.}
 
 Given this result for P. spicata, line 401 of the discussion is a bit surprising: “how to reconcile the
 insensitivity of grasses to sagebrush removal…..” On the other hand, it does hold for two of the grasses
@@ -205,6 +242,12 @@ the ecological explanations in the next paragraph (lines 413-426; e.g., resource
 facilitation and competition) and has quite different implications from those discussed in the
 subsequent paragraph (lines 427-438). If this material stays, it would be helpful to compare and
 contrast these different sorts of explanations and their implications more directly.
+
+\response{SPE: One issue here is that the reviewer is confusing the total effect of competitors with the per-unit-area effects of competitors. 
+Our conclusions are about the per-unit-area effects (how much are you hurt by 1 cm$^2$ of PSSP within your zone of
+competition?), which can be large even when the total effect of a particular competing species is low because that species
+is rare. Rareness of a species is thus not an alternative explanation for finding that per-unit-area effects of (what is the
+antonym of con?)-specific competitors are small.} 
 
 A few minor points:
 
