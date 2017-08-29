@@ -129,8 +129,26 @@ ggplot( modern %>% filter( year > 2011), aes( x = year, y = avg, color = Treatme
   geom_hline( aes( x = year, yintercept = upper ), linetype = 2, alpha = 0.5) + 
   scale_color_manual(values = my_colors[2:4]) + 
   ylab( 'Average seasonal soil moisture content (ml/ml)') + 
-  my_theme
+  theme_bw() + 
+  theme( panel.grid =  element_blank()) 
 )
+
 dev.off()
 
+png('figures/modern_soil_moisture_comparison_spring.png', width = 5, height = 3, res = 300, units  = 'in')
 
+print( 
+  ggplot( data = subset(modern, modern$season == 'spring' & modern$year > 2011), aes( x = year, y = avg, color = Treatment ) ) + 
+    geom_line() + 
+    geom_point() + 
+    geom_hline( aes( x = year, yintercept  = lower), linetype = 2, alpha = 0.5)  + 
+    geom_hline( aes( x = year, yintercept = upper ), linetype = 2, alpha = 0.5)  + 
+    scale_color_manual(values = my_colors[2:4])  + 
+    ylab( 'Average seasonal soil moisture content (ml/ml)')  + 
+    theme_bw() + 
+    theme( panel.grid =  element_blank()) 
+)
+
+dev.off()
+
+  
