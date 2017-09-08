@@ -70,8 +70,6 @@ allD <- allD[keep,]
 #  2. Fit models
 #########################################
 
-library(lme4)
-
 # set up indicator variables
 allD$Treatment2 <- allD$Treatment
 allD$Treatment2[allD$year>2000] <- "Modern"
@@ -128,6 +126,37 @@ cat(capture.output(print(xtable(m3$summary.fixed,digits=4,caption=paste("Summary
         label=paste0(iSpp,"growth-trtYears")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
 rm(m3)
 
+# show why the removals only give us inference about the intercept
+# fit a model without ARTR crowding, then plot residuals against ARTR crowding
+# look at residuals vs marginal W.ARTR effects
+library(lme4)  # use lmer for convenience
+m0 <- lmer(logarea.t1~logarea.t0+ W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts+
+             (1|Group)+(logarea.t0|year),data=allD)
+png("PSSP_marginalWARTR.png",height=3.5,width=5,units="in",res=400)
+  par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,3,1,1))
+  plot(allD$W.ARTR[allD$Treatment=="Control"],residuals(m0)[allD$Treatment=="Control"],
+       xlab="W.ARTR",ylab="Residuals",col="darkgrey")
+  abline(lm(residuals(m0)[allD$Treatment=="Control"]~allD$W.ARTR[allD$Treatment=="Control"]),col="black",lwd=2)
+  abline(h=0,lty="dashed",col="black")
+  points(allD$W.ARTR[allD$Treatment=="No_shrub"],residuals(m0)[allD$Treatment=="No_shrub"],col="red")
+  points(0,mean(residuals(m0)[allD$Treatment=="No_shrub"]),pch=16,col="blue")
+dev.off()
+
+# Show reviewers that parameters don't change much if we only use data from control plots
+controlD <- subset(allD,Treatment=="Control")
+controlD$GroupID <- as.numeric(controlD$Group)
+controlD$yearID <- 100+as.numeric(controlD$year) # for random year offset on intercept
+m1.control <- inla(logarea.t1 ~ logarea.t0  + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=controlD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(controlD)))
+plot(m1.control$summary.fixed$mean,m1$summary.fixed$mean[-3],xlab="Fixed effects (controls)",
+     ylab="Fixed effects (all plots)")
+abline(0,1)
+cor(m1.control$summary.fixed$mean,m1$summary.fixed$mean[-3])
 
 # LMER models-------------------------
 

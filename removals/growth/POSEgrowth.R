@@ -128,32 +128,19 @@ cat(capture.output(print(xtable(m3$summary.fixed,digits=4,caption=paste("Summary
         label=paste0(iSpp,"growth-trtYears")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
 rm(m3)
 
-# LMER models (if you want to save a few seconds) ----------------------------------------------
+# see if parameters change if we only use data from control plots
+controlD <- subset(allD,Treatment=="Control")
+controlD$GroupID <- as.numeric(controlD$Group)
+controlD$yearID <- 100+as.numeric(controlD$year) # for random year offset on intercept
+m1.control <- inla(logarea.t1 ~ logarea.t0  + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts +
+  f(yearID, model="iid", prior="normal",param=c(0,0.001))+
+  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
+  f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=controlD,
+  family=c("gaussian"), verbose=FALSE,
+  control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
+  control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(controlD)))
+plot(m1.control$summary.fixed$mean,m1$summary.fixed$mean[-3],xlab="Fixed effects (controls)",
+     ylab="Fixed effects (all plots)")
+abline(0,1)
+cor(m1.control$summary.fixed$mean,m1$summary.fixed$mean[-3])
 
-# add individual level removal info to best model
-#m2.lmer <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +inARTR+
-#              (logarea.t0|year),data=allD) 
-#summary(m2.lmer)
-# output<-capture.output(texreg(m2.lmer, ci.force=TRUE,label="table:POSEgrowth-inARTR",
-#       caption="\textit{Poa secunda} growth with \textit{Artemisia} canopy effect",
-#       caption.above=TRUE))
-# cat(output,file=statsOutput,sep="\n",append=T)
-# cat("",file=statsOutput,sep="\n",append=T)
-
-# does effect diminish with time?
-m1.time <-lmer(logarea.t1~trtYears+logarea.t0+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-             (logarea.t0|year),data=allD) 
-# output<-capture.output(texreg(m1.time, ci.force=TRUE,label="table:POSEgrowth-byYr",
-#       caption="\textit{Poa secunda} growth with year-by-treatment interaction",
-#       caption.above=TRUE))
-# cat(output,file=statsOutput,sep="\n",append=T)
-# cat("",file=statsOutput,sep="\n",append=T)
-
-# # does result change if we filter out low ARTR control quadrats?
-# # first identify control quads with low ARTR cover
-# source("../filter_lowARTR_quads.r")
-# keep <- which(!is.element(allD$quad,exclude.quads))
-# # put indicators on intercept only
-# m1.lowARTR <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts+
-#              (1|Group)+(logarea.t0|year),data=allD,subset=keep) 
-# summary(m1.lowARTR) # very little change in parameters

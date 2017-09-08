@@ -45,8 +45,16 @@
 \begin{document} 
 \centerline{\large{Response to reviews}} 
 
-\large{Original reviews are in black and \response{our responses are in blue.}
+
 \normalsize 
+
+Dear Tom,
+
+We really appreciated the quality of the reviews we received. Both reviewers and yourself clearly "got" the paper -- both its strengths and weaknesses. We have revised the ms. to highlight those strengths and shore up the weaknesses. In particular, we have 1) added text to the Introduction (and Discussion??) to emphasize the importance and novelty of our work, and 2) added new text and supplementary figures to the Methods to justify the decisions we made in designing our data analysis. In our point-by-point response below, the original reviewer comments are in black and \response{our responses are in blue.} We hope you fill this version of the manuscript suitable for publication.
+
+Thanks for your work,
+
+Peter Adler (on behalf of all coauthors)
 
 Miller's comments: 
 
@@ -54,27 +62,32 @@ Your manuscript has been evaluated by two reviewers with expertise in plant comp
 
 My own main concern overlaps with Reviewer 1 regarding the clarity and interpretation of your statistical analysis. The manuscript sends mixed messages about how you estimated the removal treatment coefficient. There are (at least) two ways to do this. You could (A) fit a full model, including a removal coefficient (Eq 1), to all the data and evaluate significance of the removal term. This is suggested by the sentences at lines 171-173 ('note that these are not estimated as separate models'). Or you could (B) fit the crowding coefficients (your $\omega_{jm}$) from the control plots, then use them (as fixed values) in a second round of models fit to the removal plots that include a removal term (as a free parameter) and evaluate the significance of this coefficient. This is suggested at lines 263-268 ('would indicate effect larger or smaller than predicted by a model based on data from control plots'). Reviewer 1 and I have the intuition that method B is a better way to evaluate whether observational data can predict the effects of removals. Under method A (if that is what you did), I do not see why the treatment coefficient would be interpreted as the under- or over-estimation of competition. If the full model is fit to all the data, then the removal coefficient should instead reflect the difference between control and removal plots that is not related to competition, especially if both plot types spanned similar ranges of crowding environments, as you suggest (lines 289-293). This could perhaps be some unintended effect of herbicide or spatial location. In your revision, please take care to improve the communication and justification of your methods for testing whether observational data can predict the effects of experimental removals. 
 
-\response{ Thoughts: I am not opposed to their suggested test (though it is a little harder to implement), but it might come from a bit of a misunderstanding 
-about our data. The removal of species A allows us to test the model's predictions about response of species, B,C, and D to A. But because the cover of A
-will be zero in all the removal plots, we can't get an independent estimate of the effects of A on the other species just from those removal plots. 
-Any significant removal effect will be lumped in with the intercept, which is the issue they have noticed. I guess "fixing" the competition terms as they
-suggest might help the interpretation a little, but only if the inclusion of the removal plots changes the estimated competition terms. I checked on the growth models 
-for POSE and PSSP and there is almost no difference in any of the parameters between our full model and a model for control plots only. The treatment effect effectively soaks 
-up all the difference. I think we just have to explain that our design does not allow us to disentangle differences in competitive effects from other 
-effects that go into the intercept. We would need partial removal treatments to do that....}
+\response{ This is an insightful comment, and we understand your point. There are two reasons why your suggested approaches A and B will not differ in our case. First, to answer Reviewer 1's question about this same issue, ``including the removal experiment data in model fitting \emph{does not} alter the estimates of (intra- and inter-specific) competition parameters," or any other parameters for that matter. We estimated a version of our P. spicata growth model using only data from control plots (and dropping the removal treatment effect). The correlation between the parameters estimated by that model and the parameters estimated by a model fit to all data is 0.99983. Results for P. secunda were similar.  So there is no evidence of interactions between the removal treatment and other parameters in the model. Second, to clarify why all the differences between demographic performance in control and removal plots can be captured by one removal coefficient that only alters the overall intercept, we drew a new figure (Appendix C-???). To generate this figure, we fit a version of the growth model for P. spicata that did not include crowding from A. tripartita, but includes all other terms in our full model. We then plotted the residuals from this model against the observed values of A. tripartita crowding, using different colors from points for the control plots and the A. tripartita removal plots. The control plots points stretch out across the x-axis from A. tripartita values of zero up to a maximum of 70, and demonstrate a very weak but negative relationship between A. tripartita crowding and P. spicata growth. The slope of this line is the competition coefficient we estimate. However, all of the points for the removal plots, where A. tripartita cover is zero by design, are stacked on top of each other at x = 0. The figure shows that P. spicata plants experiencing zero A. tripartita crowding are growing faster in removal plots than in control plots, but it also shows why our removals provide no inference about the slope of the fitted line. So you are correct that we cannot clearly distinguish between two potential causes of the positive removal effect, one being that our observational data lead to an underestimate of A. tripartita competitive effects, and the other being that, in your words, ``the difference between control and removal plots...is not related to competition."  In retrospect, rather than only doing complete A. tripartita removals, we should have included partial removals. That said, while we now know how to conduct an even stronger test of our model in the future, the test we did conduct does represent a significant advance beyond the existing state of the art.
+
+To clarify these issues, we have added new text to Methods??? Results??? Discussion???, including the figure showing the marginal effects of A. tripartita crowding. Should we also mention how we would do it differently next time, in Discussion???}
 
 
 Other suggestions:
 
 - The abstract can be strengthened all around. It is very narrowly motivated (first words: 'A previous study').
 
+\response{Steve, want to take a crack at it?}
+
 - line 32: add 'of competitors' following 'Stable coexistence'
+
+\response{Done.}
 
 - line 33: use of 'we' here is awkward because it is a different 'we' than at line 61
 
+\response{Fixed.}
+
 - Figure 5: You incorporate random year effects into these cover estimates, so they are basically the stationary distributions of cover. Your vital rate models included spatial random effects. Can you incorporate these too?
 
+\response{We could. In fact, for our short-term population projections, which we compare directly to observed cover values, we do include spatial random effects. However, for these long-term projections, we just wanted to focus on changes in cover for a hypothetical, average plot. If we incorporated the spatial random effects, we would six slightly different versions of this plot, but because none of the other parameters vary spatially, the effects of removals on each species would not change much at all. We have added a sentence to the methods justifying our choice to exclude spatial variation DO THIS. }
+
 - You find that competitive interactions are weak, and that your models do a good job at predicting them. I could imagine that weak interactions make removal effects easy to predict (nothing happens!). You conclude that the success of this case study supports the use of multi-species models built from observational data. Do you think this conclusion will apply to communities with stronger competition? You might address this issue in your Discussion.
+
+\response{ ??? I don't have any good ideas about what to say. We could mention that a next step is testing predictions about strong INTRAspecific competition...????  }
 
 Reviewer: 1
 
@@ -82,15 +95,15 @@ Comments to the Author
 
 Adler et al. describes a removal experiment to test competitive release in sagebrush steppe. It is related to a previous survey, which found very little evidence of interspecific competition, predicting that competitive release would be minimal in this system. Results from the experiment largely confirm predictions based on observational models – there are only a few instances where the removal treatment has an impact on survival, growth, or recruitment above and beyond the effects of interspecific competition. And, for 3 of 4 species, these impacts to not scale up to affect population growth rate or equilibrium cover. I really liked this paper! It has important implications for the use of long-term survey data for assessing community dynamics. It is great to see observational models coupled with experiments to test the bounds of what our models can be used to predict. It is a very thorough examination of competitive release, and I think it is the kind of classic ecological topic that would appeal to a large audience. I have a few major and minor comments below.
 
+\response{Thank you for the positive feedback!}
+
 Major comments:
 
-Originally I did not realize that you were fitting one model to the survey and removal experiment simultaneously. I thought that you would want to separate the data used to parameterize the model vs. the data used to test the model.  I wonder how much the removal experiment data is influencing parameters (other than the removal effect) in the model. One constraint of using survey data to fit models is that often natural communities do not experience a wide range of conditions (i.e., grass and Artemisia both at low cover or a rainy year with low crowding). Does including the removal experiment data in model fitting alter the estimates of (intra- and inter-specific) competition parameters because it encompasses combinations of the dependent variables that do not exist in the survey? \response{The answer is No}. This may particularly be important for the grass removal plots because they did not go to 0 immediately and thus exhibit variability (such that the model might want to adjust the slope/competition parameter rather than add a removal intercept effect). I think you tried to address this issue with Figure C-3 but I was confused by that graph (see minor comments below), and I think it would be better to either to 1) mathematically argue that the experimental data does not influence parameters other than the removal effect or 2) fit models using only the survey data and show that the parameter estimates are unchanged. 
+Originally I did not realize that you were fitting one model to the survey and removal experiment simultaneously. I thought that you would want to separate the data used to parameterize the model vs. the data used to test the model.  I wonder how much the removal experiment data is influencing parameters (other than the removal effect) in the model. One constraint of using survey data to fit models is that often natural communities do not experience a wide range of conditions (i.e., grass and Artemisia both at low cover or a rainy year with low crowding). Does including the removal experiment data in model fitting alter the estimates of (intra- and inter-specific) competition parameters because it encompasses combinations of the dependent variables that do not exist in the survey? This may particularly be important for the grass removal plots because they did not go to 0 immediately and thus exhibit variability (such that the model might want to adjust the slope/competition parameter rather than add a removal intercept effect). I think you tried to address this issue with Figure C-3 but I was confused by that graph (see minor comments below), and I think it would be better to either to 1) mathematically argue that the experimental data does not influence parameters other than the removal effect or 2) fit models using only the survey data and show that the parameter estimates are unchanged. 
 
-\response{Giles commented via email: fitting on one data set and then testing on another will tend to magnify differences and there aren’t valid tests for them. }
+\response{We addressed this point above, in response to Miller's comments. Briefly, adding data from the removal experiments does not alter estimates of competition coefficients, but rather alters estimated of model intercepts because crowding from removed species must equal zero. As a result, a separate intercept for removal plots captures the effects of the removals. We have clarified this in...DO THIS}
 
-\response{SPE: I think the intuition we're fighting is that our way of testing for a removal effect will tend to systematically \emph{underestimate} differences, i.e. that it will have
-lower power than the suggested alternative approach to detect when there is a removal effect. In order to satisfy Miller and the reviewer, we need to argue that this intuition of theirs
-is incorrect.}  
+\response{Giles commented via email: fitting on one data set and then testing on another will tend to magnify differences and there aren’t valid tests for them. DO WE WANT TO INCLUDE THIS POINT AS WELL? }
 
 Possibly related to this – where the removal and competition parameters correlated?
 
@@ -98,26 +111,25 @@ Possibly related to this – where the removal and competition parameters correl
 
 Another thing that kept crossing my mind as I read the paper was about the treatment of “non-significant” parameters, i.e., parameters with high uncertainty. As far as I could tell throughout the paper, parameters were never dropped from models, and projections were done using the parameter estimates based on the mean of the MCMC chain values. I was struggling with what it means to use parameters with high uncertainty in projections. You explain that you want to use the deterministic versions of the models (line 186) rather than a draw from the Poisson random variable; however those deterministic values of lambda have uncertainty. In your simulations you could incorporate that uncertainty by taking a random draw from the MCMC chain for each parameter (I don't know if this is standard practice). It seemed that this would somehow “equalize” parameter uncertainty (in competition, yearly intercept, removal parameters, etc.). I’m not sure if this would change the conclusions, the only thing it might do is make the variance larger in Fig. 5, and thus the P. spicata Removal model/no ARTR might not look as different from the other P. spicata models. I’m not saying you need to do this, I’m just curious if you had considered this issue at all.
 
-\response{We can certainly do this if we have to, but it will be a programming pain in the butt...Good arguments to justify ignoring uncertainty in everything except the removal effects? (We address uncertainty in those by projecting models with the 95 \% CI values). }
-
-\response{SPE: The reviewer's suggestion would be the right thing to do, if we were were using the model to make projections about future populations with and without competitor removals. What we are
-actually doing, however, is using projections of future populations to say something about the model. That ``something'' is that the interspecific competition coefficients are small in an ecologically
-relevant sense: the shift in mean cover due to interspecific competition is (for 3 species) small compared to the natural fluctuations in cover driven by interannual environmental variability. 
+\response{ This is a good point, and we appreciate being pushed to justify our decision to ignore parameter uncertainty. Our goal is to test
+whether competitive release is as small as our previous model predicted. To be conservative, we want to make it as easy as possible to
+model large effects of removals.  Propagating parameter uncertainty through our simulations would add noise, making it \emph{harder} to 
+detect the effects of removals. More formally, our previous result showed that the interspecific competition coefficients are small in an ecologically
+relevant sense: the shift in mean cover due to interspecific competition shown in Fig. 5 is (for 3 species) small compared to the natural fluctuations in cover driven by interannual environmental variability. 
 If we made the projections with parameter uncertainty (as suggested) on top of random year effects, we would be conflating parameter uncertainty with environmental variability, ``tilting'' the
-comparison in our favor by overstating the magnitude of natural fluctuations. One point of Fig. 5 is that for \emph{P. spicata} the small effect of competition with ARTR each year adds up (in the model)
-to a nontrivial long-term effect.}
+comparison in our favor by overstating the magnitude of natural fluctuations. One point of Fig. 5 is that for \emph{P. spicata} the small effect of competition with ARTR each year adds up (in the model) to a nontrivial long-term effect.
 
-\response{I think the real question about parameter uncertainty is this: if you sample a parameter vector at random from the posterior distribution, and re-make Fig. 5 using that parameter vector
-in all years, would the results always look like Fig. 5, or are there other possible outcomes within the set of plausible parameter values? This would be a lot of work, and I don't see any good way to
-summarize it graphically. } 
+We have added new text to the Methods to justify our approach...DO THIS...add new paragraph in section: Integral projection models...
+  }
+
  
 My last comment, and really the only negative thing I can say about this paper is that it comes across as rather confirmatory in nature. It is absolutely solid science and 
 highly interesting and important but the writing does not punch you with novelty. I think some small changes in wording could highlight that this is quite novel and hasn't 
 been assessed in any other systems. 
 
-\response{Seems like the novelty is in the approach--experimental validation of a model based on observational data. We could also point out that while 
-removal experiments have a long tradition, they are rarely coupled with a population model and generate only short term results like changes in cover or 
-fitness components. Other thoughts?}
+\response{We all agreed that this is the first time we have been accused of underselling a result! We have added a new paragraph to the Introduction
+to highlight the novelty of our approach and to show how it answers a growing chorus of calls for more predictive tests. DO THIS...
+Also add material to Discussion???}
 
 \response{SPE: here are a few more ideas, or maybe expansions on Peter's ideas and those in the paper. According to \texttt{http://onlinelibrary.wiley.com/doi/10.1111/cobi.12049/abstract}, 
 population models fitted to observational data don't do well at out-of-sample prediction, because
@@ -137,12 +149,20 @@ Minor comments:
 Abstract
 
 Can you mention how many species you were modeling somewhere near the beginning of the abstract?
+
+\response{Stated in first sentence of abstract.}
+
 Lines 19-20: instead of “population models based on vital rate regressions” maybe say “population projections based on vital rate regressions” or “population predictions” so it does not sound like you are fitting new models
+
+\response{Good suggestion, done.}
 
 Line 20: The first time I read this I was not sure what you meant by “vital rate regressions”. Maybe put this in parenthesis up in lines 7-9?
 
+\response{Done.}
+
 Line25: while a competition coefficient is often understood to represent resource competition, it can also represent any other density dependent effect like microbial effects, right?
 
+\response{Good point, we changed ``resource competition" to ``feedbacks."}
 
 Introduction
 
@@ -158,12 +178,12 @@ Were the 2011 pretreatment data in the removal plots used as the conditions for 
 
 Line 186: what is A-5?
 
+\response{We have clarified that this is an Equation.}
+
 Lines 181-198: if the removal effect is not “significant” (credible intervals overlap 0) is it still included in projections?
 
-\response{Yes, this relates to the main concern about propagating uncertainty.}
+\response{Yes, this relates to the main concern about propagating uncertainty. ADDRESS THIS IN TEXT}
 
-\response{SPE: as above, I think the issue here is that we are not actually trying to project future population trajectories or the range of possible trajectories; rather, we are
-using projections to obtain an ecologically relevant measure of whether an effect is large or small.} 
 
 Results
 
@@ -182,10 +202,13 @@ Fig. 1: I’m confused how the focal species account for 70\% basal and 60\% can
 
 Fig. 4. I imagine you omitted error bars from these graphs b/c it might get messy, but I would like to see them (possibly in the supplement). It would be helpful, especially for P. spicata, to assess how off the predictions were, i.e. do error bars overlap?
 
+\response{UGH}
+
 Supplementary
 
 Figure C-3: I’m having a hard time interpreting this figure. If you look at the second box from the left on the top row (W.ARTR vs. W.HECO). The y axis is crowding from Artemisia. The red points are plots where Artemisia was removed. Why do the red points range from 0-60 on the y axis? Shouldn't they all be near 0? Or are pretreatment conditions in the removal plots included here? 
 
+\response{We revised the legend to clarify that the red points for Artemisia are pre-treatment values.}
 
 Reviewer: 2
 
@@ -203,15 +226,30 @@ discussion on such questions would be more appropriate than the current discussi
 coexistence and inter- vs intraspecific competition, which are not part of the research questions that
 end the Introduction.
 
-\response{Not sure what to say about when models will under/over estimate interaction effects. Thoughts?}
+\response{Not sure what to say about when models will under/over estimate interaction effects. Thoughts? Avoid extrapolation? Other platitudes?
+Or simply say that we need more tests of this kind to answer these questions. }
 
 One concern in the design is based on the relatively low covers, especially of the grasses. Based on
 Figure 1, basal grass cover per species is very low even before removal—1-2\% per species. Finding
 significant effects of such low cover on shrubs would indeed be surprising. Given this low expectation,
 this does not seem a very strong test of whether model predictions are valid or not for the shrub. Does
-the model even predict any effect of grass removals at these levels? \response{Yes, I can look these up}. Should the grass removal
+the model even predict any effect of grass removals at these levels? Should the grass removal
 treatment even be included in the study? The parameters estimated for A. tripartita seem to be very
 uncertain in any case (pp 16-17), further suggesting that the results for this species do not add the story.
+
+\response{We can offer multiple lines of evidence that low grass cover is not the cause of weak grass effects. 
+First, grass cover is high enough to cause strong intraspecific competition. The puzzle is why interspecific effects
+of grasses are so weak when their intraspecific effects are strong. Second, our growth and survival models do not
+depend on average cover but rather neighborhoood scale cover: even if average cover is low, a
+grass species may reach high abundance in a particular neighborhood, as seen in the Appendix figures
+showing distribution of crowding values, and exert strong per-unit-area effects on another plant. The grasses do in fact
+affect Artemisa, as shown in Tables B-2 (marginally significant effect of H. comata on Artemisia survival), B-6 (significant 
+effect of Poa on Artemisia growth, and  B-15 (P. spicata has a positive effect on Artemisia recruitment, while H. comata
+has a negative effect; the 95\% CIs do not overlap zero). Finally,
+grasses are mapped in the currency of basal cover, while for Artemisia canopy cover is mapped. To help readers
+appreciate that small values of basal cover are not trivial, we have added a new supplementary figure showing 
+photos of example quadrats before and after the removal treatment. (ADD FIG NUMBER)  }
+
 The test of the effects of shrubs on grasses is stronger (mean initial shrub cover was ca. 30\% before
 removal) and indeed two out of three tests found significant shrub removal effects on growth beyond
 the regressions on neighborhood crowding, as well as on population growth and the removal model
@@ -225,14 +263,7 @@ canopy cover in A. tripartita? My guess is that roots extend well beyond the can
 habitats, leaving underestimated competitive interactions as a likely explanation for the significant
 removal effect.
 
-\response{Low cover should be irrelevant as long as the populations are near equilibrium. (SPE: why? Is the logic that
-the cover at equilibrium, whatever it might be, creates enough competitive pressure to keep each of the species
-from increasing?) I can remind the reviewer the grasses are measured with basal cover (SPE: do you also have data, from the
-contemporary quadrats, that would let you translate basal cover into canopy cover for the grasses? In the pictures I've seen,
-the total canopy cover for the grasses is higher than the canopy cover of ARTR. In fact, I think it might be useful to add to the
-SI a figure consisting of maybe 4 or 9 typical quadrats photographed from above. People reading the article seem to think (incorrectly) 
-that the community is mostly bare ground with the occasional plant here and there, and they are (partially mis-)interpreting our Results in light
-of that belief.)}
+\response{TO DO: add caveat}
 
 Given this result for P. spicata, line 401 of the discussion is a bit surprising: “how to reconcile the
 insensitivity of grasses to sagebrush removal…..” On the other hand, it does hold for two of the grasses
@@ -248,11 +279,8 @@ facilitation and competition) and has quite different implications from those di
 subsequent paragraph (lines 427-438). If this material stays, it would be helpful to compare and
 contrast these different sorts of explanations and their implications more directly.
 
-\response{SPE: One issue here is that the reviewer is confusing the total effect of competitors with the per-unit-area effects of competitors. 
-Our conclusions are about the per-unit-area effects (how much are you hurt by 1 cm$^2$ of PSSP within your zone of
-competition?), which can be large even when the total effect of a particular competing species is low because that species
-is rare. Rareness of a species is thus not an alternative explanation for finding that per-unit-area effects of (what is the
-antonym of con?)-specific competitors are small.} 
+\response{We thank the reviewer for pointing out this apparent contradiction. TO DO: ??? reviewer is right
+that we seem to be using two different arguments in different places...I need to think about this more...}
 
 A few minor points:
 
@@ -275,7 +303,7 @@ is not clear. b) I assume the random year effects were used for all 2500 time st
 scenarios applied AFTER the community reached equilibrium but before the 2000 steps, i.e., removal
 from an equilibrium community? Or from the beginning of each set of runs?
 
-\response{SPE [I just went ahead and made some changes in the manuscript]: a) This was bad phrasing on our part. 
+\response{ This was bad phrasing on our part. 
 The community equilibrium is not a constant level of cover for each species, as it would be in a deterministic
 model, but a steady-state pattern of fluctuations over time. The additional 2000 time steps are needed to compute the average cover of each species
 at the community steady-state. We have re-phrased and expanded these sentences to clarify this point. b) Yes, that's right. The paragraph
@@ -288,6 +316,6 @@ I found several of the supplemental figures to be somewhat confusing, most notab
 potentially important information about the distribution of crowding coefficients between removals and
 controls, but I can’t quite figure out what each combination represents.
 
-\response{I will fix C-3...}
+\response{We have revised the legend of this figure to better explain what it shows.}
 
 \end{document}
