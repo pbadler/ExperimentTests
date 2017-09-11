@@ -19,6 +19,13 @@ covMeans <- aggregate(simD[,3:14],by=list(Treatment=simD$Treatment,year=simD$yea
 covMeans[1:3,7:14] <- covMeans[1:3,3:6] # copy initial values across
 covMeans <- covMeans[order(covMeans$Treatment),]
 
+### calculate standard deviations by treatment
+
+covSDs <- aggregate(simD[,3:14],by=list(Treatment=simD$Treatment,year=simD$year),
+    na.rm=T,FUN=sd)
+covSDs[1:3,7:14] <- covSDs[1:3,3:6] # copy initial values across
+covSDs <- covSDs[order(covSDs$Treatment),]
+
 ### calculate per capita growth rates
 
 get.pgr <- function(myname){
@@ -35,7 +42,7 @@ obs.pgr <- get.pgr("obs.")
 pred.pgr <- get.pgr("pred.")
 pred.trt.pgr <- get.pgr("pred.trt.")
 
-# aggregate by treatment and year
+# aggregate growth rate (means) by treatment and year
 
 get.trt.means<-function(mydat){
   mydat<-merge(mydat,quad.info)
@@ -54,7 +61,7 @@ obs.pgr.mean <- get.trt.means(obs.pgr)
 pred.pgr.mean <- get.trt.means(pred.pgr)
 pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 
-# aggregate 
+
 
 ###
 ### plot observed and predicted cover chronologically
@@ -80,6 +87,57 @@ for(i in 1:4){
           col=c(color1,color2,color1,color2,color3),
           pch=c(15,15,21,21,21),bg="white", cex=1.1, 
           lty=c("solid","dotted","solid","dotted","dotted"))   # removal plots
+  title(main=sppNames[i],adj=0,font.main=4) 
+  if(i==1){
+    legend("top",c("Control (obs.)","Control (baseline pred.)","Removal (obs.)","Removal (baseline pred.)","Removal (removal pred.)"),
+    col=c(color1,color2,color1,color2,color3),
+          pch=c(15,15,21,21,21),pt.bg="white",cex=0.9,
+          lty=c("solid","dotted","solid","dotted","dotted"),bty="n")
+  }
+}
+
+mtext("Year",side=1,line=0.5,outer=T,cex=1.1)
+mtext("Cover (%)",side=2,line=0.5,outer=T,cex=1.1)
+
+dev.off()
+
+###
+### plot observed and predicted cover chronologically WITH ERROR BARS
+###
+color1="black"
+color2="blue2" #rgb(0,100,255,alpha=175,maxColorValue = 255)
+color3="red" #rgb(153,0,0,alpha=175,maxColorValue = 255)
+
+figName <- ifelse(max.CI==F,"cover_projections_1stepBARS.png","cover_projections_1stepBARS_maxCI.png" )
+png(figName,res=400,width=8.5,height=6,units="in")
+
+par(mfrow=c(2,2),tcl=0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+
+for(i in 1:4){
+  if(i==1){
+    doRows <- which(covMeans$Treatment=="No_grass")
+  }else{
+    doRows <- which(covMeans$Treatment=="No_shrub")
+  }  
+  mycol=c(color1,color2,color1,color2,color3)
+  mypch=c(15,15,21,21,21)
+  mylty=c("solid","dotted","solid","dotted","dotted")
+  colindex=c(2+i,6+i,2+i,6+i,10+i)
+  my.ylims=c(min(covMeans[,colindex]-covSDs[,colindex]),max(covMeans[,colindex]+covSDs[,colindex]))
+  matplot(covMeans$year[1:6],cbind(covMeans[1:6,2+i],covMeans[1:6,6+i], # control plots
+          covMeans[doRows,2+i],covMeans[doRows,6+i],covMeans[doRows,10+i]),
+          ylim=my.ylims,xlab="",ylab="",type="o",
+          col=mycol,
+          pch=mypch,bg="white", cex=1.1, 
+          lty=mylty)   # removal plots
+  # add error bars
+
+  for(j in 1:5){
+    if(j<3) {rowindex = 1:6} else {rowindex=doRows}
+    arrows(x0=covMeans$year[1:6],y0=covMeans[rowindex,colindex[j]]-covSDs[rowindex,colindex[j]],
+           x1=covMeans$year[1:6],y1=covMeans[rowindex,colindex[j]]+covSDs[rowindex,colindex[j]],
+           code=3,length=0.03,angle=90,col=mycol[j],lty=mylty[j])
+  }
   title(main=sppNames[i],adj=0,font.main=4) 
   if(i==1){
     legend("top",c("Control (obs.)","Control (baseline pred.)","Removal (obs.)","Removal (baseline pred.)","Removal (removal pred.)"),
