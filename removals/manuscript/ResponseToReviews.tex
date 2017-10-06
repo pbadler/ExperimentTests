@@ -110,14 +110,17 @@ Possibly related to this – where the removal and competition parameters correl
 adding the removal data does not alter the competition coefficients 
 helps allay the implicit concern.}
 
-Another thing that kept crossing my mind as I read the paper was about the treatment of “non-significant” parameters, i.e., parameters with high uncertainty. As far as I could tell throughout the paper, parameters were never dropped from models, and projections were done using the parameter estimates based on the mean of the MCMC chain values. I was struggling with what it means to use parameters with high uncertainty in projections. You explain that you want to use the deterministic versions of the models (line 186) rather than a draw from the Poisson random variable; however those deterministic values of lambda have uncertainty. In your simulations you could incorporate that uncertainty by taking a random draw from the MCMC chain for each parameter (I don't know if this is standard practice). It seemed that this would somehow “equalize” parameter uncertainty (in competition, yearly intercept, removal parameters, etc.). I'm not sure if this would change the conclusions, the only thing it might do is make the variance larger in Fig. 5, and thus the P. spicata Removal model/no ARTR might not look as different from the other P. spicata models. I'm not saying you need to do this, I'm just curious if you had considered this issue at all.
+Another thing that kept crossing my mind as I read the paper was about the treatment of ``non-significant'' parameters, i.e., parameters with high uncertainty. As far as I could tell throughout the paper, parameters were never dropped from models, and projections were done using the parameter estimates based on the mean of the MCMC chain values. I was struggling with what it means to use parameters with high uncertainty in projections. You explain that you want to use the deterministic versions of the models (line 186) rather than a draw from the Poisson random variable; however those deterministic values of lambda have uncertainty. In your simulations you could incorporate that uncertainty by taking a random draw from the MCMC chain for each parameter (I don't know if this is standard practice). It seemed that this would somehow “equalize” parameter uncertainty (in competition, yearly intercept, removal parameters, etc.). I'm not sure if this would change the conclusions, the only thing it might do is make the variance larger in Fig. 5, and thus the P. spicata Removal model/no ARTR might not look as different from the other P. spicata models. I'm not saying you need to do this, I'm just curious if you had considered this issue at all.
 
 \response{This is a good point, and we appreciate being pushed to justify our decision to ignore parameter uncertainty. Our goal is to test
-whether competitive release is as small as our previous model predicted. To be conservative, we want to make it as easy as possible to
-model large effects of removals. (That is why we included the ``maximum removal effect" simulation based on the outer limits of the removal effect
-confidence intervals.) Propagating parameter uncertainty through our simulations would add noise, making it \emph{harder} to 
+whether competitive release is as small as our previous model predicted. To be conservative, we want to make it as easy as possible for the model to show 
+large effects from removals. That is why we included the ``maximum removal effect'' simulation based on the outer limits of the removal effect
+confidence intervals. Propagating parameter uncertainty through our simulations would add noise, making it \emph{harder} to 
 detect the effects of removals. More formally, our previous result showed that the interspecific competition coefficients are small in an ecologically
-relevant sense: the shift in mean cover due to interspecific competition shown in Fig. 5 is (for 3 species) small compared to the natural fluctuations in cover driven by interannual environmental variability. If, as suggested, we made the projections with parameter uncertainty on top of random year effects, we would be conflating parameter uncertainty with environmental variability, ``tilting'' the comparison in our favor by overstating the magnitude of natural fluctuations. One point of Fig. 5 is that for \emph{P. spicata} the small effect of competition with ARTR each year adds up (in the model) to a nontrivial long-term effect. We have added a new paragraph to the Methods section ``Individual Based Models" that makes these points. }
+relevant sense: the shift in mean cover due to interspecific competition shown in Fig. 5 is (for 3 species) small compared to the natural fluctuations in cover driven by interannual environmental variability. If, as suggested, we had made those projections with parameter uncertainty on top of the random year effects, 
+we would be conflating parameter uncertainty with environmental variability, ``tilting'' the comparison in our favor by overstating the magnitude 
+of natural fluctuations. One point of Fig. 5 is that for \emph{P. spicata} the small effect of competition with ARTR each year add'' 
+up (in the model) to a nontrivial long-term effect. We have added a new paragraph to the Methods section ``Individual Based Models" that makes these points. }
 
  
 My last comment, and really the only negative thing I can say about this paper is that it comes across as rather confirmatory in nature. It is absolutely solid science and 
@@ -125,7 +128,7 @@ highly interesting and important but the writing does not punch you with novelty
 been assessed in any other systems. 
 
 \response{We all agreed that this is the first time we have been accused of underselling a result! We have added a new paragraph to the Introduction
-to highlight the novelty of our approach and to show how it answers a growing chorus of calls for more predictive tests. Also, in the Discussion, we 
+to highlight the novelty of our approach and to show how it answers a growing chorus of calls for predictive tests. Also, in the Discussion, we 
 added some text to further emphasize why our study is a strong test of a prediction. }
 
 Minor comments:
@@ -134,19 +137,21 @@ Abstract
 
 Can you mention how many species you were modeling somewhere near the beginning of the abstract?
 
-\response{Stated in first sentence of abstract.}
+\response{Stated in first sentence of Abstract.}
 
-Lines 19-20: instead of “population models based on vital rate regressions” maybe say “population projections based on vital rate regressions” or “population predictions” so it does not sound like you are fitting new models
+Lines 19-20: instead of ``population models based on vital rate regressions'' maybe say ``population projections based on vital rate regressions" 
+or ``population predictions'' so it does not sound like you are fitting new models. 
 
 \response{Good suggestion, done.}
 
-Line 20: The first time I read this I was not sure what you meant by “vital rate regressions”. Maybe put this in parenthesis up in lines 7-9?
+Line 20: The first time I read this I was not sure what you meant by ``vital rate regressions''. Maybe put this in parenthesis up in lines 7-9?
 
 \response{Done.}
 
-Line25: while a competition coefficient is often understood to represent resource competition, it can also represent any other density dependent effect like microbial effects, right?
+Line 25: while a competition coefficient is often understood to represent resource competition, it can also represent any other 
+density dependent effect like microbial effects, right?
 
-\response{Good point, we changed ``resource competition" to ``feedbacks."}
+\response{Good point, we changed ``resource competition" to ``feedbacks''. }
 
 Introduction
 
@@ -154,7 +159,7 @@ Methods
 
 Lines 137-139:  When did you survey the removal plots? What month and for how many years? 
 
-\response{We added the following sentence, "We repeated mapped censuses of all plots each June from 2012-2016."}
+\response{We added the following sentence, ``We repeated mapped censuses of all plots each June from 2012-2016''.}
 
 Lines 150-173: In this section, I was confused what plots (survey plots or removal experiment) you were using to fit the models. Originally I had thought you would use only the survey plots to fit the models, then hold those parameters constant and add the removal parameter and fit the models to the removal data. I had thought that you would want to separate the data used to parameterize the model vs. the data used to test the model. I then realized that you were fitting the model to all data simultaneously (survey and removal experiment). Maybe be explicit somewhere? 
 
@@ -162,35 +167,35 @@ Lines 150-173: In this section, I was confused what plots (survey plots or remov
 
 Were the 2011 pretreatment data in the removal plots used as the conditions for t=1 in the model (i.e. for the competitive effects)? I don’t think it should be, because for the majority of the 2011-2012 transition, the target species were growing without competition from the removed species. Thus you might find that when there was a lot of Artemisia pretreatment in 2011, there is a large positive growth response in 2012.
 
-\response{We added this sentence to the Methods: "For plants in removal plots in 2012, we set crowding for removed neighbor species to zero, rather than using the pre-treatment (2011) data."}
+\response{We added this sentence to the Methods: ``For plants in removal plots in 2012, we set crowding for removed neighbor species to zero, rather than using the pre-treatment (2011) data.''}
 
 Line 186: what is A-5?
 
 \response{We have clarified that this is an Equation.}
 
-Lines 181-198: if the removal effect is not “significant” (credible intervals overlap 0) is it still included in projections?
+Lines 181-198: if the removal effect is not ``significant'' (credible intervals overlap 0) is it still included in projections?
 
 \response{Yes, we now clarify this in the new Methods paragraph on parameter uncertainty. Note that most of the parameters close
 to zero are the interspecific interaction effects. If we set those to zero, or dropped them from the simulations, it would further reduce the 
 magnitude of competitive release predicted by the model.}
 
-
 Results
 
-Line 263:  When I read this I wanted to know something about the uncertainty in these parameters – do most credible intervals overlap zero, or are the coefficients small but “significant”?
+Line 263:  When I read this I wanted to know something about the uncertainty in these parameters – do most credible intervals overlap zero, or are the coefficients small but ``significant''?
 
 \response{We added this sentence: ``The intraspecific interaction effects are large and have credible intervals that do not overlap zero, while the interspecific coefficients are small and the majority have credible intervals that do overlap zero." }
 
-Lines 277-283: Does the root zone of Artemisia generally fall under its canopy? Or is it larger in diameter than the aboveground canopy? Do you think the primary limiting resource is nutrients/moisture or light?
+Lines 277-283: Does the root zone of \emph{Artemisia} generally fall under its canopy? Or is it larger in diameter than the aboveground canopy? Do you think the primary limiting resource is nutrients/moisture or light?
 
 \response{We altered this section to be clear that competition for light or for soil resources should be stronger under the canopy. We also added a caveat in the Discussion (in response to Reviewer 2) about roots extending beyond canopies. }
 
-Line 291: Can you add some explanation to the “break covariances in plant densities” part? It took me a while to figure out what you meant. 
+Line 291: Can you add some explanation to the ``break covariances in plant densities'' part? It took me a while to figure out what you meant. 
 
-\response{We replaced ``break covariances in plant densities among species" with ``result in combinations of neighborhood-scale densities that deviate from naturally occurring patterns of correlation."}
+\response{We replaced ``break covariances in plant densities among species" with ``result in combinations of neighborhood-scale densities that deviate from 
+naturally occurring patterns of correlation.''}
 
 Discussion
-Line 421: remove one of the “dynamics” words 
+Line 421: remove one of the ``dynamics” words 
 
 \response{Thank you, fixed.}
 
@@ -198,7 +203,7 @@ Tables and Figures:
 
 Fig. 1: I’m confused how the focal species account for 70\% basal and 60\% canopy cover (as stated in the methods), but the mean cover values for the grasses in Fig. 1 range from only 1-3\%. I realize your estimates of cover were highly precise, but it seems that it would be hard to model species that are at such low abundance.
 
-\response{We addressed this point in detail in response to Reviewer 2's comment below.}
+\response{We address this point in detail in response to Reviewer 2's comment below.}
 
 Fig. 4. I imagine you omitted error bars from these graphs b/c it might get messy, but I would like to see them (possibly in the supplement). It would be helpful, especially for P. spicata, to assess how off the predictions were, i.e. do error bars overlap?
 
@@ -233,8 +238,8 @@ discussion on such questions would be more appropriate than the current discussi
 coexistence and inter- vs intraspecific competition, which are not part of the research questions that
 end the Introduction.
 
-\response{We have added new Discussion paragraph to directly address these questions about methodological
-generalizations (lines ???). }
+\response{We have added a new Discussion paragraph to directly address these questions about methodological 
+generalizations (line 458).}
 
 One concern in the design is based on the relatively low covers, especially of the grasses. Based on
 Figure 1, basal grass cover per species is very low even before removal—1-2\% per species. Finding
@@ -245,8 +250,8 @@ treatment even be included in the study? The parameters estimated for A. tripart
 uncertain in any case (pp 16-17), further suggesting that the results for this species do not add the story.
 
 \response{We can offer multiple lines of evidence that low grass cover is not the cause of weak grass effects. 
-First, grass cover is high enough to cause strong intraspecific competition. The puzzle is why interspecific effects
-of grasses are so weak when their intraspecific effects are strong. Second, our growth and survival models do not
+First, grass cover is high enough to cause the strong intraspecific competition that our data analysis detected. 
+The puzzle is why interspecific effects of grasses are so much weaker than their intraspecific effects. Second, our growth and survival models do not
 depend on average cover but rather neighborhoood scale cover: even if average cover is low, a
 grass species may reach high abundance in a particular neighborhood, as seen in the Appendix figures
 showing distribution of crowding values, and exert strong per-unit-area effects on another plant. The grasses do in fact
@@ -254,7 +259,7 @@ affect Artemisa, as shown in Tables B-2 (marginally significant effect of H. com
 effect of Poa on Artemisia growth, and  B-15 (P. spicata has a positive effect on Artemisia recruitment, while H. comata
 has a negative effect; the 95\% CIs do not overlap zero). Finally,
 grasses are mapped in the currency of basal cover, while for Artemisia canopy cover is mapped. To help readers
-appreciate that small values of basal cover are not trivial, we have added a new supplementary figure (C-1) showing 
+appreciate that the observed values of grass basal cover are not trivial, we have added a new supplementary figure (C-1) showing 
 photos of example quadrats before and after the removal treatment.  }
 
 The test of the effects of shrubs on grasses is stronger (mean initial shrub cover was ca. 30\% before
@@ -270,11 +275,11 @@ canopy cover in A. tripartita? My guess is that roots extend well beyond the can
 habitats, leaving underestimated competitive interactions as a likely explanation for the significant
 removal effect.
 
-\response{This is a fair point. We added a sentence noting that grasses in interspaces could still experience competition
-if shrub roots extend beyond canopies.}
+\response{This is a fair point. We added a sentence noting that grasses in interspaces 
+could still experience competition if shrub roots extend beyond canopies.}
 
-Given this result for P. spicata, line 401 of the discussion is a bit surprising: “how to reconcile the
-insensitivity of grasses to sagebrush removal…..” On the other hand, it does hold for two of the grasses
+Given this result for P. spicata, line 401 of the discussion is a bit surprising: ``how to reconcile the
+insensitivity of grasses to sagebrush removal... .'' On the other hand, it does hold for two of the grasses
 and some discussion of why the grass species differ in sensitivity to shrub removal would be interesting.
 Regardless of which species it holds for, the authors then attempt to reconcile the insensitivity found in
 this study with strong effects found in the rangeland ecology literature by noting the relatively low shrub
@@ -302,18 +307,18 @@ response must depend on how much was removed, i.e., the degree of dominance.
 \response{We revised this passage to make it clear that the second sentence involves partial, not full
 compensation.}
 
-Line 81: should “determine” be replaced by “estimate”?
+Line 81: should ``determine'' be replaced by ``estimate''?
 
 \response{We have added "estimated" later in the sentence to recognize the uncertainty in the model.}
 
 Line 87: given that you earlier defined competitive release as a population response, should
-“competitive release” at the end of this sentence be replaced by “individual response to neighbors”?
+``competitive release'' at the end of this sentence be replaced by ``individual response to neighbors''?
 The second question more directly addresses the population consequences.
 
-\response{We went with ``underestimate the response to decreased crowding" because our recruitment model does not operate 
+\response{We went with ``underestimate the response to decreased crowding'' because our recruitment model does not operate 
 at the level of individuals.}
 
-Line 216: “very similar to those used in our previous studies” is a bit confusing. Why not just use the
+Line 216: ``very similar to those used in our previous studies'' is a bit confusing. Why not just use the
 vital rate functions calculated in the first part of the study? If they are indeed the same, say so rather
 than introducing similarity to other published studies again.
 
@@ -321,12 +326,12 @@ than introducing similarity to other published studies again.
 from the models used in our previous studies. We have revised the sentence to clarify this.}
 
 Line 234-235: Several confusing points here: a) The distinction between the community reaching
-equilibrium (500 time steps) and each species reaching equilibrium cover (“additional 2000 time steps”)
+equilibrium (500 time steps) and each species reaching equilibrium cover (``additional 2000 time steps'')
 is not clear. b) I assume the random year effects were used for all 2500 time steps? c) were the 3
 scenarios applied AFTER the community reached equilibrium but before the 2000 steps, i.e., removal
 from an equilibrium community? Or from the beginning of each set of runs?
 
-\response{ This was bad phrasing on our part. 
+\response{This was bad phrasing on our part, which we have corrected. 
 The community equilibrium is not a constant level of cover for each species, as it would be in a deterministic
 model, but a steady-state pattern of fluctuations over time. The additional 2000 time steps are needed to compute the average cover of each species
 at the community steady-state. We have re-phrased and expanded these sentences to clarify this point. b) Yes, that's right. The paragraph
