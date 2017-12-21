@@ -96,3 +96,4 @@ m1 <- inla(survives ~ logarea+ Treatment + W.ARTR + W.HECO + W.POSE + W.PSSP+ W.
 #   control.predictor = list(link = 1),control.compute=list(dic=T,mlik=T),
 #   control.inla = list(h = 1e-10),Ntrials=rep(1,nrow(allD)))
 
+

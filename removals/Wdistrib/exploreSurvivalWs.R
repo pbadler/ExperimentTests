@@ -11,7 +11,8 @@ dataDir1 <- paste(root,"/ExperimentTests/data/idaho",sep="")
 dataDir2 <- paste(root,"/ExperimentTests/data/idaho_modern",sep="")
 
 # set up distance weights
-dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights_noExptl.csv",sep=""));
+#dists <- read.csv(paste(dataDir2,"/speciesdata/IdahoModDistanceWeights_noExptl.csv",sep=""));
+dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho/speciesdata/IdahoDistanceWeights.csv"))
 dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
 dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
 

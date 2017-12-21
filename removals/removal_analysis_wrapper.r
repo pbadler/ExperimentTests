@@ -37,7 +37,9 @@ library(INLA)
 trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
 
 # read in distance weights
-dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+#dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho/speciesdata/IdahoDistanceWeights.csv"))
+
 
 ###
 ### fit survival models (takes ~ 10 minutes)
@@ -165,10 +167,13 @@ rm(list=tmp)
 ### 4. get IBM predictions for quadrat cover ###############################
 ###
 
+
 sppList <-  c("ARTR","HECO","POSE","PSSP")
 
 # read in distance weights
-dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+#dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho/speciesdata/IdahoDistanceWeights.csv"))
+
 
 max.CI <- F  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
