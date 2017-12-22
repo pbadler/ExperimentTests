@@ -212,6 +212,11 @@ meanCover1 <- meanCover
 #no treatment effects, ARTR removal
 init.species <- c(2:4)
 source("ipm/IPM-getEquilibrium.r")
+# SPE 
+par(mfrow=c(2,1)); 
+HECO.base = sizeSave[[2]]; 
+plot(v[[2]],apply(HECO.base,1,mean));
+#
 write.csv(covSave[(burn.in+1):tlimit,],"ipm/baselineCover-noARTR.csv",row.names=F)
 meanCover2 <- meanCover
 
@@ -221,6 +226,10 @@ trtEffects=T
 max.CI=F
 source("ipm/IPM-setup.r")
 source("ipm/IPM-getEquilibrium.r")
+# SPE 
+HECO.trt = sizeSave[[2]]; 
+plot(v[[2]],apply(HECO.trt,1,mean));
+#
 write.csv(covSave[(burn.in+1):tlimit,],"ipm/removalCover-noARTR.csv",row.names=F)
 meanCover3 <- meanCover
 
