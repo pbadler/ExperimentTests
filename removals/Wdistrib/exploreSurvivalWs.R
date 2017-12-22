@@ -55,6 +55,8 @@ for(iSpp in 1:4){
   #   Dall$W.ARTR[ii] <- 0
   #   ii <- which(Dall$year>=2011 & Dall$Treatment=="No_grass")
   #   Dall$W.HECO[ii] <- 0 ; Dall$W.POSE[ii] <- 0 ; Dall$W.PSSP[ii] <- 0
+  
+  # I looked at "W.sum" to see how many plants experience very little crowding: a LOT
 
   allD[[iSpp]] <- Dall[,c("year","Treatment","Group","W.ARTR", "W.HECO","W.POSE","W.PSSP","W.allcov","W.allpts")]
   rm(Dall, D1,D2,tmp)
@@ -66,7 +68,7 @@ names(allD) <- sppList[1:4]
 # histograms
 Wcols <- grep("W.*",names(allD[[1]]))
 pdf("W-histograms.pdf",height=10,width=4)
-par(mfrow=c(6,2),mgp=c(2,0.5,0),tcl=-0.2,mar=c(3,3,1,1),oma=c(0,0,2,0))
+par(mfrow=c(7,2),mgp=c(2,0.5,0),tcl=-0.2,mar=c(3,3,1,1),oma=c(0,0,2,0))
 for(i in 1:4){
   for(j in 1:length(sppList)){
     hist(allD[[i]][,Wcols[j]],breaks=20,xlab="W",main=names(allD[[i]])[Wcols[j]])
