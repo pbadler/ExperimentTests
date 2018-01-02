@@ -4,7 +4,6 @@
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
 dataDir <- paste(root,"/ExperimentTests/data/idaho_modern/",sep="")
 
-
 # import data and calculate treatment trends ######################################
 
 covD<-read.csv(paste(dataDir,"allrecords_cover.csv",sep=""))

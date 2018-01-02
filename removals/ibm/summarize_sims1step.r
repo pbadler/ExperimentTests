@@ -208,7 +208,7 @@ dev.off()
 ###
 
 figName <- ifelse(max.CI==F,"obsVpred_quad_year.png","obsVpred_quad_year_maxCI.png" )
-png(figName,height=7,width=7,units="in",res=450)
+#png(figName,height=7,width=7,units="in",res=450)
 
 par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 
@@ -237,7 +237,78 @@ for(i in 1:4){
 mtext("Observed cover (%)",2,outer=T,line=0.5,cex=1.2)
 mtext("Predicted cover (%)",1,outer=T,line=0.5,cex=1.2)
 
-dev.off()
+#dev.off()
+
+
+###
+### plot quadrat level (predicted-observed) vs. predicted
+###
+
+#figName <- ifelse(max.CI==F,"obsVpred_quad_year.png","obsVpred_quad_year_maxCI.png" )
+#png(figName,height=7,width=7,units="in",res=450)
+
+par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+
+pwr=0.5; 
+for(i in 1:4){
+  if(i==1) {myTrt="No_grass"}else{myTrt="No_shrub"}
+  
+  ######### column 2 is observed, column 1 is predicted 
+  control=cbind(simD[simD$Treatment=="Control",(6+i)]^pwr,simD[simD$Treatment=="Control",(2+i)]^pwr)
+  removal.base=cbind(simD[simD$Treatment==myTrt,(6+i)]^pwr,simD[simD$Treatment==myTrt,(2+i)]^pwr)
+  removal.trt=cbind(simD[simD$Treatment==myTrt,(10+i)]^pwr,simD[simD$Treatment==myTrt,(2+i)]^pwr)
+  maxCov=1.05*max(c(control,removal.base,removal.trt),na.rm=T)
+  
+  # column 2 is now predicted-observed 
+  control[,2]=control[,1]-control[,2]; 
+  removal.base[,2]=removal.base[,1]-removal.base[,2];
+  removal.trt[,2]=removal.trt[,1]-removal.trt[,2];
+  
+  plot(control,xlim=c(0,maxCov),xlab="",ylab="")
+  title(sppNames[i],font.main=4)
+  abline(0,0,lty="dashed")
+  points(removal.base,pch=1,col="blue2")
+  points(removal.trt,pch=1,col="red")
+  abline(lm(control[,2]~control[,1]),col="black")
+  abline(lm(removal.base[,2]~removal.base[,1]),col="blue2")
+  abline(lm(removal.trt[,2]~removal.trt[,1]),col="red")
+  
+  if(i==1){
+    legend("topleft",c("Control","Removal (baseline)","Removal (treatment)"),pch=1,
+      col=c("black","blue2","red"),lty="solid",bty="n")
+  }
+  
+  base.mean=round(mean(removal.base[,2],na.rm=TRUE),digits=2);
+  trt.mean = round(mean(removal.trt[,2],na.rm=TRUE),digits=2); 
+  legend("bottomright",legend=c(as.character(base.mean),as.character(trt.mean)),lty=1, pch=1, col=c("blue","red")) 
+  
+  
+
+}
+
+mtext("Predicted - Observed cover",2,outer=T,line=0.5,cex=1.2)
+mtext("Predicted cover",1,outer=T,line=0.5,cex=1.2)
+
+#dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 setwd("..")
