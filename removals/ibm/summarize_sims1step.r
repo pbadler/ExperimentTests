@@ -61,7 +61,12 @@ obs.pgr.mean <- get.trt.means(obs.pgr)
 pred.pgr.mean <- get.trt.means(pred.pgr)
 pred.trt.pgr.mean <- get.trt.means(pred.trt.pgr)
 
-
+# calculate RMSEs
+keep <- which(simD$year > 2011 & simD$Treatment=="Control")
+control <- sqrt((simD[keep,7:10]-simD[keep,3:6])^2)
+keep <- which(simD$year > 2011 & simD$Treatment!="Control")
+removal.baseline <- sqrt((simD[keep,7:10]-simD[keep,3:6])^2)
+removal.trt <- sqrt((simD[keep,11:14]-simD[keep,3:6])^2)
 
 ###
 ### plot observed and predicted cover chronologically

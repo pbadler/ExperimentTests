@@ -88,7 +88,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   irow <- dim(trtTests)[1]
   trtTests[irow+1,] <- NA
   trtTests[irow+1,1:2] <- c(iSpp,"growth")
-  tmp <- grep("Treatment",row.names(m1$summary.fixed))
+  tmp <- grep("Treatment",row.names(m1$summary.fixed),fixed=T)[1] # only record treatment effect on intercept
   trtTests[irow+1,3:5] <- m1$summary.fixed[tmp,c("mean","0.025quant","0.975quant")]
   
   # write parameters for best model
@@ -201,7 +201,7 @@ source("ipm/get_W_functions.r")  # get neighbor distance decay functions
 
 #no treatment effects, all species
 init.species <- c(1:4)
-tlimit <- 2500
+tlimit <- 1500
 burn.in <- 500
 trtEffects=F
 source("ipm/IPM-setup.r")

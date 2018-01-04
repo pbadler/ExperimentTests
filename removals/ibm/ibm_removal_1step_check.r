@@ -82,10 +82,6 @@ cov.obs <- reshape(cov.obs,idvar=c("quad","year"),direction="wide",timevar="spec
 cov.obs[is.na(cov.obs)] <- 0
 cov.obs <- cov.obs[,c(1,2,6,3,4,5)] # reorder columns
 
-# add in missing data for Q49 2013 and 2015 (a no grass quad with no ARTR these years)
-tmp <- data.frame(quad=rep("Q49",2),year=c(2013,2015),obs.ARTR=c(0,0),obs.HECO=c(0,0),obs.POSE=c(0,0),obs.PSSP=c(0,0))
-cov.obs <- rbind(cov.obs,tmp)
-
 # get 2016 quadrat cover totals (these are not in the survival data file)
 tmp <- read.csv("QuadYearCover.csv")
 tmp <- subset(tmp, year==2016)
@@ -99,6 +95,8 @@ cov.obs <-rbind(cov.obs,tmp)
 
 # GET PREDICTIONS -------------------------------------------------------
 
+plants=subset(plants,survives==1)  # only do for surviving plants
+
 # SURVIVAL AND GROWTH
 plants$surv.prob <- plants$surv.prob.trt <- NA
 plants$logarea.pred <- plants$logarea.pred.trt <- NA
@@ -111,14 +109,14 @@ for(k in 1:dim(plants)[1]){
   doSpp <- which(sppList==plants$species[k])
   
   #ignore treatment effects
-  plants$surv.prob[k]=survive(Spars,doSpp=doSpp,doGroup=plants$GroupCode[k],
-      doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment="Control")
+  plants$surv.prob[k]=1 #survive(Spars,doSpp=doSpp,doGroup=plants$GroupCode[k],
+      #doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment="Control")
   plants$logarea.pred[k] <- grow(Gpars,doSpp=doSpp,doGroup=plants$GroupCode[k],
       doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment="Control")
   
   #use treatment effects when appropriate
-  plants$surv.prob.trt[k]=survive(Spars,doSpp=doSpp,doGroup=plants$GroupCode[k],
-      doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment=plants$Treatment[k])
+  plants$surv.prob.trt[k]=1 #survive(Spars,doSpp=doSpp,doGroup=plants$GroupCode[k],
+      #doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment=plants$Treatment[k])
   plants$logarea.pred.trt[k] <- grow(Gpars,doSpp=doSpp,doGroup=plants$GroupCode[k],
       doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment=plants$Treatment[k])
   
@@ -129,8 +127,10 @@ for(k in 1:dim(plants)[1]){
 }
 
 # multiply predicted size by survival probability to get expected area
-plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred + V.pred/2)
-plants$area.pred.trt <- plants$surv.prob.trt*exp(plants$logarea.pred.trt+V.pred.trt/2)
+plants$area.pred <-1*exp(plants$logarea.pred + V.pred/2)
+plants$area.pred.trt <- 1*exp(plants$logarea.pred.trt+V.pred.trt/2)
+
+# call individ_errors.r script here
 
 # aggregate predicted area to quadrat level
 cov.pred <- aggregate(plants[,c("area.pred","area.pred.trt")],by=list(species=plants$doSpp,quad=plants$quad,year=plants$year),FUN=sum)
@@ -138,12 +138,6 @@ names(cov.pred)[4:5] <- c("pred","pred.trt")
 cov.pred[,4:5] <- cov.pred[,4:5]/100 # convert to % cover
 cov.pred <- reshape(cov.pred,idvar=c("quad","year"),direction="wide",timevar="species")
 cov.pred[is.na(cov.pred)] <- 0
-
-# add in missing data for Q49 2013 and 2015 (a no grass quad with no ARTR these years)
-tmp <- data.frame(quad=rep("Q49",2),year=c(2013,2015)) 
-tmp <- cbind(tmp, matrix(0,2,8))
-names(tmp) <- names(cov.pred)
-cov.pred <- rbind(cov.pred,tmp)
 
 # RECRUITMENT
 
@@ -170,7 +164,6 @@ for(k in 1:dim(out.recruit)[1]){
     
 } # next k
 
-
 # ADD RECRUIT COVER TO SURVIVAL*GROWTH COVER
 
 #reorder columns
@@ -181,11 +174,11 @@ cov.pred <- cov.pred[,c(1,2,(2+tmp))]
 cov.pred <- cov.pred[order(cov.pred$quad,cov.pred$year),]
 out.recruit <- out.recruit[order(out.recruit$quad,out.recruit$year),]
 out.recruit.trt <- out.recruit.trt[order(out.recruit.trt$quad,out.recruit.trt$year),]
-cbind(cov.pred[,c(1,2)],out.recruit[,c(1,2)],out.recruit.trt[,c(1,2)]) # check rows
+#cbind(cov.pred[,c(1,2)],out.recruit[,c(1,2)],out.recruit.trt[,c(1,2)]) # check rows
 
 # now add together
-cov.pred[,3:6] <- cov.pred[,3:6] + out.recruit[,c(3:6)]
-cov.pred[,7:10] <- cov.pred[,7:10] + out.recruit.trt[,c(3:6)]
+#cov.pred[,3:6] <- cov.pred[,3:6] + out.recruit[,c(3:6)]
+#cov.pred[,7:10] <- cov.pred[,7:10] + out.recruit.trt[,c(3:6)]
 
 # FORMAT OUTPUT -------------------------------------------------------
 

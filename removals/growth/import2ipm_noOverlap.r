@@ -3,7 +3,7 @@
 
 # growth parameters
 Gpars=list(intcpt=rep(NA,Nspp),intcpt.yr=matrix(0,Nyrs,Nspp),intcpt.gr=matrix(0,6,Nspp),
-  slope=rep(NA,Nspp),slope.yr=matrix(0,Nyrs,Nspp),
+  slope=rep(NA,Nspp),slope.yr=matrix(0,Nyrs,Nspp),slopeXtrt=rep(0,Nspp),
   nb=matrix(0,Nspp,Nspp),sigma2.a=rep(NA,Nspp),sigma2.b=rep(NA,Nspp))
 for(i in 1:Nspp){
 
@@ -26,14 +26,20 @@ for(i in 1:Nspp){
   tmp=paste("W",sppList,sep=".")
   tmp=which(is.element(names(Gdata),tmp))
   if(length(tmp)>0) Gpars$nb[i,]=as.numeric(Gdata[1,tmp])
-  # Treatment effects
+  # Treatment effect on intercept
   if(trtEffects==T){
-    tmp=grep("Treatment",names(Gdata))
+    tmp=grep("Treatment",names(Gdata))[1]
     if(max.CI==T) {
       Gpars$intcpt[i]=Gpars$intcpt[i] + Gdata$TreatMaxCI[1] # add max treatment intercept
     }else{
       Gpars$intcpt[i]=Gpars$intcpt[i] + Gdata[1,tmp[1]] # add treatment intercept
     }
+   #Treatment effect on intraspecific density dependence
+   tmp=grep("Treatment",names(Gdata))
+   if(length(tmp)>1){
+    tmp=tmp[2]
+    Gpars$nb[i,i]=Gpars$nb[i,i]+Gdata[1,tmp[1]]
+   }
   }
   # variance parameters
   Gpars$sigma2.a[i]=Gdata$sigma.a[1]

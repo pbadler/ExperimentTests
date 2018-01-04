@@ -47,11 +47,39 @@ m3.lmer<- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO  + W.POSE + W.PSS
               (1|Group)+(logarea.t0|year),data=allD) 
 summary(m3.lmer) # SIGNIFICANT
 
+# try fitting with weights
+allD$weights <- (allD$logarea.t0+2)/(sum(allD$logarea.t0+2))
+m1.weights <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
+              (logarea.t0|year),weights=weights,data=allD)
+summary(m1.weights) # makes treatment effect even bigger
+
 # plot residuals against size
-keep=which(allD$Treatment=="No_shrub"  & allD$logarea.t0 > -1)
+keep=which(allD$Treatment=="No_shrub") #  & allD$logarea.t0 > -1)
 plot(allD$logarea.t0[keep],resid(m1.lmer)[keep])
 summary(lm(resid(m1.lmer)[keep]~allD$logarea.t0[keep])) # NEG for POSE, zero for HECO (only 3 plots!), zero for PSSP
 
+# plot residuals against W.POSE
+keep=which(allD$Treatment=="No_shrub") 
+plot(sqrt(allD$W.POSE[keep]),resid(m1.lmer)[keep])
+summary(lm(resid(m1.lmer)[keep]~allD$W.POSE[keep])) 
+
+# see if quad level predictions are influenced by variation in #'s of plants per quad
+quadN <- aggregate(rep(1,NROW(allD)),by=list(quad=allD$quad,year=allD$year),
+                   FUN=sum)
+names(quadN)[3]="Density"
+allD <- merge(allD,quadN)
+keep=which(allD$Treatment=="No_shrub")
+plot(allD$Density[keep],resid(m1.lmer)[keep])
+summary(lm(resid(m1.lmer)[keep]~allD$Density[keep]))
+
+# see if quad level predictions are influenced by cover of plants per quad
+quadCov <- aggregate(allD$logarea.t0,by=list(quad=allD$quad,year=allD$year),
+                   FUN=sum)
+names(quadCov)[3]="Cover"
+allD <- merge(allD,quadCov)
+keep=which(allD$Treatment=="No_shrub")
+plot(allD$Cover[keep],resid(m1.lmer)[keep])
+summary(lm(resid(m1.lmer)[keep]~allD$Cover[keep]))
 
 
 ### PSSP growth models
@@ -72,6 +100,17 @@ m3.lmer<- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO  + W.POSE + W.PSS
               (1|Group)+(logarea.t0|year),data=allD) 
 summary(m3.lmer) # SIGNIFICANT
 
+# plot residuals against size
+keep=which(allD$Treatment=="No_shrub") #  & allD$logarea.t0 > -1)
+plot(allD$logarea.t0[keep],resid(m1.lmer)[keep])
+summary(lm(resid(m1.lmer)[keep]~allD$logarea.t0[keep])) 
+
+# plot residuals against W.PSSP
+keep=which(allD$Treatment=="No_shrub") 
+plot(sqrt(allD$W.PSSP[keep]),resid(m1.lmer)[keep])
+summary(lm(resid(m1.lmer)[keep]~allD$W.PSSP[keep])) 
+
+
 #### HECO growth
 
 m1.lmer <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+W.allcov + W.allpts+
@@ -89,6 +128,11 @@ summary(m3.lmer) # nope
 keep=which(allD$Treatment=="No_shrub")
 plot(allD$logarea.t0[keep],resid(m1.lmer)[keep])
 summary(lm(resid(m1.lmer)[keep]~allD$logarea.t0[keep])) # NEG for POSE, zero for HECO (only 3 plots!), zero for PSSP
+
+# plot residuals against W.PSSP
+keep=which(allD$Treatment=="No_shrub") 
+plot(sqrt(allD$W.PSSP[keep]),resid(m1.lmer)[keep])
+summary(lm(resid(m1.lmer)[keep]~allD$W.PSSP[keep])) # NEG for POSE, zero for HECO (only 3 plots!), zero for PSSP
 
 
 ###

@@ -28,7 +28,7 @@ formatGrowthPars <-function(model,outfile){
   params=cbind(params,tmp)
   
   # record the edge of the 95% CI furthest from zero
-  j <- grep("Treatment",row.names(model$summary.fixed))
+  j <- grep("Treatment",row.names(model$summary.fixed))[1]  # only do this for main effect on intercept
   tmp <- model$summary.fixed[j,c("0.025quant","0.975quant")]
   k <- which(abs(tmp)==max(abs(tmp)))
   params$TreatMaxCI <- NA
