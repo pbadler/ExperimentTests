@@ -1,0 +1,62 @@
+% This document is for pdflatex
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amsfonts,amssymb,graphicx,natbib,subfigure,setspace}
+\usepackage[vmargin=1in,hmargin=1in]{geometry}
+
+\usepackage{enumitem}
+\setlist{topsep=.125em,itemsep=-0.15em,leftmargin=0.75cm}
+
+\usepackage[compact,small]{titlesec}
+ 
+\renewcommand{\floatpagefraction}{0.96}
+\renewcommand{\topfraction}{0.99}
+\renewcommand{\textfraction}{0.1}
+
+\setlength{\parskip}{0.1in}
+\setlength{\parindent}{0.0in}
+
+\clubpenalty = 10000
+\widowpenalty = 10000
+
+\numberwithin{equation}{section}
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\ba}{\begin{equation} \begin{aligned}}
+\newcommand{\ea}{\end{aligned} \end{equation}}
+
+\sloppy
+
+\usepackage{palatino}
+\renewcommand{\baselinestretch}{1.2}
+
+\begin{document}
+
+Here is the replacement for the Jensen correction based on Gaussian growth residuals. 
+
+After the growth model is fitted,
+
+\begin{enumerate}
+\item  Extract for each plant in the data set (indexed by $k$) 
+its \texttt{logarea.t0} $z_{0,k}$, the growth residual $z_{1,k} - \hat{z}_{1,k}$ (here $z_1$ is
+the plant's \texttt{logarea.t1} and $\hat{z}_1$ is the predicted logarea), and the predicted variance
+in growth $V_k$. 
+
+\item Compute the set of scaled residuals $r_k = (z_{1,k} - \hat{z}_{1,k})/\sqrt{V_k}$ and store them
+in a vector \texttt{scaledResiduals}.  
+ 
+\end{enumerate}
+
+Then in computing the one-step-ahead predictions, for each growth model the line 
+\begin{verbatim}
+plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred + V.pred/2)
+\end{verbatim} 
+is replaced by the following 
+\begin{verbatim}
+resid.Pred <- sqrt(V.pred)*scaledResiduals
+newJensen <- mean(exp(resid.Pred))
+plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred)*newJensen
+\end{verbatim} 
+
+\end{document}
