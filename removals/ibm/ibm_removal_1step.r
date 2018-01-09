@@ -30,6 +30,7 @@ neighborList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
 dists$allcov <- rowMeans(dists[,1:4])  # for "other" polygons use average of big 4
 dists$allpts <- dists$POSE  # set forb dist wts = smallest grass (POSE)
 dataDir2 <- paste(root,"/ExperimentTests/data/idaho_modern",sep="")
+scaledResiduals <- list(4)  
 
 for(i in 1:length(sppList)){
   
@@ -63,6 +64,10 @@ for(i in 1:length(sppList)){
   D2 <- subset(D2,year>2010)
   
   plants <- rbind(plants,D2)
+  
+  # read in scaled residuals
+  tmp <- read.csv(paste0("growth/",doSpp,"_scaled_residuals.csv"),header=T)
+  scaledResiduals[[i]] <- tmp$x
   
 }
 
@@ -99,7 +104,7 @@ cov.obs <-rbind(cov.obs,tmp)
 plants$surv.prob <- plants$surv.prob.trt <- NA
 plants$logarea.pred <- plants$logarea.pred.trt <- NA
 W.index <- grep("W.",names(plants))
-V.pred<-V.pred.trt <- numeric(dim(plants)[1])
+V.pred <- V.pred.trt <- numeric(NROW(plants))
 
 for(k in 1:dim(plants)[1]){
   
@@ -118,17 +123,29 @@ for(k in 1:dim(plants)[1]){
   plants$logarea.pred.trt[k] <- grow(Gpars,doSpp=doSpp,doGroup=plants$GroupCode[k],
       doYear=doYr,sizes=plants$logarea[k],crowding=plants[k,W.index],Treatment=plants$Treatment[k])
   
-  # get Jensen's inequality correction for transforming size back to arithmetic scale
-  # (account for predictive variance)
+  # The next two chunks (predictive variance and scaled residuals) are to correct for
+  # the effect of Jensen's inequality on predicted growth
+
+  # calculate predictive variance
   V.pred[k] = Gpars$sigma2.a[doSpp]*exp(Gpars$sigma2.b[doSpp]*plants$logarea.pred[k])
   V.pred.trt[k] = Gpars$sigma2.a[doSpp]*exp(Gpars$sigma2.b[doSpp]*plants$logarea.pred.trt[k]) 
+  
+  # # size specific correction for Jensen's inequality
+  # resid.Pred <- sqrt(V.pred[k])*scaledResiduals[[doSpp]]
+  # newJensen <- mean(exp(resid.Pred))
+  # resid.Pred.trt <- sqrt(V.pred.trt[k])*scaledResiduals[[doSpp]]
+  # newJensen.trt <- mean(exp(resid.Pred.trt))
+  # 
+  # # multiply predicted size by survival probability to get expected area using new (size specific) Jensen's correction
+  # plants$area.pred[k] <- plants$surv.prob[k]*exp(plants$logarea.pred[k])*newJensen
+  # plants$area.pred.trt[k] <- plants$surv.prob.trt[k]*exp(plants$logarea.pred.trt[k])*newJensen.trt
+  # 
 }
 
-# multiply predicted size by survival probability to get expected area
+# multiply predicted size by survival probability to get expected area (old Jensen's correction)
 plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred + V.pred/2)
 plants$area.pred.trt <- plants$surv.prob.trt*exp(plants$logarea.pred.trt+V.pred.trt/2)
 
-# call individ_errors.r script here
 
 # aggregate predicted area to quadrat level
 cov.pred <- aggregate(plants[,c("area.pred","area.pred.trt")],by=list(species=plants$doSpp,quad=plants$quad,year=plants$year),FUN=sum)

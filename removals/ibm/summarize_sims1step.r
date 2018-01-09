@@ -208,7 +208,7 @@ dev.off()
 ###
 
 figName <- ifelse(max.CI==F,"obsVpred_quad_year.png","obsVpred_quad_year_maxCI.png" )
-#png(figName,height=7,width=7,units="in",res=450)
+png(figName,height=7,width=7,units="in",res=450)
 
 par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 
@@ -237,7 +237,7 @@ for(i in 1:4){
 mtext("Observed cover (%)",2,outer=T,line=0.5,cex=1.2)
 mtext("Predicted cover (%)",1,outer=T,line=0.5,cex=1.2)
 
-#dev.off()
+dev.off()
 
 
 ###
@@ -249,7 +249,8 @@ mtext("Predicted cover (%)",1,outer=T,line=0.5,cex=1.2)
 
 par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 
-pwr=0.5; 
+pwr=0.5
+
 for(i in 1:4){
   if(i==1) {myTrt="No_grass"}else{myTrt="No_shrub"}
   
@@ -282,8 +283,6 @@ for(i in 1:4){
   trt.mean = round(mean(removal.trt[,2],na.rm=TRUE),digits=2); 
   legend("bottomright",legend=c(as.character(base.mean),as.character(trt.mean)),lty=1, pch=1, col=c("blue","red")) 
   
-  
-
 }
 
 mtext("Predicted - Observed cover",2,outer=T,line=0.5,cex=1.2)

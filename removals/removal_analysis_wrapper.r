@@ -83,7 +83,7 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   cat("",file=statsOutput,sep="\n",append=T)
   cat(capture.output(print(xtable(m1$summary.fixed,digits=4,caption=paste("Summary of fixed effects for the",iSpp,"growth model"),
         label=paste0(iSpp,"growth")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
-  
+
   # save treatment test
   irow <- dim(trtTests)[1]
   trtTests[irow+1,] <- NA
