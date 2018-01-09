@@ -3,11 +3,21 @@
 
 formatGrowthPars <-function(model,outfile){
   
+  browser()
+  
   # fit variance
   x=model$summary.fitted.values$mean
-  y=(x-allD$logarea.t1)^2  # residuals
+  y=(x-allD$logarea.t1)^2  # squared residuals
   #plot(x,y)
   outVar=nls(y~a*exp(b*x),start=list(a=1,b=0))
+  
+  # calculate scaled residuals and Jensen's inequality correction for IBM growth predictions
+  V.pred=predict(outVar)
+  scaledResiduals=(x-allD$logarea.t1)/sqrt(V.pred)
+  # make sure mean = 0 and variance =1
+  scaledResiduals = (scaledResiduals - mean(scaledResiduals))/sd(scaledResiduals)
+  resid.Pred = sqrt(V.pred)*scaledResiduals
+  jensen.correct = mean(exp(resid.Pred))
   
   #year effects
   Intercept.yr=model$summary.random$yearID$mean
