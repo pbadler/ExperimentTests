@@ -114,7 +114,7 @@ rm(m2)
 # does effect diminish with time?
 allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
                        as.numeric(as.character(allD$year))-2010,0))
-m3 <- inla(logarea.t1 ~ trtYears + logarea.t0  + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts + inARTR +
+m3 <- inla(logarea.t1 ~ trtYears + logarea.t0  + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts  +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
 #  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,

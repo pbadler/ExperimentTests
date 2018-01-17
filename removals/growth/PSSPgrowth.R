@@ -112,7 +112,7 @@ rm(m2)
 # does effect diminish with time?
 allD$trtYears <- as.factor(ifelse(allD$Treatment=="No_shrub",
                        as.numeric(as.character(allD$year))-2010,0))
-m3 <- inla(logarea.t1 ~ trtYears + logarea.t0  + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts + inARTR +
+m3 <- inla(logarea.t1 ~ trtYears + logarea.t0  + W.ARTR + W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts  +
   f(yearID, model="iid", prior="normal",param=c(0,0.001))+
 #  f(GroupID, model="iid", prior="normal",param=c(0,0.001))+
   f(year, logarea.t0, model="iid", prior="normal",param=c(0,0.001)), data=allD,
@@ -126,9 +126,8 @@ cat(capture.output(print(xtable(m3$summary.fixed,digits=4,caption=paste("Summary
         label=paste0(iSpp,"growth-trtYears")),caption.placement="top")),file=statsOutput,sep="\n",append=T)
 rm(m3)
 
-# show why the removals only give us inference about the intercept
-# fit a model without ARTR crowding, then plot residuals against ARTR crowding
-# look at residuals vs marginal W.ARTR effects
+# Show why the removals only give us inference about the intercept:
+# Fit a model without ARTR crowding, then plot residuals against ARTR crowding
 library(lme4)  # use lmer for convenience
 m0 <- lmer(logarea.t1~logarea.t0+ W.HECO + W.POSE + W.PSSP + W.allcov + W.allpts+
              (1|Group)+(logarea.t0|year),data=allD)

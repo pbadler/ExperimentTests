@@ -130,21 +130,17 @@ for(k in 1:dim(plants)[1]){
   V.pred[k] = Gpars$sigma2.a[doSpp]*exp(Gpars$sigma2.b[doSpp]*plants$logarea.pred[k])
   V.pred.trt[k] = Gpars$sigma2.a[doSpp]*exp(Gpars$sigma2.b[doSpp]*plants$logarea.pred.trt[k]) 
   
-  # # size specific correction for Jensen's inequality
-  # resid.Pred <- sqrt(V.pred[k])*scaledResiduals[[doSpp]]
-  # newJensen <- mean(exp(resid.Pred))
-  # resid.Pred.trt <- sqrt(V.pred.trt[k])*scaledResiduals[[doSpp]]
-  # newJensen.trt <- mean(exp(resid.Pred.trt))
-  # 
-  # # multiply predicted size by survival probability to get expected area using new (size specific) Jensen's correction
-  # plants$area.pred[k] <- plants$surv.prob[k]*exp(plants$logarea.pred[k])*newJensen
-  # plants$area.pred.trt[k] <- plants$surv.prob.trt[k]*exp(plants$logarea.pred.trt[k])*newJensen.trt
-  # 
-}
+  # size specific correction for Jensen's inequality
+  resid.Pred <- sqrt(V.pred[k])*scaledResiduals[[doSpp]]
+  newJensen <- mean(exp(resid.Pred))
+  resid.Pred.trt <- sqrt(V.pred.trt[k])*scaledResiduals[[doSpp]]
+  newJensen.trt <- mean(exp(resid.Pred.trt))
 
-# multiply predicted size by survival probability to get expected area (old Jensen's correction)
-plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred + V.pred/2)
-plants$area.pred.trt <- plants$surv.prob.trt*exp(plants$logarea.pred.trt+V.pred.trt/2)
+  # multiply predicted size by survival probability to get expected area using new (size specific) Jensen's correction
+  plants$area.pred[k] <- plants$surv.prob[k]*exp(plants$logarea.pred[k])*newJensen
+  plants$area.pred.trt[k] <- plants$surv.prob.trt[k]*exp(plants$logarea.pred.trt[k])*newJensen.trt
+
+}
 
 
 # aggregate predicted area to quadrat level
@@ -189,11 +185,11 @@ cov.pred <- cov.pred[,c(1,2,(2+tmp))]
 cov.pred <- cov.pred[order(cov.pred$quad,cov.pred$year),]
 out.recruit <- out.recruit[order(out.recruit$quad,out.recruit$year),]
 out.recruit.trt <- out.recruit.trt[order(out.recruit.trt$quad,out.recruit.trt$year),]
-cbind(cov.pred[,c(1,2)],out.recruit[,c(1,2)],out.recruit.trt[,c(1,2)]) # check rows
+#cbind(cov.pred[,c(1,2)],out.recruit[,c(1,2)],out.recruit.trt[,c(1,2)]) # check rows
 
 # now add together
-cov.pred[,3:6] <- cov.pred[,3:6] + out.recruit[,c(3:6)]
-cov.pred[,7:10] <- cov.pred[,7:10] + out.recruit.trt[,c(3:6)]
+#cov.pred[,3:6] <- cov.pred[,3:6] + out.recruit[,c(3:6)]
+#cov.pred[,7:10] <- cov.pred[,7:10] + out.recruit.trt[,c(3:6)]
 
 # FORMAT OUTPUT -------------------------------------------------------
 
@@ -206,4 +202,62 @@ output <- merge(output,quad.info)
 
 write.table(output,outfile,row.names=F,sep=",")
 
-rm(plants)
+#rm(plants)
+
+
+## plot predictions vs. observations at individual plant level--------------
+
+# # import growth data sets
+# obs.plant.size <- NULL
+# for(i in 1:length(sppList)){
+#   doSpp<-sppList[i]
+#   tmpD <- read.csv(paste0(dataDir2,"/speciesData/",doSpp,"/growDnoNA.csv"),header=T)
+#   tmpD<-tmpD[,c("quad","year","trackID","area.t1")]
+#   tmpD$species<-doSpp
+#   if(i==1){
+#     obs.plant.size<-tmpD
+#   }else{
+#     obs.plant.size<-rbind(obs.plant.size,tmpD)
+#   }
+# } # next i
+# 
+# # merge 
+# plants <- merge(plants,obs.plant.size,all.x=T)
+# 
+# # make figure
+# figName <- ifelse(max.CI==F,"obsVpred_plants.png","obsVpred_plants_maxCI.png" )
+# png(figName,height=7,width=7,units="in",res=450)
+# 
+# par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
+# 
+# pwr=0.5
+# 
+# for(i in 1:4){
+#   if(i==1) {myTrt="No_grass"}else{myTrt="No_shrub"}
+#   tmpD<-subset(plants,species==sppList[i])
+#   control=cbind(tmpD[tmpD$Treatment=="Control",c("area.pred")]^pwr,tmpD[tmpD$Treatment=="Control",c("area.t1")]^pwr)
+#   removal.base=cbind(tmpD[tmpD$Treatment==myTrt,c("area.pred")]^pwr,tmpD[tmpD$Treatment==myTrt,c("area.t1")]^pwr)
+#   removal.trt=cbind(tmpD[tmpD$Treatment==myTrt,c("area.pred.trt")]^pwr,tmpD[tmpD$Treatment==myTrt,c("area.t1")]^pwr)
+#   maxCov=1.05*max(c(control,removal.base,removal.trt),na.rm=T)
+#   plot(control,ylim=c(0,maxCov),xlim=c(0,maxCov),xlab="",ylab="")
+#   title(sppList[i],font.main=4)
+#   abline(0,1,lty="dashed")
+#   points(removal.base,pch=1,col="blue2")
+#   points(removal.trt,pch=1,col="red")
+#   abline(lm(control[,2]~0+control[,1]),col="black")
+#   abline(lm(removal.base[,2]~0+removal.base[,1]),col="blue2")
+#   abline(lm(removal.trt[,2]~0+removal.trt[,1]),col="red")
+#   
+#   if(i==1){
+#     legend("topleft",c("Control","Removal (baseline)","Removal (treatment)"),pch=1,
+#       col=c("black","blue2","red"),lty="solid",bty="n")
+#   }
+# 
+# }
+# 
+# mtext("sqrt Observed cover (%)",2,outer=T,line=0.5,cex=1.2)
+# mtext("sqrt Predicted cover (%)",1,outer=T,line=0.5,cex=1.2)
+# 
+# dev.off()
+
+

@@ -7,12 +7,19 @@ graphics.off();
 root=ifelse(.Platform$OS.type=="windows","c:/Repos","~/repos"); # modify as needed
 setwd(paste(root,"/ExperimentTests/removals/",sep="")); # modify as needed 
 
+# required packages
+library(texreg) # to save output
+library(lme4)
+library(xtable)
+library(INLA)
+library(boot)
+library(R2WinBUGS)
+library("TeachingDemos") # for inset plots
+library("quantreg")
+
 ###
 ### 1. get treatment trends #################################
 ###
-
-library(texreg) # to save output
-library(lme4)
 
 statsOutput <- paste0(getwd(),"/stats_tables.tex")
 source("treatment_trends_removals.r")
@@ -27,11 +34,6 @@ rm(list=tmp)
 ###
 ### 2. fit vital rate regressions ###########################
 ###
-
-library(texreg) # to save output
-library(xtable)
-library(lme4)
-library(INLA)
 
 # table to store Treatment effects
 trtTests <- data.frame("species"="c","stage"="c","effect"=1,"CI.02.5"=1,"CI.97.5"=1,stringsAsFactors = F)
@@ -74,9 +76,11 @@ setwd("..")
 
 setwd("growth")
 source("write_params.r") # get function to format and output parameters
-
-for(iSpp in c("ARTR","HECO","POSE","PSSP")){
+growth_residuals <- list() # place to store growth residuals needed for plotting
+sppList <- c("ARTR","HECO","POSE","PSSP")
+for(i in 1:length(sppList)){
   
+  iSpp <- sppList[i]
   source(paste0(iSpp,"growth.r"))
   
   # save fixed effects summary to file
@@ -94,15 +98,21 @@ for(iSpp in c("ARTR","HECO","POSE","PSSP")){
   # write parameters for best model
   formatGrowthPars(m1,paste0(iSpp,"_growth.csv")) 
   
+  # save growth residuals
+  allD$resids <- allD$logarea.t1-m1$summary.fitted.values$mean
+  growth_residuals[[i]] <- allD[,c("quad","year","Treatment","logarea.t1","resids")]
+  
 }
+
+# make growth residuals figure
+source("growth_residuals_fig.R")
+
 setwd("..")
 
 ###
 ### fit recruitment models (this can take a few hours)
 ###
 
-library(boot)
-library(R2WinBUGS)
 setwd("recruitment")
 
 source("call_recruit_m1.r")
@@ -154,9 +164,6 @@ rm(list=tmp)
 ### 3. explore neighborhood composition ###################################
 ###
 
-library("TeachingDemos") # for inset plots
-library("quantreg")
-
 source("Wdistrib/exploreSurvivalWs.R")
 
 # clean up
@@ -173,7 +180,6 @@ sppList <-  c("ARTR","HECO","POSE","PSSP")
 # read in distance weights
 #dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho/speciesdata/IdahoDistanceWeights.csv"))
-
 
 max.CI <- F  # TRUE means use maximum removal effect
 source("ibm/ibm_removal_1step.r")
