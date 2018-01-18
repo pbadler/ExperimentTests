@@ -27,7 +27,7 @@ for(i in 1:4){
 }
 
 # plot figure
-png("growth_residuals_figure.png",height=5.5,width=8,units="in",res=400)
+png("growth_residuals_vs_quad_removal_cover.png",height=5.5,width=8,units="in",res=400)
 par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 for(i in 1:4){
   if(i==1){

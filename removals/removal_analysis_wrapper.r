@@ -100,12 +100,13 @@ for(i in 1:length(sppList)){
   
   # save growth residuals
   allD$resids <- allD$logarea.t1-m1$summary.fitted.values$mean
-  growth_residuals[[i]] <- allD[,c("quad","year","Treatment","logarea.t1","resids")]
+  growth_residuals[[i]] <- allD[,c("quad","year","trackID","Treatment","logarea.t1","resids")]
   
 }
 
-# make growth residuals figure
-source("growth_residuals_fig.R")
+# make growth residuals figures
+source("growth_residuals_by_quad.R")
+source("growth_residuals_by_individ.R")
 
 setwd("..")
 
