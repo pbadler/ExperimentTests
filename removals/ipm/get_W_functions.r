@@ -1,8 +1,7 @@
 
 # call from removal_analysis_wrapper.r
 
-#distWts <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
-distWts <- read.csv(paste0(root,"/ExperimentTests/data/idaho/speciesdata/IdahoDistanceWeights.csv"))
+distWts <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights.csv"))
 
 # make distWts constant over first annulus (0 to 2 cm)
 distWts <- rbind(distWts,c(1,1,1,1,0))
