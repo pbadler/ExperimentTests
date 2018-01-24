@@ -97,17 +97,26 @@ summary(lm(resid(m1.lmer)[keep]~allD$logarea.t0[keep])) # NEG for POSE, zero for
 
 # get ARTR pretreatment cover
 covD <- read.csv("C:\\Repos\\ExperimentTests\\removals\\QuadYearCover.csv")
-covD <- subset(covD, species=="Artemisia tripartita" & Treatment=="No_shrub" & year==2011)
-covD <- covD[,c("quad","cover")]
+#covD <- subset(covD, species=="Artemisia tripartita" & Treatment=="No_shrub" & year==2011)
+covD <- subset(covD, species=="Artemisia tripartita")
+#covD <- covD[,c("quad","cover")]
+
+# get average cover for each quad
+covD <- aggregate(covD$cover,by=list(quad=covD$quad),FUN="mean")
+names(covD) <- c("quad","cover")
 
 allD <-merge(allD,covD,all.x=T)
 
 m1.lmer <- lmer(logarea.t1~logarea.t0+Treatment+W.ARTR + W.HECO + W.POSE + W.PSSP+ W.allcov + W.allpts +
-              (logarea.t0|year),data=allD)
+              (logarea.t0|year)+(1|Group),data=allD)
 
-keep=which(allD$Treatment=="No_shrub")
+keep=which(allD$Treatment=="Control") #No_shrub")
 plot(allD$cover[keep],resid(m1.lmer)[keep])
 summary(lm(resid(m1.lmer)[keep]~allD$cover[keep])) # NEG for POSE, zero for HECO (only 3 plots!), zero for PSSP
+
+# 1/23/2018, set this up to look for relationship between grass growth and average ARTR cover 
+# in control plots. No significant relationships between growth residuals and average ARTR Cover.
+
 
 ###
 ### Analyze growth residuals in plots*years following big ARTR natural mortality events
