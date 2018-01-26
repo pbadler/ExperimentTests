@@ -53,7 +53,7 @@
 \floatstyle{boxed}
 \newfloat{Box}{tbph}{box}
 
-\title{Weak interspecific interactions in a sagebrush steppe: evidence from observations, models, and experiments}
+\title{Weak interspecific interactions in a sagebrush steppe\new{?: conflicting evidence from observations and experiments} }
 
 \author[1]{Peter B. Adler\thanks{Corresponding author. Department of Wildland Resources and the Ecology Center, Utah State University, Logan, Utah Email: peter.adler@usu.edu}}
 \author[1]{Andrew Kleinhesselink}
@@ -92,7 +92,7 @@
 
 \section*{Abstract}
 
-Stable coexistence requires intraspecific limitations to be stronger than interspecific limitations. The greater the difference between intra- and interspecific limitations, the more stable the coexistence, and the weaker the competitive release any species should experience following removal of competitors. We conducted a removal experiment to test whether a previously estimated model, showing surprisingly weak interspecific competition for four dominant species in a sagebrush steppe, accurately predicts competitive release. Our treatments were 1) removal of all perennial grasses and 2) removal of the dominant shrub, \textit{Artemisia tripartita}. We regressed survival, growth and recruitment on the locations, sizes, and species identities of neighboring plants, along with an indicator variable for removal treatment. If our ``baseline" regression model, which accounts for local plant-plant interactions, accurately explains the observed responses to removals, then the removal coefficient should be non-significant. \new{For survival and recruitment, the removal coefficients were never significantly different from zero.} For growth, the removal treatment effect was significant and positive for two species, \textit{Poa secunda} and \textit{Pseudoroegneria spicata}, indicating that the baseline model underestimated interspecific competition. However, including information about pretreatment cover of \textit{A. tripartita} at the quadrat or individual scale failed to improve the growth regressions, raising questions about the mechanisms driving the positive response to removal. For three species, population projections based on the vital rate regressions showed little impact of removals. For \textit{P. spicata}, the population models that included effects of \textit{A. tripartita} removal projected greater competitive release than the baseline models. The ability of models based on observational data to predict population responses to experimental removals increased our confidence that interspecific interactions are in fact weak for at least three of our four study species. The implication is that factors besides interspecific feedbacks play important roles in determining the structure and dynamics of this community. The success of the models also supports the use of multispecies models based on long-term observational data for characterizing competitive interactions. 
+Stable coexistence requires intraspecific limitations to be stronger than interspecific limitations. The greater the difference between intra- and interspecific limitations, the more stable the coexistence, and the weaker the competitive release any species should experience following removal of competitors. We conducted a removal experiment to test whether a previously estimated model, showing surprisingly weak interspecific competition for four dominant species in a sagebrush steppe, accurately predicts competitive release. Our treatments were 1) removal of all perennial grasses and 2) removal of the dominant shrub, \textit{Artemisia tripartita}. We regressed survival, growth and recruitment on the locations, sizes, and species identities of neighboring plants, along with an indicator variable for removal treatment. If our ``baseline" regression model, which accounts for local plant-plant interactions, accurately explains the observed responses to removals, then the removal coefficient should be non-significant. \new{For survival, the removal coefficients were never significantly different from zero, and only \textit{A. tripartita} showed a (negative) response to removals at the recruitment stage.} For growth, the removal treatment effect was significant and positive for two species, \textit{Poa secunda} and \textit{Pseudoroegneria spicata}, indicating that the baseline model underestimated interspecific competition. However, including information about pretreatment cover of \textit{A. tripartita} at the quadrat or individual scale failed to improve the growth regressions, raising questions about the mechanisms driving the positive response to removal. For three species, population projections based on the vital rate regressions showed little impact of removals. For \textit{P. spicata}, the population models that included effects of \textit{A. tripartita} removal projected greater competitive release than the baseline models. The ability of models based on observational data to predict population responses to experimental removals increased our confidence that interspecific interactions are in fact weak for at least three of our four study species. The implication is that factors besides interspecific feedbacks play important roles in determining the structure and dynamics of this community. The success of the models also supports the use of multispecies models based on long-term observational data for characterizing competitive interactions. 
 
 \textbf{\large{Keywords:}} Coexistence, competition, integral projection model, removal experiment, sagebrush steppe. 
 
@@ -245,7 +245,7 @@ For the survival models, the 95\% credible intervals on the removal effects over
 Tables \ref{ARTRsurvival} to \ref{PSSPsurvival}), meaning that the survival probabilities of plants in removal plots can be predicted based on data 
 from control plots. For the growth models, the 95\% credible intervals on the removal effects were positive for \textit{P. secunda}  and \textit{P. spicata},
  meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions 
- (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). \new{ We could not detect significant removal treatment effects on recruitment for any species (Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}).}
+ (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). \new{ At the recruitment stage, only \textit{A. tripartita} showed a significant response to removals, and it was negative (Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}).}
 
  \begin{figure}[tbp]
  \centering
@@ -255,17 +255,20 @@ from control plots. For the growth models, the 95\% credible intervals on the re
  \label{fig:VitalRateTest}
  \end{figure}
 
-The positive removal effects on \textit{P. secunda}  and \textit{P. spicata} growth suggest that models based on observational data may underestimate competitive release. We conducted additional analyses to further explore removal effects on the growth of these two species. First, we classified all individuals of these species as located either inside or outside the limits of \textit{A. tripartita} canopies present in 2011 (before removal). If removal is releasing grasses from \textit{A. tripartita} competition for light or soil resources, we would expect individuals located under the shrub canopies to experience a greater effect of removal than individuals further away. However, the location of individuals with respect to \textit{A. tripartita} canopies had no effect on growth of either species (Tables \ref{table:POSEgrowth-inARTR} and \ref{table:PSSPgrowth-inARTR}), meaning that individuals located outside \textit{A. tripartita} canopies responded to removals as much as individuals underneath (removed) canopies. 
+The positive removal effects on \textit{P. secunda}  and \textit{P. spicata} growth suggest that models based on observational data may underestimate competitive release. We conducted additional analyses to further explore removal effects on the growth of these two species. First, \new{we asked whether increases in grass growth following removal were greatest in quadrats or neighborhoods where we removed the most \textit{A. tripartita}. We did this by taking residuals from the fitted growth models for plants in removal quadrats and plotting those residuals against the pre-treatment, quadrat-level cover of \textit{A. tripartita}. No species showed the positive relationship we expected to see (Fig. \ref{fig:GrowthResidsQuad}). In fact, \textit{Poa secunda} residuals were significantly lower in quadrats with high pre-treatment cover of \textit{A. tripartita} (individuals in high cover quadrats are growing more slowly than the growth model predicted). We repeated this analysis at the individual plant level for grasses present in 2011. We calculated pre-treatment crowding from \textit{A. tripartita} for each of those individuals, then plotted their growth residuals against crowding for all years in which each plant survived. We found no significant relationships between the growth residuals and pre-treatment crowding from \textit{A. tripartita} (Fig. \ref{fig:GrowthResidsIndivid}). }
 
-Second, we evaluated the possibility that removal effects might be transient. We removed aboveground plant material, but roots of the removed plants remain in the ground and decompose, potentially creating a flush of mineral nutrients. We tested for a transient removal effect by adding a year-by-treatment interaction. For both  \textit{P. secunda}  and \textit{P. spicata}, we found no sign of a decrease in the removal effect over time (Tables \ref{table:POSEgrowth-trtYears} and \ref{table:PSSPgrowth-trtYears}).
+
+%we classified all individuals of these species as located either inside or outside the limits of \textit{A. tripartita} canopies present in 2011 (before removal). If removal is releasing grasses from \textit{A. tripartita} competition for light or soil resources, we would expect individuals located under shrub canopies to experience a greater effect of removal than individuals further away. However, the location of individuals with respect to \textit{A. tripartita} canopies had no effect on growth of either species (Tables \ref{table:POSEgrowth-inARTR} and \ref{table:PSSPgrowth-inARTR}), meaning that individuals located outside \textit{A. tripartita} canopies responded to removals as much as individuals underneath (removed) canopies. 
+
+Second, we evaluated the possibility that removal effects might be transient. We removed aboveground plant material, but roots of the removed plants remain in the ground and decompose, potentially creating a flush of mineral nutrients. We tested for a transient removal effect by adding a year-by-treatment interaction. For both  \textit{P. secunda}  and \textit{P. spicata}, we found no sign of a decrease in the removal effect over time (Tables \ref{table:POSEgrowth-trtYears} and \ref{table:PSSPgrowth-trtYears}). In fact, for  \textit{P. secunda}, the removal effects increase over time.
 
 Third, responses to removals might be poorly predicted by models based on observational data if the removals reduce plant densities (crowding) below the range of historical variation, or if the removals result in combinations of neighborhood-scale densities that deviate from naturally occurring patterns of correlation. However, the distribution of crowding observed within control plots easily spans the crowding values observed in removal plots (Fig. \ref{fig:Wscatters}), and we failed to find evidence for strong interspecific covariances in crowding (Appendix \ref{AppendixA}).
 
-Finally, we evaluated pre-existing differences in community composition in removal and control plots. In selecting removal plots, our criteria required candidate plots to include at least a certain amount of our target removal species. Because we adopted the historical plots as our controls, the same criteria were not applied (a control plot might not contain any \textit{A. tripartita}). To quantify resulting differences in pre-treatment (2011) composition, we compared neighborhood crowding at the individual plant level (the $W_{jm}$'s of the growth regressions) across treatments. \textit{A. tripartita} crowding and crowding by all subdominant shrub and grass species appeared greater in removal plots than in the controls, whereas crowding by \textit{H. comata} was lower in removals than controls, though it was absent from most \textit{P. spicata} neighborhoods in both treatments (Fig. \ref{fig:W-by-treatment}). These pre-existing differences in composition raise the possibility that plots selected for the removal treatments might differ from the control plots in some unobserved covariate that could influence plant composition and performance.
+Finally, we evaluated pre-existing differences in community composition in removal and control plots. In selecting removal plots, our criteria required candidate plots to include at least a certain amount of our target removal species. Because we adopted the historical plots as our controls, the same criteria were not applied (a control plot might not contain any \textit{A. tripartita}). To quantify resulting differences in pre-treatment (2011) composition, we compared neighborhood crowding at the individual plant level (the $W_{jm}$'s of the growth regressions) across treatments. \textit{A. tripartita} crowding and crowding by all subdominant shrub and grass species appeared greater in removal plots than in the controls, whereas crowding by \textit{H. comata} was lower in removals than controls, though it was absent from most \textit{P. spicata} neighborhoods in both treatments (Fig. \ref{fig:W-by-treatment}). These pre-existing differences in composition raise the possibility that plots selected for the removal treatments might differ from the control plots in some unobserved covariate that could influence plant composition and performance. \new{On the other hand, some of the control plots that currently contain zero \textit{A. tripartita} had high \textit{A. tripartita} in the 1900's, and vice versa. If abiotic variation, such as soil depth, were the primary control of variation in \textit{A. tripartita} cover, such large changes in cover over time would be unlikely. }
 
 \subsection*{Population-level responses}
 
-To quantify the short-term population-level consequences of removals, we used an IBM to project the cover of each species in each quadrat one year ahead using versions of the model with and without removal treatment effects. Plotting observed vs. predicted cover for each quadrat in each year (Fig. \ref{fig:obsVpred}) shows points clustered around the 1:1 line, indicating reasonable accuracy and little bias for both control and removal quadrats. For \textit{H. comata}, differences in predicted cover of removal plots between the baseline and removal models were very small. For the other three species, the removal model predicted higher cover in removal plots than the baseline model predicted, but only for \textit{P. spicata} were predictions from the removal model closer to the 1:1 line.
+To quantify the short-term population-level consequences of removals, we used an IBM to project the cover of each species in each quadrat one year ahead using versions of the model with and without removal treatment effects. Plotting observed vs. predicted cover for each quadrat in each year (Fig. \ref{fig:obsVpred}) shows points clustered around the 1:1 line, indicating reasonable accuracy and little bias for both control and removal quadrats. For \textit{H. comata}, differences in predicted cover of removal plots between the baseline and removal models were very small. For the other three species, the removal model predicted higher cover in removal plots than the baseline model predicted.
 
  \begin{figure}[tbp]
  \centering
@@ -296,13 +299,10 @@ Running a version of the model with maximum removal treatment effects (removal c
  \end{figure}
  
 The equilibrium cover of \textit{A. tripartita} simulated by the IPM (5.4\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%, Fig. \ref{fig:CoverTrends}). Could the small competitive release of the grasses
-following simulated \textit{A. tripartita} removal simply reflect the low simulated \textit{A. tripartita} cover? To explore this possibility, we increased \textit{A. tripartita} cover in the baseline simulation by increasing its average fecundity. The increased fecundity led to a doubling of \textit{A. tripartita} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover),
-% CHECK THIS
- implying that even if shrub cover were higher its removal would still have little effect on the grasses. 
+following simulated \textit{A. tripartita} removal simply reflect the low simulated \textit{A. tripartita} cover? To explore this possibility, we increased \textit{A. tripartita} cover in the baseline simulation by increasing its average fecundity. The increased fecundity led to a doubling of \textit{A. tripartita} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover), implying that even if shrub cover were higher its removal would still have little effect on the grasses. 
  
 The baseline model predicts more dramatic competitive release of \textit{A. tripartita} following grass removal: mean cover increases from 4\% to over11\%. 
-Adding
-removal treatment effects dramatically alters the outcome, with \textit{A. tripartita} decreasing towards extinction. However, these outcomes both are driven by parameters that are estimated with very high uncertainty (Table~\ref{table:recruitment}). The baseline model predicts an increase following grass removal because of the relatively strong negative effects of \textit{Poa secunda} and \textit{H. comata} on \textit{A. tripartita} recruitment (\ref{table:recruitment}). The estimated effect of
+Adding removal treatment effects dramatically alters the outcome, with \textit{A. tripartita} decreasing towards extinction. However, these outcomes both are driven by parameters that are estimated with very high uncertainty (Table~\ref{table:recruitment}). The baseline model predicts an increase following grass removal because of the relatively strong negative effects of \textit{Poa secunda} and \textit{H. comata} on \textit{A. tripartita} recruitment (\ref{table:recruitment}). The estimated effect of
 \emph{Poa} is -0.50, but the standard deviation of the estimate is 0.28 and the 95\% credible interval stops just short of zero; the 95\% credible interval for the
 \textit{H. comata} effect includes values less than half of the point-estimate. The grass removal treatment effect, which leads to predicted extinction, has a credible 
 interval that broadly overlaps zero (Table~\ref{table:recruitment}). \textit{A. tripartita} recruitment parameters have exceptionally high uncertainty, presumably 
@@ -317,57 +317,48 @@ data, we were suspicious of its ability to accurately describe the outcome of in
 Our approach represents a strong test of a surprising prediction for two reasons. First, the prediction was already published; the experiment 
 gave us a very real opportunity to be wrong in public. Second, testing an observationally-based model with an experimental manipulation, 
 not just additional observations, further increases the potential to confront the model with a novel situation outside the historical range of variation.
-\new{We expected that upon completion of this study, we would have clear evidence for the success or failure of our previous model's predictions. Unfortunately, our results do not provide that clarity. In the sections below, we first summarize the evidence that our experiment demonstrated greater competitive release than our model predicted, we then explain why the experimental results might warrant as much skepticism as our original results, and we end by discussing general lessons for the study of interspecific competition.}
+\new{We expected that upon completion of this study, we would have clear evidence for the success or failure of our previous model's predictions. Unfortunately, our results do not provide that clarity. In the sections below, we first summarize the evidence that our experiment revealed greater competitive release than our baseline model predicted, we then explain weaknesses in the experimental results that complicate the interpretation, and we end by discussing general lessons for the study of interspecific competition.}
 
 \subsection*{Evidence for greater competitive release than predicted}
 
+\new{We evaluated response to removals in three ways: vital rates, short-term population growth rates, and changes in long-term equilibrium cover. Two species, \textit{Poa secunda} and \textit{P. pseudoroegneria}, showed significant, positive responses to \textit{A. tripartita} removal at the level of vital rates. Individuals of these species grew 21\% and 24\% faster, respectively, in removal plots than controls, after accounting for variation in local neighborhood composition. In other words, our baseline model appeared to underestimate the competitive release of these species following \textit{A. tripartita} removal.}
 
-For three of the four species, we find little or no evidence that models based on observational data underestimate 
-the intensity of interspecific competition. After accounting 
-for local neighborhood crowding, the removal treatment effects were never significant for \textit{A. tripartita} or \textit{H. comata}; 
-our baseline model, which accounts for local neighborhood composition, adequately explained vital rate responses to removal.  
-\textit{P. secunda} showed mixed responses to \textit{A. tripartita} removal: removal effects were not significant at the survival stage, 
-were positive at the growth stage, and negative at the recruitment stage (where the estimated effect of \textit{A. tripartita} 
-on \textit{P. secunda} is positive). At the population level, models with and without removal effects projected similar patterns of 
-short (Fig. \ref{fig:IBM1step}) and long-term (Fig. \ref{fig:IPMresults}) dynamics for \textit{H. comata}. For \textit{A. tripartita}, 
-the experimental observations and short-term population projections show little response to removal, while the long-term simulations 
-from the baseline and removal effects models suggest strong (but opposite) effects of removal: a tripling of abundance in the baseline model, and extinction in the removal effects model. However, these long-term simulations primarily reflect the influence of recruitment parameters 
+\new{The elevated growth of \textit{Poa secunda} and \textit{P. pseudoroegneria} individuals translated into greater short-term population growth rates. For these species, the individual-based model with removal effects predicted higher cover than the baseline version of the model. The differences in predicted cover of roughly 20\% (\ref{fig:IBM1step}) are comparable to the differences in the individual growth rates, reflecting the fact that at these short time scales changes in individual size influence cover more than survival or recruitment.  For \textit{A. tripartita}, the magnitude of the difference between predictions from the baseline and removal effects models was similar, further emphasizing the short-term influence of growth compared to survival and recruitment, which responded negatively to removals in this species.   }
+
+\new{Long-term projections using the integral projection model showed even larger responses to removal. For the three grasses, projected equilibrium cover in the absence of \textit{A. tripartita} is 1.4 to 3-fold higher for the removal effects model compared to the baseline model. Although the absolute changes in basal cover are small, these relative changes are substantial, and seem to present compelling evidence that competitive release is stronger than predicted by our baseline model.  }
+
+\subsection*{Weaknesses in the experimental evidence}
+
+\new{Although the growth regressions for \textit{Poa secunda} and \textit{P. pseudoroegneria} and the long-run projections for all three grass species suggest stronger competitive release than our baseline model predicted, a variety of other evidence makes it harder to confidently reject those baseline model predictions. Only two of the twelve vital rate tests indicated greater competitive release than predicted. Granted, small samples sizes contributed to greater uncertaintly for \textit{A. tripartita} and \textit{H. comata}, but even for \textit{Poa secunda} and \textit{P. pseudoroegneria} the increases in growth were small relative to other sources of variation. For example, using quadrat-level cover data, we could not detect treatment differences (Table \ref{table:coefficients}).  }
+
+\new{The strongest evidence for large competitive release of grasses following \textit{A. tripartita} removal comes from the long-term projections of the IPM. These projections effectively make removal treatment effects permanent; the removal effects on vital rates observed during the experiment are locked in for the entire 2500 time step simulation. Furthermore, these projections ignore parameter error because we wanted to highlight the removal effects. Given these strong assumptions, the projections should be viewed with some caution.  }
+
+\new{For \textit{A. tripartita}, the long-term IPM projections actually show extinction following grass removal.
+However, this result primarily reflects the influence of recruitment parameters 
 that are highly uncertain (see \emph{Results}). This high uncertainty 
-results from \textit{A. tripartita} recruitment being low (a mean of 0.63 recruits per quadrat per year, compared to means of 2.6 to 5.3 for the grasses) and 
-very episodic (roughly half of the total recruits in the 22 years of historical data were observed in 2 of those years, and only 13 \textit{A. tripartita} 
-recruits were observed since we resumed annual censuses in 2007). Given this uncertainty, we put more weight on the direct observations 
-and short-term projections showing little effect of grass removal on \textit{A. tripartita} populations.
-For \textit{P. secunda}, the model with removal effects predicted higher population growth over the short but not the long-term, perhaps 
-because the short-term projections mostly reflect the positive effect of \textit{A. tripartita} removal on growth, while the long-term 
-equilibrium are also sensitive to the negative effects of removal on recruitment. Although the baseline model did 
-not always successfully predict removal effects on vital rates, it does appear to successfully capture the population-level 
-consequences of removals on these three species.
+results from \textit{A. tripartita} recruitment being low
+ and very episodic (roughly half of the total recruits in the 22 years of historical data were observed in 2 of those years, and only 28 \textit{A. tripartita} 
+recruits have been observed since we resumed annual censuses in 2007). Because of this uncertainty, we put more weight on the direct observations 
+and short-term projections showing little effect of grass removal on \textit{A. tripartita} populations. }
 
-The story is different for the fourth species, \textit{P. spicata}. Both individual growth and projected short- and long-term population 
-growth were higher in the sagebrush removal treatments than in the control plots, suggesting that our analyses of observational data may 
-underestimate the competitive effect of \textit{A. tripartita} on \textit{P. spicata}, and the resulting positive effect of \textit{A. tripartita} 
-removal. However, the mechanism by which \textit{A. tripartita} removal promotes \textit{P. spicata} remains unclear. If  \textit{A. tripartita} 
-removal is releasing \textit{P. spicata} from competition, we should expect \textit{P. spicata} individuals that were located beneath \textit{A. tripartita} 
-shrubs that we removed to respond more than individuals located away from any shrubs. Yet we found no evidence for such a difference. Perhaps 
-\textit{A. tripartita's} roots extend far enough beyond its canopy to compete for resources with grasses located in interspaces.
-An alternative explanation involves pre-treatment differences in composition between control plots and  the \textit{A. tripartita} 
-removal plots, which had higher cover of \textit{A. tripartita} (see 2011 means in Fig. \ref{fig:CoverTrends}) and higher cover of subdominant 
-grasses and shrubs (Fig. \ref{fig:W-by-treatment}). Perhaps these pre-treatment differences reflect subtle differences in 
-edaphic conditions which could promote \textit{P. spicata} growth. In summary, while \textit{P. spicata} appears to 
-show stronger competitive release than our baseline model predicted, the evidence is not conclusive. 
+\new{ Another reason we view the growth results with some suspicion is that increases in growth were no larger in individual neighborhoods or quadrats with higher pre-treatment \textit{A. tripartita} cover. If \textit{A. tripartita} removal is releasing grasses from competition, shouldn't this effect be larger for grasses located in areas with high \textit{A. tripartita} cover? The absence of this relationship (Figs. \ref{fig:GrowthResidsQuad} and \ref{fig:GrowthResidsIndivid}) raises questions about the mechanism by which \textit{A. tripartita} removal promotes grass growth. Perhaps \textit{A. tripartita's} roots extend far enough beyond its canopy to compete for resources with grasses located in interspaces. While this might explain the lack of the relationship at the neighbrhood scale, it seems unlikely to explain the quadrat-level results. } 
+An alternative explanation involves pre-treatment differences in composition between control plots and  the \textit{A. tripartita} removal plots, which had higher cover of \textit{A. tripartita} (see 2011 means in Fig. \ref{fig:CoverTrends}) and higher cover of subdominant grasses and shrubs (Fig. \ref{fig:W-by-treatment}). These pre-treatment differences could reflect subtle differences in edaphic conditions which could promote \textit{P. spicata} growth. \new{However, since the 1900's, many quadrats have experienced dramatic changes in \textit{A. tripartita} cover, arguing against viewing \textit{A. tripartita} cover as a sensitive indicator of edaphic conditions. 
+A final possibility is that our removal treatment influenced grass growth through some other mechanism, unrelated to competition. Maybe the loss of shrub cover benefits grasses by reducing small mammal herbivory (FIND REF)? Without a better understanding of the mechanism driving increased grass growth in the shrub removal quadrats, we are hesitant to dramatically adjust our prior understanding based on models fit to decades of observational data.  }
 
-How can we reconcile the insensitivity of grasses to sagebrush removal in our study with evidence from rangeland ecology 
-research showing that sagebrush eradication increases grass production? The most likely explanation involves ecological context: our 
-study focused on \textit{Artemisia tripartita} in an ungrazed plant community, whereas most research on sagebrush 
-and forage production has focused on \textit{Artemisia tridentata} in heavily grazed communities, and often has involved grass seeding 
-following sagebrush removal (e.g. \citealt{Cook1963}). \textit{A. tripartita} is smaller in stature than \textit{A. tridentata} 
-and may interact differently with perennial grasses. More importantly, cover of sagebrush can increase dramatically on overgrazed sites, 
-especially under a spring grazing regime. Competitive release of grasses following sagebrush removal often increases in 
-a nonlinear fashion, with little increase in production at sites with low initial sagebrush cover, 
-and accelerating responses as initial sagebrush cover passes some threshold \citep{McDaniel2005}, implying a 
-shift in the nature of interspecific interactions, perhaps due to changes in the balance of 
-competition and facilitation or in resource supply. The cover of 
-sagebrush in our ungrazed quadrats may have fallen below that threshold. 
+%How can we reconcile the insensitivity of grasses to sagebrush removal in our study with evidence from rangeland ecology 
+%research showing that sagebrush eradication increases grass production? The most likely explanation involves ecological context: our 
+%study focused on \textit{Artemisia tripartita} in an ungrazed plant community, whereas most research on sagebrush 
+%and forage production has focused on \textit{Artemisia tridentata} in heavily grazed communities, and often has involved grass seeding 
+%following sagebrush removal (e.g. \citealt{Cook1963}). \textit{A. tripartita} is smaller in stature than \textit{A. tridentata} 
+%and may interact differently with perennial grasses. More importantly, cover of sagebrush can increase dramatically on overgrazed sites, 
+%especially under a spring grazing regime. Competitive release of grasses following sagebrush removal often increases in 
+%a nonlinear fashion, with little increase in production at sites with low initial sagebrush cover, 
+%and accelerating responses as initial sagebrush cover passes some threshold \citep{McDaniel2005}, implying a 
+%shift in the nature of interspecific interactions, perhaps due to changes in the balance of 
+%competition and facilitation or in resource supply. The cover of 
+%sagebrush in our ungrazed quadrats may have fallen below that threshold. 
+
+\subsection*{Lessons for studying competition}
 
 What general lessons can we draw about testing predictions from population models? 
 First, partial removals, rather than complete removal treatments, could 
@@ -376,49 +367,52 @@ Future work in other systems might benefit from this insight. Second, the succes
 the use of long-term observational data for characterizing competitive interactions. We see no reason why 
 this approach would not work just as well in a community with stronger 
 interspecific interactions. After all, our approach did detect strong intraspecific effects. 
+
+
+
 Finally, our results give some cause for optimism about population forecasting.
 \citet{Crone2013} found that matrix projection models for plants often failed to forecast population trends due 
 to environmental differences between the data collection and forecast periods. Our population models 
 performed quite well, after accounting for year-to-year environmental variation through the inclusion of
 random year effects.
 
-\subsection*{Implications of weak interspecific interactions}
-
-The weak interspecific interactions among many of the dominant species in our system indicates that these species  
-are limited by quite different factors. This low niche overlap could reflect strong resource partitioning \citep{tilman_resource_1982}, 
-perhaps combined with variation in the times and locations at which species are taking up those resources. 
-Species-specific responses to spatial and temporal variation in non-resource environmental variables can also weaken interspecific 
-interactions \citep{chesson_mechanisms_2000}, though in a previous study we failed to find evidence of a temporal storage effect 
-in this community \citep{adler_weak_2009}. Interactions with above- or belowground enemies can regulate populations and, given 
-enough species-specificity in the effects of these enemies, decouple the dynamics of different species \citep{hersh_evaluating_2011,
-janzen_herbivores_1970,connell_role_1971}.  More likely, plants may alter the environment, and even resource availability, 
-in ways that facilitate their neighbors. For example, shade cast by \textit{A. tripartita} canopies may reduce 
-evapotranspiration (e.g. \citealt{Barbier2008}). \textit{A. tripartita} removal might offset this facilitative effect by reducing 
-resource uptake, resulting in little net change in water balance following removal. 
-Unfortunately, we did not monitor soil moisture at the fine spatial and temporal resolution necessary to test this hypothesis.
-
-Evidence for weak interspecific interactions and limited competitive release has interesting implications. If most 
-interspecific interactions are weak, then single-species models may be adequate for forecasting population responses 
-to environmental change \citep{adler_forecasting_2012,kleinhesselink_indirect_2015,Chu2016}. Similarly, differences among 
-species in relative abundance should reflect variation in the strength of intraspecific density dependence more than 
-variation in the strength of interspecific interactions \citep{yenni_strong_2012}. A recent global study showing little 
-variation in the abundance of invasive grassland species in native and invaded ranges on different 
-continents  \citep{firn_abundance_2011} is consistent with the idea that intraspecific interactions are the primary determinant 
-of species abundances. In systems where this is true, effective management and conservation requires understanding the sources 
-and species-specificity of intraspecific density dependence. A useful first step in this direction would be to test 
-whether our model is also successful at predicting the effects of release from intraspecific competition.
-
-For many species in other communities, interspecific competition may still be an important driver. In closed-canopy 
-forests where competition for light is intense, we might have found different results than in our system, in which 
-competition for a number of belowground resources is more important than competition for light. However, a 
-number of recent studies from forests have also found that heterospecific competitive effects are dramatically 
-weaker than conspecific effects \citep{comita_asymmetric_2010,Kunstler2016,johnson_conspecific_2012}.  We also 
-expect stronger competition in successional systems, or communities in the early stages of community assembly 
-where the process of competitive exclusion is still underway \citep{kokkoris_patterns_1999}. Finally, we might have
-found stronger evidence of competition if we could have studied rare species in our system, but only if those species 
-are rare because of niche overlap with stronger competitors. If they are rare because they occupy unique, but narrow, niches, 
-interspecific interactions would still be weak. Determining why interspecific interactions and competitive release are 
-strong in some ecological contexts but weak in others remains a fascinating research problem. 
+%\subsection*{Implications of weak interspecific interactions}
+%
+%The weak interspecific interactions among many of the dominant species in our system indicates that these species  
+%are limited by quite different factors. This low niche overlap could reflect strong resource partitioning \citep{tilman_resource_1982}, 
+%perhaps combined with variation in the times and locations at which species are taking up those resources. 
+%Species-specific responses to spatial and temporal variation in non-resource environmental variables can also weaken interspecific 
+%interactions \citep{chesson_mechanisms_2000}, though in a previous study we failed to find evidence of a temporal storage effect 
+%in this community \citep{adler_weak_2009}. Interactions with above- or belowground enemies can regulate populations and, given 
+%enough species-specificity in the effects of these enemies, decouple the dynamics of different species \citep{hersh_evaluating_2011,
+%janzen_herbivores_1970,connell_role_1971}.  More likely, plants may alter the environment, and even resource availability, 
+%in ways that facilitate their neighbors. For example, shade cast by \textit{A. tripartita} canopies may reduce 
+%evapotranspiration (e.g. \citealt{Barbier2008}). \textit{A. tripartita} removal might offset this facilitative effect by reducing 
+%resource uptake, resulting in little net change in water balance following removal. 
+%Unfortunately, we did not monitor soil moisture at the fine spatial and temporal resolution necessary to test this hypothesis.
+%
+%Evidence for weak interspecific interactions and limited competitive release has interesting implications. If most 
+%interspecific interactions are weak, then single-species models may be adequate for forecasting population responses 
+%to environmental change \citep{adler_forecasting_2012,kleinhesselink_indirect_2015,Chu2016}. Similarly, differences among 
+%species in relative abundance should reflect variation in the strength of intraspecific density dependence more than 
+%variation in the strength of interspecific interactions \citep{yenni_strong_2012}. A recent global study showing little 
+%variation in the abundance of invasive grassland species in native and invaded ranges on different 
+%continents  \citep{firn_abundance_2011} is consistent with the idea that intraspecific interactions are the primary determinant 
+%of species abundances. In systems where this is true, effective management and conservation requires understanding the sources 
+%and species-specificity of intraspecific density dependence. A useful first step in this direction would be to test 
+%whether our model is also successful at predicting the effects of release from intraspecific competition.
+%
+%For many species in other communities, interspecific competition may still be an important driver. In closed-canopy 
+%forests where competition for light is intense, we might have found different results than in our system, in which 
+%competition for a number of belowground resources is more important than competition for light. However, a 
+%number of recent studies from forests have also found that heterospecific competitive effects are dramatically 
+%weaker than conspecific effects \citep{comita_asymmetric_2010,Kunstler2016,johnson_conspecific_2012}.  We also 
+%expect stronger competition in successional systems, or communities in the early stages of community assembly 
+%where the process of competitive exclusion is still underway \citep{kokkoris_patterns_1999}. Finally, we might have
+%found stronger evidence of competition if we could have studied rare species in our system, but only if those species 
+%are rare because of niche overlap with stronger competitors. If they are rare because they occupy unique, but narrow, niches, 
+%interspecific interactions would still be weak. Determining why interspecific interactions and competitive release are 
+%strong in some ecological contexts but weak in others remains a fascinating research problem. 
 
 \section*{Author contributions}
 PBA and ARK designed the experiment and supervised data collection with the help of JBT; PBA, SPE, GH and BT analyzed data and 
@@ -878,49 +872,49 @@ and column headers.}
 \end{tabular}
 \end{table}
 
-\begin{table}
-\centering
-\caption{Summary of fixed effects for the \textit{P. secunda} growth model with individual-level \textit{A. tripartita removal} data (the ``inARTR" coefficient). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column headers. } 
-\label{table:POSEgrowth-inARTR}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 0.5080 & 0.0625 & 0.3841 & 0.5081 & 0.6311 & 0.5084 & 0.0000 \\ 
-  logarea.t0 & 0.6665 & 0.0228 & 0.6211 & 0.6666 & 0.7111 & 0.6669 & 0.0000 \\ 
-  TreatmentNo\_shrub & 0.2247 & 0.0744 & 0.0786 & 0.2247 & 0.3707 & 0.2247 & 0.0000 \\ 
-  W.ARTR & -0.0004 & 0.0009 & -0.0022 & -0.0004 & 0.0013 & -0.0004 & 0.0000 \\ 
-  W.HECO & 0.0109 & 0.0100 & -0.0088 & 0.0109 & 0.0306 & 0.0109 & 0.0000 \\ 
-  W.POSE & -0.5770 & 0.0624 & -0.6995 & -0.5770 & -0.4547 & -0.5770 & 0.0000 \\ 
-  W.PSSP & -0.0093 & 0.0114 & -0.0316 & -0.0093 & 0.0130 & -0.0093 & 0.0000 \\ 
-  W.allcov & -0.0004 & 0.0016 & -0.0036 & -0.0004 & 0.0027 & -0.0004 & 0.0000 \\ 
-  W.allpts & -0.0340 & 0.0256 & -0.0842 & -0.0340 & 0.0161 & -0.0340 & 0.0000 \\ 
-  inARTR & -0.0890 & 0.1126 & -0.3100 & -0.0890 & 0.1319 & -0.0890 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
-\begin{table}
-\centering
-\caption{Summary of fixed effects for the \textit{P. spicata} growth model with individual-level \textit{A. tripartita} removal data (the ``inARTR" coefficient). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column headers.} 
-\label{table:PSSPgrowth-inARTR}
-\begin{tabular}{rrrrrrrr}
-  \hline
- & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
-  \hline
-(Intercept) & 0.3955 & 0.0606 & 0.2764 & 0.3953 & 0.5153 & 0.3950 & 0.0000 \\ 
-  logarea.t0 & 0.8276 & 0.0168 & 0.7943 & 0.8277 & 0.8608 & 0.8277 & 0.0000 \\ 
-  TreatmentNo\_shrub & 0.2531 & 0.0784 & 0.0991 & 0.2531 & 0.4070 & 0.2531 & 0.0000 \\ 
-  W.ARTR & -0.0027 & 0.0008 & -0.0042 & -0.0027 & -0.0011 & -0.0027 & 0.0000 \\ 
-  W.HECO & -0.0231 & 0.0110 & -0.0447 & -0.0231 & -0.0016 & -0.0231 & 0.0000 \\ 
-  W.POSE & -0.0198 & 0.0138 & -0.0469 & -0.0198 & 0.0072 & -0.0198 & 0.0000 \\ 
-  W.PSSP & -0.3600 & 0.0326 & -0.4239 & -0.3600 & -0.2961 & -0.3600 & 0.0000 \\ 
-  W.allcov & -0.0051 & 0.0014 & -0.0079 & -0.0051 & -0.0024 & -0.0051 & 0.0000 \\ 
-  W.allpts & -0.0557 & 0.0254 & -0.1055 & -0.0557 & -0.0060 & -0.0557 & 0.0000 \\ 
-  inARTR & -0.0649 & 0.1111 & -0.2830 & -0.0649 & 0.1531 & -0.0649 & 0.0000 \\ 
-   \hline
-\end{tabular}
-\end{table}
+%\begin{table}
+%\centering
+%\caption{Summary of fixed effects for the \textit{P. secunda} growth model with individual-level \textit{A. tripartita removal} data (the ``inARTR" coefficient). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column headers. } 
+%\label{table:POSEgrowth-inARTR}
+%\begin{tabular}{rrrrrrrr}
+%  \hline
+% & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+%  \hline
+%(Intercept) & 0.5080 & 0.0625 & 0.3841 & 0.5081 & 0.6311 & 0.5084 & 0.0000 \\ 
+%  logarea.t0 & 0.6665 & 0.0228 & 0.6211 & 0.6666 & 0.7111 & 0.6669 & 0.0000 \\ 
+%  TreatmentNo\_shrub & 0.2247 & 0.0744 & 0.0786 & 0.2247 & 0.3707 & 0.2247 & 0.0000 \\ 
+%  W.ARTR & -0.0004 & 0.0009 & -0.0022 & -0.0004 & 0.0013 & -0.0004 & 0.0000 \\ 
+%  W.HECO & 0.0109 & 0.0100 & -0.0088 & 0.0109 & 0.0306 & 0.0109 & 0.0000 \\ 
+%  W.POSE & -0.5770 & 0.0624 & -0.6995 & -0.5770 & -0.4547 & -0.5770 & 0.0000 \\ 
+%  W.PSSP & -0.0093 & 0.0114 & -0.0316 & -0.0093 & 0.0130 & -0.0093 & 0.0000 \\ 
+%  W.allcov & -0.0004 & 0.0016 & -0.0036 & -0.0004 & 0.0027 & -0.0004 & 0.0000 \\ 
+%  W.allpts & -0.0340 & 0.0256 & -0.0842 & -0.0340 & 0.0161 & -0.0340 & 0.0000 \\ 
+%  inARTR & -0.0890 & 0.1126 & -0.3100 & -0.0890 & 0.1319 & -0.0890 & 0.0000 \\ 
+%   \hline
+%\end{tabular}
+%\end{table}
+%
+%\begin{table}
+%\centering
+%\caption{Summary of fixed effects for the \textit{P. spicata} growth model with individual-level \textit{A. tripartita} removal data (the ``inARTR" coefficient). See Table \ref{ARTRgrowth} for an explanation of other coefficient names and column headers.} 
+%\label{table:PSSPgrowth-inARTR}
+%\begin{tabular}{rrrrrrrr}
+%  \hline
+% & mean & sd & 0.025quant & 0.5quant & 0.975quant & mode & kld \\ 
+%  \hline
+%(Intercept) & 0.3955 & 0.0606 & 0.2764 & 0.3953 & 0.5153 & 0.3950 & 0.0000 \\ 
+%  logarea.t0 & 0.8276 & 0.0168 & 0.7943 & 0.8277 & 0.8608 & 0.8277 & 0.0000 \\ 
+%  TreatmentNo\_shrub & 0.2531 & 0.0784 & 0.0991 & 0.2531 & 0.4070 & 0.2531 & 0.0000 \\ 
+%  W.ARTR & -0.0027 & 0.0008 & -0.0042 & -0.0027 & -0.0011 & -0.0027 & 0.0000 \\ 
+%  W.HECO & -0.0231 & 0.0110 & -0.0447 & -0.0231 & -0.0016 & -0.0231 & 0.0000 \\ 
+%  W.POSE & -0.0198 & 0.0138 & -0.0469 & -0.0198 & 0.0072 & -0.0198 & 0.0000 \\ 
+%  W.PSSP & -0.3600 & 0.0326 & -0.4239 & -0.3600 & -0.2961 & -0.3600 & 0.0000 \\ 
+%  W.allcov & -0.0051 & 0.0014 & -0.0079 & -0.0051 & -0.0024 & -0.0051 & 0.0000 \\ 
+%  W.allpts & -0.0557 & 0.0254 & -0.1055 & -0.0557 & -0.0060 & -0.0557 & 0.0000 \\ 
+%  inARTR & -0.0649 & 0.1111 & -0.2830 & -0.0649 & 0.1531 & -0.0649 & 0.0000 \\ 
+%   \hline
+%\end{tabular}
+%\end{table}
 
 
 \begin{table}
@@ -1127,6 +1121,19 @@ PSSP & 0.0953 & -0.3047 & -0.0960 & -1.7046\\
   \label{fig:climate}
   \end{figure}
   
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{growth_residuals_vs_quad_removal_cover}
+\caption{The relationship between residuals from the fitted growth model and quadrat-level pre-treatment cover of the removal species (all grasses removed in quadrats where we studied \textit{A. tripartita}, and \textit{A. tripartita} removed in the quadrats where we studied the grasses). Linear regressions are shown only when statistically significant. Source file:  \texttt{growth\textbackslash growth\textunderscore residuals\textunderscore by\textunderscore quad.R}.}
+\label{fig:GrowthResidsQuad}
+\end{figure}
+    
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\textwidth]{growth_residuals_vs_Wremoval}
+\caption{The relationship between residuals from the fitted growth model and individual-level pre-treatment crowding exerted by the removal species (all grasses in quadrats where we studied \textit{A. tripartita}, and \textit{A. tripartita} in the quadrats where we studied the grasses). Only individuals present in 2011 in the removal treatment quadrats are included in this analysis. If those individuals survived into later years, we did include their performance in those later years. None of the relationships were statistically significant. Source file:  \texttt{growth\textbackslash growth\textunderscore residuals\textunderscore by\textunderscore individ.R}.}
+\label{fig:GrowthResidsIndivid}
+\end{figure}
  
   \begin{figure}[tbp]
   \centering
