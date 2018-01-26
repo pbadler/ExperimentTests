@@ -43,7 +43,7 @@ for(i in 1:4){
   
 }
 
-mtext(side=1, "Pre-treatment crowding from removal species (%)",outer=T,line=0.5,cex=1.1)
+mtext(side=1, "Pre-treatment crowding from removal species",outer=T,line=0.5,cex=1.1)
 mtext(side=2, "Growth residuals",outer=T,line=0.5, cex=1.1)
 
 dev.off()

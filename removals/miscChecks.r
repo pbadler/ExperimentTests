@@ -95,11 +95,22 @@ summary(lm(resid(m1.lmer)[keep]~allD$logarea.t0[keep])) # NEG for POSE, zero for
 ### look for trend between grass growth residuals and pretreatment ARTR cover
 # first run any growth script
 
-# get ARTR pretreatment cover
+# get ARTR pretreatment cover (modern)
 covD <- read.csv("C:\\Repos\\ExperimentTests\\removals\\QuadYearCover.csv")
 #covD <- subset(covD, species=="Artemisia tripartita" & Treatment=="No_shrub" & year==2011)
 covD <- subset(covD, species=="Artemisia tripartita")
 #covD <- covD[,c("quad","cover")]
+
+
+
+# get historical ARTR quad data
+oldD <- read.csv("H:\\idahochart\\ipm\\speciesData\\ARTR\\quadratCover.csv")
+names(oldD) <- c("quad","year","cover")
+oldD$cover <- oldD$cover/100  # scale from cm^2 to %
+oldD$year <- oldD$year + 1900
+tmp <- rbind(oldD[,1:3],covD[,c("quad","year","cover")])
+tmp <- reshape(tmp,direction="wide",idvar="year",timevar="quad")
+matplot(tmp$year,tmp[,2:NCOL(tmp)],type="l")
 
 # get average cover for each quad
 covD <- aggregate(covD$cover,by=list(quad=covD$quad),FUN="mean")
