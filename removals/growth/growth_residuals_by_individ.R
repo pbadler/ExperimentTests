@@ -29,7 +29,8 @@ png("growth_residuals_vs_Wremoval.png",height=5.5,width=8,units="in",res=400)
 par(mfrow=c(2,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(2,2,2,1),oma=c(2,2,0,0))
 for(i in 1:4){
 
-  plot(growth_residuals[[i]]$W.removal,growth_residuals[[i]]$resids,xlab="",ylab="")
+  plot(growth_residuals[[i]]$W.removal,growth_residuals[[i]]$resids,col=rgb(0,0,0,0.2),
+       xlab="",ylab="",pch=16)
   abline(h=0,lty="dashed")
   mtext(side=3,spp_names[i],line=0.5,adj=0,font=3)
   

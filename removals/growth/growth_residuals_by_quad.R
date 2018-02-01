@@ -35,7 +35,8 @@ for(i in 1:4){
   }else{
     keep <- which(growth_residuals[[i]]$Treatment=="No_shrub")
   }
-  plot(growth_residuals[[i]]$cover[keep],growth_residuals[[i]]$resids[keep],xlab="",ylab="")
+  plot(growth_residuals[[i]]$cover[keep],growth_residuals[[i]]$resids[keep],col=rgb(0,0,0,0.2),
+       xlab="",ylab="",pch=16)
   abline(h=0,lty="dashed")
   mtext(side=3,spp_names[i],line=0.5,adj=0,font=3)
   
