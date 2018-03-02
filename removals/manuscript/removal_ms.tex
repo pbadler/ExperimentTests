@@ -7,6 +7,7 @@
 \usepackage{float}
 \usepackage[running]{lineno}
 \usepackage[vmargin=1in,hmargin=1in]{geometry}
+\usepackage{caption}
 
 %%%  Sorting references by year(?)
 \usepackage[authoryear]{natbib}
@@ -229,16 +230,6 @@ Fitting with weighted least squares to address the high variance in residuals fo
 response of  \textit{P. spicata} to removal. However, these treatment comparisons do not directly address our questions about whether 
 responses to removal were adequately predicted by models fit to observational data. 
 
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=1\textwidth]{treatment_trends_cover}
-\caption{Cover trends by treatment for the four dominant species.  Note the difference in y-axis scale between the canopy cover of \textit{A. tripartita} and 
-the basal cover of the dominant grasses. ``Shrub removal'' refers to removal of \textit{A. tripartita}, and ``Grass removal'' refers to removal of all perennial grasses. 
-The cover of species in treatments from which they are removed (e.g. \textit{A. tripartita} cover in shrub removal plots) is included to show values at the start 
-of the experiment in 2011 and the efficacy of the removal treatments. Source file: \texttt{treatment\textunderscore trends\textunderscore removals.r}.}
-\label{fig:CoverTrends}
-\end{figure}
-
 
 \subsection*{Vital rates}
 
@@ -256,24 +247,9 @@ from control plots. For the growth models, the 95\% credible intervals on the re
  meaning that individuals of these species grew more rapidly in removal plots than controls even after accounting for neighborhood interactions 
  (Fig. \ref{fig:VitalRateTest}; Tables \ref{ARTRgrowth} to \ref{PSSPgrowth}). \new{ At the recruitment stage, only \textit{A. tripartita} showed a significant response to removals, and it was negative (Fig. \ref{fig:VitalRateTest}; Table \ref{table:recruitment}).}
 
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{treatment_tests}
- \caption{Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% credible intervals. The removal effect shows response of \textit{A. tripartita} (``ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. The other species codes are HECO: \textit{Hesperostipa comata}, POSE: \textit{Poa secunda}, and PSSP: \textit{Pseudoroegneria spicata}.
- Source file: \texttt{treatment\textunderscore test\textunderscore figure.r}.}
- \label{fig:VitalRateTest}
- \end{figure}
-
 The positive removal effects on \textit{P. secunda}  and \textit{P. spicata} growth suggest that models based on observational data may underestimate competitive release. We conducted additional analyses to further explore this hypothesis.
 First, \new{we asked whether increases in grass growth following removal were greatest in quadrats or neighborhoods where we removed the most \textit{A. tripartita}. We did this by taking residuals from the fitted growth model that included removal effects, and plotting the residuals for plants in removal quadrats against the pre-treatment, quadrat-level cover of \textit{A. tripartita}. No species showed the positive relationship that would be expected (Fig. \ref{fig:GrowthResidsQuad}).
 In fact, \textit{Poa secunda} residuals were significantly lower in quadrats with high pre-treatment cover of \textit{A. tripartita}: individuals in high pre-treatment cover quadrats grew more slowly than predicted by the growth model with removal effects. We repeated this analysis at the individual plant level for grasses present in 2011. We calculated pre-treatment crowding from \textit{A. tripartita} for each of those individuals, then plotted their growth residuals against crowding for all years in which each plant survived. We found no significant relationships between growth residuals and pre-treatment crowding from \textit{A. tripartita} (Fig. \ref{fig:GrowthResidsIndivid}). }
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=1\textwidth]{growth_residuals_vs_quad_removal_cover}
-\caption{The relationship between residuals from the fitted growth model and quadrat-level pre-treatment cover of the removal species (all grasses removed in quadrats where we studied \textit{A. tripartita}, and \textit{A. tripartita} removed in the quadrats where we studied the grasses). Linear regressions are shown only when statistically significant. Source file:  \texttt{growth\textbackslash growth\textunderscore residuals\textunderscore by\textunderscore quad.R}.}
-\label{fig:GrowthResidsQuad}
-\end{figure}
 
 Second, we evaluated the possibility that removal effects might be transient. We removed aboveground plant material, but roots of the removed plants remained in the ground potentially creating a flush of mineral nutrients as they decompose. We tested for a transient removal effect by adding a year-by-treatment interaction. For both  \textit{P. secunda}  and \textit{P. spicata}, we found no sign of a decrease in the removal effect over time (Tables \ref{table:POSEgrowth-trtYears} and \ref{table:PSSPgrowth-trtYears}). In fact, for  \textit{P. secunda}, the removal effects increased over time.
 
@@ -284,34 +260,13 @@ Finally, we evaluated pre-existing differences in community composition in remov
 \subsection*{Population-level responses}
 
 To quantify the short-term population-level consequences of removals, we used an IBM to project the cover of each species in each quadrat one year ahead using versions of the model with and without removal treatment effects. Plotting observed vs. predicted cover for each quadrat in each year (Fig. \ref{fig:obsVpred}) shows points clustered around the 1:1 line, indicating reasonable accuracy and little bias for both control and removal quadrats. For \textit{H. comata}, differences in predicted cover of removal plots between the baseline and removal models were very small. For the other three species, the removal model predicted higher cover in removal plots than the baseline model predicted.
-
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{obsVpred_quad_year}
- \caption{The relationship between observed and predicted cover for each quadrat, year, and species. The 1:1 line is dashed, the solid black line shows the trend for control plots with predictions from the baseline IBM model (black symbols), the blue line shows the trend for removal plots with predictions from the baseline model (blue symbols), and the red line shows the trend for removal plots with predictions from the removal model (red symbols). Source file: \texttt{ibm\textbackslash summarize\textunderscore sims1step.r}. }
- \label{fig:obsVpred}
- \end{figure}
  
 Time series of predicted and observed cover, averaged over quadrats, show similar patterns. Predicted population size closely tracked observed population size (Fig. \ref{fig:IBM1step}) in most years for all species, but the difference between predictions from the baseline and removal models varied among species. For \textit{H. comata}, differences in predictions from the two models were virtually indistinguishable. For \textit{A. tripartita}, \textit{P. secunda} and especially \textit{P. spicata}, the model with removal effects consistently predicted higher population growth than the baseline model (Fig. \ref{fig:IBM1step}). Using the version of the model with maximum removal treatment effects, the patterns were qualitatively similar, with a somewhat greater contrast between predictions of the baseline and removal models for \textit{P. secunda} and \textit{P. spicata} (Fig. \ref{fig:IBM1step-maxCI}). 
-
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{cover_projections_1step}
- \caption{Observed and predicted cover for each of the four modeled species. Solid black lines show mean observed cover averaged across control (closed symbols) and removal treatment (open symbols) quadrats. Blue lines and symbols show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Red lines and symbols show one-step-ahead predictions from an IBM that includes removal treatment coefficients. For \textit{H. comata}, lines showing predictions for the baseline and removal effect models are virtually indistinguishable. Source file: \texttt{ibm\textbackslash summarize\textunderscore sims1step.r}. }
- \label{fig:IBM1step}
- \end{figure}
  
 To quantify the long-term population-level consequences of permanent competitor removals, we used an IPM to project the long-term average cover of each species. The IPM predicts little effect of \textit{A. tripartita} removal on the cover of any grass species when we simulate the baseline model with no removal treatment coeffiicients (compare gray and blue boxes in Fig. \ref{fig:IPMresults}). In fact, projected average cover of all three grass species declines slightly following \textit{A. tripartita} removal. 
 Using a model with removal treatment coefficients, the IPM projects that \textit{A. tripartita} removal will increase equilibrium cover, relative to the baseline scenario, by a factor of 1.4, 1.5 and 3.0 for \textit{H. comata}, \textit{Poa secunda} and \textit{P. spicata}, respectively (Fig. \ref{fig:IPMresults}). 
 Running a version of the model with maximum removal treatment effects (removal coefficients set to the 95\% credible limit furthest from zero), resulted in a much larger projected increase in \textit{H. comata}, reflecting its small sample size and corresponding high uncertainty, but little change in the projections for \textit{Poa secunda} and \textit{P. spicata} (Fig. \ref{fig:IPMresults-maxCI}). 
 
-
- \begin{figure}[tbp]
- \centering
- \includegraphics[width=1\textwidth]{boxplots}
- \caption{Equilibrium cover of the four dominant species simulated by the IPM. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, blue boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), and red boxes show results from a model with \textit{A. tripartita} set to zero and removal treatment coefficients included. Source file: \texttt{ipm\textbackslash IPM-figures.r}.}
- \label{fig:IPMresults}
- \end{figure}
  
 The equilibrium cover of \textit{A. tripartita} simulated by the IPM (5.4\%) is consistent with observed cover during the historical data collection period (6.6\% from 1931-1956), but is low compared to contemporary observed cover (15-25\%, Fig. \ref{fig:CoverTrends}). Could the small competitive release of the grasses
 following simulated \textit{A. tripartita} removal simply reflect the low simulated \textit{A. tripartita} cover? To explore this possibility, we increased \textit{A. tripartita} cover in the baseline simulation by increasing its average fecundity. The increased fecundity led to a doubling of \textit{A. tripartita} average cover, but had essentially zero effect on the cover of the grasses (changes of less than 0.1\% cover), implying that even if shrub cover were higher its removal would still have little effect on the grasses. 
@@ -409,6 +364,83 @@ We thank Robin Snyder, Tom Miller, and two anonymous reviewers for suggestions t
 \renewcommand{\refname}{Literature cited}
 \bibliographystyle{Ecology}
 \bibliography{RemovalRefs}
+
+\newpage
+\section*{Figure legends}
+
+\textbf{Figure 1.} Cover trends by treatment for the four dominant species.  Note the difference in y-axis scale between the canopy cover of \textit{A. tripartita} and the basal cover of the dominant grasses. ``Shrub removal'' refers to removal of \textit{A. tripartita}, and ``Grass removal'' refers to removal of all perennial grasses. The cover of species in treatments from which they are removed (e.g. \textit{A. tripartita} cover in shrub removal plots) is included to show values at the start of the experiment in 2011 and the efficacy of the removal treatments. Source file: \texttt{treatment\textunderscore trends\textunderscore removals.r}
+
+\vspace{3mm}
+
+\noindent \textbf{Figure 2.} Effects of removal treatments on the survival, growth, and recruitment of the four dominant species. Circles show the estimated coefficient of the removal effect, bars show 95\% credible intervals. The removal effect shows response of \textit{A. tripartita} (``ARTR") to perennial grass removal, and response of the perennial grasses to \textit{A. tripartita} removal, after accounting for local neighborhood interactions. The other species codes are HECO: \textit{Hesperostipa comata}, POSE: \textit{Poa secunda}, and PSSP: \textit{Pseudoroegneria spicata}.
+ Source file: \texttt{treatment\textunderscore test\textunderscore figure.r}.
+ 
+ \vspace{3mm}
+ 
+\noindent \textbf{Figure 3.} The relationship between residuals from the fitted growth model and quadrat-level pre-treatment cover of the removal species (all grasses removed in quadrats where we studied \textit{A. tripartita}, and \textit{A. tripartita} removed in the quadrats where we studied the grasses). Linear regressions are shown only when statistically significant. Source file:  \texttt{growth\textbackslash growth\textunderscore residuals\textunderscore by\textunderscore quad.R}.
+
+\vspace{3mm}
+ 
+\noindent \textbf{Figure 4.} The relationship between observed and predicted cover for each quadrat, year, and species. The 1:1 line is dashed, the solid black line shows the trend for control plots with predictions from the baseline IBM model (black symbols), the blue line shows the trend for removal plots with predictions from the baseline model (blue symbols), and the red line shows the trend for removal plots with predictions from the removal model (red symbols). Source file: \texttt{ibm\textbackslash summarize\textunderscore sims1step.r}. 
+
+\vspace{3mm}
+ 
+\noindent \textbf{Figure 5.} Observed and predicted cover for each of the four modeled species. Solid black lines show mean observed cover averaged across control (closed symbols) and removal treatment (open symbols) quadrats. Blue lines and symbols show one-step-ahead predictions from the baseline IBM (no removal treatment coefficients), averaged across quadrats. Red lines and symbols show one-step-ahead predictions from an IBM that includes removal treatment coefficients. For \textit{H. comata}, lines showing predictions for the baseline and removal effect models are virtually indistinguishable. Source file: \texttt{ibm\textbackslash summarize\textunderscore sims1step.r}. 
+
+\vspace{3mm}
+ 
+ \noindent\textbf{Figure 6.} Equilibrium cover of the four dominant species simulated by the IPM. Boxplots show interannual variation reflecting random year effects. Gray boxes show cover simulated by a model with \textit{A. tripartita} present and no removal treatment coefficients, blue boxes show results from the same model but with \textit{A. tripartita} cover set to zero (a species removal), and red boxes show results from a model with \textit{A. tripartita} set to zero and removal treatment coefficients included. Source file: \texttt{ipm\textbackslash IPM-figures.r}
+
+\captionsetup[figure]{labelfont=bf, labelsep=none, justification=raggedright,singlelinecheck=false}
+
+\clearpage
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=1\textwidth]{treatment_trends_cover}
+\caption{}
+\label{fig:CoverTrends}
+\end{figure}
+
+\clearpage
+ \begin{figure}[tbp]
+ \centering
+ \includegraphics[width=1\textwidth]{treatment_tests}
+ \caption{}
+ \label{fig:VitalRateTest}
+ \end{figure}
+ 
+ \clearpage
+ \begin{figure}[tbp]
+ \centering
+ \includegraphics[width=1\textwidth]{growth_residuals_vs_quad_removal_cover}
+ \caption{}
+ \label{fig:GrowthResidsQuad}
+ \end{figure}
+ 
+ \clearpage
+  \begin{figure}[tbp]
+  \centering
+  \includegraphics[width=1\textwidth]{obsVpred_quad_year}
+  \caption{}
+  \label{fig:obsVpred}
+  \end{figure}
+  
+  \clearpage
+   \begin{figure}[tbp]
+   \centering
+   \includegraphics[width=1\textwidth]{cover_projections_1step}
+   \caption{}
+   \label{fig:IBM1step}
+   \end{figure}
+   
+   \clearpage
+    \begin{figure}[tbp]
+    \centering
+    \includegraphics[width=1\textwidth]{boxplots}
+    \caption{}
+    \label{fig:IPMresults}
+    \end{figure}
+    
 
 \end{doublespacing} 
 
