@@ -197,6 +197,35 @@ We explored interspecific covariance in local crowding experienced by individual
  values were often statistically significant predictors of intraspecific. However, they explained very little variance. The 
  maximum reduction in deviance for the generalized linear regressions and $R^2$ for the linear regressions were both less 
  than 8\%. The \texttt{R} code for this analysis is included as ..\texttt{\textbackslash Wdistrib\textbackslash exploreSurvivalWs.r}.
+ 
+\subsection{Correcting for Jensen's inequality in one-step-ahead projections} 
+
+We used an individual-based model, based on the vital rate regressions, to project total cover one-year ahead in each quadrat. We modeled expected growth and variance in growth on the log scale, meaning that when we exponentiate to transform cover into arithmetic space the expected variance in cover is not normally distributed, and Jensen's inequality creates a downward bias in predicted cover. Therefore, we developed a correction that takes into account the relationship between plant size and expected variance in growth.  
+ 
+ After the growth model is fitted,
+ 
+ \begin{enumerate}
+ \item  Extract for each plant in the data set (indexed by $k$) 
+ its \texttt{logarea.t0} $z_{0,k}$, the growth residual $z_{1,k} - \hat{z}_{1,k}$ (here $z_1$ is
+ the plant's \texttt{logarea.t1} and $\hat{z}_1$ is the predicted logarea), and the predicted variance
+ in growth $V_k$. 
+ 
+ \item Compute the set of scaled residuals $r_k = (z_{1,k} - \hat{z}_{1,k})/\sqrt{V_k}$ and store them
+ in a vector \texttt{scaledResiduals}.  
+  
+ \end{enumerate}
+ 
+ Then in computing the one-step-ahead predictions, for each growth model the line 
+ \begin{verbatim}
+ plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred + V.pred/2)
+ \end{verbatim} 
+ is replaced by the following 
+ \begin{verbatim}
+ resid.Pred <- sqrt(V.pred)*scaledResiduals
+ newJensen <- mean(exp(resid.Pred))
+ plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred)*newJensen
+ \end{verbatim} 
+ 
 
 \subsection{Mean field approximation of local crowding for the IPM} 
 \label{sec:kernelMethods} 
