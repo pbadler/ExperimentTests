@@ -58,6 +58,9 @@
 \floatstyle{boxed}
 \newfloat{Box}{tbph}{box}
 
+
+\linespread{1.15}
+
 \begin{document}
 
 \setcounter{page}{1}
@@ -78,6 +81,9 @@
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thesection}{\arabic{section}}
+
+\linespread{1.75}
+
 
 \section{Detailed Methods} 
 \label{AppendixS1}
@@ -199,33 +205,39 @@ We explored interspecific covariance in local crowding experienced by individual
  than 8\%. The \texttt{R} code for this analysis is included as ..\texttt{\textbackslash Wdistrib\textbackslash exploreSurvivalWs.r}.
  
 \subsection{Correcting for Jensen's inequality in one-step-ahead projections} 
+One-year-ahead projections of cover in each quadrat, based on its state in the current year, were made using the regression models for survival and growth. 
+For each genet present in year $t$, we computed its probability of survival and its expected total cover in year $t+1$, incorporating the random 
+year-effects for year $t$ and quadrat group effects. The projected cover in year $t+1$ is the sum over all plants in year $t$ of survival probability times  
+projected mean size in year $t+1$ conditional on survival. 
 
-We used an individual-based model, based on the vital rate regressions, to project total cover one-year ahead in each quadrat. We modeled expected growth and variance in growth on the log scale, meaning that when we exponentiate to transform cover into arithmetic space the expected variance in cover is not normally distributed, and Jensen's inequality creates a downward bias in predicted cover. Therefore, we developed a correction that takes into account the relationship between plant size and expected variance in growth.  
- 
- After the growth model is fitted,
- 
- \begin{enumerate}
- \item  Extract for each plant in the data set (indexed by $k$) 
- its \texttt{logarea.t0} $z_{0,k}$, the growth residual $z_{1,k} - \hat{z}_{1,k}$ (here $z_1$ is
- the plant's \texttt{logarea.t1} and $\hat{z}_1$ is the predicted logarea), and the predicted variance
- in growth $V_k$. 
- 
- \item Compute the set of scaled residuals $r_k = (z_{1,k} - \hat{z}_{1,k})/\sqrt{V_k}$ and store them
- in a vector \texttt{scaledResiduals}.  
-  
- \end{enumerate}
- 
- Then in computing the one-step-ahead predictions, for each growth model the line 
- \begin{verbatim}
- plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred + V.pred/2)
- \end{verbatim} 
- is replaced by the following 
- \begin{verbatim}
- resid.Pred <- sqrt(V.pred)*scaledResiduals
- newJensen <- mean(exp(resid.Pred))
- plants$area.pred <- plants$surv.prob*exp(plants$logarea.pred)*newJensen
- \end{verbatim} 
- 
+Projections of mean cover next year have to take account of the fact that our demographic models use log-transformed cover as the size measure, 
+and project expected growth and variance in growth on log scale. Random variations in realized growth (on log scale) are modeled as zero-mean Gaussian deviations from the 
+regression line, with size-dependent variance. But when we transform those projections back to cover on arithmetic scale, the variability in growth is no longer Gaussian, and 
+its mean is no longer zero becauses of Jensen's inequality. The expected size of an individual next year (conditional on survival) is always larger than the value 
+obtained by exponentiating its expected log-transformed size next year, because the exponential function is concave up.  
+
+We therefore developed a correction that takes into account the relationship between plant size and expected variance in growth on log scale, and the 
+effect of back-transformation to arithmetic scale, as follows. 
+
+The first step is a data-based estimate of the distribution of random variability in growth for each species. After the growth model for a species was 
+fitted, we extracted for each observed size transition in the data set (indexed by $k$) the initial log-transformed size $z_{0,k}$ and the final log-transformed size $z_{1,k}$. 
+We used the growth model to compute the expected log-transformed new size $\hat{z}_{1,k}$ and the predicted variance in growth $V_k$, and from those, we 
+computed the set of \emph{scaled growth residuals} 
+\be
+r_k = (z_{1,k} - \hat{z}_{1,k})/\sqrt{V_k} 
+\ee 
+with $k$ running across all observed size transitions in the data set for that species. We treat the $r_k$ values as a sample from a normalized 
+distribution specifying the shape of random growth variability on log scale, and used them to correct one-step-ahead cover 
+projections, as follows. 
+
+For individual $j$ present in year $t$ with size $z_j(t)$ let $\hat{z}_j(t+1)$ be its projected mean log-transformed size, and $V_j(t)$ the predicted variance in growth
+for that individual, based on its size in year $t$. The projected mean cover on arithmetic scale for individual $j$ in year $t+1$, conditional on survival, 
+is then computed as the average of the set of values 
+\be
+\exp\left(\hat{z}_j(t+1) + \sqrt{V_j(t)}r_k \right).
+\ee
+The values being exponentiated are possible outcomes of growth with random variability on log scale, their exp's are possible outcomes on arithmetic scale, and
+the average of those values is the projected mean cover for the individual, conditional on survival. 
 
 \subsection{Mean field approximation of local crowding for the IPM} 
 \label{sec:kernelMethods} 
