@@ -205,10 +205,10 @@ We explored interspecific covariance in local crowding experienced by individual
  than 8\%. The \texttt{R} code for this analysis is included as ..\texttt{\textbackslash Wdistrib\textbackslash exploreSurvivalWs.r}.
  
 \subsection{Correcting for Jensen's inequality in one-step-ahead projections} 
-One-year-ahead projections of cover in each quadrat, based on its state in the current year, were made using the regression models for survival and growth. 
+One-year-ahead projections of cover in each quadrat, based on its state in the current year, were made using the regression models for survival, growth and recruitment. 
 For each genet present in year $t$, we computed its probability of survival and its expected total cover in year $t+1$, incorporating the random 
 year-effects for year $t$ and quadrat group effects. The projected cover in year $t+1$ is the sum over all plants in year $t$ of survival probability times  
-projected mean size in year $t+1$ conditional on survival. 
+projected mean size in year $t+1$ conditional on survival, plus the number of expected recruits multiplied by mean recruit size. 
 
 Projections of mean cover next year have to take account of the fact that our demographic models use log-transformed cover as the size measure, 
 and project expected growth and variance in growth on log scale. Random variations in realized growth (on log scale) are modeled as zero-mean Gaussian deviations from the 
