@@ -3,9 +3,9 @@
 
 if(exists("growth_residuals")==F) stop("You need to fit growth models to get residuals")
 
-spp_names <- c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
+spp_names <- c("A. tripartita","H. comata","P. secunda","P. spicata")
 spp_list <- c("ARTR","HECO","POSE","PSSP")
-dataDir2 <- paste(root,"/ExperimentTests/data/idaho_modern",sep="")
+dataDir2 <- paste(root,"/data/idaho_modern",sep="")
 
 # get pretreatment W's and merge to individual residuals
 for(i in 1:length(spp_list)){
@@ -32,7 +32,7 @@ for(i in 1:4){
   plot(growth_residuals[[i]]$W.removal,growth_residuals[[i]]$resids,col=rgb(0,0,0,0.2),
        xlab="",ylab="",pch=16)
   abline(h=0,lty="dashed")
-  mtext(side=3,spp_names[i],line=0.5,adj=0,font=3)
+  mtext(side=3,spp_names[i],line=0.5,adj=0,font=4)
   
   # fit simple linear regression, display results if significant
   tmp <- lm(growth_residuals[[i]]$resids~growth_residuals[[i]]$W.removal)
