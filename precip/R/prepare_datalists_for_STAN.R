@@ -19,12 +19,12 @@ detachAllPackages <- function() {
 
 detachAllPackages()
 
-source('R/climate/ExtractData_3Runs.R')
-source('R/climate/aggregate_spot_VWC.R')
-source('R/climate/soilMoistureTreatmentEffects.R')
-source('R/climate/aggregate_VWC_data.R')
+#source('R/climate/ExtractData_3Runs.R')
+#source('R/climate/aggregate_spot_VWC.R')
+#source('R/climate/soilMoistureTreatmentEffects.R')
+#source('R/climate/aggregate_VWC_data.R')
 source('R/get_all_demographic_data.R')
-source('R/climate/make_climate_variables.R')
+#source('R/climate/make_climate_variables.R')
 source('R/climate/prepare_climate_covariates.R')
 
 library(dplyr)

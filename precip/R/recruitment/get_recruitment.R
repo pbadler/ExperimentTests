@@ -48,7 +48,6 @@ for(i in 1:Nspp){
   }
 }
 D2[is.na(D2)]=0  # replace missing values 
-
 D2$Period <- 'Modern'
 
 # merge in treatment data
@@ -59,6 +58,7 @@ D2 <- merge(D2,tmp, all.x=T)
 # combine old and new data
 D=rbind(D,D2)
 rm(D2)
+
 
 # get rid of removal treatments
 D <- subset(D,Treatment!="No_grass" & Treatment!="No_shrub")
@@ -82,7 +82,6 @@ tmpD=D[,c("quad","year","Group",paste("cov.",sppList,sep=""))]
 tmpD=aggregate(tmpD[,4:NCOL(tmpD)],by=list("year"=tmpD$year,
   "Group"=tmpD$Group),FUN=mean)
 names(tmpD)[3:NCOL(tmpD)]=paste("Gcov.",sppList,sep="")
-
 D=merge(D,tmpD,all.x=T)
 
 # assign indicator variables -------------------------------------------------------------------------------- # 
