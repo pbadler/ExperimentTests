@@ -27,11 +27,9 @@ p3 <- data.frame( Period = 'Historical', year = 1925:1957)
 periods <- data.frame( rbind( p1, p2, p3 )) 
 
 # ----- read in data --------------------------------------------------------------------#
+data_dir <- 'data'
 
-# set to driversdata project 
-data_dir <- '~/driversdata/data/idaho_modern'
-
-old_climate_files <- dir(file.path(data_dir, 'climateData'), pattern = 'Zachman', full.names = T) # Climate Data from Ecological Archives 
+old_climate_files <- dir(data_dir, pattern = 'Zachman', full.names = T) # Climate Data from Ecological Archives 
 old_station_dat <- lapply( old_climate_files, read.csv)
 
 old_station_dat[[1]] <- old_station_dat[[1]] %>% 
@@ -49,8 +47,8 @@ months <- data.frame( month = 1:12, Month_name = toupper( month.abb))
 old_station_dat <- merge( old_station_dat[[1]], old_station_dat[[2]], by = c('YEAR', 'Month_name'))
 old_station_dat <- merge( old_station_dat, months)
 
-station_dat <- read.csv(file.path(data_dir, 'climateData/USSES_climate_monthly_new.csv'))
-season <- read.csv(file.path(data_dir, 'soil_moisture_data/data/season_table.csv'))
+station_dat <- read.csv('data/USSES_climate_monthly_new.csv')
+season <- read.csv('data/season_table.csv')
 
 # ---process dates----------------------------------------------------------------------#
 
@@ -121,17 +119,6 @@ monthly_clim <-
   mutate( Irrigation = ifelse( year > 2011 & month %in% c(im[1]:im[2]), Control*p.treatments[2], Control) ) %>% 
   gather(Treatment, PRCP, Control, Drought, Irrigation)
 
-month_t <- 
-  monthly_clim %>% 
-  dplyr::select( year, month, TAVG ) %>% 
-  distinct() %>% 
-  spread( month , TAVG )
-
-
-mydata <- month_t[, 2:13]
-mydata <- mydata[complete.cases(mydata), ]
-pca <- princomp(mydata)
-biplot(pca)
 
 # ------------ aggregate monthly climate with Treatment effects by quarter ---------------#
 
@@ -211,7 +198,7 @@ annual_clim <- left_join( annual_clim, periods )
 
 # aggregate daily to monthly for Peter
 
-station_dat <- read.csv('~/driversdata/data/idaho_modern/climateData/USSES_climate.csv')
+station_dat <- read.csv('data/USSES_climate.csv')
 station_dat$date <- as.POSIXct( strptime( station_dat$DATE, format = '%Y%m%d', tz = 'MST')    )
 
 station_dat <- station_dat %>% dplyr::select( date, STATION, STATION_NAME, PRCP, TMAX, TMIN )  
