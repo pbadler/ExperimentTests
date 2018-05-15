@@ -8,10 +8,10 @@ library(dplyr)
 library(lme4)
 library(zoo)
 
-myVWC <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/decagon_data_with_station_data.RDS')
+myVWC <- readRDS('data/decagon_data_with_station_data.RDS')
 swVWC <- read.csv('data/temp_data/daily_VWC.csv')
-daily_clim <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/daily_station_dat_rainfall.RDS')
-seasons <- read.csv('~/driversdata/data/idaho_modern/soil_moisture_data/data/season_table.csv')
+daily_clim <- readRDS('data/daily_station_dat_rainfall.RDS')
+seasons <- read.csv('data/season_table.csv')
 
 # --------------------------------------------------------------------------------------#
 myVWC <- myVWC %>% 
@@ -96,7 +96,10 @@ tab <- summary(test)
 
 tab <-  data.frame(tab)
 
-tab <- as.data.frame(tab) %>%  dplyr::select(season, rainfall,  Treatment, lsmean, SE, asymp.LCL, asymp.UCL ) %>% arrange(season, rainfall, Treatment )
+tab <- 
+  tab %>% 
+  dplyr::select(season, rainfall,  Treatment, lsmean, SE, lower.CL, upper.CL ) %>% 
+  arrange(season, rainfall, Treatment )
 
 statsOutput <- 'manuscript/soil_moisture_model.tex'
 
