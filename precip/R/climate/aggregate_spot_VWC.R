@@ -9,11 +9,11 @@ library(lme4)
 library(zoo)
 library(MASS)
 
-myVWC <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/decagon_data_with_station_data.RDS')
+myVWC <- readRDS('data/decagon_data_with_station_data.RDS')
 swVWC <- read.csv('data/temp_data/daily_VWC.csv')
-daily_clim <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/daily_station_dat_rainfall.RDS')
-seasons <- read.csv('~/driversdata/data/idaho_modern/soil_moisture_data/data/season_table.csv')
-spotVWC <- readRDS('~/driversdata/data/idaho_modern/soil_moisture_data/data/processed_data/spring_spot_measurements.RDS')
+daily_clim <- readRDS('data/daily_station_dat_rainfall.RDS')
+seasons <- read.csv('data/season_table.csv')
+spotVWC <- readRDS('data/spring_spot_measurements.RDS')
 
 spotVWC <- 
   spotVWC %>% 
