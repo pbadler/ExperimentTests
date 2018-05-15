@@ -10,23 +10,23 @@ library(texreg)
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
-soil_moist_dir <- '~/driversdata/data/idaho_modern/soil_moisture_data/data/'
-q_info <-read.csv(paste0(soil_moist_dir, '../../quad_info.csv') )
+soil_moist_dir <- 'data'
+q_info <-read.csv(paste0(soil_moist_dir, '/quad_info.csv') )
 
-calibration <- read.csv(paste0(soil_moist_dir, 'raw_soil_data/spot_measurements/2015-05-07_soil_probe_calibration.csv'))
-calibration2 <- read.csv(paste0(soil_moist_dir, 'raw_soil_data/spot_measurements/2015-04-29_soil_probe_calibration.csv'), skip = 8)
+calibration <- read.csv(paste0(soil_moist_dir, '/2015-05-07_soil_probe_calibration.csv'))
+calibration2 <- read.csv(paste0(soil_moist_dir, '/2015-04-29_soil_probe_calibration.csv'), skip = 8)
 
-p1 <- read.csv(paste0( soil_moist_dir, 'raw_soil_data/spot_measurements/2012-06-06_spot_measurements.csv'), skip = 3)
+p1 <- read.csv(paste0( soil_moist_dir, '/2012-06-06_spot_measurements.csv'), skip = 3)
 
 p1$date <- '2012-06-06'
 p1$Plot <- gsub( p1$Plot, pattern = '-', replacement = '_')
 p1$rep <- c(1:2)
 p1 <- p1 %>% rename( plot = Plot )
 
-p2 <- read.csv(paste0(soil_moist_dir, 'raw_soil_data/spot_measurements/2015-04-29_spot_measurements.csv'), skip = 2)
-p3 <- read.csv(paste0(soil_moist_dir, 'raw_soil_data/spot_measurements/2015-05-07_spot_measurements.csv'))
-p4 <- read.csv(paste0(soil_moist_dir, 'raw_soil_data/spot_measurements/2016-05-10_spot_measurements.csv'))
-p5 <- read.csv(paste0(soil_moist_dir, 'raw_soil_data/spot_measurements/2015-06-09_spot_measurements.csv'))
+p2 <- read.csv(paste0(soil_moist_dir, '/2015-04-29_spot_measurements.csv'), skip = 2)
+p3 <- read.csv(paste0(soil_moist_dir, '/2015-05-07_spot_measurements.csv'))
+p4 <- read.csv(paste0(soil_moist_dir, '/2016-05-10_spot_measurements.csv'))
+p5 <- read.csv(paste0(soil_moist_dir, '/2015-06-09_spot_measurements.csv'))
 
 p2$date <- '2015-04-29'
 
@@ -43,7 +43,7 @@ df <- merge (df, q_info , by = 'plot')
 df$date <- as.POSIXct(df$date, tz = 'MST')
 df <- df %>% rename(VWC = PCT)
 
-soil_density <- read.csv(paste0(soil_moist_dir, 'raw_soil_data/gravimetric_samples/exclosure_soil_samples.csv'))
+soil_density <- read.csv(paste0(soil_moist_dir, '/exclosure_soil_samples.csv'))
 
 soil_density <- soil_density %>% 
   mutate( layer = ifelse( depth > 15, 'deep', 'shallow') ) %>% 
