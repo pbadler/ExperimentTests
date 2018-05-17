@@ -1,12 +1,12 @@
-rm(list = ls()) 
-library(dplyr)
-library(tidyr)
-library(stringr)
+# rm(list = ls()) 
+# library(dplyr)
+# library(tidyr)
+# library(stringr)
 
 sppList=c("ARTR","HECO","POSE","PSSP")
 outfile="recruit_params_m1.csv"
 
-root <- '~'
+root <- my_path
 
 dataDir1 <- paste(root,"/driversdata/data/idaho/speciesData/",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern/speciesData/",sep="")

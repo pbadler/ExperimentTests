@@ -6,6 +6,9 @@
 #############################################################
 
 rm(list = ls() ) 
+
+my_path <- "c:/repos/" # this is needed to get to the driversdata directory
+
 library(rstan)
 library(dplyr)
 library(tidyr)

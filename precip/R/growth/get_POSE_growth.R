@@ -7,7 +7,7 @@
 #########################################
 
 doSpp <- "POSE"
-root = "~"
+root <- my_path
 sppList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
 dataDir1 <- paste(root,"/driversdata/data/idaho",sep="")
 dataDir2 <- paste(root,"/driversdata/data/idaho_modern",sep="")

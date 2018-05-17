@@ -4,20 +4,20 @@
 #
 #####################################################################################
 
-rm(list = ls() )
+#rm(list = ls() )
 
-detachAllPackages <- function() {
-  
-  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
-  
-  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
-  
-  package.list <- setdiff(package.list,basic.packages)
-  
-  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
-}
-
-detachAllPackages()
+# detachAllPackages <- function() {
+#   
+#   basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+#   
+#   package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+#   
+#   package.list <- setdiff(package.list,basic.packages)
+#   
+#   if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+# }
+# 
+# detachAllPackages()
 
 # These retrieve and aggregate all the climate data 
 
@@ -31,11 +31,12 @@ source('R/get_all_demographic_data.R')
 source('R/climate/make_climate_variables.R')
 source('R/climate/prepare_climate_covariates.R')
 
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(zoo)
-library(stringr)
+# these are loaded in analysis_pipeline.r
+# library(dplyr)
+# library(tidyr)
+# library(ggplot2)
+# library(zoo)
+# library(stringr)
 
 make_data_list <- function( x) { 
   
