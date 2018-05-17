@@ -1,11 +1,11 @@
-library(lme4)
-library(dplyr)
-library(tidyr)
+# library(lme4)
+# library(dplyr)
+# library(tidyr)
 
 # call from removal_analysis_wrapper.r
-root <- "~"
+root <- my_path
 sppList=c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
-dataDir <- file.path(root,"/driversdata/data/idaho_modern/")
+dataDir <- file.path(root,"driversdata/data/idaho_modern//")
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 

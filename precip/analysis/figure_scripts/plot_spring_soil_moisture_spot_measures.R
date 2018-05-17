@@ -1,12 +1,12 @@
 ##### Spring 2015 soil moisture
 ##### 
 
-rm(list = ls())
-library(ggplot2 )
-library(dplyr)
-library(tidyr)
-library(lme4)
-library(texreg)
+# rm(list = ls())
+# library(ggplot2 )
+# library(dplyr)
+# library(tidyr)
+# library(lme4)
+# library(texreg)
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 

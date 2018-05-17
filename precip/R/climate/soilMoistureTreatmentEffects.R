@@ -1,6 +1,6 @@
 # calculate treatment effects compared to control soil moisture 
 
-rm(list = ls()) 
+#rm(list = ls()) 
 
 library( ggplot2 ) 
 library(tidyr)

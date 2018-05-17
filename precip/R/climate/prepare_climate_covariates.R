@@ -85,7 +85,7 @@ q_VWC <-
          #VWC.a.0 = lag( VWC.a.1,4), 
          #VWC.a.l = lag( VWC.a.0,4)) %>%
   filter( season == 'spring') %>% # plants are measured at the end of spring each year 
-  select( Treatment, Period, year, season, starts_with("VWC")) %>%
+  dplyr::select( Treatment, Period, year, season, starts_with("VWC")) %>%
   ungroup() %>% 
   gather( var, val, starts_with('VWC')) %>% 
   filter( !is.na(val)) %>%
@@ -106,7 +106,7 @@ q_precip <-
          P.su.0 = lag(P.su.1, 4), 
          P.su.l = lag(P.su.0, 4)) %>% 
   filter( season == 'spring') %>% # plants are measured at the end of spring each year 
-  select( Treatment, Period, year, season, starts_with("P"))
+  dplyr::select( Treatment, Period, year, season, starts_with("P"))
 
 q_temp <- 
   seasonal_clim %>% 
@@ -126,7 +126,7 @@ q_temp <-
           T.w.0 = lag(T.w.1, 4), 
           T.w.l = lag(T.w.0, 4)) %>% 
   filter( season == 'spring') %>% 
-  select( Treatment, Period, year, season, starts_with("T."))
+  dplyr::select( Treatment, Period, year, season, starts_with("T."))
 
 allClim <- 
   q_precip %>% 
