@@ -22,9 +22,9 @@ detachAllPackages()
 # These retrieve and aggregate all the climate data 
 
 #source('R/climate/ExtractData_3Runs.R') # don't run this because using the deprecated version of the soilwat package required is a pain in the ass 
-#source('R/climate/aggregate_spot_VWC.R')
-#source('R/climate/soilMoistureTreatmentEffects.R')
-#source('R/climate/aggregate_VWC_data.R')
+source('R/climate/aggregate_spot_VWC.R')
+source('R/climate/soilMoistureTreatmentEffects.R')
+source('R/climate/aggregate_VWC_data.R')
 
 # ----------------------------------------------------------------- 
 source('R/get_all_demographic_data.R')
