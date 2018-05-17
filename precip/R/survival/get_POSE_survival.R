@@ -6,7 +6,7 @@
 #  1. Import data and calculate W's
 #########################################
 
-root <- '~'
+root <- my_path
 doSpp <- "POSE"
 sppList <- c("ARTR","HECO","POSE","PSSP","allcov","allpts")
 dataDir1 <- paste(root,"/driversdata/data/idaho",sep="")
