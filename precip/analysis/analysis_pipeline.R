@@ -7,6 +7,7 @@
 
 rm(list = ls() ) 
 
+setwd("C:/Repos/ExperimentTests/precip/")
 my_path <- "c:/repos/" # this is needed to get to the driversdata directory
 
 library(rstan)
@@ -27,14 +28,18 @@ source('analysis/figure_scripts/save_plot_theme.R')
 
 source('R/prepare_datalists_for_STAN.R')
 
+rm(list=setdiff(ls(), "my_path")) # clean up, but leave my_path
+
 # analysis pipeline ------------------------------------------ # 
 
 # 1. Soil moisture analysis 
 source('analysis/figure_scripts/plot_spring_soil_moisture_spot_measures.R')
+rm(list=setdiff(ls(), "my_path")) # clean up, but leave my_path
 
 # 2. Cover trends
 
 source('analysis/treatment_trends_precip.R')
+rm(list=setdiff(ls(), "my_path")) # clean up, but leave my_path
 
 # 3. fit treatment models 
 
