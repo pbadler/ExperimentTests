@@ -42,7 +42,6 @@ transformed parameters{
   matrix[N, Nspp] trueP2;
   vector[N] lambda;
   vector[N] coverEff;
-  vector[N] treatEff;
   vector[nyrs] a; 
   vector[N] gint; 
   
