@@ -21,6 +21,7 @@ library(texreg)
 library(xtable)
 library(gridExtra)
 library(MASS)
+library(ggmcmc)
 
 # run data preparation files first --------------------------- # 
 
@@ -56,6 +57,7 @@ source('analysis/figure_scripts/plot_treatment_parameter_estimates.R')
 source('analysis/fit_stan_year_effects_models.R')
 
 source('analysis/summarize_year_model_fits.R')
+
 source('analysis/figure_scripts/plot_year_model_fits.R')
 
 # 5. find climate correlations 
