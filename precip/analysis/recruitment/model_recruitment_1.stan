@@ -52,9 +52,7 @@ transformed parameters{
   vector[N] climEff;
   vector[N] gint;
   vector[nyrs] a; 
-  vector[Nspp] mc;
-  vector[Nspp] sdc;
-  
+
   climEff <- C*b2;
   trueP1 <- parents1*u + parents2*(1-u);
   
