@@ -25,13 +25,13 @@ for(i in 1:length(cor_files)){
   
   VWC_parameter <- as.character( temp$var [ temp$vartype == 'VWC'] )
   
-  if ( vr == 'growth' & spp %in% c('ARTR', 'POSE')) {  # use the size effect interaction 
+  if (vr == 'growth' & spp %in% c('POSE', 'PSSP')) {  # use the size effect interaction 
     ifx <- paste( VWC_parameter, 'logarea.t0', sep = 'x')
     
     VWC_parameter <- c(VWC_parameter, ifx )
   }
 
-  if( vr == 'survival' & spp == 'POSE' ) { # use 
+  if( vr == 'survival' & spp %in% c('HECO', 'POSE') ) { # use 
     ifx <- paste(VWC_parameter, 'logarea.t0', sep = 'x')
     VWC_parameter <- c(VWC_parameter, ifx)
   }  
@@ -69,11 +69,11 @@ all_cors <- all_cors %>% dplyr::select(vital_rate, species, var, Intercept, Int_
 
 size_cors <- 
   all_cors %>% 
-  filter( (((species == 'ARTR' | species == 'POSE') & vital_rate == 'growth') | (species == 'POSE' & vital_rate == 'survival')) )
+  filter( (((species == 'POSE' | species == 'PSSP') & vital_rate == 'growth') | ( (species == 'HECO' | species == 'POSE')  & vital_rate == 'survival')) )
 
 all_cors <- 
   all_cors %>% 
-  filter( !(((species == 'ARTR' | species == 'POSE') & vital_rate == 'growth') | (species == 'POSE' & vital_rate == 'survival')))
+  filter( !(((species == 'POSE' | species == 'PSSP') & vital_rate == 'growth') | ( (species == 'HECO' | species == 'POSE')  & vital_rate == 'survival')))
 
 all_cors$size <- NA
 all_cors$size_pval <- NA
