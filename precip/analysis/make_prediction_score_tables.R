@@ -1,3 +1,4 @@
+library(xtable)
 library(dplyr)
 library(tidyr)
 
@@ -43,7 +44,15 @@ tlppd$model <- factor(tlppd$model, labels = c('climate model', 'year effects mod
 tMSE$model <- factor(tMSE$model, labels = c('climate model', 'year effects model'))
 
 
-treatment_scores <- rbind( tMSE %>% spread(model, MSE), tlppd %>% spread(model, lppd) )
+
+tMSE <- 
+  tMSE %>% 
+  spread(model, MSE) %>% 
+  mutate(  percent_change = (`climate model` - `year effects model`)/`year effects model`) %>% 
+  gather(  model, MSE, `climate model`:`year effects model` )
+
+treatment_scores <- bind_rows( tMSE %>% spread(model, MSE), tlppd %>% spread(model, lppd) )
+
 treatment_scores$diff <- treatment_scores$`climate model` - treatment_scores$`year effects model`
 
 treatment_score_table <- 

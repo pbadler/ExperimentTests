@@ -79,5 +79,7 @@ for( i in 1:4) {
 out <- do.call( rbind, out )
 out2 <- do.call(rbind, out2)
 
+
+
 write.csv(out, 'output/all_MSE_scores.csv', row.names = F)
 write.csv(out2, 'output/treatment_MSE_scores.csv', row.names = F)
