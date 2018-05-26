@@ -89,7 +89,7 @@ ylims <- list( c(0,25), c(0,4), c(0,4), c(0,4))
 names(ylims) <- species_list
 iter <- expand.grid( species = species_list, model = model_list )
 
-for( i in 7:nrow(iter) ) { 
+for( i in 1:nrow(iter) ) { 
   spp <- as.character( iter$species[i])
   model <- as.character( iter$model[i] )
   

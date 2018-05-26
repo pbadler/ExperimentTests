@@ -18,7 +18,8 @@ gs_treatment_fit <- treatment_stan_fit[ -grep('recruitment', treatment_stan_fit)
 r_treatment_fit <- treatment_stan_fit[ grep('recruitment', treatment_stan_fit)]
 
 # first loop do all growth and survival fits ------------------------------------- # 
-i = 1
+i = 4
+gs_fits
 for( i in 1:length(gs_fits)){
   
   bname <- basename(gs_fits[i])

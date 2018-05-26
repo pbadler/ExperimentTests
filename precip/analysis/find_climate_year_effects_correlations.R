@@ -11,8 +11,7 @@ dat_files <- dat_files[ - grep('modified', dat_files)]
 Cdat <- readRDS('data/temp_data/all_clim_covs.RDS')
 Cdat <- subset(Cdat, Period == 'Historical' & Treatment == 'Control')
 
-head( Cdat )
-i = 6
+
 for( i in 1:length(ye_files)){ 
   
   spp <- str_extract (ye_files[i], '[A-Z]{4}')
@@ -100,7 +99,8 @@ for( i in 1:length(ye_files)){
       out [ j, 4] <- temp$p.value
     }
     
-    if(vr == 'growth' & spp %in% c('ARTR', 'POSE')){ 
+    # hard code in which species have an intercept and a size x climate slope
+    if(vr == 'growth' & spp %in% c('POSE', 'PSSP')){ 
     
       vars <- 
         out %>% 
@@ -113,7 +113,7 @@ for( i in 1:length(ye_files)){
         arrange( desc(max_cor) ) %>% 
         filter(vartype == 'VWC' & row_number() < 4 )
     
-    }else if ( vr == 'survival' & spp == 'POSE' ) { 
+    }else if ( vr == 'survival' & spp %in% c('HECO', 'POSE') ) { 
       vars <- 
         out %>% 
         mutate( var = row.names(.)) %>% 
