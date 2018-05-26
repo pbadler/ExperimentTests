@@ -38,10 +38,11 @@ tlppd <- tlppd %>% dplyr::select(-climate_model_performance) %>% gather( model, 
 tMSE$score <- 'MSE'
 tlppd$score <- 'lppd'
 
-
 tlppd$model <- factor(tlppd$model, labels = c('climate model', 'year effects model'))
 tMSE$model <- factor(tMSE$model, labels = c('climate model', 'year effects model'))
 
+# drop extra column from tlppd
+tlppd <- tlppd[,-which(names(tlppd)=="percent_change")]
 
 treatment_scores <- rbind( tMSE %>% spread(model, MSE), tlppd %>% spread(model, lppd) )
 treatment_scores$diff <- treatment_scores$`climate model` - treatment_scores$`year effects model`

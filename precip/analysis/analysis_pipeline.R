@@ -99,7 +99,7 @@ source('analysis/figure_scripts/plot_obs_vs_pred_treatment_parameters.R')
 
 source('analysis/figure_scripts/plot_significant_effect_comparison.R')
 
-# 8. plot observed cover and predicted cover 
+# 10. plot observed cover and predicted cover 
 
 source('analysis/figure_scripts/plot_one_step_ahead_cover.R')
 
@@ -108,5 +108,5 @@ source('analysis/figure_scripts/plot_predicted_vs_observed_cover_changes.R')
 source('analysis/figure_scripts/plot_cover.R')
 
 
-# 9. 
+ 
 

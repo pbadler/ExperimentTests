@@ -5,14 +5,14 @@ library(stringr)
 dl_files <- dir('data/temp_data', 'modified_.*_data_lists_for_stan.RDS', full.names = T)
 m_files  <- dir('analysis', 'model.*_1.stan', recursive = T, full.names = T)
 
-for( i in 1:length(dl_files)){ 
+for( i in 1:length(dl_files)){  # loop through vital rates
   
   dl  <- readRDS(dl_files[i])
   vr  <- str_extract(dl_files[i], c('growth', 'recruitment', 'survival'))
   vr  <- vr[!is.na(vr)]
   spp <-  names(dl)
   
-  for( j in 1:length(dl)){ 
+  for( j in 1:length(dl)){  # loop through species
     
     myfit <- stan(m_files[i], data  = dl[[j]], thin = 4, cores = 4, iter = 2000, seed = 1)
     
@@ -37,7 +37,10 @@ for( i in 1:length(dl_files)){
     
     saveRDS(myfit, paste0('output/stan_fits/', spp[j], '_', vr, '_climate_fit.RDS'))
     
+    rm( myfit )
+    gc()
+    
   }
-  rm( myfit )
+  
 }
 

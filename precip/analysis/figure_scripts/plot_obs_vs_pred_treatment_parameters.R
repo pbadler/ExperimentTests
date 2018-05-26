@@ -152,7 +152,7 @@ for( i in 1:length(gs_fits)){
   
   muhat <- matrix( ncol = nrow(pred_matrix), nrow = nrow( bt ) )
   
-  for( j in 1:nrow(bt)) { 
+  for( j in 1:nrow(bt)) { i
     muhat[j , ] <- pred_matrix%*%bt[j, ]
   }
   

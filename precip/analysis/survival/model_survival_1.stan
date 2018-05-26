@@ -54,16 +54,16 @@ transformed parameters{
   vector[N] crowdEff;
   vector[N] climEff; 
   
-  gint <- gm*bg;
-  crowdEff <- W*w;
-  climEff  <- C*b2;
+  gint = gm*bg;
+  crowdEff = W*w;
+  climEff  = C*b2;
   
   // reparamaterize the year effects parameters  
-  a <- 0 + sig_a*a_raw;
-  b1 <- b1_mu + sig_b1*b1_raw;
+  a = 0 + sig_a*a_raw;
+  b1 = b1_mu + sig_b1*b1_raw;
 
   for(n in 1:N){
-    mu[n] <- inv_logit(gint[n] + a[yid[n]]  + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n]);
+    mu[n] = inv_logit(gint[n] + a[yid[n]]  + b1[yid[n]]*X[n] + crowdEff[n] + climEff[n]);
   }
 
 }
@@ -103,36 +103,36 @@ generated quantities {
   vector[N2] climhat2;
 
   for(n in 1:N){
-    log_lik[n] <- bernoulli_log(Y[n], mu[n]); 
+    log_lik[n] = bernoulli_log(Y[n], mu[n]); 
   }
   
   // 1. Holdout data predictions 
-  gint_out  <- gmhold*bg;
-  crowdhat <- Whold*w;
-  climhat  <- Chold*b2; 
+  gint_out  = gmhold*bg;
+  crowdhat = Whold*w;
+  climhat  = Chold*b2; 
   
   for( i in 1:nyrshold){
-    a_out[i] <- normal_rng(0, sig_a);         // draw random year intercept 
-    b1_out[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect 
+    a_out[i] = normal_rng(0, sig_a);         // draw random year intercept 
+    b1_out[i] = normal_rng(b1_mu, sig_b1);   //draw random year x size effect 
   }
   
   for(n in 1:Nhold){
-    muhat[n] <- inv_logit(gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n] + climhat[n]);
-    log_lik2[n] <- bernoulli_log(Yhold[n], muhat[n]);
+    muhat[n] = inv_logit(gint_out[n] + a_out[yidhold[n]-nyrs] + b1_out[yidhold[n]-nyrs]*Xhold[n] + crowdhat[n] + climhat[n]);
+    log_lik2[n] = bernoulli_log(Yhold[n], muhat[n]);
   }
   
   // 2. all data for cover predictions 
-  gint_out2  <- gm2*bg;
-  crowdhat2 <- W2*w;
-  climhat2  <- C2*b2; 
+  gint_out2  = gm2*bg;
+  crowdhat2 = W2*w;
+  climhat2  = C2*b2; 
   
   for( i in 1:nyrs2){
-    a_out2[i] <- normal_rng(0, sig_a);         // draw random year intercept 
-    b1_out2[i] <- normal_rng(b1_mu, sig_b1);   //draw random year x size effect 
+    a_out2[i] = normal_rng(0, sig_a);         // draw random year intercept 
+    b1_out2[i] = normal_rng(b1_mu, sig_b1);   //draw random year x size effect 
   }
   
   for(n in 1:N2){
-    muhat2[n] <- inv_logit(gint_out2[n] + a_out2[yid2[n]] + b1_out2[yid2[n]]*X2[n] + crowdhat2[n] + climhat2[n]);
+    muhat2[n] = inv_logit(gint_out2[n] + a_out2[yid2[n]] + b1_out2[yid2[n]]*X2[n] + crowdhat2[n] + climhat2[n]);
   }
   
   
