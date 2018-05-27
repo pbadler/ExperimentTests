@@ -25,16 +25,21 @@ for(i in 1:length(cor_files)){
   
   VWC_parameter <- as.character( temp$var [ temp$vartype == 'VWC'] )
   
-  if (vr == 'growth' & spp %in% c('POSE', 'PSSP')) {  # use the size effect interaction 
+  ############################################
+  # hard code which species recieve size by climate interaction 
+  # based on whether those species have size by treatment interaction 
+
+  if (vr == 'growth' & spp == 'PSSP') {  # use the size effect interaction 
     ifx <- paste( VWC_parameter, 'logarea.t0', sep = 'x')
     
     VWC_parameter <- c(VWC_parameter, ifx )
   }
 
-  if( vr == 'survival' & spp %in% c('HECO', 'POSE') ) { # use 
+  if( vr == 'survival' & spp == 'POSE' ) { # use the size effect interaction 
     ifx <- paste(VWC_parameter, 'logarea.t0', sep = 'x')
     VWC_parameter <- c(VWC_parameter, ifx)
   }  
+  #############################################
   
   use_vars <- VWC_parameter
   
@@ -67,13 +72,19 @@ all_cors <- rbind(out_cors, rec_outs)
 
 all_cors <- all_cors %>% dplyr::select(vital_rate, species, var, Intercept, Int_pval, size, size_pval ) %>% arrange( vital_rate, species, desc(abs(Intercept)) )
 
+################################################
+# hard code which species recieve size by climate interaction 
+# based on whether those species have size by treatment interaction 
+
 size_cors <- 
   all_cors %>% 
-  filter( (((species == 'POSE' | species == 'PSSP') & vital_rate == 'growth') | ( (species == 'HECO' | species == 'POSE')  & vital_rate == 'survival')) )
+  filter( ((species == 'PSSP' & vital_rate == 'growth') | ( species == 'POSE'  & vital_rate == 'survival')) )
 
 all_cors <- 
   all_cors %>% 
-  filter( !(((species == 'POSE' | species == 'PSSP') & vital_rate == 'growth') | ( (species == 'HECO' | species == 'POSE')  & vital_rate == 'survival')))
+  filter( !((species == 'PSSP' & vital_rate == 'growth') | ( species == 'POSE'  & vital_rate == 'survival')))
+
+################################################
 
 all_cors$size <- NA
 all_cors$size_pval <- NA
