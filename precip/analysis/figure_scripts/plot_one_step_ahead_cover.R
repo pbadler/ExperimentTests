@@ -7,9 +7,9 @@ library(boot)
 
 # functions ---------------------------------------------------------------------------- 
 
-simulate_recruit_size <- function( recruits , spp ) { 
+simulate_recruit_size <- function( recruits , spp, my_dir ) { 
   
-  dat <- read.csv(paste0('~/driversdata/data/idaho/speciesData/', as.character(spp), '/recSize.csv'))
+  dat <- read.csv(paste0(my_dir, '/driversdata/data/idaho/speciesData/', as.character(spp), '/recSize.csv')) # need to put path to driversdata!!!!! 
   
   out <- recruits 
   
@@ -42,7 +42,7 @@ generate_cover_predictions <- function( spp, model ) {
     r[] <- sample(rdf$Y, length(r), replace = T)
   }
   
-  rec_area <- simulate_recruit_size(r, spp )
+  rec_area <- simulate_recruit_size(r, spp, my_dir)
   
   g <- exp( g ) 
   g[ g > 10000 ]  <- 10000 # assign plants with greater than 10000 cover to 10000 (can't be bigger than plot)
@@ -76,7 +76,11 @@ generate_cover_predictions <- function( spp, model ) {
 
 
 #
+my_dir <- '~/Desktop/'  ## set to driversdata directory 
+
 load('analysis/figure_scripts/my_plotting_theme.Rdata') 
+
+
 
 years <- expand.grid(year = 1925:2016, Treatment = c('Control', 'Drought', 'Irrigation'), type = c('observed', 'predicted'))
 years$Period[ years$year > 2010 ] <- 'Modern'
@@ -117,12 +121,12 @@ for( i in 1:nrow(iter) ) {
   qarea2 <- df %>% filter( !is.na(area)) %>% group_by( year, Treatment, quad ) %>% summarise( area = sum(area)) 
 
   # get recruit area ---------------------------------------------------------------------------------------# 
-  df <- read.csv(paste0('~/driversdata/data/idaho/speciesData/', spp, '/', spp, '_genet_xy.csv'))
+  df <- read.csv(paste0(my_dir, 'driversdata/data/idaho/speciesData/', spp, '/', spp, '_genet_xy.csv'))
   df$quad <- as.numeric( str_extract(df$quad, '[0-9]+'))
   df$year <- df$year + 1900  
   df <- df %>% filter( age == 1 ) %>% group_by( quad, year ) %>% summarise( area = sum(area ) ) # get area of recruits 
   
-  df2 <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/', spp, '_genet_xy.csv'))
+  df2 <- read.csv(paste0(my_dir, 'driversdata/data/idaho_modern/speciesData/', spp, '/', spp, '_genet_xy.csv'))
   df2$quad <- as.numeric( str_extract(df2$quad, '[0-9]+'))
   df2 <- df2 %>% filter( age == 1 ) %>% group_by( quad, year ) %>% summarise( area = sum(area ) ) # get area of recruits 
   df2 <- subset(df2, year == 2016) # only need 2016 
@@ -152,7 +156,7 @@ for( i in 1:nrow(iter) ) {
   plot_df <- merge( qarea[ , c('area', 'quad', 'year', 'Treatment') ], pred_cover[, c('area', 'quad', 'year', 'Treatment', 'simulation')], by = c('year','quad', 'Treatment') , all.x = T, all.y = T)
   
   # merge_with quad_info to get groups 
-  quad_info <- read.csv('~/driversdata/data/idaho_modern/quad_info.csv')
+  quad_info <- read.csv('data/quad_info.csv')
   quad_info$quad <- as.numeric(str_extract(quad_info$quad, '[0-9]+'))
   plot_df <- merge( plot_df, quad_info)
   

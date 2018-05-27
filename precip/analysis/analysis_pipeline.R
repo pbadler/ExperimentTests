@@ -101,7 +101,9 @@ source('analysis/figure_scripts/plot_significant_effect_comparison.R')
 
 # 10. plot observed cover and predicted cover 
 
-source('analysis/figure_scripts/plot_one_step_ahead_cover.R')
+### The following script requires resetting the path to the driversdata!
+source('analysis/figure_scripts/plot_one_step_ahead_cover.R') 
+###
 
 source('analysis/figure_scripts/plot_predicted_vs_observed_cover_changes.R')
 
