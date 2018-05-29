@@ -29,6 +29,8 @@ for(i in 1:nrow(df)){
     
     waic2 <- waic(myfit2, 'log_lik2')
     
+    browser()
+    
     # if removing the size by treatment parameters improves fit then take them out  -------------------------- # 
     if ( waic1$waic < waic2$waic ){ 
       myfit <- myfit 
