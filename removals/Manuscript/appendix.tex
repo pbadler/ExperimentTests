@@ -8,6 +8,7 @@
 \usepackage[running]{lineno}
 \usepackage[vmargin=1in,hmargin=1in]{geometry}
 \usepackage{caption}
+\usepackage{longtable}
 
 %%%  Sorting references by year(?)
 \usepackage[authoryear]{natbib}
@@ -73,7 +74,7 @@
 
 \vspace{0.2in} 
 
-\noindent \textbf{Adler et al., ``Weak interspecific interactions in a sagebrush steppe? Conflicting evidence from observations and experiments,'' \textit{Ecology}. }
+\noindent \textbf{Adler et al., ``Weak interspecific interactions in a sagebrush steppe? Conflicting evidence from observations and experiments,'' \textit{Ecology}. 2018. }
 
 \vspace{0.2in} 
 
@@ -592,14 +593,25 @@ and column headers.}
 
 % latex table generated in R 3.2.2 by xtable 1.8-2 package
 % Mon Sep 19 08:37:48 2016
-\begin{table}[ht]
+\clearpage
 \centering
-\caption{Summary of posterior distributions for fixed effects for the recruitment model (symbols correspond to Eqns. \ref{eqn:recrDataModel} and \ref{eqn:recrProcessModel}). The indexing on $\omega$ shown here and used in the computer code for the recruitment model gives $\omega$[3,1] as the effect of species 3 on species 1. This is the reverse of the normal convention used in \ref{eqn:recrProcessModel} and shown in \ref{table:alphas}.} 
-\label{table:recruitment}
-\begin{tabular}{rrrrrrr}
+\begin{longtable}{ r r r r r r r }
+\caption{Summary of posterior distributions for fixed effects for the recruitment model (symbols correspond to Eqns. \ref{eqn:recrDataModel} and \ref{eqn:recrProcessModel}). The indexing on $\omega$ shown here and used in the computer code for the recruitment model gives $\omega$[3,1] as the effect of species 3 on species 1. This is the reverse of the normal convention used in \ref{eqn:recrProcessModel} and shown in \ref{table:alphas}.} \label{table:recruitment}  \\
+%   \multicolumn{7}{c}%
   \hline
  & mean & sd & X2.5. & X97.5. & Rhat & n.eff \\ 
   \hline
+  \endfirsthead
+  \multicolumn{7}{c}%
+  {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+  \hline
+   & mean & sd & X2.5. & X97.5. & Rhat & n.eff \\
+  \hline
+  \endhead
+  \hline \multicolumn{7}{r}{\textit{Continued on next page}} \\
+  \endfoot
+  \hline
+  \endlastfoot
  $\gamma$[1] & 0.3341 & 0.7071 & -1.1262 & 1.6391 & 1.0018 &  1100 \\ 
   $\gamma$[2] & 3.4488 & 0.4468 & 2.5010 & 4.3401 & 1.0904 &    25 \\ 
   $\gamma$[3] & 3.2440 & 0.3650 & 2.4840 & 3.9190 & 1.0536 &    34 \\ 
@@ -632,9 +644,6 @@ and column headers.}
   $p$[2] & 0.9996 & 0.0005 & 0.9984 & 1.0000 & 1.0007 &  2000 \\ 
   $p$[3] & 0.7906 & 0.1288 & 0.4273 & 0.9382 & 1.0176 &  2000 \\ 
   $p$[4] & 0.7502 & 0.1480 & 0.3920 & 0.9453 & 1.0150 &  2000 \\ 
-   \hline
-   
-   \hline
     $\gamma$[1] & 0.2843 & 0.6342 & -1.0900 & 1.4950 & 1.0279 &   810 \\ 
     $\gamma$[2] & 3.2828 & 0.4467 & 2.4429 & 4.1940 & 1.0062 &   260 \\ 
     $\gamma$[3] & 3.2923 & 0.3691 & 2.5680 & 4.0320 & 1.0040 &  1800 \\ 
@@ -643,7 +652,7 @@ and column headers.}
     $\chi$[2,3] & -0.1396 & 0.2658 & -0.6654 & 0.3970 & 1.0015 &  1400 \\ 
     $\chi$[2,4] & 0.4050 & 0.2439 & -0.0664 & 0.8924 & 1.0010 &  2000 \\ 
     $\chi$[3,1] & -1.3691 & 0.6755 & -2.7260 & -0.0685 & 1.0093 &   170 \\ 
-      $\omega$[1,1] & -0.5539 & 0.1165 & -0.7517 & -0.2845 & 1.0329 &   240 \\ 
+    $\omega$[1,1] & -0.5539 & 0.1165 & -0.7517 & -0.2845 & 1.0329 &   240 \\ 
       $\omega$[1,2] & 0.0654 & 0.0581 & -0.0429 & 0.1898 & 1.0025 &   740 \\ 
       $\omega$[1,3] & 0.0043 & 0.0389 & -0.0771 & 0.0813 & 1.0019 &  2000 \\ 
       $\omega$[1,4] & 0.0953 & 0.0410 & 0.0209 & 0.1830 & 1.0120 &   130 \\ 
@@ -668,8 +677,7 @@ and column headers.}
      $p$[3] & 0.8834 & 0.0634 & 0.7124 & 0.9619 & 1.0054 &   410 \\ 
      $p$[4] & 0.8100 & 0.1410 & 0.4269 & 0.9650 & 1.0023 &   830 \\ 
       \hline
-\end{tabular}
-\end{table}
+\end{longtable}
 
 \newpage 
 \begin{table}[ht]
@@ -680,7 +688,7 @@ In each $4 \times 4$ array of coefficients, the entry in row $i$, column $j$ is 
 coefficient for the effect of species $j$ cover on species $i$. Intraspecific competition is weak relative to intraspecific competition if each
 species affects itself more than others, i.e. if the largest (in magnitude) element in each column is the element on the diagonal of the array.
 The one exception to this pattern is the effect of POSE on recruitment by ARTR, but the nonconforming
-coefficient ($\omega$[3,1] = -0.50 in Table \ref{table:recruitment}) has low precision (sd = 0.28, Table \ref{table:recruitment}.} 
+coefficient ($\omega$[3,1] = -0.50 in Table \ref{table:recruitment}) has low precision (sd = 0.28, Table \ref{table:recruitment}).} 
 \label{table:alphas}
 \begin{tabular}{lrrrr}
        & ARTR &  HECO &  POSE &  PSSP \\
@@ -781,4 +789,3 @@ PSSP & 0.0953 & -0.3047 & -0.0960 & -1.7046\\
   \end{figure}
 
 \end{document}
-
