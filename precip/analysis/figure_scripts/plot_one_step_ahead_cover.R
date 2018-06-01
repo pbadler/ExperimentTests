@@ -1,4 +1,4 @@
-rm(list =ls())
+rm(list=setdiff(ls(), "my_dir")) # clean up, but leave my_path
 library(stringr)
 library(dplyr)
 library(tidyr)
@@ -76,7 +76,7 @@ generate_cover_predictions <- function( spp, model ) {
 
 
 #
-my_dir <- '~/Desktop/'  ## set to driversdata directory 
+#my_dir <- '~/Desktop/'  ## set to driversdata directory 
 
 load('analysis/figure_scripts/my_plotting_theme.Rdata') 
 

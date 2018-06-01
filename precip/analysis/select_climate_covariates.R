@@ -26,19 +26,20 @@ for(i in 1:length(cor_files)){
   VWC_parameter <- as.character( temp$var [ temp$vartype == 'VWC'] )
   
   ############################################
+  # May 3 2018: we didn't fit any of these interactions, so I commented it all out (PBA)
   # hard code which species recieve size by climate interaction 
   # based on whether those species have size by treatment interaction 
 
-  if (vr == 'growth' & spp == 'PSSP') {  # use the size effect interaction 
-    ifx <- paste( VWC_parameter, 'logarea.t0', sep = 'x')
-    
-    VWC_parameter <- c(VWC_parameter, ifx )
-  }
-
-  if( vr == 'survival' & spp == 'POSE' ) { # use the size effect interaction 
-    ifx <- paste(VWC_parameter, 'logarea.t0', sep = 'x')
-    VWC_parameter <- c(VWC_parameter, ifx)
-  }  
+  # if (vr == 'growth' & spp == 'PSSP') {  # use the size effect interaction 
+  #   ifx <- paste( VWC_parameter, 'logarea.t0', sep = 'x')
+  #   
+  #   VWC_parameter <- c(VWC_parameter, ifx )
+  # }
+  # 
+  # if( vr == 'survival' & spp == 'POSE' ) { # use the size effect interaction 
+  #   ifx <- paste(VWC_parameter, 'logarea.t0', sep = 'x')
+  #   VWC_parameter <- c(VWC_parameter, ifx)
+  # }  
   #############################################
   
   use_vars <- VWC_parameter
@@ -76,20 +77,20 @@ all_cors <- all_cors %>% dplyr::select(vital_rate, species, var, Intercept, Int_
 # hard code which species recieve size by climate interaction 
 # based on whether those species have size by treatment interaction 
 
-size_cors <- 
-  all_cors %>% 
-  filter( ((species == 'PSSP' & vital_rate == 'growth') | ( species == 'POSE'  & vital_rate == 'survival')) )
-
-all_cors <- 
-  all_cors %>% 
-  filter( !((species == 'PSSP' & vital_rate == 'growth') | ( species == 'POSE'  & vital_rate == 'survival')))
-
-################################################
+# size_cors <- 
+#   all_cors %>% 
+#   filter( ((species == 'PSSP' & vital_rate == 'growth') | ( species == 'POSE'  & vital_rate == 'survival')) )
+# 
+# all_cors <- 
+#   all_cors %>% 
+#   filter( !((species == 'PSSP' & vital_rate == 'growth') | ( species == 'POSE'  & vital_rate == 'survival')))
+# 
+# ################################################
 
 all_cors$size <- NA
 all_cors$size_pval <- NA
 
-all_cors <- rbind( all_cors, size_cors)
+#all_cors <- rbind( all_cors, size_cors)
 
 all_cors <- all_cors %>% rename(`climate variable` = var , `Int. cor.` = Intercept, `p val.`  = Int_pval, `Size cor.` = size , `Size p. val.`  = size_pval )
 

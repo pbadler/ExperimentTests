@@ -50,13 +50,13 @@ overall_cor <- all_effects  %>% group_by(Treatment) %>% summarise( cor = cor(mu.
 overall_cor
 
 cors <- all_effects %>% group_by(par) %>% summarise( cor = cor(mu.x, mu.y))
-cors$x.pos <- c(1.5,1.5) 
-cors$y.pos <- c(1.5,1.5)
+cors$x.pos <- c(1.5) 
+cors$y.pos <- c(1.5)
 cors$label <- paste0( 'r=', round( cors$cor, 2))
 
 cors2 <- all_effects %>% group_by(Treatment) %>% summarise( cor = cor(mu.x, mu.y))
-cors2$x.pos <- c(1.5,1.5) 
-cors2$y.pos <- c(1.9,1.9)
+cors2$x.pos <- c(1.5) 
+cors2$y.pos <- c(1.9)
 cors2$label <- paste0( 'r=', round( cors2$cor, 2))
 
 all_effects <- unique(all_effects)

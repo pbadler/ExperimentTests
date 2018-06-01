@@ -102,6 +102,8 @@ source('analysis/figure_scripts/plot_significant_effect_comparison.R')
 # 10. plot observed cover and predicted cover 
 
 ### The following script requires resetting the path to the driversdata!
+my_dir <- "c:/repos/"
+
 source('analysis/figure_scripts/plot_one_step_ahead_cover.R') 
 ###
 
