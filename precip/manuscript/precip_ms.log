@@ -1,14 +1,12 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.8.30)  18 JAN 2017 17:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.5.4)  13 JUN 2018 16:02
 entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**precip_ms.tex
-(./precip_ms.tex
-LaTeX2e <2016/02/01>
-Babel <3.9q> and hyphenation patterns for 3 language(s) loaded.
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+**./precip_ms.tex
+(precip_ms.tex
+LaTeX2e <2015/10/01> patch level 2
+Babel <3.9n> and hyphenation patterns for 69 languages loaded.
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\size11.clo"
 File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -23,41 +21,41 @@ File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2016/03/03 v2.15a AMS math features
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
+Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip43
 
 For additional information on amsmath, use the `?' option.
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
-Package: amstext 2000/06/29 v2.01 AMS text
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
+Package: amstext 2000/06/29 v2.01
 
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
-File: amsgen.sty 1999/11/30 v2.0 generic functions
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks14
 \ex@=\dimen103
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
-Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d
 \pmbraise@=\dimen104
 )
-(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
 Package: amsopn 1999/12/14 v2.01 operator names
 )
 \inf@bad=\count87
-LaTeX Info: Redefining \frac on input line 199.
+LaTeX Info: Redefining \frac on input line 210.
 \uproot@=\count88
 \leftroot@=\count89
-LaTeX Info: Redefining \overline on input line 297.
+LaTeX Info: Redefining \overline on input line 306.
 \classnum@=\count90
 \DOTSCASE@=\count91
-LaTeX Info: Redefining \ldots on input line 394.
-LaTeX Info: Redefining \dots on input line 397.
-LaTeX Info: Redefining \cdots on input line 518.
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
 \Mathstrutbox@=\box26
 \strutbox@=\box27
 \big@size=\dimen105
-LaTeX Font Info:    Redeclaring font encoding OML on input line 630.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 631.
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \macc@depth=\count92
 \c@MaxMatrixCols=\count93
 \dotsspace@=\muskip10
@@ -78,44 +76,44 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 631.
 \multlinegap=\skip44
 \multlinetaggap=\skip45
 \mathdisplay@stack=\toks18
-LaTeX Info: Redefining \[ on input line 2735.
-LaTeX Info: Redefining \] on input line 2736.
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks19
 )
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/01/03 v1.0q Standard LaTeX Graphics (DPC,SPQR)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
-File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
-Package graphics Info: Driver file: pdftex.def on input line 95.
+Package graphics Info: Driver file: pdftex.def on input line 94.
 
-(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
 Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count99
@@ -123,17 +121,17 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen112
 \Gin@req@width=\dimen113
 )
-(/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\latex\natbib\natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip46
 \bibsep=\skip47
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count100
 )
-(/usr/share/texlive/texmf-dist/tex/latex/setspace/setspace.sty
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\latex\setspace\setspace.sty
 Package: setspace 2011/12/19 v6.7a set line spacing
 )
-(/usr/share/texlive/texmf-dist/tex/latex/preprint/authblk.sty
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\latex\preprint\authblk.sty
 Package: authblk 2001/02/27 1.3 (PWD)
 \affilsep=\skip48
 \@affilsep=\skip49
@@ -141,7 +139,7 @@ Package: authblk 2001/02/27 1.3 (PWD)
 \c@authors=\count102
 \c@affil=\count103
 )
-(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\float\float.sty"
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count104
 \float@exts=\toks20
@@ -149,7 +147,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@everytoks=\toks21
 \@floatcapt=\box29
 )
-(/usr/share/texlive/texmf-dist/tex/latex/lineno/lineno.sty
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\latex\lineno\lineno.sty
 Package: lineno 2005/11/02 line numbers on paragraphs v4.41
 \linenopenalty=\count105
 \output=\toks22
@@ -167,18 +165,18 @@ Package: lineno 2005/11/02 line numbers on paragraphs v4.41
 \bframebox=\box30
 LaTeX Info: Redefining \\ on input line 3056.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
 Package: geometry 2010/09/12 v5.6 Page Geometry
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
 Package ifpdf Info: pdfTeX in PDF mode is detected.
 )
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifvtex.sty"
 Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
 Package ifvtex Info: VTeX not detected.
 )
-(/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
 \Gm@cnth=\count112
@@ -193,8 +191,9 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \Gm@layouthoffset=\dimen125
 \Gm@layoutvoffset=\dimen126
 \Gm@dimlist=\toks23
-)
-(/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\geometry\geometry.cfg"))
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\latex\enumitem\enumitem.sty
 Package: enumitem 2011/09/28 v3.5.2 Customized lists
 \labelindent=\skip50
 \enit@outerparindent=\dimen127
@@ -202,10 +201,10 @@ Package: enumitem 2011/09/28 v3.5.2 Customized lists
 \enit@inbox=\box31
 \enitdp@description=\count115
 )
-(/usr/share/texlive/texmf-dist/tex/latex/was/gensymb.sty
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\latex\was\gensymb.sty
 Package: gensymb 2003/07/02 v1.0 (WaS)
 )
-(/usr/share/texlive/texmf-dist/tex/latex/tools/longtable.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\longtable.sty"
 Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
 \LTleft=\skip51
 \LTright=\skip52
@@ -223,8 +222,8 @@ Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
 \c@LT@chunks=\count120
 \LT@p@ftn=\toks25
 )
-(/usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty
-Package: titlesec 2016/03/15 v2.10.1 Sectioning titles
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\latex\titlesec\titlesec.sty
+Package: titlesec 2016/03/21 v2.10.2 Sectioning titles
 \ttl@box=\box36
 \beforetitleunit=\skip55
 \aftertitleunit=\skip56
@@ -235,7 +234,7 @@ Package: titlesec 2016/03/15 v2.10.1 Sectioning titles
 \titlewidthlast=\dimen132
 \titlewidthfirst=\dimen133
 )
-(/usr/share/texlive/texmf-dist/tex/latex/tools/bm.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\bm.sty"
 Package: bm 2014/10/28 v1.1c Bold Symbol Support (DPC/FMi)
 \symboldoperators=\mathgroup6
 \symboldletters=\mathgroup7
@@ -243,32 +242,32 @@ Package: bm 2014/10/28 v1.1c Bold Symbol Support (DPC/FMi)
 LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
 LaTeX Info: Redefining \bm on input line 207.
 )
-(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\jknappen\mathrsfs.sty"
 Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
 \symrsfs=\mathgroup9
 )
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\epstopdf.sty"
 Package: epstopdf 2010/02/09 v2.5 Conversion with epstopdf on the fly (HO)
 
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\grfext.sty"
 Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\kvdefinekeys.sty"
 Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
 ))
-(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\kvsetkeys.sty"
 Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\etexcmds.sty"
 Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
 
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.sty"
 Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 )
@@ -277,7 +276,7 @@ Package etexcmds Info: Could not find \expanded.
 (etexcmds)             that some package has redefined \expanded.
 (etexcmds)             In the latter case, load this package earlier.
 )))
-(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
 Package pdftexcmds Info: LuaTeX not detected.
@@ -288,23 +287,19 @@ Package pdftexcmds Info: \pdfdraftmode found.
 Package grfext Info: Graphics extension search list:
 (grfext)             [.pdf,.png,.jpg,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 452.
+))
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\color.sty"
+Package: color 2014/10/28 v1.1a Standard LaTeX Color (DPC)
 
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-)))
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
-Package: color 2016/01/03 v1.1b Standard LaTeX Color (DPC)
-
-(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
 File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
-Package color Info: Driver file: pdftex.def on input line 143.
+Package color Info: Driver file: pdftex.def on input line 142.
 )
 \@float@every@Box=\toks27
 \c@Box=\count121
 
-(./precip_ms.aux)
+(precip_ms.aux)
 \openout1 = `precip_ms.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 74.
@@ -319,7 +314,8 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 74.
 LaTeX Font Info:    ... okay on input line 74.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 74.
 LaTeX Font Info:    ... okay on input line 74.
- (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+
+(C:\Users\adler\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count122
 \scratchdimen=\dimen134
@@ -379,22 +375,22 @@ Package gensymb Info: Using \Omega for \ohm on input line 74.
 Package gensymb Warning: Not defining \micro.
 
 LaTeX Font Info:    Try loading font information for U+msa on input line 76.
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Try loading font information for U+msb on input line 76.
 
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Try loading font information for U+rsfs on input line 76.
 
-(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\jknappen\ursfs.fd"
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 76.
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
@@ -403,7 +399,7 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <6> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 76.
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2]
+{C:/Users/adler/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2]
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¶ in font cmr10!
 Missing character: There is no Ã in font cmr10!
@@ -414,8 +410,8 @@ Missing character: There is no © in font cmr10!
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
- [5] [6] [7] [8] [9] [10] [11]
-[12]
+ [5] [6]
+[7] [8] [9] [10] [11] [12]
 
 Package natbib Warning: Citation `vetari_practical_2015' on page 13 undefined o
 n input line 226.
@@ -439,7 +435,7 @@ Missing character: There is no © in font cmr10!
  [23]
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no © in font cmr10!
- [24] (./precip_ms.bbl
+ [24] (precip_ms.bbl
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ¤ in font cmr10!
  [25]
@@ -465,21 +461,21 @@ Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no © in font cmr10!
-
-[28]
+ [28]
 Missing character: There is no Â in font cmr10!
 Missing character: There is no © in font cmr10!
- [29]
+
+[29]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
-) [30] (./spot_measurements.tex) (./soil_moisture_model.tex)
-(./overall_cover_change_modified.tex
+) [30] (spot_measurements.tex) (soil_moisture_model.tex)
+(overall_cover_change_modified.tex
 
 LaTeX Warning: Command \textgreater invalid in math mode on input line 10.
 
 LaTeX Font Info:    Try loading font information for OML+cmr on input line 10.
-(/usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\omlcmr.fd"
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
@@ -506,11 +502,11 @@ LaTeX Warning: Command \textgreater invalid in math mode on input line 27.
 
 LaTeX Warning: Command \textgreater invalid in math mode on input line 27.
 
-) (./strong_correlations.tex) (./overall_prediction_score.tex)
-(./pgr_predictions.tex) [31
+) (strong_correlations.tex) (overall_prediction_score.tex) (pgr_predictions.tex
+) [31
 
 ] [32] [33] [34] [35]
-<../figures/VWC_spot_measurements.png, id=132, 505.89pt x 361.35pt>
+<../figures/VWC_spot_measurements.png, id=131, 505.89pt x 361.35pt>
 File: ../figures/VWC_spot_measurements.png Graphic file (type png)
 
 <use ../figures/VWC_spot_measurements.png>
@@ -518,7 +514,7 @@ Package pdftex.def Info: ../figures/VWC_spot_measurements.png used on input lin
 e 374.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/avg_daily_soil_moisture.png, id=133, 361.35pt x 433.62pt>
+<../figures/avg_daily_soil_moisture.png, id=132, 361.35pt x 433.62pt>
 File: ../figures/avg_daily_soil_moisture.png Graphic file (type png)
 
 <use ../figures/avg_daily_soil_moisture.png>
@@ -526,7 +522,7 @@ Package pdftex.def Info: ../figures/avg_daily_soil_moisture.png used on input l
 ine 382.
 (pdftex.def)             Requested size: 469.75502pt x 563.71255pt.
 
-<../figures/modern_soil_moisture_comparison.png, id=134, 433.62pt x 433.62pt>
+<../figures/modern_soil_moisture_comparison.png, id=133, 433.62pt x 433.62pt>
 File: ../figures/modern_soil_moisture_comparison.png Graphic file (type png)
 
 <use ../figures/modern_soil_moisture_comparison.png>
@@ -534,7 +530,7 @@ Package pdftex.def Info: ../figures/modern_soil_moisture_comparison.png used on
  input line 390.
 (pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
 
-<../figures/start_to_finish_cover_change.png, id=135, 722.7pt x 433.62pt>
+<../figures/start_to_finish_cover_change.png, id=134, 722.7pt x 433.62pt>
 File: ../figures/start_to_finish_cover_change.png Graphic file (type png)
 
 <use ../figures/start_to_finish_cover_change.png>
@@ -542,7 +538,7 @@ Package pdftex.def Info: ../figures/start_to_finish_cover_change.png used on in
 put line 398.
 (pdftex.def)             Requested size: 469.75502pt x 281.85628pt.
 
-<../figures/treatment_effect_growth.png, id=136, 505.89pt x 361.35pt>
+<../figures/treatment_effect_growth.png, id=135, 505.89pt x 361.35pt>
 File: ../figures/treatment_effect_growth.png Graphic file (type png)
 
 <use ../figures/treatment_effect_growth.png>
@@ -550,7 +546,7 @@ Package pdftex.def Info: ../figures/treatment_effect_growth.png used on input l
 ine 405.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/treatment_effect_survival.png, id=137, 505.89pt x 361.35pt>
+<../figures/treatment_effect_survival.png, id=136, 505.89pt x 361.35pt>
 File: ../figures/treatment_effect_survival.png Graphic file (type png)
 
 <use ../figures/treatment_effect_survival.png>
@@ -558,7 +554,7 @@ Package pdftex.def Info: ../figures/treatment_effect_survival.png used on input
  line 412.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/treatment_effect_recruitment.png, id=138, 505.89pt x 289.08pt>
+<../figures/treatment_effect_recruitment.png, id=137, 505.89pt x 289.08pt>
 File: ../figures/treatment_effect_recruitment.png Graphic file (type png)
 
 <use ../figures/treatment_effect_recruitment.png>
@@ -566,7 +562,7 @@ Package pdftex.def Info: ../figures/treatment_effect_recruitment.png used on in
 put line 419.
 (pdftex.def)             Requested size: 469.75502pt x 268.43579pt.
 
-<../figures/climate_effect_growth.png, id=139, 505.89pt x 361.35pt>
+<../figures/climate_effect_growth.png, id=138, 505.89pt x 361.35pt>
 File: ../figures/climate_effect_growth.png Graphic file (type png)
 
 <use ../figures/climate_effect_growth.png>
@@ -574,7 +570,7 @@ Package pdftex.def Info: ../figures/climate_effect_growth.png used on input lin
 e 426.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/climate_effect_survival.png, id=140, 505.89pt x 361.35pt>
+<../figures/climate_effect_survival.png, id=139, 505.89pt x 361.35pt>
 File: ../figures/climate_effect_survival.png Graphic file (type png)
 
 <use ../figures/climate_effect_survival.png>
@@ -582,7 +578,7 @@ Package pdftex.def Info: ../figures/climate_effect_survival.png used on input l
 ine 433.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/climate_effect_recruitment.png, id=141, 505.89pt x 361.35pt>
+<../figures/climate_effect_recruitment.png, id=140, 505.89pt x 361.35pt>
 File: ../figures/climate_effect_recruitment.png Graphic file (type png)
 
 <use ../figures/climate_effect_recruitment.png>
@@ -590,7 +586,7 @@ Package pdftex.def Info: ../figures/climate_effect_recruitment.png used on inpu
 t line 441.
 (pdftex.def)             Requested size: 469.75502pt x 335.54477pt.
 
-<../figures/parameter_predictions.png, id=142, 578.16pt x 433.62pt>
+<../figures/parameter_predictions.png, id=141, 578.16pt x 433.62pt>
 File: ../figures/parameter_predictions.png Graphic file (type png)
 
 <use ../figures/parameter_predictions.png>
@@ -598,7 +594,7 @@ Package pdftex.def Info: ../figures/parameter_predictions.png used on input lin
 e 448.
 (pdftex.def)             Requested size: 469.75502pt x 352.31538pt.
 
-<../figures/predicted_and_observed_cover.png, id=143, 578.16pt x 433.62pt>
+<../figures/predicted_and_observed_cover.png, id=142, 578.16pt x 433.62pt>
 File: ../figures/predicted_and_observed_cover.png Graphic file (type png)
 
 <use ../figures/predicted_and_observed_cover.png>
@@ -606,7 +602,7 @@ Package pdftex.def Info: ../figures/predicted_and_observed_cover.png used on in
 put line 455.
 (pdftex.def)             Requested size: 469.75502pt x 352.31538pt.
 
-<../figures/ARTR_predicted_pgr_comparison.png, id=144, 578.16pt x 578.16pt>
+<../figures/ARTR_predicted_pgr_comparison.png, id=143, 578.16pt x 578.16pt>
 File: ../figures/ARTR_predicted_pgr_comparison.png Graphic file (type png)
 
 <use ../figures/ARTR_predicted_pgr_comparison.png>
@@ -614,7 +610,7 @@ Package pdftex.def Info: ../figures/ARTR_predicted_pgr_comparison.png used on i
 nput line 463.
 (pdftex.def)             Requested size: 469.75502pt x 469.75385pt.
 
-<../figures/HECO_predicted_pgr_comparison.png, id=145, 578.16pt x 578.16pt>
+<../figures/HECO_predicted_pgr_comparison.png, id=144, 578.16pt x 578.16pt>
 File: ../figures/HECO_predicted_pgr_comparison.png Graphic file (type png)
 
 <use ../figures/HECO_predicted_pgr_comparison.png>
@@ -622,7 +618,7 @@ Package pdftex.def Info: ../figures/HECO_predicted_pgr_comparison.png used on i
 nput line 470.
 (pdftex.def)             Requested size: 469.75502pt x 469.75385pt.
 
-<../figures/POSE_predicted_pgr_comparison.png, id=146, 578.16pt x 578.16pt>
+<../figures/POSE_predicted_pgr_comparison.png, id=145, 578.16pt x 578.16pt>
 File: ../figures/POSE_predicted_pgr_comparison.png Graphic file (type png)
 
 <use ../figures/POSE_predicted_pgr_comparison.png>
@@ -630,7 +626,7 @@ Package pdftex.def Info: ../figures/POSE_predicted_pgr_comparison.png used on i
 nput line 477.
 (pdftex.def)             Requested size: 469.75502pt x 469.75385pt.
 
-<../figures/PSSP_predicted_pgr_comparison.png, id=147, 578.16pt x 578.16pt>
+<../figures/PSSP_predicted_pgr_comparison.png, id=146, 578.16pt x 578.16pt>
 File: ../figures/PSSP_predicted_pgr_comparison.png Graphic file (type png)
 
 <use ../figures/PSSP_predicted_pgr_comparison.png>
@@ -639,7 +635,7 @@ nput line 484.
 (pdftex.def)             Requested size: 469.75502pt x 469.75385pt.
  [36
 
- <../figures/VWC_spot_measurements.png (PNG copy)>]
+ <../figures/VWC_spot_measurements.png>]
 
 LaTeX Warning: Text page 37 contains only floats.
 
@@ -647,62 +643,49 @@ LaTeX Warning: Text page 37 contains only floats.
 Overfull \vbox (6.81174pt too high) has occurred while \output is active []
 
 
-[37 <../figures/avg_daily_soil_moisture.png (PNG copy)>] [38 <../figures/modern
-_soil_moisture_comparison.png (PNG copy)>] [39 <../figures/start_to_finish_cove
-r_change.png (PNG copy)>] [40 <../figures/treatment_effect_growth.png (PNG copy
-)>] [41 <../figures/treatment_effect_survival.png (PNG copy)>] [42 <../figures/
-treatment_effect_recruitment.png (PNG copy)>] [43 <../figures/climate_effect_gr
-owth.png (PNG copy)>] [44 <../figures/climate_effect_survival.png (PNG copy)>]
+[37 <../figures/avg_daily_soil_moisture.png>] [38 <../figures/modern_soil_moist
+ure_comparison.png>] [39 <../figures/start_to_finish_cover_change.png>]
+[40 <../figures/treatment_effect_growth.png>] [41 <../figures/treatment_effect_
+survival.png>] [42 <../figures/treatment_effect_recruitment.png>] [43 <../figur
+es/climate_effect_growth.png>] [44 <../figures/climate_effect_survival.png>]
 [45 <../figures/climate_effect_recruitment.png>] [46 <../figures/parameter_pred
-ictions.png (PNG copy)>] [47 <../figures/predicted_and_observed_cover.png (PNG 
-copy)>] [48 <../figures/ARTR_predicted_pgr_comparison.png (PNG copy)>] [49 <../
-figures/HECO_predicted_pgr_comparison.png (PNG copy)>] [50 <../figures/POSE_pre
-dicted_pgr_comparison.png (PNG copy)>] [51 <../figures/PSSP_predicted_pgr_compa
-rison.png (PNG copy)>] (./treatment_prediction_score.tex
-Overfull \hbox (23.41177pt too wide) in alignment at lines 3--8
- [] [] [] [] [] [] [] [] [] 
+ictions.png>] [47 <../figures/predicted_and_observed_cover.png>] [48 <../figure
+s/ARTR_predicted_pgr_comparison.png>] [49 <../figures/HECO_predicted_pgr_compar
+ison.png>] [50 <../figures/POSE_predicted_pgr_comparison.png>] [51 <../figures/
+PSSP_predicted_pgr_comparison.png>] (treatment_prediction_score.tex
+Overfull \hbox (119.31927pt too wide) in alignment at lines 3--8
+ [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (23.41177pt too wide) in alignment at lines 8--12
- [] [] [] [] [] [] [] [] [] 
+Overfull \hbox (119.31927pt too wide) in alignment at lines 8--33
+ [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (23.41177pt too wide) in alignment at lines 12--15
- [] [] [] [] [] [] [] [] [] 
+Underfull \vbox (badness 10000) detected at line 33
  []
 
 
-Overfull \hbox (23.41177pt too wide) in alignment at lines 15--16
- [] [] [] [] [] [] [] [] [] 
+Overfull \hbox (119.31927pt too wide) in alignment at lines 33--53
+ [] [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (23.41177pt too wide) in alignment at lines 16--37
- [] [] [] [] [] [] [] [] [] 
- []
-
-
-Overfull \hbox (23.41177pt too wide) in alignment at lines 37--57
- [] [] [] [] [] [] [] [] [] 
- []
-
-
-Overfull \hbox (23.41177pt too wide) in alignment at lines 57--77
- [] [] [] [] [] [] [] [] [] 
+Overfull \hbox (119.31927pt too wide) in alignment at lines 53--73
+ [] [] [] [] [] [] [] [] [] [] 
  []
 
 [1
 
 
 ]
-Overfull \hbox (23.41177pt too wide) in alignment at lines 77--91
- [] [] [] [] [] [] [] [] [] 
+Overfull \hbox (119.31927pt too wide) in alignment at lines 73--87
+ [] [] [] [] [] [] [] [] [] [] 
  []
 
 [2]) [3]
-<../figures/pred_v_obs_treatment_ARTR_growth.png, id=210, 433.62pt x 289.08pt>
+<../figures/pred_v_obs_treatment_ARTR_growth.png, id=223, 433.62pt x 289.08pt>
 File: ../figures/pred_v_obs_treatment_ARTR_growth.png Graphic file (type png)
 
 <use ../figures/pred_v_obs_treatment_ARTR_growth.png>
@@ -710,7 +693,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_ARTR_growth.png used o
 n input line 531.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_obs_treatment_HECO_growth.png, id=211, 433.62pt x 289.08pt>
+<../figures/pred_v_obs_treatment_HECO_growth.png, id=224, 433.62pt x 289.08pt>
 File: ../figures/pred_v_obs_treatment_HECO_growth.png Graphic file (type png)
 
 <use ../figures/pred_v_obs_treatment_HECO_growth.png>
@@ -718,7 +701,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_HECO_growth.png used o
 n input line 538.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_obs_treatment_POSE_growth.png, id=212, 433.62pt x 289.08pt>
+<../figures/pred_v_obs_treatment_POSE_growth.png, id=225, 433.62pt x 289.08pt>
 File: ../figures/pred_v_obs_treatment_POSE_growth.png Graphic file (type png)
 
 <use ../figures/pred_v_obs_treatment_POSE_growth.png>
@@ -726,7 +709,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_POSE_growth.png used o
 n input line 545.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_obs_treatment_PSSP_growth.png, id=213, 433.62pt x 289.08pt>
+<../figures/pred_v_obs_treatment_PSSP_growth.png, id=226, 433.62pt x 289.08pt>
 File: ../figures/pred_v_obs_treatment_PSSP_growth.png Graphic file (type png)
 
 <use ../figures/pred_v_obs_treatment_PSSP_growth.png>
@@ -734,7 +717,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_PSSP_growth.png used o
 n input line 553.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_obs_treatment_ARTR_survival.png, id=214, 433.62pt x 289.08pt
+<../figures/pred_v_obs_treatment_ARTR_survival.png, id=227, 433.62pt x 289.08pt
 >
 File: ../figures/pred_v_obs_treatment_ARTR_survival.png Graphic file (type png)
 
@@ -743,7 +726,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_ARTR_survival.png used
  on input line 561.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_obs_treatment_HECO_survival.png, id=215, 433.62pt x 289.08pt
+<../figures/pred_v_obs_treatment_HECO_survival.png, id=228, 433.62pt x 289.08pt
 >
 File: ../figures/pred_v_obs_treatment_HECO_survival.png Graphic file (type png)
 
@@ -752,7 +735,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_HECO_survival.png used
  on input line 568.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_obs_treatment_POSE_survival.png, id=216, 433.62pt x 289.08pt
+<../figures/pred_v_obs_treatment_POSE_survival.png, id=229, 433.62pt x 289.08pt
 >
 File: ../figures/pred_v_obs_treatment_POSE_survival.png Graphic file (type png)
 
@@ -761,7 +744,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_POSE_survival.png used
  on input line 576.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_obs_treatment_PSSP_survival.png, id=217, 433.62pt x 289.08pt
+<../figures/pred_v_obs_treatment_PSSP_survival.png, id=230, 433.62pt x 289.08pt
 >
 File: ../figures/pred_v_obs_treatment_PSSP_survival.png Graphic file (type png)
 
@@ -770,7 +753,7 @@ Package pdftex.def Info: ../figures/pred_v_obs_treatment_PSSP_survival.png used
  on input line 583.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_ob_treatment_ARTR_recruitment.png, id=218, 433.62pt x 289.08
+<../figures/pred_v_ob_treatment_ARTR_recruitment.png, id=231, 433.62pt x 289.08
 pt>
 File: ../figures/pred_v_ob_treatment_ARTR_recruitment.png Graphic file (type pn
 g)
@@ -779,7 +762,7 @@ Package pdftex.def Info: ../figures/pred_v_ob_treatment_ARTR_recruitment.png us
 ed on input line 591.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_ob_treatment_HECO_recruitment.png, id=219, 433.62pt x 289.08
+<../figures/pred_v_ob_treatment_HECO_recruitment.png, id=232, 433.62pt x 289.08
 pt>
 File: ../figures/pred_v_ob_treatment_HECO_recruitment.png Graphic file (type pn
 g)
@@ -788,7 +771,7 @@ Package pdftex.def Info: ../figures/pred_v_ob_treatment_HECO_recruitment.png us
 ed on input line 598.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_ob_treatment_POSE_recruitment.png, id=220, 433.62pt x 289.08
+<../figures/pred_v_ob_treatment_POSE_recruitment.png, id=233, 433.62pt x 289.08
 pt>
 File: ../figures/pred_v_ob_treatment_POSE_recruitment.png Graphic file (type pn
 g)
@@ -797,7 +780,7 @@ Package pdftex.def Info: ../figures/pred_v_ob_treatment_POSE_recruitment.png us
 ed on input line 606.
 (pdftex.def)             Requested size: 469.75502pt x 313.1854pt.
 
-<../figures/pred_v_ob_treatment_PSSP_recruitment.png, id=221, 433.62pt x 289.08
+<../figures/pred_v_ob_treatment_PSSP_recruitment.png, id=234, 433.62pt x 289.08
 pt>
 File: ../figures/pred_v_ob_treatment_PSSP_recruitment.png Graphic file (type pn
 g)
@@ -811,51 +794,49 @@ Package natbib Warning: There were undefined citations.
 
 [4
 
- <../figures/pred_v_obs_treatment_ARTR_growth.png (PNG copy)>] [5 <../figures/p
-red_v_obs_treatment_HECO_growth.png (PNG copy)>] [6 <../figures/pred_v_obs_trea
-tment_POSE_growth.png (PNG copy)>] [7 <../figures/pred_v_obs_treatment_PSSP_gro
-wth.png (PNG copy)>] [8 <../figures/pred_v_obs_treatment_ARTR_survival.png (PNG
- copy)>] [9 <../figures/pred_v_obs_treatment_HECO_survival.png (PNG copy)>]
-[10 <../figures/pred_v_obs_treatment_POSE_survival.png (PNG copy)>] [11 <../fig
-ures/pred_v_obs_treatment_PSSP_survival.png (PNG copy)>] [12 <../figures/pred_v
-_ob_treatment_ARTR_recruitment.png (PNG copy)>] [13 <../figures/pred_v_ob_treat
-ment_HECO_recruitment.png (PNG copy)>] [14 <../figures/pred_v_ob_treatment_POSE
-_recruitment.png (PNG copy)>] [15 <../figures/pred_v_ob_treatment_PSSP_recruitm
-ent.png (PNG copy)>] (./precip_ms.aux)
+ <../figures/pred_v_obs_treatment_ARTR_growth.png>] [5 <../figures/pred_v_obs_t
+reatment_HECO_growth.png>] [6 <../figures/pred_v_obs_treatment_POSE_growth.png>
+] [7 <../figures/pred_v_obs_treatment_PSSP_growth.png>] [8 <../figures/pred_v_o
+bs_treatment_ARTR_survival.png>] [9 <../figures/pred_v_obs_treatment_HECO_survi
+val.png>] [10 <../figures/pred_v_obs_treatment_POSE_survival.png>] [11 <../figu
+res/pred_v_obs_treatment_PSSP_survival.png>] [12 <../figures/pred_v_ob_treatmen
+t_ARTR_recruitment.png>] [13 <../figures/pred_v_ob_treatment_HECO_recruitment.p
+ng>] [14 <../figures/pred_v_ob_treatment_POSE_recruitment.png>] [15 <../figures
+/pred_v_ob_treatment_PSSP_recruitment.png>] (precip_ms.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4866 strings out of 494953
- 73030 string characters out of 6180977
- 168227 words of memory out of 5000000
- 7979 multiletter control sequences out of 15000+600000
- 20256 words of font info for 77 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
- 42i,11n,31p,1880b,417s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy8.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/share/texlive/texmf-dist/font
-s/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
-9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on precip_ms.pdf (66 pages, 4419810 bytes).
+ 4855 strings out of 493634
+ 73472 string characters out of 3141315
+ 172225 words of memory out of 3000000
+ 8068 multiletter control sequences out of 15000+200000
+ 20256 words of font info for 77 fonts, out of 3000000 for 9000
+ 1025 hyphenation exceptions out of 8191
+ 42i,11n,31p,1882b,417s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cmextra/cmbsy8
+.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.p
+fb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:
+/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Pr
+ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb><C:/
+Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Progra
+m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files
+ (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x8
+6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Program Files (x86)/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files (x86)/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on precip_ms.pdf (66 pages, 1025976 bytes).
 PDF statistics:
- 323 PDF objects out of 1000 (max. 8388607)
- 204 compressed objects within 3 object streams
+ 346 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  141 words of extra memory for PDF output out of 10000 (max. 10000000)
 

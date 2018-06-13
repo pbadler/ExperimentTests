@@ -35,8 +35,11 @@ clim$lbcl95 <- clim$X2.5.
 clim$ubcl95 <- clim$X97.5.
 
 clim$type <- NA
-clim$type[ grep( 'x', clim$par_name ) ] <- 'climate x size'
-clim$type[ -grep( 'x', clim$par_name ) ] <- 'climate intercept'
+# commenting out next few lines because there are no climate x size interactions
+#clim$type[ grep( 'x', clim$par_name ) ] <- 'climate x size'
+#clim$type[ -grep( 'x', clim$par_name ) ] <- 'climate intercept'
+
+clim$type <- 'climate intercept'
 
 clim <- clim[, c('species', 'vital_rate', 'type', 'par_name', 'mean', 'se_mean', 'lbcl95', 'ubcl95', 'significant')]
 

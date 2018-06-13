@@ -1,0 +1,44 @@
+Old vs new (changes as a result of corrections in demographic data)
+
+TREATMENT EFFECTS
+
+Growth:
+ARTR significant treatment effects go away
+HECO new estimates closer to zero
+POSE new treatment effects are stronger 
+PSSP Not much change
+
+Survival:
+ARTR little change
+HECO little change
+POSE little change
+PSSP slight weaker effects now
+
+Recruitment:
+Negative effect of irrigation on POSE and PSSP go away (mostly)
+
+CLIMATE EFFECTS (in new version, climate only affects intercept)
+
+Growth:
+ARTR: one different covariate selected, one barely significant
+HECO: No change, two significant positive effects of soil moisture
+POSE: No change
+PSSP: No change
+
+Survival:
+All significant effects remain for all species, a bit stronger in some cases.
+Changes in selection for non-significant covariates, one new significant effect (HECO)
+
+Recruitment:
+This is where the biggest changes are: most of the significant effects go away!
+
+PREDICTIONS
+
+Obs vs Pred 1 step ahead looks pretty much the same
+
+Vital rate models:
+ARTR predictions from climate model look even worse than before
+HECO predictions, same story as before (climate model worse)
+POSE: not much change, climate model still narrowly wins (maybe a bit more than before)
+PSSP not much change, climate model still narrowly wins (maybe a bit more than before)
+In general, for ARTR and HECO the climate model does a bit worse, and for POSE and PSSP the climate model does a bit better than before.
