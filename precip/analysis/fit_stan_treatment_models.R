@@ -18,6 +18,7 @@ for(i in 1:nrow(df)){
   dat$tm2 <- dat$tm2[, -c(3:4)] # remove size by treatment effects 
   dat$tm3 <- dat$tm3[, -c(3:4)] # remove size by treatment effects 
   dat$nT <- ncol(dat$tm2)
+  browser()
   
   myfit <- stan(paste0('analysis/', vr, '/model_', vr, '_treatment_effects2.stan'), data = dat, cores = 4, iter = 2000, thin = 4, seed = 1)
   

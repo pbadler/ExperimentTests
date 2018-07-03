@@ -1,0 +1,58 @@
+\begin{thebibliography}{9}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Adler et~al.(2010)Adler, Ellner, and Levine}]{adler_coexistence_2010}
+Adler, P.~B., S.~P. Ellner, and J.~M. Levine. 2010.
+\newblock Coexistence of perennial plants: an embarrassment of niches.
+\newblock Ecology Letters, {\bf 13}:1019--1029.
+
+\bibitem[{Brooks and Gelman(1998)}]{brooks_general_1998}
+Brooks, S. and A.~Gelman. 1998.
+\newblock General methods for monitoring convergence of iterative simulations.
+\newblock Journal of Computational and Graphical Statistics, {\bf 7}:434--455.
+
+\bibitem[{Chu and Adler(2015)}]{chu_large_2015}
+Chu, C. and P.~B. Adler. 2015.
+\newblock Large niche differences emerge at the recruitment stage to stabilize
+  grassland coexistence.
+\newblock Ecological Monographs, {\bf 85}:373--392.
+
+\bibitem[{Ellner et~al.(2016)Ellner, Childs, and Rees}]{Ellner2016}
+Ellner, S.~P., D.~Z. Childs, and M.~Rees. 2016.
+\newblock Data-driven {Modelling} of {Structured} {Populations}.
+\newblock Lecture {Notes} on {Mathematical} {Modelling} in the {Life}
+  {Sciences}, Springer International Publishing, Cham.
+
+\bibitem[{Lunn et~al.(2000)Lunn, Thomas, Best, and
+  Spiegelhalter}]{lunn_winbugs_2000}
+Lunn, D.~J., A.~Thomas, N.~Best, and D.~Spiegelhalter. 2000.
+\newblock {WinBUGS} - {A} {Bayesian} modelling framework: {Concepts},
+  structure, and extensibility.
+\newblock Statistics and Computing, {\bf 10}:325--337.
+
+\bibitem[{Ricker(1954)}]{ricker_stock_1954}
+Ricker, W.~E. 1954.
+\newblock Stock and recruitment.
+\newblock Journal of the Fisheries Research Board, {\bf 11}:559--623.
+
+\bibitem[{Rue et~al.(2009)Rue, Martino, and Chopin}]{rue_approximate_2009}
+Rue, H., S.~Martino, and N.~Chopin. 2009.
+\newblock Approximate {Bayesian} inference for latent {Gaussian} models by
+  using integrated nested {Laplace} approximations.
+\newblock Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology), {\bf 71}:319--392.
+
+\bibitem[{Spiegelhalter et~al.(2002)Spiegelhalter, Best, Carlin, and van~der
+  Linde}]{spiegelhalter_bayesian_2002}
+Spiegelhalter, D., N.~Best, B.~Carlin, and A.~van~der Linde. 2002.
+\newblock Bayesian measures of model complexity and fit.
+\newblock Journal of the Royal Statistical Society Series B-Statistical
+  Methodology, {\bf 64}:583--639.
+
+\bibitem[{Teller et~al.(2016)Teller, Adler, Edwards, Hooker, and
+  Ellner}]{teller_linking_2016}
+Teller, B.~J., P.~B. Adler, C.~B. Edwards, G.~Hooker, and S.~P. Ellner. 2016.
+\newblock Linking demography with drivers: climate and competition.
+\newblock Methods in Ecology and Evolution, {\bf 7}:171--183.
+
+\end{thebibliography}
