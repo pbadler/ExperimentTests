@@ -51,6 +51,12 @@ for(i in 1:length(sppList)){
 
 ### elastic net ------------------------------------------------------------
 
+best_coefs <- vector("list",length(sppList))
+rmse_ratio <- numeric(length(sppList))
+
+pdf("figures/enet_growth_yr_effects.pdf",height=4,width=4)
+par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,4,2,1))
+
 for(i in 1:length(sppList)){
   
   doSpp <- sppList[i]
@@ -60,9 +66,10 @@ for(i in 1:length(sppList)){
   trainD <- yrBetas[[i]] %>% filter(year < 2011, year > 1926) # drop first year because of NAs in covariates
   y <- trainD$Intercept
   X <- trainD[,7:NCOL(trainD)]
-  X <- scale(X, center = TRUE, scale = TRUE)
+  X_mean <- colMeans(X); X_sd <- apply(X,MARGIN=2,FUN="sd")
+  X <- scale(X, center = X_mean, scale = X_sd)
   pen_facts <- rep(1, ncol(X)) # penalize all covariates
-  lambdas <- 10^seq(2, -2, by = -.005) # sequence of penalties to test
+  lambdas <- 10^seq(2, -2, by = -0.005) # sequence of penalties to test
   
   
   enet_out <- cv.glmnet(x = X, 
@@ -73,20 +80,39 @@ for(i in 1:length(sppList)){
                        alpha = 0.5, # 0 for ridge, 1 for lasso 
                        standardize = FALSE, 
                        type.measure = "mse",
-                       nfolds = 6)
+                       nfolds = length(y))
   
-  # Collect results into data frames ---------------------------------------------
-  cv_scores <- enet_out$cvm
-  all_coefs <- as.data.frame(as.matrix(t(enet_out$glmnet.fit$beta)[,1:ncol(X)]))
-  colnames(all_coefs) <- colnames(X)
-  all_coefs <- all_coefs %>%
-  mutate(lambda = log(lambdas)) %>%
-  gather(covariate, value, -lambda)
-
-  mse_df <- data.frame(lambda = log(lambdas),
-                     score = cv_scores)
-  best_lambda <- min(mse_df$lambda[which(mse_df$score == min(mse_df$score))])
-
+  # look at results
+  # plot(log(enet_out$lambda),enet_out$cvm,xlab="log(Lambda)",ylab="CV score",type="l")
   
+  #matplot(log(enet_out$lambda),t(enet_out$glmnet.fit$beta),type="l")
+  #abline(v=log(enet_out$lambda.min),lty="dashed",col="darkgrey")
+  
+  best_coefs[[i]] <- enet_out$glmnet.fit$beta[,which(enet_out$lambda==enet_out$lambda.min)]
+  
+  # predictions for training data
+  y_hat <- predict(enet_out,newx=X,s="lambda.min")
+  
+  # get out of sample MSE
+  newD <- yrBetas[[i]] %>% filter(year >= 2011)
+  y_new <- newD$Intercept
+  X_new <- newD[,7:NCOL(newD)]
+  X_new <- scale(X_new, center = X_mean, scale = X_sd)
+  y_hat_new <- predict(enet_out,newx=X_new, s="lambda.min")
+  mse_new <- mean((y_new-y_hat_new)^2)
+  
+  # make figure
+  plot(c(y,y_new),c(y_hat,y_hat_new),type="n",xlab="Observed",ylab="Predicted",
+       ylim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
+       xlim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
+       main=paste0(sppList[i]," growth year effects (Intercept)"))
+  abline(0,1)
+  points(y,y_hat)
+  points(y_new[which(predD$Treatment=="Control")],y_hat_new[which(predD$Treatment=="Control")],pch=16)
+  points(y_new[which(predD$Treatment=="Drought")],y_hat_new[which(predD$Treatment=="Drought")],pch=16,col="red")
+  points(y_new[which(predD$Treatment=="Irrigation")],y_hat_new[which(predD$Treatment=="Irrigation")],pch=16,col="blue")
+  legend("topleft",c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
+                     "Irrigation (out-of-sample)"),pch=c(1,16,16,16),
+                      col=c("black","black","red","blue"),bty="n",cex=0.8)
 }
-
+dev.off()
