@@ -9,6 +9,7 @@ library(xtable)
 library(lme4)
 library(dplyr)
 library(glmnet) # package for statistical regularization
+library(INLA)
 
 # read in distance weights
 dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
@@ -24,24 +25,26 @@ for(i in 1:length(sppList)){
  
    iSpp <- sppList[i]
   # fit demography model
-  source("analysis/growth/inla_growth.r")
+  source("analysis/survival/inla_survival.r")
    
   #extract parameters for controls
-  yrBetas[[i]] <- ranef(m1)$year
-  yrBetas[[i]]$year <- row.names(yrBetas[[i]])
+  Intercept=m1$summary.random$yearID$mean
+  year=m1$summary.random$year$ID
+  logarea=m1$summary.random$year$mean
+  yrBetas[[i]]=data.frame(year,Intercept,logarea)
   yrBetas[[i]]$Treatment <- "Control"
-  names(yrBetas[[i]])[1] <- "Intercept"
-  
+  yrBetas[[i]]$year <-  as.numeric(as.character(yrBetas[[i]]$year))
+
   #add parameters for drought treatment
-  tmp <- subset(yrBetas[[i]],year > 2010)
+  tmp <- subset(yrBetas[[i]],year > 2010 & Treatment == "Control")
   tmp$Treatment <- "Drought"
-  tmp$Intercept <- tmp$Intercept + fixef(m1)[which(names(fixef(m1))=="TreatmentDrought")]
+  tmp$Intercept <- tmp$Intercept + m1$summary.fixed$mean[which(m1$names.fixed=="TreatmentDrought")]
   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
   
   #add parameters for irrigation treatment
-  tmp <- subset(yrBetas[[i]],year > 2010 & Treatment=="Control")
+  tmp <- subset(yrBetas[[i]], year > 2010 & Treatment == "Control")
   tmp$Treatment <- "Irrigation"
-  tmp$Intercept <- tmp$Intercept + fixef(m1)[which(names(fixef(m1))=="TreatmentIrrigation")]
+  tmp$Intercept <- tmp$Intercept + m1$summary.fixed$mean[which(m1$names.fixed=="TreatmentIrrigation")]
   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
   
   #merge in climate covariates
@@ -54,7 +57,7 @@ for(i in 1:length(sppList)){
 best_coefs <- vector("list",length(sppList))
 rmse_ratio <- numeric(length(sppList))
 
-pdf("figures/enet_growth_yr_effects.pdf",height=4,width=4)
+pdf("figures/enet_survival_yr_effects.pdf",height=4,width=4)
 par(tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,4,2,1))
 
 for(i in 1:length(sppList)){
@@ -105,14 +108,15 @@ for(i in 1:length(sppList)){
   plot(c(y,y_new),c(y_hat,y_hat_new),type="n",xlab="Observed",ylab="Predicted",
        ylim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
        xlim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
-       main=paste0(sppList[i]," growth year effects (Intercept)"))
+       main=paste0(sppList[i]," survival year effects (Intercept)"))
   abline(0,1)
   points(y,y_hat)
   points(y_new[which(newD$Treatment=="Control")],y_hat_new[which(newD$Treatment=="Control")],pch=16)
   points(y_new[which(newD$Treatment=="Drought")],y_hat_new[which(newD$Treatment=="Drought")],pch=16,col="red")
   points(y_new[which(newD$Treatment=="Irrigation")],y_hat_new[which(newD$Treatment=="Irrigation")],pch=16,col="blue")
-  legend("topleft",c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
+  legend("bottomright",c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
                      "Irrigation (out-of-sample)"),pch=c(1,16,16,16),
                       col=c("black","black","red","blue"),bty="n",cex=0.8)
 }
+
 dev.off()
