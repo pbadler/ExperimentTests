@@ -54,7 +54,8 @@ for(i in 1:length(sppList)){
 
 ### elastic net ------------------------------------------------------------
 
-best_coefs <- vector("list",length(sppList))
+best_coefs <- matrix(NA,length(sppList),ncol(Cdat)-4) # warning: hardwired "4" on climate columns
+colnames(best_coefs) <- names(Cdat[,5:ncol(Cdat)])
 rmse_ratio <- numeric(length(sppList))
 
 pdf("figures/enet_survival_yr_effects.pdf",height=4,width=4)
@@ -91,7 +92,7 @@ for(i in 1:length(sppList)){
   #matplot(log(enet_out$lambda),t(enet_out$glmnet.fit$beta),type="l")
   #abline(v=log(enet_out$lambda.min),lty="dashed",col="darkgrey")
   
-  best_coefs[[i]] <- enet_out$glmnet.fit$beta[,which(enet_out$lambda==enet_out$lambda.min)]
+  best_coefs[i,] <- enet_out$glmnet.fit$beta[,which(enet_out$lambda==enet_out$lambda.min)]
   
   # predictions for training data
   y_hat <- predict(enet_out,newx=X,s="lambda.min")
@@ -120,3 +121,5 @@ for(i in 1:length(sppList)){
 }
 
 dev.off()
+
+saveRDS(best_coefs,"analysis/survival/enet_best_coefs.RDS")
