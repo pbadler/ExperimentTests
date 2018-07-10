@@ -11,6 +11,9 @@ library(dplyr)
 library(glmnet) # package for statistical regularization
 library(INLA)
 
+
+### 1. Fit models ------------------------------------------------------
+
 # read in distance weights
 dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
 
@@ -52,7 +55,7 @@ for(i in 1:length(sppList)){
   
 }
 
-### elastic net ------------------------------------------------------------
+### 2. elastic net on intercept year effects ------------------------------------------------------------
 
 best_coefs <- matrix(NA,length(sppList),ncol(Cdat)-4) # warning: hardwired "4" on climate columns
 colnames(best_coefs) <- names(Cdat[,5:ncol(Cdat)])
@@ -120,6 +123,73 @@ for(i in 1:length(sppList)){
                       col=c("black","black","red","blue"),bty="n",cex=0.8)
 }
 
+saveRDS(best_coefs,"analysis/survival/enet_best_coefs_intercept.RDS")
+
+### 3. elastic net on intercept year effects ------------------------------------------------------------
+
+best_coefs_slope <- matrix(NA,length(sppList),ncol(Cdat)-4) # warning: hardwired "4" on climate columns
+colnames(best_coefs) <- names(Cdat[,5:ncol(Cdat)])
+rmse_ratio <- numeric(length(sppList))
+
+for(i in 1:length(sppList)){
+  
+  doSpp <- sppList[i]
+  
+  ## model Intercept year effects
+  # prepare data
+  trainD <- yrBetas[[i]] %>% filter(year < 2011, year > 1926) # drop first year because of NAs in covariates
+  y <- trainD$logarea
+  X <- trainD[,7:NCOL(trainD)]
+  X_mean <- colMeans(X); X_sd <- apply(X,MARGIN=2,FUN="sd")
+  X <- scale(X, center = X_mean, scale = X_sd)
+  pen_facts <- rep(1, ncol(X)) # penalize all covariates
+  lambdas <- 10^seq(2, -2, by = -0.005) # sequence of penalties to test
+  
+  
+  enet_out <- cv.glmnet(x = X, 
+                       y = y, 
+                       lambda = lambdas,
+                       penalty.factor = pen_facts,
+                       family = "gaussian", 
+                       alpha = 0.5, # 0 for ridge, 1 for lasso 
+                       standardize = FALSE, 
+                       type.measure = "mse",
+                       nfolds = length(y))
+  
+  # look at results
+  # plot(log(enet_out$lambda),enet_out$cvm,xlab="log(Lambda)",ylab="CV score",type="l")
+  
+  #matplot(log(enet_out$lambda),t(enet_out$glmnet.fit$beta),type="l")
+  #abline(v=log(enet_out$lambda.min),lty="dashed",col="darkgrey")
+  
+  best_coefs_slope[i,] <- enet_out$glmnet.fit$beta[,which(enet_out$lambda==enet_out$lambda.min)]
+  
+  # predictions for training data
+  y_hat <- predict(enet_out,newx=X,s="lambda.min")
+  
+  # get out of sample MSE
+  newD <- yrBetas[[i]] %>% filter(year >= 2011)
+  y_new <- newD$logarea
+  X_new <- newD[,7:NCOL(newD)]
+  X_new <- scale(X_new, center = X_mean, scale = X_sd)
+  y_hat_new <- predict(enet_out,newx=X_new, s="lambda.min")
+  mse_new <- mean((y_new-y_hat_new)^2)
+  
+  # make figure
+  plot(c(y,y_new),c(y_hat,y_hat_new),type="n",xlab="Observed",ylab="Predicted",
+       ylim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
+       xlim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
+       main=paste0(sppList[i]," survival year effects (Slope)"))
+  abline(0,1)
+  points(y,y_hat)
+  points(y_new[which(newD$Treatment=="Control")],y_hat_new[which(newD$Treatment=="Control")],pch=16)
+  points(y_new[which(newD$Treatment=="Drought")],y_hat_new[which(newD$Treatment=="Drought")],pch=16,col="red")
+  points(y_new[which(newD$Treatment=="Irrigation")],y_hat_new[which(newD$Treatment=="Irrigation")],pch=16,col="blue")
+  legend("bottomright",c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
+                     "Irrigation (out-of-sample)"),pch=c(1,16,16,16),
+                      col=c("black","black","red","blue"),bty="n",cex=0.8)
+}
+
 dev.off()
 
-saveRDS(best_coefs,"analysis/survival/enet_best_coefs.RDS")
+saveRDS(best_coefs_slope,"analysis/survival/enet_best_coefs_slope.RDS")
