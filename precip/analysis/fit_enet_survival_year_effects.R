@@ -12,10 +12,50 @@ library(glmnet) # package for statistical regularization
 library(INLA)
 
 
-### 1. Fit models ------------------------------------------------------
+# ### 1. Fit models ------------------------------------------------------
+# 
+# # read in distance weights
+# dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+# 
+# # import climate covariates
+# Cdat <- readRDS('data/temp_data/all_clim_covs.RDS')
+# 
+# # object to save year effects
+# sppList <- c("ARTR","HECO","POSE","PSSP")
+# yrBetas <- vector("list",length(sppList))
+# 
+# for(i in 1:length(sppList)){
+#  
+#    iSpp <- sppList[i]
+#   # fit demography model
+#   source("analysis/survival/inla_survival.r")
+#    
+#   #extract parameters for controls
+#   Intercept=m1$summary.random$yearID$mean
+#   year=m1$summary.random$year$ID
+#   logarea=m1$summary.random$year$mean
+#   yrBetas[[i]]=data.frame(year,Intercept,logarea)
+#   yrBetas[[i]]$Treatment <- "Control"
+#   yrBetas[[i]]$year <-  as.numeric(as.character(yrBetas[[i]]$year))
+# 
+#   #add parameters for drought treatment
+#   tmp <- subset(yrBetas[[i]],year > 2010 & Treatment == "Control")
+#   tmp$Treatment <- "Drought"
+#   tmp$Intercept <- tmp$Intercept + m1$summary.fixed$mean[which(m1$names.fixed=="TreatmentDrought")]
+#   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
+#   
+#   #add parameters for irrigation treatment
+#   tmp <- subset(yrBetas[[i]], year > 2010 & Treatment == "Control")
+#   tmp$Treatment <- "Irrigation"
+#   tmp$Intercept <- tmp$Intercept + m1$summary.fixed$mean[which(m1$names.fixed=="TreatmentIrrigation")]
+#   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
+#   
+#   #merge in climate covariates
+#   yrBetas[[i]] <- merge(yrBetas[[i]],Cdat,all.x=T)
+#   
+# }
 
-# read in distance weights
-dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/IdahoModDistanceWeights_noExptl.csv"))
+### 1. import year effects from stan model ------------------------
 
 # import climate covariates
 Cdat <- readRDS('data/temp_data/all_clim_covs.RDS')
@@ -26,34 +66,42 @@ yrBetas <- vector("list",length(sppList))
 
 for(i in 1:length(sppList)){
  
-   iSpp <- sppList[i]
-  # fit demography model
-  source("analysis/survival/inla_survival.r")
+  iSpp <- sppList[i]
+  
+  # get vector of years
+  dat <- readRDS("data/temp_data/survival_data_lists_for_stan.RDS")[[i]]
+  year <- unique(dat$year2)
+  rm(dat)
+  
+  # import model summary
+  m1 <- read.csv(paste0("output/treatment_model_parameters_",iSpp,"_survival.csv"))
    
   #extract parameters for controls
-  Intercept=m1$summary.random$yearID$mean
-  year=m1$summary.random$year$ID
-  logarea=m1$summary.random$year$mean
-  yrBetas[[i]]=data.frame(year,Intercept,logarea)
+  keep <- grep("a", substring(as.character(m1$X),1,1))
+  Intercept <- m1$mean[keep]
+  keep <- grep("b1", substring(as.character(m1$X),1,2))
+  keep <- keep[m1$X[keep]!="b1_mu"] 
+  logarea <- m1$mean[keep]
+  yrBetas[[i]] <- data.frame(year,Intercept,logarea)
   yrBetas[[i]]$Treatment <- "Control"
-  yrBetas[[i]]$year <-  as.numeric(as.character(yrBetas[[i]]$year))
-
+  
   #add parameters for drought treatment
   tmp <- subset(yrBetas[[i]],year > 2010 & Treatment == "Control")
   tmp$Treatment <- "Drought"
-  tmp$Intercept <- tmp$Intercept + m1$summary.fixed$mean[which(m1$names.fixed=="TreatmentDrought")]
+  tmp$Intercept <- tmp$Intercept + m1$mean[m1$X=="bt[1]"]
   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
   
   #add parameters for irrigation treatment
   tmp <- subset(yrBetas[[i]], year > 2010 & Treatment == "Control")
   tmp$Treatment <- "Irrigation"
-  tmp$Intercept <- tmp$Intercept + m1$summary.fixed$mean[which(m1$names.fixed=="TreatmentIrrigation")]
+  tmp$Intercept <- tmp$Intercept + + m1$mean[m1$X=="bt[2]"]
   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
   
   #merge in climate covariates
   yrBetas[[i]] <- merge(yrBetas[[i]],Cdat,all.x=T)
   
 }
+
 
 ### 2. elastic net on intercept year effects ------------------------------------------------------------
 
