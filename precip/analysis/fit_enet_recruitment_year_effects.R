@@ -88,7 +88,7 @@ for(i in 1:length(sppList)){
                        alpha = 0.5, # 0 for ridge, 1 for lasso 
                        standardize = FALSE, 
                        type.measure = "mse",
-                       nfolds = length(y))
+                       nfolds = 12) # length(y))
   
   # look at results
   # plot(log(enet_out$lambda),enet_out$cvm,xlab="log(Lambda)",ylab="CV score",type="l")
