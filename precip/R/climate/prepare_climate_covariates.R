@@ -145,9 +145,20 @@ allClim$year <- allClim$year - 1 # adjust to match assignment of year 0 as the r
 # ----------------------------------------------------------------------------------------------------------------------------# 
 
 # -- calculate interactions --------------------------------------------------------------#
-#
-# none 
-# 
+
+allClim <- data.frame(allClim)
+
+# include interactions between temperature and VWC for each season
+VWCvars <- which(is.element(substring(names(allClim),1,2),"VW")==T)
+tmp_dat <- matrix(NA,nrow(allClim),length(VWCvars))
+colnames(tmp_dat) <- paste0("VWCxT.",substring(names(allClim)[VWCvars],5))
+for(i in 1:length(VWCvars)){
+  do_season <- substring(names(allClim)[VWCvars[i]],5)
+  iT <- which(names(allClim)==paste0("T.",do_season))
+  tmp_dat[,i] <- allClim[,VWCvars[i]]*allClim[,iT]
+}
+allClim <- cbind(allClim,tmp_dat)
+
 # ---- output ----------------------------------------------------------------------------# 
 
-saveRDS( data.frame( allClim ) , 'data/temp_data/all_clim_covs.RDS')
+saveRDS( allClim , 'data/temp_data/all_clim_covs.RDS')
