@@ -34,6 +34,7 @@ for(i in 1:length(sppList)){
   m1 <- read.csv(paste0("output/treatment_model_parameters_",iSpp,"_recruitment.csv"))
    
   #extract parameters for controls
+
   keep <- grep("a", substring(as.character(m1$X),1,1))
   Intercept=m1$mean[keep]
   yrBetas[[i]]=data.frame(year,Intercept)
@@ -88,7 +89,7 @@ for(i in 1:length(sppList)){
                        alpha = 0.5, # 0 for ridge, 1 for lasso 
                        standardize = FALSE, 
                        type.measure = "mse",
-                       nfolds = 12) # length(y))
+                       nfolds = length(y))
   
   # look at results
   # plot(log(enet_out$lambda),enet_out$cvm,xlab="log(Lambda)",ylab="CV score",type="l")
@@ -109,6 +110,10 @@ for(i in 1:length(sppList)){
   y_hat_new <- predict(enet_out,newx=X_new, s="lambda.min")
   mse_new <- mean((y_new-y_hat_new)^2)
   
+  # exponentiate to get per capita recruitment rate
+  y <-exp(y); y_hat <- exp(y_hat)
+  y_new <- exp(y_new); y_hat_new <- exp(y_hat_new)
+  
   # make figure
   plot(c(y,y_new),c(y_hat,y_hat_new),type="n",xlab="Observed",ylab="Predicted",
        ylim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
@@ -119,7 +124,7 @@ for(i in 1:length(sppList)){
   points(y_new[which(newD$Treatment=="Control")],y_hat_new[which(newD$Treatment=="Control")],pch=16)
   points(y_new[which(newD$Treatment=="Drought")],y_hat_new[which(newD$Treatment=="Drought")],pch=16,col="red")
   points(y_new[which(newD$Treatment=="Irrigation")],y_hat_new[which(newD$Treatment=="Irrigation")],pch=16,col="blue")
-  legend("bottomright",c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
+  legend("topleft",c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
                      "Irrigation (out-of-sample)"),pch=c(1,16,16,16),
                       col=c("black","black","red","blue"),bty="n",cex=0.8)
 }
