@@ -29,7 +29,7 @@ for(i in 1:length(sppList)){
   dat <- readRDS("data/temp_data/growth_data_lists_for_stan.RDS")[[i]]
   year <- unique(dat$year2)
   size_small <-quantile(dat$X,0.1) ; size_large <- quantile(dat$X,0.9) # get 10% and 90% size quantiles
-  size_info[[i]] <- c( size_small, size_large, dat$Xcenter, dat$Xscale )
+  size_info[[i]] <- list( size_small, size_large, dat$Xcenter, dat$Xscale )
   names(size_info[[i]]) <- c("small","large","center","scale")
   rm(dat)
   
@@ -144,34 +144,26 @@ rm(list= ls()[!(ls() %in% c('best_coefs','best_coefs_slope','enet_predictions','
 ### 3. Draw figures -------------------------------------------  
 
 # custom plotting function
-obs_pred_fig <- function(my_dat, vital_rate, effect="int", legend_location){
-  # my_dat is a list containing observations and predictions
+obs_pred_fig <- function(x, trts, vital_rate, effect = "Intercept", legend_location){
+  # x is a list containing observations and predictions named y, y_hat, y_new, and y_hat_new
+  # trts is a vector of treatments for the out of sample data points
   # vital_rate is a string: either "growth" or "survival"
-  # effect is a string with default "int" and alternative value "slope"
+  # effect is a string with default "Intercept" and alternative value "slope"
   # legend_location is a string, such as "topleft"
   
-  # subset data of interest
-  trts <- my_dat$trts
-  keep <- grep(effect,names(my_dat))
-  my_dat <- my_dat[keep]
-  
-  # trim names
-  names(my_dat) <- sub(paste0("_",effect),"",names(my_dat))
-  
-  attach(my_dat)
-  plot(c(y,y_new),c(y_hat,y_hat_new),type="n",xlab="Observed",ylab="Predicted",
-       ylim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
-       xlim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
-       main=paste(sppList[i],vital_rate,effect, "year effects"))
+  plot(c(x$y,x$y_new),c(x$y_hat,x$y_hat_new),type="n",xlab="Observed",ylab="Predicted",
+       ylim=c(min(c(x$y,x$y_new,x$y_hat,x$y_hat_new)),max(c(x$y,x$y_new,x$y_hat,x$y_hat_new))),
+       xlim=c(min(c(x$y,x$y_new,x$y_hat,x$y_hat_new)),max(c(x$y,x$y_new,x$y_hat,x$y_hat_new))),
+       main=paste(sppList[i], vital_rate, effect))
   abline(0,1)
-  points(y,y_hat)
-  points(y_new[which(trts =="Control")],y_hat_new[which(trts =="Control")],pch=16)
-  points(y_new[which(trts =="Drought")],y_hat_new[which(trts =="Drought")],pch=16,col="red")
-  points(y_new[which(trts =="Irrigation")],y_hat_new[which(trts =="Irrigation")],pch=16,col="blue")
+  points(x$y,x$y_hat)
+  points(x$y_new[which(trts =="Control")],x$y_hat_new[which(trts =="Control")],pch=16)
+  points(x$y_new[which(trts =="Drought")],x$y_hat_new[which(trts =="Drought")],pch=16,col="red")
+  points(x$y_new[which(trts =="Irrigation")],x$y_hat_new[which(trts =="Irrigation")],pch=16,col="blue")
   legend(legend_location,c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
                      "Irrigation (out-of-sample)"),pch=c(1,16,16,16),
                       col=c("black","black","red","blue"),bty="n",cex=0.8)
-  detach(my_dat)
+
 }
 
 # loop through species and plot observed and predicted intercepts and slopes
@@ -181,15 +173,51 @@ par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,4,2,1))
 
 for(i in 1:length(sppList)){
   
-  obs_pred_fig(enet_predictions[[i]], vital_rate="growth", effect="int", legend_location= "topleft")
-  obs_pred_fig(enet_predictions[[i]], vital_rate="growth", effect="slope", legend_location= "topleft")
+  # do intercepts
+  trts <- enet_predictions[[i]]$trts
+  keep <- grep("int",names(enet_predictions[[i]]))
+  fig_dat <- enet_predictions[[i]][keep]
+  names(fig_dat) <- sub("_int","",names(fig_dat)) # trim names
+  obs_pred_fig(fig_dat, trts, vital_rate="growth", effect="Intercept", legend_location= "topleft")
+  
+  # do slopes
+  trts <- enet_predictions[[i]]$trts
+  keep <- grep("slope",names(enet_predictions[[i]]))
+  fig_dat <- enet_predictions[[i]][keep]
+  names(fig_dat) <- sub("_slope","",names(fig_dat)) # trim names
+  obs_pred_fig(fig_dat, trts, vital_rate="growth", effect="Slope", legend_location= "topleft")
   
 }
 
 dev.off()
 
 
+# loop through species, calculate observed and predicted relative growth and plot
 
+pdf("figures/enet_growth_yr_effects_combined.pdf",height=4,width=8)
+par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,4,2,1))
+
+for(i in 1:length(sppList)){
+  
+  # small plants
+  y <- (enet_predictions[[i]]$y_int + enet_predictions[[i]]$y_slope*size_info[[i]]$small-size_info[[i]]$small)
+  y_hat <- (enet_predictions[[i]]$y_hat_int + enet_predictions[[i]]$y_hat_slope*size_info[[i]]$small - size_info[[i]]$small)
+  y_new <- (enet_predictions[[i]]$y_new_int + enet_predictions[[i]]$y_new_slope*size_info[[i]]$small-size_info[[i]]$small)
+  y_hat_new <- (enet_predictions[[i]]$y_hat_new_int + enet_predictions[[i]]$y_hat_new_slope*size_info[[i]]$small - size_info[[i]]$small)
+  fig_dat <- list(y=y, y_hat=y_hat, y_new=y_new, y_hat_new=y_hat_new)
+  obs_pred_fig(fig_dat, enet_predictions[[i]]$trts, vital_rate="growth", effect="small plants", legend_location= "topleft")
+  
+  # large plants
+  y <- (enet_predictions[[i]]$y_int + enet_predictions[[i]]$y_slope*size_info[[i]]$large-size_info[[i]]$large)
+  y_hat <- (enet_predictions[[i]]$y_hat_int + enet_predictions[[i]]$y_hat_slope*size_info[[i]]$large - size_info[[i]]$large)
+  y_new <- (enet_predictions[[i]]$y_new_int + enet_predictions[[i]]$y_new_slope*size_info[[i]]$large-size_info[[i]]$large)
+  y_hat_new <- (enet_predictions[[i]]$y_hat_new_int + enet_predictions[[i]]$y_hat_new_slope*size_info[[i]]$large - size_info[[i]]$large)
+  fig_dat <- list(y=y, y_hat=y_hat, y_new=y_new, y_hat_new=y_hat_new)
+  obs_pred_fig(fig_dat, enet_predictions[[i]]$trts, vital_rate="growth", effect="large plants", legend_location= "topleft")
+  
+}
+
+dev.off()
 
 
 
