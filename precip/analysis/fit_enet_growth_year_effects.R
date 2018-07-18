@@ -9,7 +9,7 @@ library(xtable)
 library(lme4)
 library(dplyr)
 library(glmnet) # package for statistical regularization
-
+source("analysis/figure_scripts/elastic_net_observed_vs_predicted.R")
 
 # ### 1. import year effects from stan model ------------------------
 # 
@@ -22,9 +22,9 @@ library(glmnet) # package for statistical regularization
 # size_info <- vector("list",length(sppList))
 # 
 # for(i in 1:length(sppList)){
-#  
+# 
 #   iSpp <- sppList[i]
-#   
+# 
 #   # get vector of years
 #   dat <- readRDS("data/temp_data/growth_data_lists_for_stan.RDS")[[i]]
 #   year <- unique(dat$year2)
@@ -32,40 +32,40 @@ library(glmnet) # package for statistical regularization
 #   size_info[[i]] <- list( size_small, size_large, dat$Xcenter, dat$Xscale )
 #   names(size_info[[i]]) <- c("small","large","center","scale")
 #   rm(dat)
-#   
+# 
 #   # import model summary
 #   m1 <- read.csv(paste0("output/treatment_model_parameters_",iSpp,"_growth.csv"))
-#    
+# 
 #   #extract parameters for controls
 #   keep <- grep("a", substring(as.character(m1$X),1,1))
 #   Intercept <- m1$mean[keep]
-#   Intercept <- Intercept / m1$mean[which(m1$X=="sig_a")] # rescale
 #   keep <- grep("b1", substring(as.character(m1$X),1,2))
 #   keep <- keep[m1$X[keep]!="b1_mu"] # exclude mean slope
 #   logarea.t0 <- m1$mean[keep]
-#   logarea.t0 <- logarea.t0 / m1$mean[which(m1$X=="sig_b1")] # rescale
 #   yrBetas[[i]] <- data.frame(year,Intercept,logarea.t0)
 #   yrBetas[[i]]$Treatment <- "Control"
-#   
+# 
 #   #add parameters for drought treatment
 #   tmp <- subset(yrBetas[[i]],year > 2010 & Treatment == "Control")
 #   tmp$Treatment <- "Drought"
 #   tmp$Intercept <- tmp$Intercept + m1$mean[m1$X=="bt[1]"]
 #   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
-#   
+# 
 #   #add parameters for irrigation treatment
 #   tmp <- subset(yrBetas[[i]], year > 2010 & Treatment == "Control")
 #   tmp$Treatment <- "Irrigation"
 #   tmp$Intercept <- tmp$Intercept + m1$mean[m1$X=="bt[2]"]
 #   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
-#   
+# 
 #   # calculated relative growth rates of small and large plants on arithmetic scale
-#   yrBetas[[i]]$grow_small <- exp(yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$small)/exp(size_info[[i]]$small)
-#   yrBetas[[i]]$grow_big <- exp(yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$large) / exp(size_info[[i]]$large)
-#   
+#   yrBetas[[i]]$grow_small <- yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$small ##-
+#     #(size_info[[i]]$small*size_info[[i]]$scale + size_info[[i]]$center) # subtract rescaled focal size
+#   yrBetas[[i]]$grow_big <- yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$large #-
+#     #(size_info[[i]]$large*size_info[[i]]$scale + size_info[[i]]$center) # subtract rescaled focal size
+# 
 #   #merge in climate covariates
 #   yrBetas[[i]] <- merge(yrBetas[[i]],Cdat,all.x=T)
-#    
+# 
 # }
 
 ### 1. fit INLA growth models with year and treatment effects ------------------------
@@ -84,10 +84,10 @@ size_info <- vector("list",length(sppList))
 for(i in 1:length(sppList)){
 
   iSpp <- sppList[i]
-  
+
   # fit demography model
   source("analysis/growth/inla_growth.r")
-  
+
   # get size info
   size_small <-quantile(allD$logarea.t0,0.1) ; size_large <- quantile(allD$logarea.t0,0.9) # get 10% and 90% size quantiles
   size_info[[i]] <- list( size_small, size_large)
@@ -95,7 +95,7 @@ for(i in 1:length(sppList)){
   rm(allD)
 
   #extract parameters for controls
-  yrBetas[[i]] <- ranef(m1)$year 
+  yrBetas[[i]] <- ranef(m1)$year
   yrBetas[[i]][,1] <-  yrBetas[[i]][,1] + fixef(m1)[1] ; yrBetas[[i]][,2] <-  yrBetas[[i]][,2] + fixef(m1)[2]  # add overall means
   yrBetas[[i]]$year <- row.names(yrBetas[[i]])
   yrBetas[[i]]$Treatment <- "Control"
@@ -112,28 +112,24 @@ for(i in 1:length(sppList)){
   tmp$Treatment <- "Irrigation"
   tmp$Intercept <- tmp$Intercept + fixef(m1)[which(names(fixef(m1))=="TreatmentIrrigation")]
   yrBetas[[i]] <- rbind(yrBetas[[i]] ,tmp)
-  
+
   # calculated relative growth rates of small and large plants on arithmetic scale
-  #yrBetas[[i]]$grow_small <- exp(yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$small)/exp(size_info[[i]]$small)
-  #yrBetas[[i]]$grow_big <- exp(yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$large) / exp(size_info[[i]]$large)
   yrBetas[[i]]$grow_small <- yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$small - size_info[[i]]$small
   yrBetas[[i]]$grow_big <- yrBetas[[i]]$Intercept + yrBetas[[i]]$logarea.t0*size_info[[i]]$large - size_info[[i]]$large
-  
+
   #merge in climate covariates
   yrBetas[[i]] <- merge(yrBetas[[i]],Cdat,all.x=T)
 
 }
 
-
+# a <- yrBetas[[1]]$Intercept; b <- yrBetas[[1]]$logarea.t0
 # # plot annual growth by size
-# x <- seq(size_info[[3]]$small,size_info[[3]]$large,0.01)
+# x <- seq(-1,7,0.01)
 # plot(x,runif(length(x),-2,5),type="n",xlim=c(-1,7),ylim=c(-1,7),xlab="Size t_0",ylab="Size t_1")
 # for(j in 1:25){
-#   abline(yrBetas[[3]]$Intercept[j],yrBetas[[3]]$logarea.t0[j])
+#   abline(a[j],b[j])
 # }
 # abline(0,1,col="red")
-
-
 
 ### 2. fit elastic net for growth of small then large plants ------------------------------------------------------------
 
@@ -216,29 +212,6 @@ rm(list= ls()[!(ls() %in% c('best_coefs_big','best_coefs_small','enet_prediction
 
 ### 3. Draw figures -------------------------------------------  
 
-# custom plotting function
-obs_pred_fig <- function(x, trts, vital_rate, effect = "Intercept", legend_location){
-  # x is a list containing observations and predictions named y, y_hat, y_new, and y_hat_new
-  # trts is a vector of treatments for the out of sample data points
-  # vital_rate is a string: either "growth" or "survival"
-  # effect is a string with default "Intercept" and alternative value "slope"
-  # legend_location is a string, such as "topleft"
-  
-  plot(c(x$y,x$y_new),c(x$y_hat,x$y_hat_new),type="n",xlab="Observed",ylab="Predicted",
-       ylim=c(min(c(x$y,x$y_new,x$y_hat,x$y_hat_new)),max(c(x$y,x$y_new,x$y_hat,x$y_hat_new))),
-       xlim=c(min(c(x$y,x$y_new,x$y_hat,x$y_hat_new)),max(c(x$y,x$y_new,x$y_hat,x$y_hat_new))),
-       main=paste(sppList[i], vital_rate, effect))
-  abline(0,1)
-  points(x$y,x$y_hat)
-  points(x$y_new[which(trts =="Control")],x$y_hat_new[which(trts =="Control")],pch=16)
-  points(x$y_new[which(trts =="Drought")],x$y_hat_new[which(trts =="Drought")],pch=16,col="red")
-  points(x$y_new[which(trts =="Irrigation")],x$y_hat_new[which(trts =="Irrigation")],pch=16,col="blue")
-  legend(legend_location,c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
-                     "Irrigation (out-of-sample)"),pch=c(1,16,16,16),
-                      col=c("black","black","red","blue"),bty="n",cex=0.8)
-
-}
-
 # loop through species and plot observed and predicted intercepts and slopes
 
 pdf("figures/enet_growth_yr_effects.pdf",height=4,width=8)
@@ -246,14 +219,14 @@ par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,4,2,1))
 
 for(i in 1:length(sppList)){
   
-  # do intercepts
+  # do small plants
   trts <- enet_predictions[[i]]$trts
   keep <- grep("small",names(enet_predictions[[i]]))
   fig_dat <- enet_predictions[[i]][keep]
   names(fig_dat) <- sub("_small","",names(fig_dat)) # trim names
   obs_pred_fig(fig_dat, trts, vital_rate="growth", effect="small plants", legend_location= "topleft")
   
-  # do slopes
+  # do big plants
   trts <- enet_predictions[[i]]$trts
   keep <- grep("big",names(enet_predictions[[i]]))
   fig_dat <- enet_predictions[[i]][keep]
@@ -264,33 +237,6 @@ for(i in 1:length(sppList)){
 
 dev.off()
 
-
-# loop through species, calculate observed and predicted relative growth and plot
-
-pdf("figures/enet_growth_yr_effects_combined.pdf",height=4,width=8)
-par(mfrow=c(1,2),tcl=-0.2,mgp=c(2,0.5,0),mar=c(3,4,2,1))
-
-for(i in 1:length(sppList)){
-  
-  # small plants
-  y <- (enet_predictions[[i]]$y_int + enet_predictions[[i]]$y_slope*size_info[[i]]$small-size_info[[i]]$small)
-  y_hat <- (enet_predictions[[i]]$y_hat_int + enet_predictions[[i]]$y_hat_slope*size_info[[i]]$small - size_info[[i]]$small)
-  y_new <- (enet_predictions[[i]]$y_new_int + enet_predictions[[i]]$y_new_slope*size_info[[i]]$small-size_info[[i]]$small)
-  y_hat_new <- (enet_predictions[[i]]$y_hat_new_int + enet_predictions[[i]]$y_hat_new_slope*size_info[[i]]$small - size_info[[i]]$small)
-  fig_dat <- list(y=y, y_hat=y_hat, y_new=y_new, y_hat_new=y_hat_new)
-  obs_pred_fig(fig_dat, enet_predictions[[i]]$trts, vital_rate="growth", effect="small plants", legend_location= "topleft")
-  
-  # large plants
-  y <- (enet_predictions[[i]]$y_int + enet_predictions[[i]]$y_slope*size_info[[i]]$large-size_info[[i]]$large)
-  y_hat <- (enet_predictions[[i]]$y_hat_int + enet_predictions[[i]]$y_hat_slope*size_info[[i]]$large - size_info[[i]]$large)
-  y_new <- (enet_predictions[[i]]$y_new_int + enet_predictions[[i]]$y_new_slope*size_info[[i]]$large-size_info[[i]]$large)
-  y_hat_new <- (enet_predictions[[i]]$y_hat_new_int + enet_predictions[[i]]$y_hat_new_slope*size_info[[i]]$large - size_info[[i]]$large)
-  fig_dat <- list(y=y, y_hat=y_hat, y_new=y_new, y_hat_new=y_hat_new)
-  obs_pred_fig(fig_dat, enet_predictions[[i]]$trts, vital_rate="growth", effect="large plants", legend_location= "topleft")
-  
-}
-
-dev.off()
 
 
 

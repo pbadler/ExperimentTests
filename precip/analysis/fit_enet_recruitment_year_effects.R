@@ -10,7 +10,7 @@ library(lme4)
 library(dplyr)
 library(glmnet) # package for statistical regularization
 library(INLA)
-
+source("analysis/figure_scripts/elastic_net_observed_vs_predicted.R")
 
 ### 1. Import year effects from Stan models -------------------------------
 
@@ -102,31 +102,22 @@ for(i in 1:length(sppList)){
   # predictions for training data
   y_hat <- predict(enet_out,newx=X,s="lambda.min")
   
-  # get out of sample MSE
+  # get out of sample predictions
   newD <- yrBetas[[i]] %>% filter(year >= 2011)
   y_new <- newD$Intercept
   X_new <- newD[,6:NCOL(newD)]
   X_new <- scale(X_new, center = X_mean, scale = X_sd)
   y_hat_new <- predict(enet_out,newx=X_new, s="lambda.min")
-  mse_new <- mean((y_new-y_hat_new)^2)
+  trts <- newD$Treatment
   
   # exponentiate to get per capita recruitment rate
   y <-exp(y); y_hat <- exp(y_hat)
   y_new <- exp(y_new); y_hat_new <- exp(y_hat_new)
   
-  # make figure
-  plot(c(y,y_new),c(y_hat,y_hat_new),type="n",xlab="Observed",ylab="Predicted",
-       ylim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
-       xlim=c(min(c(y,y_new,y_hat,y_hat_new)),max(c(y,y_new,y_hat,y_hat_new))),
-       main=paste0(sppList[i]," recruit year effects"))
-  abline(0,1)
-  points(y,y_hat)
-  points(y_new[which(newD$Treatment=="Control")],y_hat_new[which(newD$Treatment=="Control")],pch=16)
-  points(y_new[which(newD$Treatment=="Drought")],y_hat_new[which(newD$Treatment=="Drought")],pch=16,col="red")
-  points(y_new[which(newD$Treatment=="Irrigation")],y_hat_new[which(newD$Treatment=="Irrigation")],pch=16,col="blue")
-  legend("topleft",c("Control (training)","Control (out-of-sample)","Drought (out-of-sample)",
-                     "Irrigation (out-of-sample)"),pch=c(1,16,16,16),
-                      col=c("black","black","red","blue"),bty="n",cex=0.8)
+  
+  fig_dat <- list(y=y, y_hat=y_hat, y_new=y_new, y_hat_new=y_hat_new)
+  obs_pred_fig(fig_dat, trts, vital_rate="recruitment", effect="", legend_location= "topleft")
+  
 }
 
 dev.off()
