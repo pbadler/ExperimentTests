@@ -6,6 +6,85 @@ df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('g
 
 i = 1
 source('analysis/waic_fxns.R')
+source('analysis/stan_data_functions.R')
+
+spp <- df$species[i]
+vr  <- df$vital_rate[i]
+
+dat_file <- 'data/temp_data/ARTR_growth_survival_dataframe.RDS'
+dat <- readRDS(dat_file)
+
+unique( cbind(dat$year, dat$yid) )
+
+hold <- c(26:30)
+
+# pars ------------------- 
+formC <- as.formula(~-1)
+small <- -1
+formZ = as.formula(~ size) 
+formE = as.formula(~ size)
+formX = as.formula(~ size + small + Group + W)
+# ---------------------- 
+process_data <- function(dat, small = 0, formX, formC, formZ, formE, center = T, ... ){
+  
+  C <- model.matrix(formC, dat)
+  dat$C <- scale(C)
+  dat$W <- scale(dat$W)
+  dat$Group <- factor(dat$gid)
+  
+  dat$Y <- scale(dat$logarea.t1)
+  
+  dat$size <- scale(dat$logarea.t0)
+  dat$small <- factor(dat$logarea.t0 < small)
+  dat$size_raw <- exp(dat$logarea.t0)
+
+  dat$X <- model.matrix(formX, data = dat)
+  dat$Z <- model.matrix(formZ, data = dat)
+  dat$E <- model.matrix(formE, data = dat) 
+  
+  dat$g <- factor(dat$yid)
+  
+  dat_4_cover <- dat ### Need to preserve dataframe with NA's (dead plants) for predicting cover 
+  dat_4_cover <- split_df(dat_4_cover, hold = 0)
+  dl_4_cover <- make_dl(dat_4_cover)
+  dl_4_cover <- dl_4_cover[-grep('hold', names(dl_4_cover))]
+  
+  dat <- dat[complete.cases(dat), ]
+  dat <- split_df(dat, hold )
+  dl <- make_dl(dat)
+  
+  names(dl_4_cover) <- paste0( 'cover_', names(dl_4_cover))
+  
+  return( c(dl, dl_4_cover))
+}
+
+dl <- process_data(dat = dat, small = 0, formX = formX, formC = formC, formZ = formZ, formE = formE, center = T, historical = T, hold )
+
+dl <- left_censor(dl, U = exp(-1))
+
+gmod <- rstan::stan_model('analysis/growth/model_growth_censored.stan')
+
+gfit <- rstan::sampling(gmod, 
+                        data = dl, 
+                        chains = 4, 
+                        iter = 2000, 
+                        cores = 4, 
+                        pars = c('beta', 'eta', 'Y_hat'), 
+                        control = list(adapt_delta = 0.9))
+
+saveRDS(gfit, '~/Desktop/ARTR_growth_fit.RDS')
+gfit <- readRDS('~/Desktop/ARTR_growth_fit.RDS')
+
+Y <- dl$Y
+sso <- shinystan::launch_shinystan(gfit)
+
+length(Y)
+test$summary %>% head
+
+plot(Y, test$summary[,1])
+test <- (summary(gfit, 'Y_hat'))
+
+nrow(test$summary)
 
 for(i in 1:nrow(df)){ 
   
