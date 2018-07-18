@@ -76,6 +76,11 @@ dists <- read.csv(paste0(root,"/ExperimentTests/data/idaho_modern/speciesdata/Id
 # import climate covariates
 Cdat <- readRDS('data/temp_data/all_clim_covs.RDS')
 
+# # limit to a few climate variables
+# keep <- grep("VWC.sp",names(Cdat))
+# keep <- c(keep,grep("T.sp",names(Cdat)))
+# Cdat <-Cdat[,c(1:4,keep)]
+
 # object to save year effects
 sppList <- c("ARTR","HECO","POSE","PSSP")
 yrBetas <- vector("list",length(sppList))
@@ -207,7 +212,8 @@ for(i in 1:length(sppList)){
 }
 
 # clean up
-rm(list= ls()[!(ls() %in% c('best_coefs_big','best_coefs_small','enet_predictions','sppList','yrBetas','size_info'))]) 
+rm(list= ls()[!(ls() %in% c('obs_pred_fig','best_coefs_big','best_coefs_small',
+                            'enet_predictions','sppList','yrBetas','size_info'))]) 
 
 
 ### 3. Draw figures -------------------------------------------  

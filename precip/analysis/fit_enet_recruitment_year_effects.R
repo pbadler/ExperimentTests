@@ -17,6 +17,11 @@ source("analysis/figure_scripts/elastic_net_observed_vs_predicted.R")
 # import climate covariates
 Cdat <- readRDS('data/temp_data/all_clim_covs.RDS')
 
+# # limit to a few climate variables
+# keep <- grep("VWC.sp",names(Cdat))
+# keep <- c(keep,grep("T.sp",names(Cdat)))
+# Cdat <-Cdat[,c(1:4,keep)]
+
 # object to save year effects
 sppList <- c("ARTR","HECO","POSE","PSSP")
 yrBetas <- vector("list",length(sppList))
