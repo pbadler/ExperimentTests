@@ -1,4 +1,4 @@
-#rm(list = ls())
+rm(list = ls())
 
 library(rstan)
 
@@ -11,33 +11,16 @@ source('analysis/stan_data_functions.R')
 spp <- df$species[i]
 vr  <- df$vital_rate[i]
 
-dat_file <- 'data/temp_data/ARTR_growth_survival_dataframe.RDS'
+dat_file <- 'data/temp_data/POSE_growth_survival_dataframe.RDS'
 dat <- readRDS(dat_file)
 
-unique( cbind(dat$year, dat$yid) )
-
-hold <- c(26:30)
-
-# pars ------------------- 
-formC <- as.formula(~-1)
-small <- -1
-formZ = as.formula(~ size) 
-formE = as.formula(~ size)
-formX = as.formula(~ size + small + Group + W)
-# ---------------------- 
-process_data <- function(dat, small = 0, formX, formC, formZ, formE, center = T, ... ){
+process_data <- function(dat, formX, formC, formZ, formE, center = T, ... ){
   
   C <- model.matrix(formC, dat)
   dat$C <- scale(C)
   dat$W <- scale(dat$W)
   dat$Group <- factor(dat$gid)
   
-  dat$Y <- scale(dat$logarea.t1)
-  
-  dat$size <- scale(dat$logarea.t0)
-  dat$small <- factor(dat$logarea.t0 < small)
-  dat$size_raw <- exp(dat$logarea.t0)
-
   dat$X <- model.matrix(formX, data = dat)
   dat$Z <- model.matrix(formZ, data = dat)
   dat$E <- model.matrix(formE, data = dat) 
@@ -58,28 +41,145 @@ process_data <- function(dat, small = 0, formX, formC, formZ, formE, center = T,
   return( c(dl, dl_4_cover))
 }
 
-dl <- process_data(dat = dat, small = 0, formX = formX, formC = formC, formZ = formZ, formE = formE, center = T, historical = T, hold )
 
-dl <- left_censor(dl, U = exp(-1))
+# pars ------------------- 
+hold <- c(26:30)
+formC <- as.formula(~-1)
+small <- -1
+formZ = as.formula(~ size) 
+formE = as.formula(~ size)
+formX = as.formula(~ size + W + GroupP2 + Treatment2)
+# ---------------------- 
+
+dat$size <- scale( dat$logarea.t0 )
+dat$Y    <- scale( dat$logarea.t1 )
+hist(dat$Y)
+dat$small <- as.numeric(dat$size < -1)
+dat$GroupP2 <- as.numeric( dat$Group == 'P2')
+
+dl <- process_data(dat = dat, formX = formX, formC = formC, formZ = formZ, formE = formE, center = T, historical = T, hold )
+
+freq <- data.frame( table(dl$X[,2]) )
+freq[ order(freq$Var1), ][1:15, ] # look at the smallest plants to decide cutoff
+
+dl <- left_censor(dl, U = -1.11)
 
 gmod <- rstan::stan_model('analysis/growth/model_growth_censored.stan')
 
-gfit <- rstan::sampling(gmod, 
+gfit1 <- rstan::sampling(gmod, 
                         data = dl, 
                         chains = 4, 
                         iter = 2000, 
                         cores = 4, 
-                        pars = c('beta', 'eta', 'Y_hat'), 
-                        control = list(adapt_delta = 0.9))
+                        pars = c('beta', 'eta', 'Y_hat', 'u', 'log_lik'))
 
-saveRDS(gfit, '~/Desktop/ARTR_growth_fit.RDS')
-gfit <- readRDS('~/Desktop/ARTR_growth_fit.RDS')
+saveRDS(gfit1, '~/Desktop/POSE_growth_fit1.RDS')
+
+### posterior predictive check
+Y_hat <- data.frame( summary( gfit1, 'Y_hat')$summary )
+Y_hat$obs <- dl$Y
+Y_hat$size <- dl$X[,2]
+library(tidyverse)
+
+mean( Y_hat$obs < Y_hat$X75. & Y_hat$obs > Y_hat$X25.  )
+mean( Y_hat$obs < Y_hat$X97.5. & Y_hat$obs > Y_hat$X2.5.  )
+
+mean( Y_hat$obs < Y_hat$X25. )
+
+Y_hat[ sample( 1:nrow(Y_hat), 50 ), ]  %>% 
+  ggplot( aes(x = obs, y = mean, ymin = X25., ymax = X75.)) + 
+  geom_point( aes( y = obs), col = 'red') + 
+  geom_errorbar(col = 'blue')
+
+ll <- loo::extract_log_lik(gfit1)
+loo1 <- loo::loo(ll)
+loo1
 
 Y <- dl$Y
-sso <- shinystan::launch_shinystan(gfit)
+colnames(dl$X)
+sso <- shinystan::launch_shinystan(gfit1)
 
-length(Y)
-test$summary %>% head
+# Try a different model 
+# pars ------------------- 
+hold <- c(26:30)
+formC <- as.formula(~-1)
+small <- -1
+formZ = as.formula(~ size) 
+formE = as.formula(~ size)
+formX = as.formula(~ size + small + W + GroupP2 + Treatment2)
+# ---------------------- 
+
+dl <- process_data(dat = dat, formX = formX, formC = formC, formZ = formZ, formE = formE, center = T, historical = T, hold )
+dl <- left_censor(dl, U = -3)
+
+gfit2 <- rstan::sampling(gmod, 
+                        data = dl, 
+                        chains = 4, 
+                        iter = 2000, 
+                        cores = 4, 
+                        pars = c('beta', 'eta', 'Y_hat', 'u', 'log_lik'))
+
+saveRDS(gfit2, '~/Desktop/ARTR_growth_fit2.RDS')
+
+### posterior predictive check
+Y_hat <- data.frame( summary( gfit2, 'Y_hat')$summary )
+Y_hat$obs <- dl$Y
+Y_hat$size <- dl$X[,2]
+
+mean( Y_hat$obs < Y_hat$X75. & Y_hat$obs > Y_hat$X25.  )
+mean( Y_hat$obs < Y_hat$X97.5. & Y_hat$obs > Y_hat$X2.5.  )
+
+mean( Y_hat$obs < Y_hat$X25. )
+
+Y_hat[ sample( 1:nrow(Y_hat), 50 ), ]  %>% 
+  ggplot( aes(x = obs, y = mean, ymin = X25., ymax = X75.)) + 
+  geom_point( aes( y = obs), col = 'red') + 
+  geom_errorbar(col = 'blue')
+
+ll <- loo::extract_log_lik(gfit2)
+loo2 <- loo::loo(ll)
+
+loo1
+loo2
+
+
+year_effects <- data.frame( summary(gfit1, 'u')$summary )
+
+intercepts <- year_effects[ grep( ',1', row.names(year_effects)), ]
+slopes <- year_effects[ grep( ',2', row.names(year_effects)), ]
+
+plot( unique(dat$year)[1:25], intercepts$mean, type = 'l')
+plot( unique(dat$year)[1:25], slopes$mean, type = 'l')
+
+library(lme4)
+m1 <- lmer(Y ~ size + W + GroupP2 + Treatment2 + (size|yid), data = dat[!dat$yid %in% hold, ])
+m1_stan <- rstanarm::stan_glmer(Y ~ size + W + GroupP2 + Treatment2 + (size|yid), data = dat[!dat$yid %in% hold, ], cores = 4)
+
+loo_stanarm1 <- loo::loo(m1_stan)
+loo_stanarm1
+loo1
+
+
+plot( unique(dat$year)[1:25], ranef(m1)$yid[, 1], type = 'l')
+plot( unique(dat$year)[1:25], ranef(m1)$yid[, 2], type = 'l')
+
+plot( unique(dat$year)[1:25], ranef(m1_stan)$yid[, 1], type = 'l')
+plot( unique(dat$year)[1:25], ranef(m1_stan)$yid[, 2], type = 'l')
+
+plot( intercepts$mean, ranef(m1)$yid$`(Intercept)` )
+plot( slopes$mean, ranef(m1)$yid$`size`)
+
+plot( m1_stan$coefficients)
+
+stanarm_year_effects <- data.frame( rstan::summary(m1_stan$stanfit, 'b')$summary )
+
+stanarm_I <- stanarm_year_effects[ grep('Intercept', row.names(stanarm_year_effects)) , ] 
+stanarm_slope <- stanarm_year_effects[ grep('size', row.names(stanarm_year_effects)) , ] 
+plot(stanarm_I$mean[-26], ranef(m1_stan)$yid[,1])
+plot(stanarm_slope$mean[-26], ranef(m1_stan)$yid[,2])
+
+
+
 
 plot(Y, test$summary[,1])
 test <- (summary(gfit, 'Y_hat'))

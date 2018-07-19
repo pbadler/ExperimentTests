@@ -37,7 +37,7 @@ clean_growth_survival <- function(clim, growth_file, survival_file){
   x$X <- scale(x$logarea.t0) # center X on mean.  Center BEFORE splitting up survival and growth, modern and historical
   
   W <- x[ , grep ( '^W\\.', names( x))]
-  W <- as.matrix( W )[,1:4] # big four competition effects
+  W <- as.matrix( W )[,1:6] # big four competition effects
   W <- scale( W ) # scale competition
   x$W <- W
   return(x)

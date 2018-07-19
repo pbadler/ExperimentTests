@@ -9,12 +9,12 @@ data{
   int<lower=0> K;         // number of covariates in the design matrix 
   vector[N_obs] Y_obs;    // only obs with valid size
   vector[N] Y;            // all observations
-  row_vector[J] Z[N];     // simple intercept x size design matrix 
+  row_vector[J] Z[N];     // simple design matrix for random year effects (year x size) 
   int<lower=0> G;         // groups
   int<lower=0> g[N];      // group id
-  matrix[N,K] X;          // covariate matrix   
-  int<lower=0> D;         // number of eta effects 
-  matrix[N,D] E;          // covariate matrix   
+  matrix[N,K] X;          // covariate matrix for fixed effects    
+  int<lower=0> D;         // number of effects for size dependent variance  
+  matrix[N,D] E;          // covariate matrix for size dependent variance (intercept + size )
   
   real<upper=min(Y_obs)> U;  // Upper limit of censored data 
 
@@ -40,7 +40,7 @@ parameters{
 	matrix[J,G] u_raw;              // raw group effects 
 	simplex[J] pi_;                 // pi simplex for diagonal of the covariance matrix 
 	real<lower=0> tau;              // scale parameter for covariance matrix
-	vector[D] eta;                       // variance model parameters
+	vector[D] eta;                 // variance model parameters
 }
 transformed parameters{
   real mu[N];             
@@ -68,7 +68,7 @@ transformed parameters{
     
     for(n in 1:N){
       mu[n] = fixef[n] + Z[n]*u[g[n]];
-      sigma[n] = fmax(sigma[n], 0.01);
+      sigma[n] = fmax(sigma[n], 0.001);
     }
   }
   
@@ -134,7 +134,7 @@ generated quantities {
   
   for(i in 1:hold_N){
     hold_mu[i] = hold_fixef[i] + hold_Z[i]*hold_u[hold_g[i]];
-    hold_sigma[i] = fmax(hold_sigma[i], 0.01);
+    hold_sigma[i] = fmax(hold_sigma[i], 0.001);
   }
   
   for(i in 1:hold_N)
