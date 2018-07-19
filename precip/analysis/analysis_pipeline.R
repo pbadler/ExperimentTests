@@ -7,8 +7,8 @@
 
 rm(list = ls() ) 
 
-setwd("C:/Repos/ExperimentTests/precip/")
-my_path <- "c:/repos/" # this is needed to get to the driversdata directory
+setwd("~/Dropbox/projects/ExperimentTests/precip")
+my_path <- "~" # this is needed to get to the driversdata directory
 
 library(rstan)
 library(dplyr)
@@ -27,7 +27,7 @@ library(ggmcmc)
 
 source('analysis/figure_scripts/save_plot_theme.R')
 
-source('R/prepare_datalists_for_STAN.R')
+source('R/prepare_data_for_STAN.R')
 
 rm(list=setdiff(ls(), "my_path")) # clean up, but leave my_path
 

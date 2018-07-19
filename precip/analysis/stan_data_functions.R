@@ -164,6 +164,35 @@ get_dl <- function(combo_file, dat_file, index = 1, ...){
   return(dl)
 }
 
+process_data <- function(dat, formX, formC, formZ, formE, center = T, ... ){
+  
+  C <- model.matrix(formC, dat)
+  dat$C <- scale(C)
+  dat$W <- scale(dat$W)
+  dat$Group <- factor(dat$gid)
+  
+  dat$X <- model.matrix(formX, data = dat)
+  dat$Z <- model.matrix(formZ, data = dat)
+  dat$E <- model.matrix(formE, data = dat) 
+  
+  dat$g <- factor(dat$yid)
+  
+  dat_4_cover <- dat ### Need to preserve dataframe with NA's (dead plants) for predicting cover 
+  dat_4_cover <- split_df(dat_4_cover, hold = 0)
+  dl_4_cover <- make_dl(dat_4_cover)
+  dl_4_cover <- dl_4_cover[-grep('hold', names(dl_4_cover))]
+  
+  dat <- dat[complete.cases(dat), ]
+  dat <- split_df(dat, hold )
+  dl <- make_dl(dat)
+  
+  names(dl_4_cover) <- paste0( 'cover_', names(dl_4_cover))
+  
+  return( c(dl, dl_4_cover))
+}
+
+
+
 
 check_for_compiled_model <- function(vr, model_file){ 
   compiled_model <- dir('data/temp_data/', paste0(vr, '_model_compiled.RDS'), full.names = T)  
