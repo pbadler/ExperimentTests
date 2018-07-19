@@ -3,25 +3,19 @@ rm(list = ls())
 library(rstan)
 library(tidyverse)
 
-df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
-
-i = 1
 source('analysis/waic_fxns.R')
 source('analysis/stan_data_functions.R')
-
-spp <- df$species[i]
-vr  <- df$vital_rate[i]
 
 dat_file <- 'data/temp_data/ARTR_growth_survival_dataframe.RDS'
 dat <- readRDS(dat_file)
 
 # pars ------------------- 
-hold <- c(26:30)
-formC <- as.formula(~-1)
-small <- -1
-formZ = as.formula(~ size) 
-formE = as.formula(~ size)
-formX = as.formula(~ size + W + GroupP2 + Treatment2)
+hold <- c(26:30)  #### Choose the years that are held out 
+formC <- as.formula(~-1)  ### Climate effects design matrix 
+small <- -1               ### Designate a "small" size theshhold 
+formZ = as.formula(~ size)  ### Year effects design matrix 
+formE = as.formula(~ size)  ### For growth model, size dependent variance design matrix  
+formX = as.formula(~ size + W + GroupP2 + Treatment2)  ### Fixed effects design matrix (include climate as "C")
 # ---------------------- 
 
 dat$size <- scale( dat$logarea.t0 )
