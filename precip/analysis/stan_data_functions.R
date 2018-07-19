@@ -7,6 +7,7 @@ extract_data <- function(df){
   g <- as.numeric(factor(df$g))
   G <- length(unique(g))
   Y <- as.numeric(df$Y)
+  S <- as.numeric(df$survives)
   E <- df$E
   D <- ncol(E) 
   
@@ -74,35 +75,6 @@ plot_x_y <- function(myfit, X, Y, iter, bt = F){
   par(mfrow = c(1,1))
 }
 
-process_data <- function(dat, small = 0, formX = as.formula(~ size + small + Group + W + C), formC = as.formula(~ -1 + C.VWC.sp.1), formZ = as.formula(~ size + small), formE = as.formula(~ size_raw + small), center = T, historical = T, ... ){
-  if(historical) { 
-    dat <- subset(dat, Period == 'Historical')
-    dat <- dat[complete.cases(dat), ]
-  }
-  C <- model.matrix(formC, dat)
-  dat$C <- scale(C)
-  dat$W <- scale(dat$W)
-  dat$Group <- factor(dat$gid)
-  
-  dat$Y <- exp(dat$logarea.t1)
-  
-  dat$size <- scale(dat$logarea.t0)
-  dat$small <- factor(dat$logarea.t0 < small)
-  dat$size_2 <- scale(dat$logarea.t0^2)
-  dat$size_raw <- exp(dat$logarea.t0)
-  dat$size_min_scale <- exp(dat$size)/min(exp(dat$size))
-  
-  dat$X <- model.matrix(formX, data = dat)
-  dat$Z <- model.matrix(formZ, data = dat)
-  dat$E <- model.matrix(formE, data = dat) 
-  
-  dat$g <- factor(dat$yid)
-  
-  dat <- split_df(dat, ... )
-  dl <- make_dl(dat)
-  
-  return(dl)
-} 
 
 left_censor <- function(dl, U = min(dl$Y)){ 
   # account for left censored data 
@@ -147,24 +119,7 @@ get_spp_and_vr <- function(dat_file, model_file){
   return(list(spp, vr))
 }
 
-get_dl <- function(combo_file, dat_file, index = 1, ...){
-  if(index > 0){ 
-    combos <- read.csv(combo_file)
-    formC <- as.formula(as.character(combos$Cform[index]))
-    hold <- as.character(combos$hold[index])
-  }else if(index == 0 ){ 
-    hold <- index
-    combos <- read.csv(combo_file)
-    formC <- as.formula(as.character(combos$Cform[nrow(combos)]))
-  }
-  hold <- eval(parse( text = paste0('c(', hold, ')')))
-  dat <- readRDS(dat_file)
-  dl <- process_data(dat, small = -1, formC = formC, formZ = as.formula(~size), formE = as.formula(~ small + size_min_scale), hold = hold, ...)
-  dl <- left_censor(dl, U = exp(-1))
-  return(dl)
-}
-
-process_data <- function(dat, formX, formC, formZ, formE, center = T, ... ){
+process_data <- function(dat, formX, formC, formZ, formE, vr = 'growth', center = T, ... ){
   
   C <- model.matrix(formC, dat)
   dat$C <- scale(C)
@@ -181,12 +136,16 @@ process_data <- function(dat, formX, formC, formZ, formE, center = T, ... ){
   dat_4_cover <- split_df(dat_4_cover, hold = 0)
   dl_4_cover <- make_dl(dat_4_cover)
   dl_4_cover <- dl_4_cover[-grep('hold', names(dl_4_cover))]
-  
-  dat <- dat[complete.cases(dat), ]
-  dat <- split_df(dat, hold )
-  dl <- make_dl(dat)
-  
   names(dl_4_cover) <- paste0( 'cover_', names(dl_4_cover))
+  
+  if(vr == 'growth'){ 
+    dat <- dat[complete.cases(dat), ]
+    dat <- split_df(dat, hold )
+    dl <- make_dl(dat)
+  }else if(vr == 'survival'){ 
+    dat <- split_df(dat, hold)
+    dl  <- make_dl(dat)
+  }
   
   return( c(dl, dl_4_cover))
 }

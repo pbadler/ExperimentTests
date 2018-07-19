@@ -1,6 +1,7 @@
 rm(list = ls())
 
 library(rstan)
+library(tidyverse)
 
 df <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vital_rate = c('growth', 'recruitment', 'survival'))
 
@@ -11,36 +12,8 @@ source('analysis/stan_data_functions.R')
 spp <- df$species[i]
 vr  <- df$vital_rate[i]
 
-dat_file <- 'data/temp_data/POSE_growth_survival_dataframe.RDS'
+dat_file <- 'data/temp_data/ARTR_growth_survival_dataframe.RDS'
 dat <- readRDS(dat_file)
-
-process_data <- function(dat, formX, formC, formZ, formE, center = T, ... ){
-  
-  C <- model.matrix(formC, dat)
-  dat$C <- scale(C)
-  dat$W <- scale(dat$W)
-  dat$Group <- factor(dat$gid)
-  
-  dat$X <- model.matrix(formX, data = dat)
-  dat$Z <- model.matrix(formZ, data = dat)
-  dat$E <- model.matrix(formE, data = dat) 
-  
-  dat$g <- factor(dat$yid)
-  
-  dat_4_cover <- dat ### Need to preserve dataframe with NA's (dead plants) for predicting cover 
-  dat_4_cover <- split_df(dat_4_cover, hold = 0)
-  dl_4_cover <- make_dl(dat_4_cover)
-  dl_4_cover <- dl_4_cover[-grep('hold', names(dl_4_cover))]
-  
-  dat <- dat[complete.cases(dat), ]
-  dat <- split_df(dat, hold )
-  dl <- make_dl(dat)
-  
-  names(dl_4_cover) <- paste0( 'cover_', names(dl_4_cover))
-  
-  return( c(dl, dl_4_cover))
-}
-
 
 # pars ------------------- 
 hold <- c(26:30)
@@ -52,19 +25,21 @@ formX = as.formula(~ size + W + GroupP2 + Treatment2)
 # ---------------------- 
 
 dat$size <- scale( dat$logarea.t0 )
-dat$Y    <- scale( dat$logarea.t1 )
-hist(dat$Y)
+hist(dat$size)
 dat$small <- as.numeric(dat$size < -1)
+
+dat$Y    <- scale( dat$logarea.t1 )
 dat$GroupP2 <- as.numeric( dat$Group == 'P2')
 
-dl <- process_data(dat = dat, formX = formX, formC = formC, formZ = formZ, formE = formE, center = T, historical = T, hold )
+dl <- process_data(dat = dat, formX = formX, formC = formC, formZ = formZ, formE = formE, center = T, historical = T, vr = 'growth', hold )
 
-freq <- data.frame( table(dl$X[,2]) )
+freq <- data.frame( table(dl$Y) )
 freq[ order(freq$Var1), ][1:15, ] # look at the smallest plants to decide cutoff
-
-dl <- left_censor(dl, U = -1.11)
+hist(dl$Y)
+dl <- left_censor(dl, U = -3)
 
 gmod <- rstan::stan_model('analysis/growth/model_growth_censored.stan')
+
 
 gfit1 <- rstan::sampling(gmod, 
                         data = dl, 
@@ -73,13 +48,14 @@ gfit1 <- rstan::sampling(gmod,
                         cores = 4, 
                         pars = c('beta', 'eta', 'Y_hat', 'u', 'log_lik'))
 
-saveRDS(gfit1, '~/Desktop/POSE_growth_fit1.RDS')
+
+saveRDS(dl, '~/Desktop/ARTR_growth_data.RDS')
+saveRDS(gfit1, '~/Desktop/ARTR_growth_fit1.RDS')
 
 ### posterior predictive check
 Y_hat <- data.frame( summary( gfit1, 'Y_hat')$summary )
 Y_hat$obs <- dl$Y
 Y_hat$size <- dl$X[,2]
-library(tidyverse)
 
 mean( Y_hat$obs < Y_hat$X75. & Y_hat$obs > Y_hat$X25.  )
 mean( Y_hat$obs < Y_hat$X97.5. & Y_hat$obs > Y_hat$X2.5.  )
