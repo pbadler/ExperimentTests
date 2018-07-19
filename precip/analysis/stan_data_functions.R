@@ -119,7 +119,7 @@ get_spp_and_vr <- function(dat_file, model_file){
   return(list(spp, vr))
 }
 
-process_data <- function(dat, formX, formC, formZ, formE, vr = 'growth', center = T, ... ){
+process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr = 'growth', center = T, ... ){
   
   C <- model.matrix(formC, dat)
   dat$C <- scale(C)

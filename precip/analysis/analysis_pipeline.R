@@ -44,7 +44,12 @@ rm(list=setdiff(ls(), "my_path")) # clean up, but leave my_path
 
 # 3. fit treatment models 
 
-source('analysis/fit_stan_treatment_models.R') # takes a few hours to run 
+source('analysis/fit_growth_models1.R') # takes 10 minutes or so. 
+
+source('analysis/fit_survival_models1.R')
+
+
+
 
 source('analysis/figure_scripts/plot_treatment_stan_fits.R') # takes a few minutes to run 
 
