@@ -34,7 +34,7 @@ clean_growth_survival <- function(clim, growth_file, survival_file){
   
   x <- set_up_basic_vars(x)
   
-  x$X <- scale(x$logarea.t0) # center X on mean.  Center BEFORE splitting up survival and growth, modern and historical
+  #x$X <- scale(x$logarea.t0) # center X on mean.  Center BEFORE splitting up survival and growth, modern and historical
   
   W <- x[ , grep ( '^W\\.', names( x))]
   W <- as.matrix( W )[,1:6] # big four competition effects
@@ -54,11 +54,11 @@ clean_recruitment <- function(clim, recruitment_file){
   
   x <- set_up_basic_vars(x) 
   
-  x$gm <- model.matrix.lm(~ x$Group)
-  x$tm <- model.matrix.lm(~ x$Treatment)[ , -1]
+  #x$gm <- model.matrix.lm(~ x$Group)
+  #x$tm <- model.matrix.lm(~ x$Treatment)[ , -1]
   
-  x$C <- as.matrix( x[ ,  grep( '^C\\.', names(x) ) ] )
-  colnames(x$C) <- str_replace( colnames( x$C ) , '^C\\.' , '')
+  #x$C <- as.matrix( x[ ,  grep( '^C\\.', names(x) ) ] )
+  #colnames(x$C) <- str_replace( colnames( x$C ) , '^C\\.' , '')
   
   x$parents1 <- as.matrix( x[ , grep( '^cov\\.', names(x))] )
   x$parents2 <- as.matrix( x[ , grep( '^Gcov\\.', names(x))] )

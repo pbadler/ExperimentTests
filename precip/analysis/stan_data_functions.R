@@ -10,6 +10,10 @@ extract_data <- function(df){
   S <- as.numeric(df$survives)
   E <- df$E
   D <- ncol(E) 
+  parents1 <- df$parents1
+  parents2 <- df$parents2
+  Nspp <- ncol ( df$parents1 )
+  spp <- unique( df$spp ) 
   
   rm(df)
   out <- lapply( ls(), function(x) eval(parse(text = x)))
@@ -151,6 +155,23 @@ process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr 
 }
 
 
+process_recruitment_data <- function(dat, formX, formC, formZ, center = T, ... ){ 
+  
+  C <- model.matrix(formC, dat)
+  dat$C <- scale(C)
+  dat$Group <- factor(dat$gid)
+  
+  dat$X <- model.matrix(formX, data = dat)
+  dat$Z <- model.matrix(formZ, data = dat)
+  
+  dat$g <- factor(dat$yid)
+  
+  dat <- split_df(dat, hold )
+  
+  dl <- make_dl(dat)
+  
+  return(dl)
+}
 
 
 check_for_compiled_model <- function(vr, model_file){ 
