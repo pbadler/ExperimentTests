@@ -50,6 +50,9 @@ source('analysis/fit_survival_models1.R') # takes ~ 10 minutes
 
 source('analysis/fit_recruitment_models1.R') # takes ~ 10 minutes 
 
+# extract year effects 
+
+
 
 source('analysis/figure_scripts/plot_treatment_stan_fits.R') # takes a few minutes to run 
 

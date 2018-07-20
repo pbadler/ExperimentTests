@@ -16,7 +16,7 @@ nthin <- 4
 
 # pars used for all species ----------------
 vr <- 'survival'
-hold <- c(26:30)          ### Choose the hold out years 
+hold <- c(27:30)          ### Choose the hold out years 
 formC <- as.formula(~-1)  ### Climate effects design matrix 
 # ------------------------------------------
 
@@ -108,7 +108,6 @@ hist(dat$size) ## histogram of size to choose "small" size cutoff
 # pars ------------------- 
 small <- -1               ### Designate a "small" size theshhold 
 formZ = as.formula(~ size)  ### Year effects design matrix 
-formE = as.formula(~ size)  ### For survival model, size dependent variance design matrix  
 formX = as.formula(~ size + W + GroupP2 + Treatment2)  ### Fixed effects design matrix (include climate as "C")
 # ---------------------- 
 
@@ -147,7 +146,6 @@ hist(dat$size) ## histogram of size to choose "small" size cutoff
 # pars ------------------- 
 small <- -1               ### Designate a "small" size theshhold 
 formZ = as.formula(~ size)  ### Year effects design matrix 
-formE = as.formula(~ size)  ### For survival model, size dependent variance design matrix  
 formX = as.formula(~ size + small + W + GroupP2 + Treatment2)  ### Fixed effects design matrix (include climate as "C")
 # ---------------------- 
 

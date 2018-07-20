@@ -14,6 +14,7 @@ extract_data <- function(df){
   parents2 <- df$parents2
   Nspp <- ncol ( df$parents1 )
   spp <- unique( df$spp ) 
+  years <- unique( df$year )
   
   rm(df)
   out <- lapply( ls(), function(x) eval(parse(text = x)))

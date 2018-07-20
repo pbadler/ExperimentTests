@@ -16,7 +16,7 @@ nthin <- 4
   
 # pars used for all species ----------------
 vr <- 'growth'
-hold <- c(26:30)          ### Choose the hold out years 
+hold <- c(27:30)          ### Choose the hold out years 
 formC <- as.formula(~-1)  ### Climate effects design matrix 
 # ------------------------------------------
 
