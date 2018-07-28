@@ -10,12 +10,12 @@ data{
   int<lower=0> g[N];                    // group id
 
   // holdout data
-  int<lower=0> hold_N;                  // hold_N == 2 if no held out data   
+  int<lower=0> hold_N;                  // hold_N == 2 if no held out data
   int<lower=0, upper=1> hold_S[hold_N];
-  matrix[hold_N,K] hold_X;            
-  row_vector[J] hold_Z[hold_N];       
-  int<lower=0> hold_G;                
-  int<lower=0> hold_g[hold_N];        
+  matrix[hold_N,K] hold_X;
+  row_vector[J] hold_Z[hold_N];
+  int<lower=0> hold_G;
+  int<lower=0> hold_g[hold_N];
 }
 transformed data{ 
   vector[J] a;                          // prior on dirichlet distribution
@@ -33,7 +33,7 @@ parameters{
 }
 transformed parameters{
   // for training data model  
-  vector[N] alpha;                // linear predictor 
+  vector[N] mu;                         // linear predictor 
   vector[J] u[G];                       // group-level effects 
   matrix[J,J] Sigma_L;                  // cholesky of covariance matrix
   vector[J] sigma_j;                    // diagonal of covariance matrix 
@@ -48,7 +48,7 @@ transformed parameters{
     vector[N] fixef;              
     fixef = X*beta;
     for(i in 1:N){
-      alpha[i] = fixef[i] + Z[i]*u[g[i]];
+      mu[i] = fixef[i] + Z[i]*u[g[i]];
     }    
   }
 }
@@ -61,20 +61,21 @@ model{
   to_vector(u_raw) ~ normal(0,1);
 
   // Likelihood
-  S ~ bernoulli_logit(alpha);
+  S ~ bernoulli_logit(mu);
 }
 generated quantities {
   vector[N] log_lik;
   vector[hold_N] hold_log_lik;
-  vector[hold_N] hold_alpha;           // predicted survival probabilty for held out data
+  vector[hold_N] hold_mu;           // predicted survival probabilty for held out data
+  vector[hold_N] hold_fixef;
 
   for(i in 1:N)
-    log_lik[i] = bernoulli_logit_lpmf(S[i] | alpha[i]);
+    log_lik[i] = bernoulli_logit_lpmf(S[i] | mu[i]);
 
   if(hold_N > 2){
   // Run if hold out data is supplied.
     vector[J] hold_u[hold_G];
-    vector[hold_N] hold_fixef;
+    
     matrix[J, hold_G] hold_u_raw;
 
     for(i in 1:hold_G)
@@ -87,12 +88,13 @@ generated quantities {
     hold_fixef = hold_X*beta;
 
     for(i in 1:hold_N){
-      hold_alpha[i] = hold_fixef[i] + hold_Z[i]*hold_u[hold_g[i]];
-      hold_log_lik[i] = bernoulli_logit_lpmf(hold_S[i] | hold_alpha[i]);
+      hold_mu[i] = hold_fixef[i] + hold_Z[i]*hold_u[hold_g[i]];
+      hold_log_lik[i] = bernoulli_logit_lpmf(hold_S[i] | hold_mu[i]);
     }
-
+    
     }else if(hold_N <= 2 ){
-      hold_alpha = to_vector(rep_array(0, hold_N));
+      hold_fixef = to_vector(rep_array(0, hold_N));
+      hold_mu = to_vector(rep_array(0, hold_N));
       hold_log_lik = to_vector(rep_array(negative_infinity(), hold_N));
   }
 }

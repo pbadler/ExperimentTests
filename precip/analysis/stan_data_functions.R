@@ -9,7 +9,16 @@ extract_data <- function(df){
   Y <- as.numeric(df$Y)
   S <- as.numeric(df$survives)
   E <- df$E
-  D <- ncol(E) 
+  D <- ncol(E)
+  
+  obs <- which(df$censored == 0)
+  cens <- which(df$censored == 1)
+  censored <- as.numeric(df$censored)
+  N_obs <- length(obs)
+  N_cens <- length(cens)
+  Y_obs  <- Y[obs]
+  U <- unique( df$U )
+  
   parents1 <- df$parents1
   parents2 <- df$parents2
   Nspp <- ncol ( df$parents1 )
@@ -23,15 +32,17 @@ extract_data <- function(df){
   return(out)
 }
 
+
 split_df <- function(df, hold){ 
   if(all(hold == 0)){
     df_out <- split(df, df$g %in% hold)
     df_out$True <- data.frame(Y = rep(0,2))
+    df_out$True$survives = rep( 0, 2)
     df_out$True$X = matrix(0, ncol = ncol(df$X), nrow = 2)
     df_out$True$Z = matrix(0, ncol = ncol(df$Z), nrow = 2)
     df_out$True$g = rep(0,2)
     df_out$True$E = matrix(0, ncol = ncol(df$E), nrow = 2)
-    
+
   }else if(any(hold > 0)){ 
     df_out <- split(df, df$g %in% hold)
   }
@@ -49,11 +60,9 @@ make_dl <- function(df){
 get_lpd <- function(my_fit){ 
   require(loo)
   
-  out <- list(loo = loo(extract_log_lik(my_fit))$looic, 
-              lpd = log(colMeans(exp(extract_log_lik(my_fit)))), 
-              hold_lpd = log(colMeans(exp(extract_log_lik(my_fit, 'hold_log_lik')))))
-  
-  return(out)
+  lpd <- log(colMeans(exp(extract_log_lik(my_fit, 'hold_log_lik'))))
+
+  return(lpd)
 }
 
 plot_x_y <- function(myfit, X, Y, iter, bt = F){
@@ -80,21 +89,20 @@ plot_x_y <- function(myfit, X, Y, iter, bt = F){
   par(mfrow = c(1,1))
 }
 
-
-left_censor <- function(dl, U = min(dl$Y)){ 
+left_censor_df <- function(df, left_cut){ 
   # account for left censored data 
+  # left cut is the cut off for the censored data on the original scale
+  # of logarea.t1
+  # it is rescaled to the Y-scale and then applied 
   
-  dl$U <- U
-  dl$obs <- which(dl$Y > U)
-  dl$cens <- which(dl$Y <= U)
-  dl$N_obs <- length(dl$obs)
-  dl$N_cens <- length(dl$cens)
-  dl$Y_obs <- dl$Y[dl$obs]
-  dl$censored <- as.numeric(dl$Y <= U)
-  dl$hold_censored <- as.numeric(dl$hold_Y <= U)
-  dl$cover_censored <- as.numeric(dl$cover_Y <= U)
-  return(dl)
+  U <- scale(left_cut,  attributes(df$Y)$`scaled:center`, attributes(df$Y)$`scaled:scale` )
+  print(U)
+  df$U <- as.numeric(U)
+  df$censored <- as.numeric( df$Y <= df$U )
+ 
+  return(df)
 }
+
 
 init_norm <- function(means=0, sds=1, name = NULL){
   out <- list(mapply( x = means, y = sds, function(x, y) rnorm(1, x, y)))
@@ -124,12 +132,16 @@ get_spp_and_vr <- function(dat_file, model_file){
   return(list(spp, vr))
 }
 
-process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr = 'growth', center = T, ... ){
+process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr = 'growth', ... ){
   
   C <- model.matrix(formC, dat)
   dat$C <- scale(C)
   dat$W <- scale(dat$W)
   dat$Group <- factor(dat$gid)
+  
+  if( ncol(dat$C) == 0 ){ 
+    formX <- update(formX, ' ~ . - C')
+  }
   
   dat$X <- model.matrix(formX, data = dat)
   dat$Z <- model.matrix(formZ, data = dat)
@@ -145,10 +157,10 @@ process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr 
   
   if(vr == 'growth'){ 
     dat <- dat[complete.cases(dat), ]
-    dat <- split_df(dat, hold )
+    dat <- split_df(dat, ... )
     dl <- make_dl(dat)
   }else if(vr == 'survival'){ 
-    dat <- split_df(dat, hold)
+    dat <- split_df(dat, ... )
     dl  <- make_dl(dat)
   }
   
@@ -186,20 +198,13 @@ check_for_compiled_model <- function(vr, model_file){
   return( readRDS(compiled_model) )
 }
 
-drop_init_years <- function(my_inits, combo_file, index = 0){ 
-  if(index > 0){ 
-    combos <- read.csv(combo_file)
-    hold <- as.character(combos$hold[index])
-    print(paste0('dropping year ', hold, ' from the u_raw inits')) 
-  }else if(index == 0 ){ 
-    hold <- index
-  }
-  hold <- eval(parse( text = paste0('c(', hold, ')')))
+drop_init_years <- function(my_inits, hold){ 
+  
   lapply( my_inits, function(x){x$u_raw = x$u_raw[, -hold]; return(x) } )
 }
 
 drop_init_covariates <- function(my_inits, K){
-  lapply( my_inits, function(x) { x$theta <- x$theta[1:K]; return(x) })  
+  lapply( my_inits, function(x) { x$beta <- x$beta[1:K]; return(x) })  
 }
 
 find_dv_trans <- function(x){ 
