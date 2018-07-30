@@ -115,7 +115,12 @@ generated quantities {
   
   for(i in 1:N){
     Y_hat[i] = normal_rng(mu[i], sigma[i]);
-    log_lik[i] = normal_lpdf(Y[i] | mu[i], sigma[i]);
+    if(Y[i] > U){ 
+      log_lik[i] = normal_lpdf(Y[i] | mu[i], sigma[i]);
+    }
+    if(Y[i] <= U){ 
+      log_lik[i] = normal_lcdf(Y[i] | mu[i], sigma[i]);
+    }
   }
   
   for(i in 1:N_obs)
@@ -137,7 +142,13 @@ generated quantities {
     hold_sigma[i] = fmax(hold_sigma[i], 0.001);
   }
   
-  for(i in 1:hold_N)
-    hold_log_lik[i] = normal_lpdf(hold_Y[i] | hold_mu[i], hold_sigma[i]);
-
+  for(i in 1:hold_N){
+    if(hold_Y[i] > U){ 
+      hold_log_lik[i] = normal_lpdf(hold_Y[i] | hold_mu[i], hold_sigma[i]);
+    }
+    if(hold_Y[i] <= U ){ 
+      hold_log_lik[i] = normal_lcdf(hold_Y[i] | hold_mu[i], hold_sigma[i]);
+    }
+  }
+  
 }
