@@ -252,7 +252,14 @@ simple_mod <- glm(Y~size + W.PSSP + W.inter, data = dat[dat$Period == 'Historica
 
 dat1$resid2 <- resid(simple_mod)
 
-ggplot( dat1, aes( x = year, y = resid2)) + 
-  geom_point() + 
-  stat_summary(fun.y = 'mean', geom = 'line',color = 'blue')
+ggplot( dat1, aes( x = year, y = resid2, color = Group)) + 
+  geom_point(color = 'gray') + 
+  stat_summary(fun.y = 'mean', geom = 'point')
 
+hist( simple_mod$fitted.values )
+
+my_res <- hist( simple_mod$linear.predictors - simple_mod$data$Y  )
+?residuals
+car::logit(simple_mod$fitted.values)
+
+hist(my_res)

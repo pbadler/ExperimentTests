@@ -3,50 +3,111 @@ rm(list = ls())
 library(rstan)
 library(tidyverse)
 
-source('analysis/waic_fxns.R')
+rm(list = ls())
+
 source('analysis/stan_data_functions.R')
 
-dat_file <- 'data/temp_data/ARTR_growth_survival_dataframe.RDS'
-dat <- readRDS(dat_file)
+vr <- 'growth'
 
-# pars ------------------- 
-hold <- c(26:30)  #### Choose the years that are held out 
-formC <- as.formula(~-1)  ### Climate effects design matrix 
+mod <- rstan::stan_model('analysis/growth/model_growth_censored.stan') # load stan model 
+
+# STAN pars -------------- 
+ncores <- 4 
+niter <- 2000 
+nchains <- 4 
+nthin <- 1
+# --------------------------
+
 small <- -1               ### Designate a "small" size theshhold 
 formZ = as.formula(~ size)  ### Year effects design matrix 
+formX = as.formula(paste0 ('~ size + small + W.intra + W.inter + C')) ### Fixed effects design matrix (include climate as "C")
 formE = as.formula(~ size)  ### For growth model, size dependent variance design matrix  
-formX = as.formula(~ size + W + GroupP2 + Treatment2)  ### Fixed effects design matrix (include climate as "C")
-# ---------------------- 
+# ------------------------------------------
 
+# set up climate variable table --------------------------# 
+load('data/temp_data/climate_combos.RData')
+
+nvars <- length(T_combos)
+
+climate_effects <- paste0( 'C.T.', 1:nvars, '*', 'C.VWC.', 1:nvars)
+climate_effects <- c('NULL', climate_effects)
+
+T_combos <- lapply( T_combos , paste, collapse = ', ')
+VWC_combos <- lapply( VWC_combos, paste, collapse = ', ')
+
+model_scores <- data.frame( climate_effects, Temperature = c(NA, unlist( T_combos )) , VWC = c(NA, unlist( VWC_combos ))) 
+model_scores <- model_scores[2, ]
+
+left_cut <- -1
+
+sp <- 'ARTR'
+ad <- 0.95
+fx <- formX
+lc <- left_cut
+  
+dat_file <- paste0('data/temp_data/', sp, '_growth_survival_dataframe.RDS')
+dat <- readRDS(dat_file)
+  
+dat <- dat[ dat$Period == 'Historical',  ] 
+  
+intra_comp <- paste0('W.', sp)
+  
 dat$size <- scale( dat$logarea.t0 )
-hist(dat$size)
-dat$small <- as.numeric(dat$size < -1)
-
+  
+dat$small <- as.numeric(dat$size < small)
 dat$Y    <- scale( dat$logarea.t1 )
-dat$GroupP2 <- as.numeric( dat$Group == 'P2')
+dat$GroupP2 <- as.numeric( dat$Group == 'P2') # Paddock P2 is weird 
+dat$W.intra  <- scale( dat[ , intra_comp])
+dat$W.inter <- scale( rowSums(dat$W[, -( grep ( intra_comp , colnames(dat$W))) ] ) ) # inter specific comp. 
+  
+dat <- left_censor_df(dat, left_cut = lc)
+  
+temp_beta <- list()
+beta_est <- list()
+  
+# get climate effects 
+climate_effects
+formC <- as.formula( paste0 ( '~-1 + ', climate_effects[2]  ))  ### Climate effects design matrix 
 
-dl <- process_data(dat = dat, formX = formX, formC = formC, formZ = formZ, formE = formE, center = T, historical = T, vr = 'growth', hold )
+hold <- sample(1:26, 3, replace = F)     
+hold <- 0 
 
-freq <- data.frame( table(dl$Y) )
-freq[ order(freq$Var1), ][1:15, ] # look at the smallest plants to decide cutoff
-hist(dl$Y)
-dl <- left_censor(dl, U = -3)
+dl <- process_data(dat = dat, 
+                       formX = fx, 
+                       formC = formC,
+                       formE = formE,
+                       formZ = formZ, 
+                       vr = vr, 
+                       hold = hold )
+      
 
-gmod <- rstan::stan_model('analysis/growth/model_growth_censored.stan')
-
-
-gfit1 <- rstan::sampling(gmod, 
-                        data = dl, 
-                        chains = 4, 
-                        iter = 2000, 
-                        cores = 4, 
-                        pars = c('beta', 'eta', 'Y_hat', 'u', 'log_lik'))
-
-
-saveRDS(dl, '~/Desktop/ARTR_growth_data.RDS')
-saveRDS(gfit1, '~/Desktop/ARTR_growth_fit1.RDS')
-
+fit1 <- rstan::sampling(mod,
+                            data = dl,
+                            chains = nchains,
+                            iter = niter,
+                            cores = ncores,
+                            control = list(adapt_delta = ad))
+      
 ### posterior predictive check
+Y <- dl$Y
+
+ll <- loo::extract_log_lik(fit1)
+loo::loo(ll)
+
+shinystan::launch_shinystan(fit1)
+
+sum( log(colMeans(exp(ll))) )
+
+get_lpd(fit1)
+
+min(dl$Y_obs)
+dl$Y[dl$cens]
+dl$U
+
+library(shinystan)
+
+launch_shinystan(fit1)
+
 Y_hat <- data.frame( summary( gfit1, 'Y_hat')$summary )
 Y_hat$obs <- dl$Y
 Y_hat$size <- dl$X[,2]
