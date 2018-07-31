@@ -152,7 +152,7 @@ for( s in 1:length(species)){
 
   model_scores <- cbind( model_scores[, 1:8], beta_est)
 
-  saveRDS(model_scores, paste0( 'output/', sp, '_', vr, '_model_scores2.RDS'))
+  saveRDS(model_scores, paste0( 'output/', sp, '_', vr, '_model_scores3.RDS'))
 
   model_scores[,4:ncol(model_scores)] <- NA
 

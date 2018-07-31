@@ -28,13 +28,14 @@ formX = as.formula(paste0 ('~ size + small + W.intra + W.inter + C')) ### Fixed 
 load('data/temp_data/climate_combos.RData')
 
 nvars <- length(T_combos)
+
 climate_effects <- paste0( 'C.T.', 1:nvars, '*', 'C.VWC.', 1:nvars)
 climate_effects <- c('NULL', climate_effects)
 
 T_combos <- lapply( T_combos , paste, collapse = ', ')
 VWC_combos <- lapply( VWC_combos, paste, collapse = ', ')
 
-model_scores <- data.frame( climate_effects, Temperature = c(NA, unlist( T_combos[1:3] )) , VWC = c(NA, unlist( VWC_combos[1:3] ))) 
+model_scores <- data.frame( climate_effects, Temperature = c(NA, unlist( T_combos )) , VWC = c(NA, unlist( VWC_combos ))) 
 model_scores$out_of_sample_lppd <- NA
 model_scores$out_of_sample_mse <- NA
 model_scores$ndiv <- NA
