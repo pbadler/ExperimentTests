@@ -3,7 +3,7 @@
 
 if(exists("growth_residuals")==F) stop("You need to fit growth models to get residuals")
 
-spp_names <- c("Artemisia tripartita","Hesperostipa comata","Poa secunda","Pseudoroegneria spicata")
+spp_names <- c("A. tripartita","H. comata","P. secunda","P. spicata")
 
 # get pretreatment cover
 covD <- read.csv("C:\\Repos\\ExperimentTests\\removals\\QuadYearCover.csv")
@@ -38,7 +38,7 @@ for(i in 1:4){
   plot(growth_residuals[[i]]$cover[keep],growth_residuals[[i]]$resids[keep],col=rgb(0,0,0,0.2),
        xlab="",ylab="",pch=16)
   abline(h=0,lty="dashed")
-  mtext(side=3,spp_names[i],line=0.5,adj=0,font=3)
+  mtext(side=3,spp_names[i],line=0.5,adj=0,font=4)
   
   # fit simple linear regression, display results if significant
   tmp <- lm(growth_residuals[[i]]$resids[keep]~growth_residuals[[i]]$cover[keep])
