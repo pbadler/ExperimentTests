@@ -153,7 +153,7 @@ for(i in 1:length(sppList)){
                        lambda = lambdas,
                        penalty.factor = pen_facts,
                        family = "gaussian", 
-                       alpha = 0.5, # 0 for ridge, 1 for lasso 
+                       alpha = 0, # 0 for ridge, 1 for lasso 
                        standardize = FALSE, 
                        type.measure = "mse",
                        nfolds = length(y_small))
@@ -172,7 +172,7 @@ for(i in 1:length(sppList)){
                        lambda = lambdas,
                        penalty.factor = pen_facts,
                        family = "gaussian", 
-                       alpha = 0.5, # 0 for ridge, 1 for lasso 
+                       alpha = 0, # 0 for ridge, 1 for lasso 
                        standardize = FALSE, 
                        type.measure = "mse",
                        nfolds = length(y_big))
