@@ -106,12 +106,16 @@ generated quantities {
   vector[N_obs] Y_hat_obs;
   vector[N] log_lik;
   
+  vector[hold_N] hold_Y_hat;
   vector[hold_N] hold_mu;                    // linear predictor
   vector[hold_N] hold_sigma;                    // linear predictor
   vector[J] hold_u[hold_G];                  // scaled and correlated group effects
   vector[hold_N] hold_log_lik;
   vector[hold_N] hold_fixef;                // fixed effects
   matrix[J, hold_G] hold_u_raw;              // raw group effects
+  
+  vector[hold_N] hold_SE; 
+  real hold_SSE; 
   
   for(i in 1:N){
     Y_hat[i] = normal_rng(mu[i], sigma[i]);
@@ -133,7 +137,6 @@ generated quantities {
   for(j in 1:hold_G)
     hold_u[j] = Sigma_L * col(hold_u_raw, j);
 
-
   hold_fixef = hold_X*beta;
   hold_sigma = sqrt(exp(hold_E*eta));
   
@@ -143,12 +146,21 @@ generated quantities {
   }
   
   for(i in 1:hold_N){
+    hold_Y_hat[i] = normal_rng(hold_mu[i], hold_sigma[i]);
+    
     if(hold_Y[i] > U){ 
       hold_log_lik[i] = normal_lpdf(hold_Y[i] | hold_mu[i], hold_sigma[i]);
     }
     if(hold_Y[i] <= U ){ 
       hold_log_lik[i] = normal_lcdf(hold_Y[i] | hold_mu[i], hold_sigma[i]);
     }
+    
   }
+  
+  for( i in 1:hold_N){ 
+    hold_SE[i] = ( hold_mu[i] - hold_Y[i] )^2 ;
+  }
+  
+  hold_SSE = sum(hold_SE);
   
 }

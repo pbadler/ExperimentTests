@@ -6,7 +6,7 @@ library(loo)
 
 source('analysis/stan_data_functions.R')
 
-vr <- 'survival'
+vr <- 'growth'
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
 k <- 10                      ### number of folds 
@@ -27,6 +27,9 @@ adapt_delta <- c(0.98, 0.98, 0.8, 0.8)  #  species specific
 small <- -1                 ### Designate a "small" size theshhold 
 formZ = as.formula(~ size)  ### Year effects design matrix 
 formX = as.formula(paste0 ('~ size + small + W.intra + W.inter + C')) ### Fixed effects design matrix (include climate as "C")
+formE = as.formula(~ size)  ### For growth model, size dependent variance design matrix  
+
+left_cut <- c(-1, -1.3, -1.3, -1.3) # for censored data 
 
 # set up model selection table --------------------------# 
 load('data/temp_data/climate_combos.RData')
@@ -42,18 +45,20 @@ model_combos <- data.frame( climate_effects = climate_effects)
 
 # --------------------------------------------------------- #
 
-mod <- rstan::stan_model('analysis/survival/logistic.stan') # load survival model 
+mod <- rstan::stan_model('analysis/growth/model_growth_censored.stan') # load stan model 
 
 # ---------------------------------------------------------- # 
 
 total <- k*nrow(model_combos)*length(species)  ### Total number of models to fit 
+
 counter <- 1
 
 for( s in 1:length(species)){ 
-
+  
   sp <- species[s]
   ad <- adapt_delta[s]
-
+  lc <- left_cut[s]
+  
   dat_file <- paste0('data/temp_data/', sp, '_growth_survival_dataframe.RDS')
   
   dat <- readRDS(dat_file)
@@ -70,10 +75,12 @@ for( s in 1:length(species)){
   dat$small <- as.numeric(dat$size < small)
   dat$Y    <- scale( dat$logarea.t1 )
   dat$GroupP2 <- as.numeric( dat$Group == 'P2') # Paddock P2 is weird 
-
+  
   intra_comp <- paste0('W.', sp)
   dat$W.intra  <- scale( dat[ , intra_comp])
   dat$W.inter <- scale( rowSums(dat$W[, -( grep ( intra_comp , colnames(dat$W))) ] ) ) # inter specific comp. 
+  
+  dat <- left_censor_df(dat, left_cut = lc)
   
   ## Set up output table 
   temp_scores <- model_combos
@@ -92,17 +99,18 @@ for( s in 1:length(species)){
     lpd <- NA
     sse <- NA
     div <- 0
-
+    
     for( i in 1:k ){
       hold <- k_folds$yid[ k_folds$folds == i  ] 
-    
+      
       dl <- process_data(dat = dat, 
                          formX = formX, 
                          formC = formC, 
                          formZ = formZ, 
+                         formE = formE,
                          vr = vr, 
                          hold = hold )
-  
+      
       cat('\n\n')
       
       print( paste( '### ---- species ', s, ' out of ', length(species), ' -------- # '))
@@ -114,12 +122,12 @@ for( s in 1:length(species)){
                               data = dl, 
                               chains = nchains, 
                               iter = niter, 
-                              cores = ncores, 
-                              thin = nthin,  
+                              cores = ncores,
+                              thin = nthin,
                               pars = c('hold_log_lik', 'hold_SSE'), 
                               control = list(adapt_delta = ad), 
                               refresh = -1)
-
+      
       div <- div + find_dv_trans(fit1)
       lpd[i] <- sum(get_lpd(fit1))
       sse[i] <- summary(fit1, 'hold_SSE')$summary[, 'mean']        

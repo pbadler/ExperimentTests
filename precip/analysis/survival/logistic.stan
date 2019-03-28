@@ -68,7 +68,9 @@ generated quantities {
   vector[hold_N] hold_log_lik;
   vector[hold_N] hold_mu;           // predicted survival probabilty for held out data
   vector[hold_N] hold_fixef;
-
+  vector[hold_N] hold_SE; 
+  real hold_SSE; 
+  
   for(i in 1:N)
     log_lik[i] = bernoulli_logit_lpmf(S[i] | mu[i]);
 
@@ -97,4 +99,11 @@ generated quantities {
       hold_mu = to_vector(rep_array(0, hold_N));
       hold_log_lik = to_vector(rep_array(negative_infinity(), hold_N));
   }
+  
+  for( i in 1:hold_N){ 
+    hold_SE[i] = (inv_logit(hold_mu[i]) - hold_S[i])^2 ;
+  }
+  
+  hold_SSE = sum(hold_SE);
+    
 }
