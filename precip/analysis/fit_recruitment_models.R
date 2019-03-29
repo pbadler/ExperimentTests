@@ -12,7 +12,7 @@ species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 k <- 2                      ### number of folds 
 
 n_mods <- 2
-species <- species[1:2]
+species <- species[1:4]
 
 # STAN pars -------------- 
 ncores <- 1 
@@ -128,7 +128,7 @@ for( s in 1:length(species)){
       div <- div + find_dv_trans(fit1)
       
       lpd[i] <- sum(get_lpd(fit1))
-      sse[i] <- summary(fit1, 'hold_SSE')$summary[, 'mean']        
+      sse[i] <- summary(fit1, 'hold_SSE')$summary[, '50%']        
       counter <- counter + 1 
       
     }
