@@ -1,30 +1,31 @@
 data{
-  int<lower=0> N;             // observations
-  int<lower=0> Y[N];          // observation vector
+  int<lower=0> N;                   // observations
+  int<lower=0> Y[N];                // observation vector
   
-  int<lower=0> K;                       // # of fixed effects
-  matrix[N,K] X;                        // fixed effects matrix   
-  int<lower=0> J;                       // # of group level effects
-  row_vector[J] Z[N];                   // group level effects matrix
-  int<lower=0> G;                       // groups
-  int<lower=0> g[N];                    // group id
+  int<lower=0> K;                   // # of fixed effects
+  matrix[N,K] X;                    // fixed effects matrix   
+  int<lower=0> J;                   // # of group level effects
+  row_vector[J] Z[N];               // group level effects matrix
+  int<lower=0> G;                   // groups
+  int<lower=0> g[N];                // group id
   
-  
-  int<lower=0> Nspp;          // number of species 
-  int<lower=0> spp;           // focal species id
-  matrix[N, Nspp] parents1;   // parents in plot
-  matrix[N, Nspp] parents2;   // parents in group
+  int<lower=0> Nspp;                // number of species 
+  int<lower=0> spp;                 // focal species id
+  matrix[N, Nspp] parents1;         // parents in plot
+  matrix[N, Nspp] parents2;         // parents in group
 
   // for out of sample prediction
-  // int<lower=0> Nhold;
-  // int<lower=0> nyrshold;              // years out
-  // int<lower=0> yidhold[Nhold];        // year out id
-  // int<lower=0> Yhold[Nhold];          // observation vector
-  // matrix[Nhold, Nspp] parents1hold;   // hold out parents in plot
-  // matrix[Nhold, Nspp] parents2hold;   // hold out parents in group
-  // matrix[Nhold, G] gmhold;
-  // matrix[Nhold,Covs] Chold;           // climate matrix
+  int<lower=0> hold_N;              // observations
+  int<lower=0> hold_Y[hold_N];      // observation vector
   
+  matrix[hold_N,K] hold_X;          // fixed effects matrix   
+  row_vector[J] hold_Z[hold_N];     // group level effects matrix
+  int<lower=0> hold_G;              // groups
+  int<lower=0> hold_g[hold_N];      // group id
+  
+  matrix[hold_N, Nspp] hold_parents1;   // parents in plot
+  matrix[hold_N, Nspp] hold_parents2;   // parents in group
+
   // all data for cover predictions 
   // int<lower=0> N2;
   // int<lower=0> nyrs2;              // years out
@@ -98,39 +99,63 @@ model{
   // Likelihood
   Y ~ neg_binomial_2(lambda, theta);
 }
-// generated quantities{
-//   vector[N] log_lik; 
-//   vector[Nhold] log_lik2; 
-//   vector[nyrshold] a_pred;
-//   vector[Nhold] mu_pred;
-//   vector[Nhold] lambda_pred;
-// 
-//   // for prediction 
-//   vector[Nhold] coverEff_pred;
-//   matrix[Nhold, Nspp] trueP1_pred;
-//   matrix[Nhold, Nspp] trueP2_pred;
-//   vector[Nhold] gint_out; 
-//   vector[Nhold] climhat; 
-//   
-//   // for cover prediction 
-//   vector[N2] coverEff_pred2;
-//   matrix[N2, Nspp] trueP1_pred2;
-//   matrix[N2, Nspp] trueP2_pred2;
-//   vector[N2] gint_out2; 
-//   vector[N2] climhat2; 
-//   vector[nyrs2] a_pred2;  
-//   vector[N2] mu_pred2;
-//   vector[N2] lambda_pred2;
-//   
-//   
-//   for(n in 1:N){ 
-//     log_lik[n] <- neg_binomial_2_log(Y[n], lambda[n], theta); 
-//   }
-//   
-//   // 1. Holdout data predictions 
-// 
-//   climhat <- Chold*b2;
-//   gint_out   <- gmhold*bg;
+generated quantities{
+  vector[N] log_lik; 
+  vector[hold_N] hold_log_lik; 
+  vector[hold_N] hold_mu;       // linear predictor 
+  matrix[hold_N, Nspp] hold_trueP1;
+  matrix[hold_N, Nspp] hold_trueP2;
+  vector[hold_N] hold_lambda;
+  vector[hold_N] hold_coverEff;
+  vector[hold_N] hold_fixef;
+  
+  vector[hold_N] hold_SE; 
+  real hold_SSE; 
+  
+  for(n in 1:N){ 
+    log_lik[n] = neg_binomial_2_lpmf( Y[n] | lambda[n], theta); 
+  }
+     
+  // 1. Holdout data predictions 
+  
+  if( hold_N > 1 ){ 
+    
+    vector[J] hold_u[hold_G];
+    matrix[J, hold_G] hold_u_raw;
+    
+    for(i in 1:hold_G)
+      for(j in 1:J)
+        hold_u_raw[j, i] = normal_rng(0,1);
+  
+    for(j in 1:hold_G)
+      hold_u[j] = Sigma_L * col(hold_u_raw, j);
+  
+    hold_fixef = hold_X*beta;
+    hold_trueP1 = hold_parents1*m + hold_parents2*(1-m);
+    
+    for(n in 1:hold_N)
+      for( j in 1:Nspp)
+        hold_trueP2[n, j] = sqrt(hold_trueP1[n, j]);
+    
+    hold_coverEff = hold_trueP2*w;
+  
+    for(n in 1:hold_N){
+      hold_mu[n] = exp(hold_fixef[n] + hold_coverEff[n] + hold_Z[n]*hold_u[hold_g[n]]);
+      hold_lambda[n] = hold_trueP1[n, spp]*hold_mu[n];  
+      hold_log_lik[n] = neg_binomial_2_lpmf( hold_Y[n] | hold_lambda[n], theta); 
+    }
+  }else if(hold_N <= 2 ){
+      hold_fixef = to_vector(rep_array(0, hold_N));
+      hold_mu = to_vector(rep_array(0, hold_N));
+      hold_lambda = to_vector(rep_array(0, hold_N));
+      hold_log_lik = to_vector(rep_array(negative_infinity(), hold_N));
+  }
+  
+  for( i in 1:hold_N){ 
+    hold_SE[i] = (hold_lambda[i] - hold_Y[i])^2 ;
+  }
+  hold_SSE = sum(hold_SE)/hold_N;
+
 //   trueP1_pred <- parents1hold*u + parents2hold*(1-u);
 // 
 //   for(n in 1:Nhold)
@@ -171,4 +196,5 @@ model{
 //   }
 // 
 //   
-// }
+}
+
