@@ -9,16 +9,31 @@ source('analysis/stan_data_functions.R')
 vr <- 'growth'
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
-k <- 10                      ### number of folds 
-
-# n_mods <- 2
-# species <- species[1:2]
-
-# STAN pars -------------- 
-ncores <- 4 
-niter <- 2000
-nchains <- 4 
-nthin <- 5
+testing <- T
+if( testing ){ 
+  
+  k <- 2                      ### number of folds 
+  n_mods <- 2
+  species <- species[1:2]
+  
+  # STAN pars -------------- 
+  ncores <- 1 
+  niter <- 1000
+  nchains <- 1 
+  nthin <- 5
+  
+}else{
+  
+  k <- 10                      ### number of folds 
+  n_mods <- 8
+  
+  # STAN pars -------------- 
+  ncores <- 4 
+  niter <- 2000
+  nchains <- 4 
+  nthin <- 5
+  
+}
 
 adapt_delta <- c(0.98, 0.98, 0.8, 0.8)  #  species specific 
 # --------------------------
@@ -41,11 +56,11 @@ climate_effects <- c('NULL', climate_effects)
 
 model_combos <- data.frame( climate_effects = climate_effects)
 
-# model_combos <- model_combos %>% head( n_mods )
+model_combos <- model_combos %>% head( n_mods )
 
 # --------------------------------------------------------- #
 
-mod <- rstan::stan_model('analysis/growth/model_growth_censored.stan') # load stan model 
+mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
 
 # ---------------------------------------------------------- # 
 

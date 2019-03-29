@@ -9,16 +9,31 @@ source('analysis/stan_data_functions.R')
 vr <- 'recruitment'
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
-k <- 2                      ### number of folds 
+testing <- T
+if( testing ){ 
 
-n_mods <- 2
-species <- species[1:4]
+  k <- 2                      ### number of folds 
+  n_mods <- 2
+  species <- species[1:2]
+  
+  # STAN pars -------------- 
+  ncores <- 1 
+  niter <- 1000
+  nchains <- 1 
+  nthin <- 5
 
-# STAN pars -------------- 
-ncores <- 1 
-niter <- 500
-nchains <- 1 
-nthin <- 5
+}else{
+  
+  k <- 10                      ### number of folds 
+  n_mods <- 8
+
+  # STAN pars -------------- 
+  ncores <- 4 
+  niter <- 2000
+  nchains <- 4 
+  nthin <- 5
+  
+}
 
 adapt_delta <- c(0.98, 0.98, 0.8, 0.8)  #  species specific 
 # --------------------------
@@ -41,7 +56,7 @@ model_combos <- model_combos %>% head( n_mods )
 
 # --------------------------------------------------------- #
 
-mod <- rstan::stan_model('analysis/recruitment/recruitment.stan') # load stan model 
+mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
 
 # ---------------------------------------------------------- # 
 

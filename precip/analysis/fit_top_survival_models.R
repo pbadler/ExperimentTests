@@ -8,8 +8,6 @@ source('analysis/stan_data_functions.R')
 
 vr <- 'survival'
 
-mod <- rstan::stan_model('analysis/survival/logistic.stan') # load stan model 
-
 # STAN pars -------------- 
 ncores <- 4 
 niter <- 2000 
@@ -23,23 +21,23 @@ formX = as.formula(paste0 ('~ size + small + W.intra + W.inter + C')) ### Fixed 
 # ------------------------------------------
 
 # set up climate variable table --------------------------# 
-stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/model_ranks_new.csv')
+stan_mods <- read_csv('output/model_ranks_new.csv')
 
-top_growth_mods <- 
+top_mods <- 
   stan_mods %>% 
   group_by( spp, vr ) %>% 
-  filter(oos_lppd == max(oos_lppd), vr == 'survival') %>% 
+  filter(oos_lppd == max(oos_lppd), vr == vr) %>% 
   select( vr, spp, climate_window)
 
 model_list <- expand.grid( 
-  spp = unique( top_growth_mods$spp) , 
-  vr = 'survival', 
-  model = c('top_model', 'NULL_MOD'))
+  spp = unique( top_mods$spp) , 
+  vr = vr, 
+  model = c('top_model', 'none'))
 
 model_list <- 
   model_list %>% 
-  left_join(top_growth_mods) %>% 
-  mutate( climate_window = ifelse(model == 'NULL_MOD', 'NULL_MOD', climate_window)) 
+  left_join(top_mods) %>% 
+  mutate( climate_window = ifelse(model == 'none', 'none', climate_window)) 
 
 # --------------------------------------------------------- #
 model_list$adapt_delta <- c(0.98, 0.98, 0.8, 0.8)
@@ -49,10 +47,13 @@ formXNULL <- update(formX,  ~ . - C)
 
 model_list <- 
   model_list %>% 
-  mutate(formX = ifelse( climate_window == "NULL_MOD", list( formXNULL), formX  )) %>% 
-  distinct( spp, vr, adapt_delta, climate_window, formX, left_cut )
+  mutate(formX = ifelse( climate_window == "none", list( formXNULL), formX  )) %>% 
+  filter( !is.na(formX)) %>% 
+  distinct( spp, vr, adapt_delta, climate_window, formX )
 
 i <- 1
+
+mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
 
 for(i in 1:nrow(model_list)){ 
   
@@ -74,13 +75,13 @@ for(i in 1:nrow(model_list)){
   dat$W.intra  <- scale( dat[ , intra_comp])
   dat$W.inter <- scale( rowSums(dat$W[, -( grep ( intra_comp , colnames(dat$W))) ] ) ) # inter specific comp. 
   
-  if ( window != 'NULL_MOD' ){   
+  if ( window != 'none' ){   
     moist <- paste0( 'C.VWC.', window)
     therm <- paste0( 'C.T.', window )
     
     # get climate effects 
     formC <- as.formula( paste0 ( '~-1 + ', moist, '*', therm  ))  ### Climate effects design matrix 
-  }else if( window == 'NULL_MOD'){ 
+  }else if( window == 'none'){ 
     
     formC <- as.formula( '~-1')  
   }
@@ -107,7 +108,7 @@ for(i in 1:nrow(model_list)){
                   control = list(adapt_delta = ad), 
                   refresh = -1 )
   
-  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_model_data.RDS'))
-  saveRDS(fit, file = paste0( 'output/stan_fits/', sp, '_', vr, '_model_', window, '_top_model.RDS'))
+  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_model_data.RDS'))
+  saveRDS(fit, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_top_model.RDS'))
   
 }

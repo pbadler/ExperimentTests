@@ -8,7 +8,6 @@ source('analysis/stan_data_functions.R')
 
 vr <- 'recruitment'
 
-mod <- rstan::stan_model('analysis/recruitment/recruitment.stan') # load stan model 
 
 # STAN pars -------------- 
 ncores <- 1 
@@ -23,7 +22,7 @@ formX = as.formula(paste0 ('~ 1 + C')) ### Fixed effects design matrix (include 
 # ------------------------------------------
 
 # set up climate variable table --------------------------# 
-stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/model_ranks_new.csv')
+stan_mods <- read_csv('output/model_ranks_new.csv')
 
 top_mods <- 
   stan_mods %>% 
@@ -54,6 +53,8 @@ model_list <-
   distinct( spp, vr, adapt_delta, climate_window, formX )
 
 i <- 1
+
+mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
 
 for(i in 1:nrow(model_list)){ 
   
