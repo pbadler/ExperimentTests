@@ -26,7 +26,7 @@ formE = as.formula(~ size)  ### For growth model, size dependent variance design
 # ------------------------------------------
 
 # set up climate variable table --------------------------# 
-stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/stan_model_ranks.csv')
+stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/model_ranks_new.csv')
 
 top_growth_mods <- 
   stan_mods %>% 
@@ -90,10 +90,6 @@ for(i in 1:nrow(model_list)){
     formC <- as.formula( '~-1')  
   }
   
-  lpd <- list()
-  mse <- list()
-  div <- 0
-    
   hold <- unique( dat$yid [ dat$Period == 'Modern'] ) 
   
   dl <- process_data(dat = dat, 
@@ -113,7 +109,7 @@ for(i in 1:nrow(model_list)){
                             chains = nchains,
                             iter = niter,
                             cores = ncores,
-                            pars = c('hold_log_lik', 'beta', 'Y_hat', 'hold_Y_hat', 'mu', 'hold_mu'),
+                            pars = c('hold_log_lik', 'beta', 'Y_hat', 'hold_Y_hat', 'mu', 'hold_mu', 'hold_SSE'),
                             control = list(adapt_delta = ad),
                             thin = nthin, 
                             refresh = -1)

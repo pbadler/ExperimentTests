@@ -2,24 +2,36 @@ rm(list = ls())
 
 library(tidyverse)
 
-grid <- expand.grid(species = c('ARTR', 'HECO', 'POSE', 'PSSP'), vr = c('growth'))
+score_fls <- dir('output', pattern = 'model_scores_new.RDS', full.names = T)
+
+all_ranks <- lapply(score_fls, readRDS ) 
+
+rank_mods <- do.call( rbind, all_ranks)
+
+rank_mods %>% 
+  mutate(window_lab = ifelse (is.na(climate_window), 0, climate_window)) %>% 
+  group_by( spp, vr) %>% 
+  mutate( top = oos_lppd == max(oos_lppd)) %>% 
+  ggplot( aes( x = window_lab, y = oos_lppd, color = vr)) + 
+  geom_line() + 
+  geom_point(data = . %>% filter(top), aes( x = window_lab, y = oos_lppd), shape = 2) + 
+  facet_grid(spp ~ . , scales = 'free')
+
+rank_mods %>% 
+  mutate(window_lab = ifelse (is.na(climate_window), 0, climate_window)) %>% 
+  group_by( spp, vr) %>% 
+  mutate( top = oos_mse == min(oos_mse)) %>% 
+  ggplot( aes( x = window_lab , y = oos_mse, color = vr)) + 
+  geom_line() + 
+  geom_point(data = . %>% filter(top), aes( x = window_lab, y = oos_mse), shape = 2, show.legend = F) + 
+  facet_grid( spp ~.  , scales = 'free')
 
 
-for( i in 1:nrow(grid)){ 
-  spp <- grid$sp[i]
-  vr  <- grid$vr[i]
-  scores <- readRDS(paste0( 'output/', spp, '_', vr, '_model_scores3.RDS'))
-  
-  scores %>% 
-    ggplot(aes(x = climate_effects, y = out_of_sample_lppd)) + 
-    geom_point() 
-  
-  scores %>% 
-    ggplot(aes(x = climate_effects, y = out_of_sample_mse)) + 
-    geom_point() 
-  
+rank_mods %>% 
+  ggplot( aes ( x = oos_lppd, y = oos_mse)) + 
+  geom_point() + 
+  geom_smooth(se = F, method = 'lm' ) + 
+  facet_wrap(vr ~ spp, scales = 'free' )
 
-  write_csv( scores %>% arrange(desc(out_of_sample_lppd)), paste0('output/', spp, '_', vr, '_', 'model_ranks3.csv'))
-
-}
-
+rank_mods %>% 
+  write_csv('output/model_ranks_new.csv')

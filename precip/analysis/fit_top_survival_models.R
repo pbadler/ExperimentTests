@@ -1,5 +1,3 @@
-# refit top growth models 
-
 rm(list = ls())
 
 library(rstan)
@@ -25,7 +23,7 @@ formX = as.formula(paste0 ('~ size + small + W.intra + W.inter + C')) ### Fixed 
 # ------------------------------------------
 
 # set up climate variable table --------------------------# 
-stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/stan_model_ranks.csv')
+stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/model_ranks_new.csv')
 
 top_growth_mods <- 
   stan_mods %>% 
@@ -105,7 +103,7 @@ for(i in 1:nrow(model_list)){
                   iter = niter, 
                   cores = ncores,
                   thin = nthin, 
-                  pars = c('hold_log_lik', 'beta', 'mu', 'hold_mu'), 
+                  pars = c('hold_log_lik', 'beta', 'mu', 'hold_mu', 'hold_SSE'), 
                   control = list(adapt_delta = ad), 
                   refresh = -1 )
   

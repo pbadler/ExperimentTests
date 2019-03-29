@@ -1,7 +1,7 @@
 rm(list = ls())
 library(tidyverse)
 
-stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/stan_model_ranks.csv')
+stan_mods <- read_csv('~/Dropbox/projects/ExperimentTests/precip/output/model_ranks_new.csv')
 
 top_mods <- 
   stan_mods %>% 
@@ -16,10 +16,11 @@ for( i in 1:nrow(top_mods)){
   spp <- top_mods$spp[i]
   window <- top_mods$climate_window[i]
   
-  if( window != 'NULL_MOD' ){
+  
+  if( !is.na(window) ){
     fn <- paste0( 'output/stan_fits/', spp, '_', vr, '_model_', window, '_top_model.RDS')
     fit <- readRDS(fn)
-    beta <- summary(fit, c('beta[6]', 'beta[7]', 'beta[8]'))$summary[, c('mean', '2.5%', '50%', '97.5%')]
+    beta <- rstan::summary(fit, c('beta[6]', 'beta[7]', 'beta[8]'))$summary[, c('mean', '2.5%', '50%', '97.5%')]
     beta <- 
       data.frame( t(beta) ) %>% 
       mutate( stat = row.names(.))
@@ -45,7 +46,6 @@ gg1 <-
   facet_grid(vr~spp, scales = 'free_y') + 
   ylab( 'Parameter Estimate +/- 95% Bayesian Credible Intervals')
 
-
 top_mod <- 
   top_mods %>% 
   select( vr, spp, climate_window, par , `50%`) %>% 
@@ -65,7 +65,7 @@ for( i in 1:nrow(top_mod)){
   
   temp_mod <- top_mod[i,  ]
   
-  if(window == "NULL_MOD"){ 
+  if(is.na(window)){ 
     window <- 6
   }
   
