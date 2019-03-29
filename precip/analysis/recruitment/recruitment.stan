@@ -156,26 +156,7 @@ generated quantities{
   }
   hold_SSE = sum(hold_SE)/hold_N;
 
-//   trueP1_pred <- parents1hold*u + parents2hold*(1-u);
-// 
-//   for(n in 1:Nhold)
-//     for(j in 1:Nspp)
-//       trueP2_pred[n, j] <- sqrt(trueP1_pred[n, j]);
-//   
-//   coverEff_pred <- trueP2_pred*w;
-// 
-//   for( i in 1:nyrshold)
-//     a_pred[i] <- normal_rng(0, sig_a); // draw random year intercept
-// 
-//   for(n in 1:Nhold){
-//     mu_pred[n] <- exp(gint_out[n] + a_pred[yidhold[n] - nyrs ] + coverEff_pred[n] + climhat[n]);
-//     lambda_pred[n] <- trueP1_pred[n, spp]*mu_pred[n];
-//   }
-// 
-//   for(n in 1:Nhold){
-//     log_lik2[n] <- neg_binomial_2_log(Yhold[n], lambda_pred[n], theta);
-//   }
-//   
+ 
 //   // 2. all data for cover predictions 
 //   climhat2      <- C2*b2;
 //   gint_out2     <- gm2*bg;
