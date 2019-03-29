@@ -174,6 +174,10 @@ process_recruitment_data <- function(dat, formX, formC, formZ, center = T, ... )
   dat$C <- scale(C)
   dat$Group <- factor(dat$gid)
   
+  if( ncol(dat$C) == 0 ){ 
+    formX <- update(formX, ' ~ . - C')
+  }
+  
   dat$X <- model.matrix(formX, data = dat)
   dat$Z <- model.matrix(formZ, data = dat)
   

@@ -25,7 +25,7 @@ data{
   int<lower=0> hold_G;              // groups
   int<lower=0> hold_g[hold_N];      // group id
   matrix[hold_N,K] hold_X;          // covariate matrix
-  matrix[hold_N,D] hold_E;    // covariate matrix
+  matrix[hold_N,D] hold_E;          // covariate matrix
 }
 transformed data{ 
   vector[J] alpha;               // prior on dirichlet distribution

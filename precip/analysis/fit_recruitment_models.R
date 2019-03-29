@@ -3,7 +3,7 @@ library(rstan)
 
 source('analysis/stan_data_functions.R')
 
-mod <- rstan::stan_model('analysis/recruitment/recruitment.stan') # load survival model 
+mod <- rstan::stan_model('analysis/recruitment/recruitment.stan') # load model 
 
 # STAN pars -------------- 
 ncores <- 4 
