@@ -1,21 +1,13 @@
 rm(list = ls())
 
-library(rstan)
 library(tidyverse)
+library(stringr)
+library(lme4)
 library(loo)
 
 source('analysis/stan_data_functions.R')
 
 vr <- 'growth'
-
-mod <- rstan::stan_model('analysis/growth/model_growth_censored.stan') # load stan model 
-
-# STAN pars -------------- 
-ncores <- 4 
-niter <- 2000 
-nchains <- 4 
-nthin <- 1
-# --------------------------
 
 # pars used for all species ----------------
 k <- 10           # number of folds 
@@ -42,21 +34,24 @@ model_scores$out_of_sample_lppd <- NA
 model_scores$out_of_sample_mse <- NA
 model_scores$ndiv <- NA
 
+basic_form <- 'Y ~ size + small + W.intra + W.inter + '
+random_effects <- ' + (size|year)'
 
 total <- nrow( expand.grid( 1:nrow(model_scores), 1:k ) )
 # --------------------------------------------------------- #
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
-adapt_delta <- c(0.9, 0.9, 0.8, 0.8)
 formX  <- list(formX, formX, formX, formX )
 left_cut <- c(-1, -1.3, -1.3, -1.3)
 
+m <- list()
 
 for( s in 1:length(species)){ 
   
+  m[[s]] <- list()
+  
   # choose species 
   sp <- species[s]
-  ad <- adapt_delta[s]
   fx <- formX[[s]]
   lc <- left_cut[s]
   
@@ -85,7 +80,7 @@ for( s in 1:length(species)){
   dat$W.inter <- scale( rowSums(dat$W[, -( grep ( intra_comp , colnames(dat$W))) ] ) ) # inter specific comp. 
   
   dat <- left_censor_df(dat, left_cut = lc)
-
+  
   temp_beta <- list()
   beta_est <- list()
   
@@ -94,67 +89,54 @@ for( s in 1:length(species)){
   for( j in 1:nrow(model_scores)) { 
     
     # get climate effects 
-    formC <- as.formula( paste0 ( '~-1 + ', climate_effects[j]  ))  ### Climate effects design matrix 
+    formC <- climate_effects[j]  ### Climate effects design matrix 
     
-    lpd <- list()
-    mse <- list()
-    div <- 0
-    
-    for( i in 1:k ){
-      hold <- k_folds$yid[ k_folds$folds == i  ] 
-      
-      dl <- process_data(dat = dat, 
-                         formX = fx, 
-                         formC = formC,
-                         formE = formE,
-                         formZ = formZ, 
-                         vr = vr, 
-                         hold = hold )
-      
-      cat('\n\n')
-      
-      print( paste( '### ---- species ', s, ' out of ', length(species), ' -------- # '))
-      print( paste( '### ---- working on rep', counter, 'of', total, ': ', 100*counter/total, '% done ----------###' ))
-      
-      cat('\n\n')
 
-      fit1 <- rstan::sampling(mod,
-                               data = dl,
-                               chains = nchains,
-                               iter = niter,
-                               cores = ncores,
-                               pars = c('hold_log_lik', 'hold_fixef', 'beta'),
-                               control = list(adapt_delta = ad),
-                               refresh = -1)
+    temp_formula <- paste( basic_form , formC, random_effects  )     
+    temp_formula <- str_remove( temp_formula, '\\+  NULL')
+    m[[s]][[j]] <- lmer( temp_formula, data = dat)
 
-      div <- div + find_dv_trans(fit1)
-      lpd[[i]] <- get_lpd(fit1)
-      fixef <- as.numeric( summary(fit1, 'hold_fixef')$summary[,1] )
-      mse[[i]] <- mean((inv_logit(fixef) - dl$hold_S)^2)
-
-      temp_beta[[i]] <- summary(fit1, 'beta')$summary[,1]
-
-      counter <- counter + 1
       
-    }
-    
-    beta_est[[j]] <- colMeans( do.call(rbind, temp_beta ) )
-    model_scores$ndiv[j] <- div
-    model_scores$out_of_sample_lppd[j] <- sum( unlist( lpd ) )
-    model_scores$out_of_sample_mse[j] <- mean(unlist(mse))
-    
   }
-  
-  beta_est <- do.call(bind_rows, beta_est)
-
-  model_scores$spp <- sp
-  model_scores$vr <- vr
-
-  model_scores <- cbind( model_scores[, 1:8], beta_est)
-
-  saveRDS(model_scores, paste0( 'output/', sp, '_', vr, '_model_scores3.RDS'))
-
-  model_scores[,4:ncol(model_scores)] <- NA
-
 }
 
+model_grid <- expand.grid(species = species, model = c(1:8)) %>% arrange( species, model )
+test <- do.call( bind_rows, unlist( rapply(m, fixef, how = 'list'), recursive = F) )
+
+scores <- rapply( m, AIC)
+test <- cbind( model_grid, AIC = scores, test )
+
+test <- 
+  test %>% 
+  gather( par, est, starts_with('C')) %>% 
+  filter( !(model > 1 & is.na(est)))
+
+test <- 
+  test %>% 
+  mutate(Temp = str_detect(par, 'T'), 
+         Moist = str_detect(par, 'VWC'), 
+         Temp_x_Moist = str_detect(par, '\\:')) %>% 
+  mutate( Temp = ifelse( Temp_x_Moist, F, Temp), 
+          Moist = ifelse( Temp_x_Moist, F, Moist)) %>%
+  gather( type, val, Temp:Temp_x_Moist) %>% 
+  filter( val ) %>% 
+  select(-val, -par) %>% 
+  distinct() %>% 
+  spread( type , est)
+
+var_grid <- cbind( model_grid , climate_effects)
+
+test <- 
+  test %>% 
+    mutate( vr = 'growth') %>% 
+    mutate( climate_window = model - 1 ) %>% 
+    mutate( climate_window = ifelse( climate_window == 0 , 'NULL_MOD', climate_window)) %>% 
+    rename( 'spp' = species, 
+            'intercept' = `(Intercept)`, 
+            'small_plants' = small, 
+            'intra_comp' = W.intra, 
+            'inter_comp' = W.inter) %>% 
+    arrange( spp, AIC) %>% 
+    select( vr, spp, climate_window, AIC, intercept:inter_comp, Temp, Moist, Temp_x_Moist)
+
+write_csv(test, path = '~/Desktop/lmer_growth_model_ranks.csv')
