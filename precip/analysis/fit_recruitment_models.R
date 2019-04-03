@@ -12,7 +12,7 @@ species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 testing <- T
 if( testing ){ 
 
-  k <- 2                      ### number of folds 
+  k <- 2                    ### number of folds 
   n_mods <- 2
   species <- species[1:2]
   
@@ -39,8 +39,7 @@ adapt_delta <- c(0.98, 0.98, 0.8, 0.8)  #  species specific
 # --------------------------
 
 # Model Parameters 
-formZ = as.formula(~ 1 )  ### Year effects design matrix 
-formX = as.formula(paste0 ('~ 1 + C')) ### Fixed effects design matrix (include climate as "C")
+formX = as.formula('~ P1_inter + P2 + C') ### Fixed effects design matrix (include climate as "C")
 
 # set up model selection table --------------------------# 
 load('data/temp_data/climate_combos.RData')
@@ -54,15 +53,10 @@ model_combos <- data.frame( climate_effects = climate_effects)
 
 model_combos <- model_combos %>% head( n_mods )
 
-# --------------------------------------------------------- #
-
-mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
-
-# ---------------------------------------------------------- # 
-
 total <- k*nrow(model_combos)*length(species)  ### Total number of models to fit 
 
 counter <- 1
+s <- 1
 
 for( s in 1:length(species)){ 
   
@@ -81,19 +75,17 @@ for( s in 1:length(species)){
     dat %>% 
     distinct(yid, folds)
   
-  dat$GroupP2 <- as.numeric( dat$Group == 'P2') # Paddock P2 is weird 
+  dat <- 
+    dat %>% 
+    mutate( all_cover = cov.ARTR + cov.HECO + cov.POSE + cov.PSSP)
   
-  P1.intra <- paste0('cov.', sp)
-  P2.intra <- paste0('Gcov.', sp)
-
-  dat$P1.intra <- dat[ , P1.intra]
-  dat$P2.intra <- dat[ , P2.intra]
+  dat$P1 <- dat[ , paste0('cov.', sp) ]
+  dat$P2 <- dat[ , paste0('Gcov.', sp)]
   
-  dat$P1.inter <- rowSums(dat$parents1[, - ( grep ( P1.intra, colnames(dat$parents1))) ])
-  dat$P2.inter <- rowSums(dat$parents2[, - ( grep ( P2.intra, colnames(dat$parents2))) ])
+  dat$P1_inter <- dat$all_cover - dat$P1
   
-  dat$parents1 <- as.matrix( cbind( dat$P1.intra, dat$P1.inter))
-  dat$parents2 <- as.matrix( cbind( dat$P2.intra, dat$P2.inter))
+  dat$P1_inter <- scale( sqrt( dat$P1_inter))
+  dat$P2 <- scale( sqrt( dat$P2 ))
   
   ## Set up output table 
   temp_scores <- model_combos
@@ -103,7 +95,9 @@ for( s in 1:length(species)){
   temp_scores$ndiv <- NA
   temp_scores$oos_mse <- NA
   temp_scores$oos_lppd <- NA
-
+  
+  j <- 1
+  
   for( j in 1:nrow(temp_scores)) { 
     
     # get climate effects 
@@ -112,16 +106,22 @@ for( s in 1:length(species)){
     lpd <- NA
     sse <- NA
     div <- 0
-    
+    i <- 1
     for( i in 1:k ){
       hold <- k_folds$yid[ k_folds$folds == i  ] 
       
       dl <- process_recruitment_data(dat = dat, 
                          formX = formX, 
                          formC = formC, 
-                         formZ = formZ,
+                         IBM = 0,
                          center = T,
-                         hold = hold )
+                         hold = hold)
+      
+      # --------------------------------------------------------- #
+
+      mod <- rstan::stan_model('analysis/recruitment/recruitment_new.stan')
+      
+      # ---------------------------------------------------------- # 
       
       cat('\n\n')
       
@@ -136,7 +136,7 @@ for( s in 1:length(species)){
                               iter = niter, 
                               cores = ncores,
                               thin = nthin,
-                              pars = c('log_lik', 'hold_log_lik', 'hold_SSE'), 
+                              pars = c('hold_log_lik', 'hold_SSE'), 
                               control = list(adapt_delta = ad), 
                               refresh = -1)
       

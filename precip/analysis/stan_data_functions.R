@@ -19,10 +19,8 @@ extract_data <- function(df){
   Y_obs  <- Y[obs]
   U <- unique( df$U )
   
-  parents1 <- df$parents1
-  parents2 <- df$parents2
-  Nspp <- ncol ( df$parents1 )
-  spp <- unique( df$spp ) 
+  P1 <- df$P1
+  P2 <- df$P2
   years <- unique( df$year )
   
   rm(df)
@@ -33,8 +31,8 @@ extract_data <- function(df){
 }
 
 
-split_df <- function(df, hold){ 
-  if(all(hold == 0)){
+split_df <- function(df, vr, hold){ 
+  if(all(hold == 0) & vr != 'recruitment' ){
     df_out <- split(df, df$g %in% hold)
     df_out$True <- data.frame(Y = rep(0,2))
     df_out$True$survives = rep( 0, 2)
@@ -43,12 +41,24 @@ split_df <- function(df, hold){
     df_out$True$g = rep(0,2)
     df_out$True$E = matrix(0, ncol = ncol(df$E), nrow = 2)
 
+  }else if( all(hold == 0) & vr == 'recruitment' ){ 
+    df_out <- split(df, df$g %in% hold)
+    df_out$True <- data.frame(Y = rep(0,2))
+    df_out$True$P1 = rep( 0, 2)
+    df_out$True$P2 = rep( 0, 2)
+    df_out$True$X = matrix(0, ncol = ncol(df$X), nrow = 2)
+    df_out$True$g = rep(0,2)
+
   }else if(any(hold > 0)){ 
     df_out <- split(df, df$g %in% hold)
   }
   names(df_out) <- c('train', 'hold')
   return(df_out)
 }
+
+
+
+
 
 make_dl <- function(df){ 
   dl <- unlist( lapply( df, extract_data), recursive = F)
@@ -132,7 +142,7 @@ get_spp_and_vr <- function(dat_file, model_file){
   return(list(spp, vr))
 }
 
-process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr = 'growth', ... ){
+process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr = 'growth', IBM = 0, ... ){
   
   C <- model.matrix(formC, dat)
   dat$C <- scale(C)
@@ -149,27 +159,28 @@ process_data <- function(dat, formX, formC, formZ, formE = as.formula(~ -1), vr 
   
   dat$g <- factor(dat$yid)
   
-  dat_4_cover <- dat ### Need to preserve dataframe with NA's (dead plants) for predicting cover 
-  dat_4_cover <- split_df(dat_4_cover, hold = 0)
-  dl_4_cover <- make_dl(dat_4_cover)
-  dl_4_cover <- dl_4_cover[-grep('hold', names(dl_4_cover))]
-  names(dl_4_cover) <- paste0( 'cover_', names(dl_4_cover))
+  dat_4_IBM <- dat ### Need to preserve dataframe with NA's (dead plants) for IBM simulations 
+  dat_4_IBM <- split_df(dat_4_IBM, vr = vr, hold = 0)
+  dl_4_IBM <- make_dl(dat_4_IBM)
+  dl_4_IBM <- dl_4_IBM[-grep('hold', names(dl_4_IBM))]
+  names(dl_4_IBM) <- paste0( 'IBM_', names(dl_4_IBM))
+  dl_4_IBM$IBM <- IBM
   
   if(vr == 'growth'){ 
     dat <- dat[complete.cases(dat), ]
-    dat <- split_df(dat, ... )
+    dat <- split_df(dat, vr, ... )
     dl <- make_dl(dat)
   }else if(vr == 'survival'){ 
-    dat <- split_df(dat, ... )
+    dat <- split_df(dat, vr, ... )
     dl  <- make_dl(dat)
   }
   
-  return( c(dl, dl_4_cover))
+  return( c(dl, dl_4_IBM))
 }
 
 
-process_recruitment_data <- function(dat, formX, formC, formZ, center = T, ... ){ 
-  
+process_recruitment_data <- function(dat, formX, formC, IBM = 0, center = T, ... ){ 
+  vr <- 'recruitment'
   C <- model.matrix(formC, dat)
   dat$C <- scale(C)
   dat$Group <- factor(dat$gid)
@@ -179,15 +190,23 @@ process_recruitment_data <- function(dat, formX, formC, formZ, center = T, ... )
   }
   
   dat$X <- model.matrix(formX, data = dat)
-  dat$Z <- model.matrix(formZ, data = dat)
-  
+
   dat$g <- factor(dat$yid)
   
-  dat <- split_df(dat, hold )
+  dat_4_IBM <- dat ### Make complete data frame for IBM simulations
+  dat_4_IBM <- split_df(dat_4_IBM, vr = vr, hold = 0)
+  dl_4_IBM <- make_dl(dat_4_IBM)
+  dl_4_IBM <- dl_4_IBM[-grep('hold', names(dl_4_IBM))]
+  names(dl_4_IBM) <- paste0( 'IBM_', names(dl_4_IBM))
+  dl_4_IBM$IBM <- IBM
+  
+  dat <- split_df(dat, vr, ... )
   
   dl <- make_dl(dat)
   
-  return(dl)
+  dl$IBM <- IBM
+  
+  return(c(dl, dl_4_IBM))
 }
 
 

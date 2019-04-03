@@ -8,17 +8,26 @@ source('analysis/stan_data_functions.R')
 
 vr <- 'recruitment'
 
+testing <- F
+if( testing ){ 
+  
+  # STAN pars -------------- 
+  ncores <- 1 
+  niter <- 1000
+  nchains <- 1 
+  nthin <- 5
+  
+}else{
+  
+  # STAN pars -------------- 
+  ncores <- 4 
+  niter <- 2000
+  nchains <- 4 
+  nthin <- 5
+  
+}
 
-# STAN pars -------------- 
-ncores <- 1 
-niter <- 500 
-nchains <- 1 
-nthin <- 5
-# --------------------------
-
-small <- -1               ### Designate a "small" size theshhold 
-formZ = as.formula(~ 1)  ### Year effects design matrix 
-formX = as.formula(paste0 ('~ 1 + C')) ### Fixed effects design matrix (include climate as "C")
+formX = as.formula(paste0 ('~ P1_inter + P2 + C')) ### Fixed effects design matrix (include climate as "C")
 # ------------------------------------------
 
 # set up climate variable table --------------------------# 
@@ -52,10 +61,6 @@ model_list <-
   filter(!is.na(formX)) %>% 
   distinct( spp, vr, adapt_delta, climate_window, formX )
 
-i <- 1
-
-mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
-
 for(i in 1:nrow(model_list)){ 
   
   # choose species 
@@ -67,19 +72,17 @@ for(i in 1:nrow(model_list)){
   dat_file <- paste0('data/temp_data/', sp, '_recruitment_dataframe.RDS')
   dat <- readRDS(dat_file)
   
-  dat$GroupP2 <- as.numeric( dat$Group == 'P2') # Paddock P2 is weird 
+  dat <- 
+    dat %>% 
+    mutate( all_cover = cov.ARTR + cov.HECO + cov.POSE + cov.PSSP)
   
-  P1.intra <- paste0('cov.', sp)
-  P2.intra <- paste0('Gcov.', sp)
+  dat$P1 <- dat[ , paste0('cov.', sp) ]
+  dat$P2 <- dat[ , paste0('Gcov.', sp)]
   
-  dat$P1.intra <- dat[ , P1.intra]
-  dat$P2.intra <- dat[ , P2.intra]
+  dat$P1_inter <- dat$all_cover - dat$P1
   
-  dat$P1.inter <- rowSums(dat$parents1[, - ( grep ( P1.intra, colnames(dat$parents1))) ])
-  dat$P2.inter <- rowSums(dat$parents2[, - ( grep ( P2.intra, colnames(dat$parents2))) ])
-  
-  dat$parents1 <- as.matrix( cbind( dat$P1.intra, dat$P1.inter))
-  dat$parents2 <- as.matrix( cbind( dat$P2.intra, dat$P2.inter))
+  dat$P1_inter <- scale( sqrt( dat$P1_inter))
+  dat$P2 <- scale( sqrt( dat$P2 ))
   
   if ( window != 'none' ){   
     moist <- paste0( 'C.VWC.', window)
@@ -97,24 +100,26 @@ for(i in 1:nrow(model_list)){
   dl <- process_recruitment_data(dat = dat, 
                                  formX = formX, 
                                  formC = formC, 
-                                 formZ = formZ,
                                  center = T,
-                                 hold = hold )
-
+                                 hold = hold, 
+                                 IBM = 1)
+  
+  mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '_new.stan')) # load stan model 
+  
   print( paste( '### ---- species', sp, '; climate window', window, '--------------------##'))
   print( paste( '### ---- working on model', i, 'of', nrow(model_list),' -------------###' ))
-  
-  fit1 <- rstan::sampling(mod, 
+
+  fit <- rstan::sampling(mod, 
                           data = dl, 
                           chains = nchains, 
                           iter = niter, 
                           cores = ncores,
                           thin = nthin,
-                          pars = c('hold_log_lik', 'hold_SSE', 'beta', 'w'), 
+                          pars = c('hold_log_lik', 'hold_SSE', 'beta', 'IBM_Y_hat'), 
                           control = list(adapt_delta = ad), 
                           refresh = -1)
   
-  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_model_data.RDS'))
-  saveRDS(fit, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_top_model.RDS'))
+  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_data.RDS'))
+  saveRDS(fit, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_model.RDS'))
   
 }
