@@ -13,8 +13,8 @@ testing <- T
 if( testing ){ 
   
   k <- 2                      ### number of folds 
-  n_mods <- 2
-  species <- species[1:2]
+  n_mods <- 1
+  species <- species[1]
   
   # STAN pars -------------- 
   ncores <- 1 
@@ -54,11 +54,6 @@ model_combos <- data.frame( climate_effects = climate_effects)
 
 model_combos <- model_combos %>% head( n_mods )
 
-# --------------------------------------------------------- #
-
-mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
-
-# ---------------------------------------------------------- # 
 
 total <- k*nrow(model_combos)*length(species)  ### Total number of models to fit 
 counter <- 1
@@ -83,8 +78,7 @@ for( s in 1:length(species)){
   dat$size <- scale( dat$logarea.t0 )
   dat$small <- as.numeric(dat$size < small)
   dat$Y    <- scale( dat$logarea.t1 )
-  dat$GroupP2 <- as.numeric( dat$Group == 'P2') # Paddock P2 is weird 
-
+  
   intra_comp <- paste0('W.', sp)
   dat$W.intra  <- scale( dat[ , intra_comp])
   dat$W.inter <- scale( rowSums(dat$W[, -( grep ( intra_comp , colnames(dat$W))) ] ) ) # inter specific comp. 
@@ -115,8 +109,15 @@ for( s in 1:length(species)){
                          formC = formC, 
                          formZ = formZ, 
                          vr = vr, 
-                         hold = hold )
+                         hold = hold, 
+                         IBM = 0)
   
+      # --------------------------------------------------------- #
+      
+      mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
+      
+      # ---------------------------------------------------------- # 
+      
       cat('\n\n')
       
       print( paste( '### ---- species ', s, ' out of ', length(species), ' -------- # '))

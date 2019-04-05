@@ -1,7 +1,7 @@
 data{
   // training datalist, historical observations 
   int<lower=0> N;                       // # observations total 
-  int<lower=0, upper=1> S[N];        // success
+  int<lower=0, upper=1> S[N];           // success
   int<lower=0> K;                       // # of fixed effects
   matrix[N,K] X;                        // fixed effects matrix   
   int<lower=0> J;                       // # of group level effects
@@ -16,6 +16,14 @@ data{
   row_vector[J] hold_Z[hold_N];
   int<lower=0> hold_G;
   int<lower=0> hold_g[hold_N];
+  
+  // For generating IBM predictions use all data 
+  int<lower=0, upper=1> IBM;          // Flag if predictions for IBM are to be generated 
+  int<lower=0> IBM_N;                  
+  matrix[IBM_N,K] IBM_X;
+  row_vector[J] IBM_Z[IBM_N];
+  int<lower=0> IBM_G;
+  int<lower=0> IBM_g[IBM_N];
 }
 transformed data{ 
   vector[J] a;                          // prior on dirichlet distribution
@@ -70,14 +78,14 @@ generated quantities {
   vector[hold_N] hold_fixef;
   vector[hold_N] hold_SE; 
   real hold_SSE; 
-  
+  vector[IBM_N] IBM_mu;     
+
   for(i in 1:N)
     log_lik[i] = bernoulli_logit_lpmf(S[i] | mu[i]);
 
   if(hold_N > 2){
-  // Run if hold out data is supplied.
+    // Run if hold out data is supplied.
     vector[J] hold_u[hold_G];
-    
     matrix[J, hold_G] hold_u_raw;
 
     for(i in 1:hold_G)
@@ -105,5 +113,27 @@ generated quantities {
   }
   
   hold_SSE = sum(hold_SE);
+    
+  if( IBM ==  1 ){ 
+
+    vector[IBM_N] IBM_fixef;    
+    vector[J] IBM_u[IBM_G];
+    matrix[J, IBM_G] IBM_u_raw;
+  
+    for(i in 1:IBM_G)
+      for(j in 1:J)
+        IBM_u_raw[j, i] = normal_rng(0,1);
+
+    for(j in 1:IBM_G)
+      IBM_u[j] = Sigma_L * col(IBM_u_raw, j);
+
+    IBM_fixef = IBM_X*beta;
+
+    for(i in 1:IBM_N){
+      IBM_mu[i] = IBM_fixef[i] + IBM_Z[i]*IBM_u[IBM_g[i]];
+    }
+  }else {
+    IBM_mu = to_vector(rep_array(0, IBM_N));
+  }
     
 }

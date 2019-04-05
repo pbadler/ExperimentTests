@@ -8,7 +8,7 @@ source('analysis/stan_data_functions.R')
 
 vr <- 'recruitment'
 
-testing <- F
+testing <- T
 if( testing ){ 
   
   # STAN pars -------------- 
@@ -50,7 +50,9 @@ model_list <-
   mutate( climate_window = ifelse(model == 'none', 'none', climate_window)) 
 
 # --------------------------------------------------------- #
-model_list$adapt_delta <- c(0.98, 0.98, 0.8, 0.8)
+nsp <- length(unique( model_list$spp))
+
+model_list$adapt_delta <- c(0.98, 0.98, 0.8, 0.8)[nsp]
 model_list$formX <- list( formX  )
 
 formXNULL <- update(formX,  ~ . - C)

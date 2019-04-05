@@ -30,7 +30,7 @@ clean_growth_survival <- function(clim, growth_file, survival_file){
   x <- merge(sdat, gdat, all.x = T)
   x <- merge(x, clim)
   
-  x$Period <- ifelse(x$year > 2011, "Modern", "Historical")
+  x$Period <- ifelse(x$year > 2010, "Modern", "Historical")
   
   x <- set_up_basic_vars(x)
   
@@ -49,7 +49,7 @@ clean_recruitment <- function(clim, recruitment_file){
   require(stringr)
   
   x <- readRDS( recruitment_file)
-  x$Period <- ifelse(x$year > 2011, "Modern", "Historical")
+  x$Period <- ifelse(x$year > 2010, "Modern", "Historical")
   x <- merge(x, clim )
   
   x <- set_up_basic_vars(x) 

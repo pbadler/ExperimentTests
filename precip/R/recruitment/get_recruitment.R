@@ -17,9 +17,9 @@ Nspp=length(sppList)
 for(i in 1:Nspp){
   infile1=paste(dataDir1,sppList[i],"/recArea.csv",sep="")
   tmpD=read.csv(infile1)
-  tmpD=tmpD[,c("quad","year","NRquad","totParea","Group")]
-  names(tmpD)[3]=paste("R.",sppList[i],sep="")
-  names(tmpD)[4]=paste("cov.",sppList[i],sep="")
+  tmpD=tmpD[,c("QuadName","quad","year","NRquad","totParea","Group")]
+  names(tmpD)[4]=paste("R.",sppList[i],sep="")
+  names(tmpD)[5]=paste("cov.",sppList[i],sep="")
   if(i==1){
     D=tmpD
   }else{
@@ -38,9 +38,9 @@ Nspp=length(sppList)
 for(i in 1:Nspp){
   infile1=paste(dataDir2,sppList[i],"/recArea.csv",sep="")
   tmpD=read.csv(infile1)
-  tmpD=tmpD[,c("quad","year","NRquad","totParea","Group")]
-  names(tmpD)[3]=paste("R.",sppList[i],sep="")
-  names(tmpD)[4]=paste("cov.",sppList[i],sep="")
+  tmpD=tmpD[,c("QuadName","quad","year","NRquad","totParea","Group")]
+  names(tmpD)[4]=paste("R.",sppList[i],sep="")
+  names(tmpD)[5]=paste("cov.",sppList[i],sep="")
   if(i==1){
     D2=tmpD
   }else{

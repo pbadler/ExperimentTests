@@ -1,349 +1,214 @@
 rm(list =ls())
-library(stringr)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(boot)
+library(tidyverse)
 
 # functions ---------------------------------------------------------------------------- 
 
-get_survival_size_covariates <- function( sdl, gdl ) {
- 
-  return( 
-    list(  
-      id_table = data.frame( year = sdl$year2, Treatment = sdl$treat2, yid = sdl$yid2, quad = sdl$quad2, trackID = sdl$trackid2),
-      yid      = sdl$yid2,
-      nyrs     = sdl$nyrs2,
-      X        = sdl$X2, 
-      C        = as.matrix(sdl$C2),
-      W        = sdl$W2,
-      gm       = sdl$gm2,
-      N        = sdl$N2
-      )
-  )
-} 
-
-get_growth_size_covariates <- function( sdl, gdl ) {
+get_recruit_area <- function(spp) { 
   
-  return( 
-    list(  
-      id_table = data.frame( year = gdl$year3, Treatment = gdl$treat3, yid = gdl$yid3, quad = gdl$quad3, trackID = gdl$trackid3),
-      yid      = gdl$yid3,
-      nyrs     = gdl$nyrs3,
-      X        = gdl$X3, 
-      C        = as.matrix(gdl$C3),
-      W        = gdl$W3,
-      gm       = gdl$gm3,
-      N        = gdl$N3
-    )
-  )
-} 
-
-
-
-get_recruitment_covariates <- function( rdl ) {
+  dat <- read.csv(paste0('~/Dropbox/driversdata/data/idaho/speciesData/', as.character(spp), '/recSize.csv'))
   
-  return( 
-    list( 
-      id_table = data.frame( year = rdl$year2, Treatment = rdl$treat2, yid = rdl$yid2, quad = rdl$quad2), 
-      yid      = rdl$yid2, 
-      nyrs     = rdl$nyrs2,
-      spp_id   = rdl$spp,
-      C        = as.matrix(rdl$C2),
-      parents1 = rdl$parents12,
-      parents2 = rdl$parents22,
-      gm       = rdl$gm2,
-      N        = rdl$N2
-    )
-  )
-} 
+  dat$area
 
-
-simulate_survival <- function( pars , test_dat ){ 
-  
-  nyrs  <- test_dat$nyrs
-  N <- test_dat$N
-  C <- test_dat$C
-  W <- test_dat$W
-  X <- test_dat$X
-  gm <- test_dat$gm
-  yid <- test_dat$yid
-  
-  attach(pars )
-  Y <- matrix( NA, nsims, N)
-  
-  for( j in 1:nsims){ 
-    b2 <- as.matrix(b2)
-    climEff  <- C%*%b2[j, ]
-    gint     <- gm%*%bg[j, ]
-    coverEff <- W%*%w[j, ]
-    
-    # draw random year effects 
-    a  <- rnorm(nyrs, 0, sd = sig_a[j])
-    b1 <- rnorm(nyrs, b1_mu[j], sd = sig_b1[j])
-    
-    mu <- coverEff
-    
-    for(n in 1:N){
-      mu[n] <- inv.logit(gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + coverEff[n] + climEff[n])
-    }
-    
-    #Y[j, ] <- rbinom(N, 1, mu)
-    Y[j, ] <- mu
-  }
-  rm(pars)
-  detach(pars )   
-  return(Y)
 }
 
-
-simulate_growth <- function( pars , test_dat ){ 
-  
-  nyrs  <- test_dat$nyrs
-  N <- test_dat$N
-  C <- test_dat$C
-  W <- test_dat$W
-  X <- test_dat$X
-  gm <- test_dat$gm
-  yid <- test_dat$yid
-
-  attach(pars )
-  Y <- matrix( NA, nsims, N)
-  
-  for( j in 1:nsims){ 
-    climEff  <- C%*%b2[j, ]
-    gint     <- gm%*%bg[j, ]
-    coverEff <- W%*%w[j, ]
-    
-    # draw random year effects 
-    a  <- rnorm(nyrs, 0, sd = sig_a[j])
-    b1 <- rnorm(nyrs, b1_mu[j], sd = sig_b1[j])
-    
-    mu <- coverEff
-
-    for(n in 1:N){
-      mu[n] <- gint[n] + a[yid[n]] + b1[yid[n]]*X[n] + coverEff[n] + climEff[n]
-    }
-    
-    #Y[j, ] <- rnorm(N, mu, sigma)
-    Y[j, ] <- mu
-  }
-  
-  Y <- exp( Y) # re-scale 
-  
-  rm(pars)
-  detach(pars )   
-  return(Y)
-}
-
-
-simulate_recruitment <- function( pars , test_dat ){ 
-  
-  nyrs  <- test_dat$nyrs
-  N <- test_dat$N
-  C <- test_dat$C
-  parents1 <- test_dat$parents1
-  parents2 <- test_dat$parents2
-  gm <- test_dat$gm
-  yid <- test_dat$yid
-  spp_id <- test_dat$spp_id
-  
-  attach(pars )
-  
-  Y <- matrix( NA, nsims, N)
-  
-  for( j in 1:nsims){ 
-    
-    trueP1 <- parents1*u[j] + parents2*(1-u[j])
-    trueP2 <- trueP1
-    
-    trueP2 <- sqrt(trueP1)
-    
-    climEff  <- C%*%b2[j, ]
-    gint     <- gm%*%bg[j, ]
-    coverEff <- trueP2%*%w[j, ]
-    
-    # draw random year effects 
-    a  <- rnorm(nyrs, 0, sd = pars$sig_a[j])
-    
-    mu <- coverEff
-    lambda <- coverEff
-    
-    for(n in 1:N){
-      mu[n] <- exp(gint[n] + a[yid[n]] + coverEff[n] + climEff[n]);
-      lambda[n] <- trueP1[n, spp_id]*mu[n];  
-    }
-    
-    #Y[j, ] <- rnbinom(N, mu = lambda, size = theta[j] )
-    Y[j, ] <- lambda
-  }
-  rm(pars)
-  detach(pars )  
-  return(Y)
-}
-
-simulate_recruit_size <- function( recruits , spp ) { 
-  
-  dat <- read.csv(paste0('~/driversdata/data/idaho/speciesData/', as.character(spp), '/recSize.csv'))
-  
-  out <- recruits 
-  
-  for(i in 1:length(recruits)){ 
-    # draw size distribution of n recruits in each plot i 
-    # sum up total size to get total cover of recruits in plot i  
-    n <- round(recruits[i])
-    out[i] <- sum ( sample(dat$area, n, replace = T) )  
-  }
-  return(  out  )
-}
-  
 #
 load('analysis/figure_scripts/my_plotting_theme.Rdata')
 
-years <- expand.grid(year = 1925:2017, Treatment = c('Control', 'Drought', 'Irrigation'), stat = c('observed', 'pred_cover'))
-years$Period[ years$year > 2006 ] <- 'Modern'
-years$Period[ years$year <= 1960 ] <- 'Historical'
-
-# output lists 
-survives <- list(NA)
-size     <- list(NA)
-recruits <- list(NA)
-rec_area <- list(NA)
-k        <- list(NA)
-cover    <- list(NA)
-pred_cover <- list(NA)
-plot_cover <- list(NA)
+quads <- read_csv('data/quad_info.csv')
 
 species_list <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
-ylims <- list( c(0,40), c(0,7.5), c(0,7.5), c(0,7.5))
+fns <- dir('output/stan_fits', '.RDS', full.names = T)
+
+fn_df <- 
+  data.frame(fns) %>% 
+  mutate( bname = basename(as.character(fns))) %>% 
+  separate( bname, c('spp', 'vr', 'window', 'type'), sep = '_') %>% 
+  mutate( type = str_remove(type, pattern = '\\.RDS$' )) 
+  
+fn_df <- 
+  fn_df %>% 
+  group_by( spp, vr , type ) %>% 
+  arrange( window) %>% 
+  mutate( rank = row_number() ) %>% 
+  mutate( climate = rank == 1) %>% 
+  select(-rank ) 
+
+model_list <- 
+  rbind( 
+  fn_df %>% 
+    filter( climate ) %>% 
+    unite( type, vr, type, sep = '_') %>% 
+    select(-window) %>% 
+    spread( type, fns )
+  , 
+  fn_df %>% 
+    select( - climate ) %>% 
+    filter( window == 'none') %>% 
+    unite( type , vr, type , sep = '_' ) %>% 
+    select( -window) %>% 
+    spread( type, fns) %>% 
+    mutate( climate = F)
+)
+
+
+model_list <- model_list %>% ungroup()
+
+# loop species and climate / non-climate IBMs 
+
 i = 1
+spp <- species_list[i]
 
-for( i in 1:4) {  
-  spp   <- species_list[i]  
-  
-  sdl   <- readRDS('data/temp_data/modified_survival_data_lists_for_stan.RDS')[[i]]
-  rdl   <- readRDS('data/temp_data/modified_recruitment_data_lists_for_stan.RDS')[[i]]
-  gdl   <- readRDS('data/temp_data/modified_growth_data_lists_for_stan.RDS')[[i]]
-  
-  m <- dir('output/stan_fits', paste0( spp, '.*_climate_fit.RDS'), full.names = TRUE)
-  
-  spars <- rstan::extract(readRDS(m[3]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg'))
-  
-  gpars <- rstan::extract(readRDS(m[1]), c('sig_a', 'b1_mu', 'sig_b1', 'w', 'b2', 'bg', 'sigma'))
-  
-  rpars <- rstan::extract(readRDS(m[2]), c('sig_a', 'w', 'b2', 'bg', 'theta', 'u'))
-  
-  nsims <- length(spars$sig_a)
-  rpars$nsims <- gpars$nsims <- spars$nsims <- nsims
-  
-  sdl <-  get_survival_size_covariates(sdl, gdl)
-  gdl <-  get_growth_size_covariates(sdl, gdl )
-  rdl <-  get_recruitment_covariates(rdl)
+gd <- readRDS( as.character(model_list$growth_data[1]))
+rd <- readRDS( as.character(model_list$recruitment_data[1]))
+sd <- readRDS( as.character(model_list$survival_data[1]))
 
-  survives[[i]] <- simulate_survival( spars, sdl )
-  size[[i]]     <- simulate_growth(gpars, gdl )
-  recruits[[i]] <- simulate_recruitment(rpars, rdl)
-  rec_area[[i]] <- simulate_recruit_size(recruits[[i]], spp )
-    
-  k[[i]]        <- survives[[i]]*size[[i]]  # survival by size 
-  
-  survives[[i]] <- data.frame(sdl$id_table , t(survives[[i]]))
-  size[[i]]     <- data.frame(sdl$id_table , t(size[[i]]))
-  recruits[[i]] <- data.frame(rdl$id_table , t(recruits[[i]]))
-  rec_area[[i]] <- data.frame(rdl$id_table , t(rec_area[[i]]))
-  k[[i]]        <- data.frame(sdl$id_table , t(k[[i]]))      
-  
-  k[[i]] <-   
-    k[[i]] %>% 
-    gather( simulation, size , starts_with('X')) %>% 
-    group_by( year, Treatment, simulation, quad ) %>% 
-    summarize( total_size = sum( size )) %>% 
-    group_by( year, Treatment, simulation ) %>% 
-    summarise( total_size = mean(total_size ))
-  
-  rec_area[[i]] <- 
-    rec_area[[i]] %>% 
-    gather( simulation, rec_area, starts_with('X')) %>% 
-    group_by( year, Treatment, simulation) %>% 
-    summarise( total_rec_area = mean(rec_area ))
-  
-  cover[[i]] <- 
-    merge( k[[i]], rec_area[[i]], all.y = TRUE) %>%  # use all recruitment years  
-    mutate( total_size = ifelse(is.na(total_size), 0, total_size))  %>%  # years without observed plants get 0
-    mutate( cover = 100*((total_size + total_rec_area)/10000) )
-  
-  pred_cover[[i]] <- 
-    cover[[i]] %>% 
-    mutate( year = year + 1 ) %>% # cover predictions the "Y's" are for the next year 
-    group_by(Treatment, year ) %>% 
-    summarise( pred_cover = mean(cover), 
-               ucl = quantile( cover, 0.75), 
-               lcl = quantile(cover , 0.25))
-  
-  # get last year of cover which is not in the survival dataframe ------------------------------------- #   
-  oldCover <- read.csv(paste0( '~/driversdata/data/idaho/speciesData/', spp, '/quadratCover.csv'))
-  newCover <- read.csv(paste0( '~/driversdata/data/idaho_modern/speciesData/', spp, '/quadratCover.csv'))
-  oldCover$Period <- "Historical"
-  newCover$Period <- "Modern"
-  last_cover  <- rbind(oldCover, newCover)
-  quad <- read.csv('~/driversdata/data/idaho_modern/quad_info.csv')
-  
-  last_cover <-
-    last_cover %>%
-    left_join(quad) %>%
-    filter( Treatment %in% c('Control', 'Drought', 'Irrigation')) %>%
-    mutate( year = ifelse(year < 100, year + 1900, year)) %>%
-    group_by(Period, Treatment, year) %>%
-    summarise( true_cov = 100*(mean(totCover )/10000)) 
-  
-  # ------------------------------------------------------------------------------------------------------ #
-  df <- read.csv('data/temp_data/ARTR_growth_and_survival_cleaned_dataframe.csv')
-  
-  df$true_cov <- 100*(exp(df$logarea.t0)/10000)
-  
-  trueCov <- 
-    df %>% 
-    group_by( Period, year, Treatment, quad ) %>% 
-    summarise( totCover = sum( true_cov ) ) %>% 
-    group_by( Period, year, Treatment) %>% 
-    summarise( observed  = mean(totCover ))
-  
-  obs_cover <- merge( last_cover, trueCov , by = c('Period', 'year', 'Treatment'), all.x = T)
-  
-  obs_cover$observed <- ifelse( is.na(obs_cover$observed), obs_cover$true_cov, obs_cover$observed) # fill in data from end years in dataframe
-  
-  pred_cover[[1]]$Treatment <- factor(pred_cover[[1]]$Treatment, labels= c('Control', 'Drought', 'Irrigation'))
-  
-  plot_cover[[i]] <-
-    merge( trueCov,  pred_cover[[i]], all.x = TRUE) %>%
-    mutate( pred_cover = ifelse( is.na(pred_cover), observed, pred_cover )) %>% 
-    gather( stat, val,  pred_cover, observed) 
-  
-  plot_cover[[i]] <- merge( years, plot_cover[[i]], all.x = TRUE)
-  
-  
-  pdf( paste0( 'figures/predictions/', spp  , '_predicted_cover.pdf' ), height = 8, width = 8) 
-  
+gfit <- readRDS( as.character(model_list$growth_model[1]))
+sfit <- readRDS( as.character(model_list$survival_model[1]))
+rfit <- readRDS( as.character(model_list$recruitment_model[1]))
 
-  print( 
-    ggplot( subset( plot_cover[[i]], Period == "Historical"), aes( x = year, y =  val, color = Treatment, linetype = stat)) +
-      geom_line() +
-      scale_color_manual(values = my_colors ) + 
-      ylim( ylims[[i]]) + 
-      scale_x_continuous()
+# generate predicted area per quad per year -------------- # 
+S <- binomial(link='logit')$linkinv(rstan::extract( sfit, 'IBM_mu')$IBM_mu)
+G <- rstan::extract( gfit, 'IBM_Y_hat')$IBM_Y_hat
+
+# Test that the predictions can be rescaled correctly to cm^2 #  
+Y_attrib <- gd$IBM_Y_attrib
+Y_center <- Y_attrib$`scaled:center`
+Y_scale <- Y_attrib$`scaled:scale`
+
+gdat <- readRDS('data/temp_data/ARTR_growth_survival_dataframe.RDS')
+
+Y1 <- (gd$IBM_Y*Y_scale + Y_center)
+Y2 <- gdat$logarea.t1
+all.equal(Y1, Y2)
+#------------------------------------------------------------ # 
+
+G <- exp( G*Y_scale + Y_center ) # tranform to cm scale
+R <- rstan::extract( rfit, 'IBM_Y_hat')$IBM_Y_hat
+
+a <- get_recruit_area(spp)
+
+K <- S*G  # survival by size 
+R <- R*median(a)
+
+K <- data.frame( quad = sd$IBM_quad_name, year = sd$IBM_year_name + 1, t(K))
+R <- data.frame( quad = rd$IBM_quad_name, year = rd$IBM_year_name + 1, t(R))
+
+K <- 
+  K %>% 
+  gather( sim, area, starts_with('X')) %>%
+  group_by( quad, year, sim) %>% 
+  summarise(area = sum( area ))
+
+R <- 
+  R %>% 
+  gather( sim, area, starts_with('X')) 
+
+A_pred <- 
+  R %>% 
+  left_join(K, by = c('quad', 'year', 'sim')) %>% 
+  ungroup() %>% 
+  gather( type, area, area.x, area.y) %>% 
+  group_by( quad, year, sim) %>% 
+  summarise( area = sum(area, na.rm = T)) %>%
+  mutate( cover = 100*area/(100*100))
+
+#---------------------------------------------------------- # 
+# generate observed area per quad per year ---------------- # 
+X <- 
+  gdat %>% 
+  mutate( quad =  QuadName) %>% 
+  group_by( quad , year) %>% 
+  summarise( area = sum(exp(logarea.t0), na.rm = T))  %>%
+  mutate( cover0 = 100*area/(100*100))
+
+K_obs <- gd$IBM_Y
+K_obs <- exp( K_obs*Y_scale + Y_center)
+R_obs <- median(a)*rd$IBM_Y
+
+K_obs <- data.frame( quad = gd$IBM_quad_name, year = gd$IBM_year_name + 1, area = K_obs)
+R_obs <- data.frame( quad = rd$IBM_quad_name, year = rd$IBM_year_name + 1, area = R_obs)
+
+K_obs <- 
+  K_obs %>% 
+  group_by( quad, year ) %>% 
+  summarise(area = sum( area, na.rm = T)) 
+
+A_obs <- 
+  R_obs %>% 
+  left_join(K_obs, by = c('quad', 'year')) %>% 
+  ungroup() %>% 
+  gather( type, area, area.x, area.y) %>% 
+  group_by( quad, year) %>% 
+  summarise( area = sum(area, na.rm = T)) %>%
+  mutate( cover = 100*area/(100*100))
+
+
+A_obs <- 
+  X %>% 
+  full_join(A_obs , by = c('quad', 'year')) %>% 
+  arrange( quad, year ) %>%
+  ungroup( )%>% 
+  mutate( cover_fill = ifelse( is.na(cover), cover0, cover)) %>%
+  mutate( start_year = is.na(cover) & !is.na(cover0 )) %>% 
+  select( quad, year, cover_fill, start_year)
+
+
+A_obs <- 
+  expand.grid( year = seq( min( A_obs$year) - 1, max(A_obs$year) ) + 1, quad = unique( A_obs$quad )) %>% 
+  left_join(A_obs, by = c('quad', 'year')) 
+
+A_pred <- 
+  expand.grid( year = seq( min( A_pred$year) - 1, max(A_pred$year) ) + 1, quad = unique( A_pred$quad )) %>% 
+  left_join(A_pred, by = c('quad', 'year')) %>% 
+  left_join(quads, by = c('quad' = 'QuadName')) %>% 
+  mutate( era = cut(year, include.lowest = T, breaks = c(min(year), 1960, 2004, 2018), labels = c('early', 'mid', 'late'))) %>% 
+  select( quad, Treatment, year, era, cover, sim )
+
+A_pred_summary <- 
+  A_pred %>% 
+  group_by( year, quad, Treatment, era) %>% 
+  summarise( avg = mean(cover, na.rm = T), 
+             low25 = quantile(cover, 0.25, na.rm = T),
+             med50 = quantile(cover, 0.5, na.rm = T),
+             upper75 = quantile(cover, 0.75, na.rm = T)) %>% 
+  mutate( year_label = as.numeric( str_sub(year, 3, 5)) )
+
+int_breaks <- function(x, n = 5) pretty(x, n)[pretty(x, n) %% 1 == 0] 
+
+gg_pred <- 
+  A_pred_summary %>% 
+  filter( era == 'late') %>% 
+  group_by( quad ) %>% 
+  filter( !all(is.na(med50))) %>%
+  ungroup() %>% 
+  ggplot(aes( x = year_label, group = quad, color = Treatment)) + 
+  geom_line(aes( y = med50)) +
+  geom_ribbon(aes( ymin = low25, ymax = upper75, fill = Treatment), alpha = 0.1) + 
+  facet_wrap( ~ quad) + 
+  scale_x_continuous(breaks = int_breaks) + 
+  theme(axis.text.x = element_text(size = 5))
+
+pred_df <- 
+  A_pred_summary %>% 
+  left_join(
+    A_obs %>% 
+      rename('cover_obs' = cover_fill), 
+    by = c('quad', 'year')
   )
-  
-  print( 
-    ggplot( subset( plot_cover[[i]], Period == "Modern"), aes( x = year, y =  val, color = Treatment, linetype = stat)) +
-      geom_line() +
-      scale_color_manual(values = my_colors ) + 
-      ylim( ylims[[i]] ) + 
-      scale_x_continuous()
-  )
-  
-  dev.off()
-} 
 
-saveRDS(size , 'output/predicted_size.RDS')
-saveRDS(survives, 'output/predicted_survival.RDS')
+pred_df %>%  
+  filter( era == 'early') %>% 
+  filter( str_detect(quad, 'E1 Q1')) %>% 
+  group_by( quad ) %>% 
+  filter( !all(is.na(med50))) %>%
+  ungroup() %>% 
+  ggplot(aes( x = year_label, group = quad, color = Treatment)) + 
+  geom_ribbon(aes( ymin = low25, ymax = upper75, fill = Treatment), alpha = 0.5) + 
+  geom_point(aes( y = cover_obs)) + 
+  facet_wrap( ~ quad) + 
+  scale_x_continuous(breaks = int_breaks) + 
+  theme(axis.text.x = element_text(size = 5))
+
+
+

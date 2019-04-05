@@ -6,10 +6,15 @@ extract_data <- function(df){
   J <- ncol(Z)
   g <- as.numeric(factor(df$g))
   G <- length(unique(g))
+  
+  Y_attrib <- attributes(df$Y) # save Y center and scale for back transforming predictions
+
   Y <- as.numeric(df$Y)
   S <- as.numeric(df$survives)
   E <- df$E
   D <- ncol(E)
+  quad_name <- df$QuadName 
+  year_name <- df$year
   
   obs <- which(df$censored == 0)
   cens <- which(df$censored == 1)
@@ -53,11 +58,15 @@ split_df <- function(df, vr, hold){
     df_out <- split(df, df$g %in% hold)
   }
   names(df_out) <- c('train', 'hold')
+  
+  attr(df_out[[1]]$Y, "scaled:center") <- attr(df$Y, "scaled:center")
+  attr(df_out[[1]]$Y, "scaled:scale")  <- attr(df$Y, "scaled:scale")
+  
+  attr(df_out[[2]]$Y, "scaled:center") <- attr(df$Y, "scaled:center") 
+  attr(df_out[[2]]$Y, "scaled:scale")  <- attr(df$Y, "scaled:scale")
+  
   return(df_out)
 }
-
-
-
 
 
 make_dl <- function(df){ 

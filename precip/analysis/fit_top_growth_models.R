@@ -10,12 +10,24 @@ source('analysis/stan_data_functions.R')
 
 vr <- 'growth'
 
-# STAN pars -------------- 
-ncores <- 4 
-niter <- 2000 
-nchains <- 4 
-nthin <- 4
-# --------------------------
+testing <- T
+if( testing ){ 
+  
+  # STAN pars -------------- 
+  ncores <- 1 
+  niter <- 1000
+  nchains <- 1 
+  nthin <- 5
+  
+}else{
+  
+  # STAN pars -------------- 
+  ncores <- 4 
+  niter <- 2000
+  nchains <- 4 
+  nthin <- 5
+  
+}
 
 small <- -1               ### Designate a "small" size theshhold 
 formZ = as.formula(~ size)  ### Year effects design matrix 
@@ -42,8 +54,10 @@ model_list <-
   mutate( climate_window = ifelse(model == 'none', 'none', climate_window)) 
 
 # --------------------------------------------------------- #
-model_list$adapt_delta <- c(0.9, 0.9, 0.8, 0.8)
-model_list$left_cut <- c(-1, -1.3, -1.3, -1.3)
+nsp <- length(unique( model_list$spp))
+
+model_list$adapt_delta <- c(0.9, 0.9, 0.8, 0.8)[nsp]
+model_list$left_cut <- c(-1, -1.3, -1.3, -1.3)[nsp]
 model_list$formX <- list( formX  )
 
 formXNULL <- update(formX,  ~ . - C)
@@ -56,7 +70,6 @@ model_list <-
 
 i <- 1
 
-mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
 
 for(i in 1:nrow(model_list)){ 
   
@@ -101,7 +114,10 @@ for(i in 1:nrow(model_list)){
                        formE = formE,
                        formZ = formZ, 
                        vr = vr, 
-                       hold = hold )
+                       hold = hold, 
+                     IBM = 1)
+  
+  mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
   
   print( paste( '### ---- species', sp, '; climate window', window, '--------------------##'))
   
@@ -112,12 +128,12 @@ for(i in 1:nrow(model_list)){
                             chains = nchains,
                             iter = niter,
                             cores = ncores,
-                            pars = c('hold_log_lik', 'beta', 'Y_hat', 'hold_Y_hat', 'mu', 'hold_mu', 'hold_SSE'),
+                            pars = c('hold_log_lik', 'hold_SSE', 'beta', 'IBM_Y_hat'),
                             control = list(adapt_delta = ad),
                             thin = nthin, 
                             refresh = -1)
   
-  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_model_data.RDS'))
-  saveRDS(fit1, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_top_model.RDS'))
+  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_data.RDS'))
+  saveRDS(fit1, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_model.RDS'))
   
 }

@@ -8,12 +8,24 @@ source('analysis/stan_data_functions.R')
 
 vr <- 'survival'
 
-# STAN pars -------------- 
-ncores <- 4 
-niter <- 2000 
-nchains <- 4 
-nthin <- 4
-# --------------------------
+testing <- T
+if( testing ){ 
+  
+  # STAN pars -------------- 
+  ncores <- 1 
+  niter <- 1000
+  nchains <- 1 
+  nthin <- 5
+  
+}else{
+  
+  # STAN pars -------------- 
+  ncores <- 4 
+  niter <- 2000
+  nchains <- 4 
+  nthin <- 5
+  
+}
 
 small <- -1               ### Designate a "small" size theshhold 
 formZ = as.formula(~ size)  ### Year effects design matrix 
@@ -40,7 +52,8 @@ model_list <-
   mutate( climate_window = ifelse(model == 'none', 'none', climate_window)) 
 
 # --------------------------------------------------------- #
-model_list$adapt_delta <- c(0.98, 0.98, 0.8, 0.8)
+nsp <- length(unique( model_list$spp))
+model_list$adapt_delta <- c(0.98, 0.98, 0.8, 0.8)[nsp]
 model_list$formX <- list( formX  )
 
 formXNULL <- update(formX,  ~ . - C)
@@ -53,7 +66,6 @@ model_list <-
 
 i <- 1
 
-mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
 
 for(i in 1:nrow(model_list)){ 
   
@@ -71,7 +83,7 @@ for(i in 1:nrow(model_list)){
   dat$size <- scale( dat$logarea.t0 )
   dat$small <- as.numeric(dat$size < small)
   dat$Y    <- scale( dat$logarea.t1 )
-  dat$GroupP2 <- as.numeric( dat$Group == 'P2') # Paddock P2 is weird 
+  
   dat$W.intra  <- scale( dat[ , intra_comp])
   dat$W.inter <- scale( rowSums(dat$W[, -( grep ( intra_comp , colnames(dat$W))) ] ) ) # inter specific comp. 
   
@@ -93,8 +105,11 @@ for(i in 1:nrow(model_list)){
                      formC = formC,
                      formZ = formZ, 
                      vr = vr, 
-                     hold = hold )
-    
+                     hold = hold, 
+                     IBM = 1)
+  
+  mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
+  
   print( paste( '### ---- species', sp, '; climate window', window, '--------------------##'))
   print( paste( '### ---- working on model', i, 'of', nrow(model_list),' -------------###' ))
   
@@ -104,11 +119,11 @@ for(i in 1:nrow(model_list)){
                   iter = niter, 
                   cores = ncores,
                   thin = nthin, 
-                  pars = c('hold_log_lik', 'beta', 'mu', 'hold_mu', 'hold_SSE'), 
+                  pars = c('hold_log_lik', 'hold_SSE', 'beta', 'IBM_mu'), 
                   control = list(adapt_delta = ad), 
                   refresh = -1 )
   
-  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_model_data.RDS'))
-  saveRDS(fit, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_top_model.RDS'))
+  saveRDS(dl, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_data.RDS'))
+  saveRDS(fit, file = paste0( 'output/stan_fits/', sp, '_', vr, '_', window, '_model.RDS'))
   
 }

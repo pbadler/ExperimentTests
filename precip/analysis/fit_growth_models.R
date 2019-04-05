@@ -13,8 +13,8 @@ testing <- T
 if( testing ){ 
   
   k <- 2                      ### number of folds 
-  n_mods <- 2
-  species <- species[1:2]
+  n_mods <- 1
+  species <- species[1]
   
   # STAN pars -------------- 
   ncores <- 1 
@@ -57,12 +57,6 @@ climate_effects <- c('NULL', climate_effects)
 model_combos <- data.frame( climate_effects = climate_effects)
 
 model_combos <- model_combos %>% head( n_mods )
-
-# --------------------------------------------------------- #
-
-mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
-
-# ---------------------------------------------------------- # 
 
 total <- k*nrow(model_combos)*length(species)  ### Total number of models to fit 
 
@@ -124,7 +118,14 @@ for( s in 1:length(species)){
                          formZ = formZ, 
                          formE = formE,
                          vr = vr, 
-                         hold = hold )
+                         hold = hold, 
+                         IBM = 0)
+      
+      # --------------------------------------------------------- #
+      
+      mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '.stan')) # load stan model 
+      
+      # ---------------------------------------------------------- # 
       
       cat('\n\n')
       

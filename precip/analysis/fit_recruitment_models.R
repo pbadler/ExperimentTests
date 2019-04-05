@@ -13,8 +13,8 @@ testing <- T
 if( testing ){ 
 
   k <- 2                    ### number of folds 
-  n_mods <- 2
-  species <- species[1:2]
+  n_mods <- 1
+  species <- species[1]
   
   # STAN pars -------------- 
   ncores <- 1 
