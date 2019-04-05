@@ -153,7 +153,6 @@ A_obs <-
   mutate( start_year = is.na(cover) & !is.na(cover0 )) %>% 
   select( quad, year, cover_fill, start_year)
 
-
 A_obs <- 
   expand.grid( year = seq( min( A_obs$year) - 1, max(A_obs$year) ) + 1, quad = unique( A_obs$quad )) %>% 
   left_join(A_obs, by = c('quad', 'year')) 
@@ -169,25 +168,12 @@ A_pred_summary <-
   A_pred %>% 
   group_by( year, quad, Treatment, era) %>% 
   summarise( avg = mean(cover, na.rm = T), 
+             low5 = quantile(cover, 0.05, na.rm = T), 
              low25 = quantile(cover, 0.25, na.rm = T),
              med50 = quantile(cover, 0.5, na.rm = T),
-             upper75 = quantile(cover, 0.75, na.rm = T)) %>% 
+             upper75 = quantile(cover, 0.75, na.rm = T), 
+             upper95 = quantile(cover, 0.95, na.rm = T)) %>% 
   mutate( year_label = as.numeric( str_sub(year, 3, 5)) )
-
-int_breaks <- function(x, n = 5) pretty(x, n)[pretty(x, n) %% 1 == 0] 
-
-gg_pred <- 
-  A_pred_summary %>% 
-  filter( era == 'late') %>% 
-  group_by( quad ) %>% 
-  filter( !all(is.na(med50))) %>%
-  ungroup() %>% 
-  ggplot(aes( x = year_label, group = quad, color = Treatment)) + 
-  geom_line(aes( y = med50)) +
-  geom_ribbon(aes( ymin = low25, ymax = upper75, fill = Treatment), alpha = 0.1) + 
-  facet_wrap( ~ quad) + 
-  scale_x_continuous(breaks = int_breaks) + 
-  theme(axis.text.x = element_text(size = 5))
 
 pred_df <- 
   A_pred_summary %>% 
@@ -197,18 +183,5 @@ pred_df <-
     by = c('quad', 'year')
   )
 
-pred_df %>%  
-  filter( era == 'early') %>% 
-  filter( str_detect(quad, 'E1 Q1')) %>% 
-  group_by( quad ) %>% 
-  filter( !all(is.na(med50))) %>%
-  ungroup() %>% 
-  ggplot(aes( x = year_label, group = quad, color = Treatment)) + 
-  geom_ribbon(aes( ymin = low25, ymax = upper75, fill = Treatment), alpha = 0.5) + 
-  geom_point(aes( y = cover_obs)) + 
-  facet_wrap( ~ quad) + 
-  scale_x_continuous(breaks = int_breaks) + 
-  theme(axis.text.x = element_text(size = 5))
-
-
+saveRDS(pred_df, 'output/IBM_cover_predictions.RDS')
 
