@@ -2,10 +2,7 @@
 
 #rm(list = ls()) 
 
-library( ggplot2 ) 
-library(tidyr)
-library(dplyr)
-library(lme4)
+library( tidyverse) 
 library(zoo)
 library(MASS)
 

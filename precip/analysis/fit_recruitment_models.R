@@ -7,6 +7,9 @@ library(loo)
 source('analysis/stan_data_functions.R')
 
 vr <- 'recruitment'
+stan_model_file <- 'analysis/recruitment/recruitment.stan'
+
+
 species <- c('ARTR', 'HECO', 'POSE', 'PSSP')
 
 testing <- T
@@ -119,7 +122,7 @@ for( s in 1:length(species)){
       
       # --------------------------------------------------------- #
 
-      mod <- rstan::stan_model('analysis/recruitment/recruitment_new.stan')
+      mod <- rstan::stan_model(stan_model_file)
       
       # ---------------------------------------------------------- # 
       

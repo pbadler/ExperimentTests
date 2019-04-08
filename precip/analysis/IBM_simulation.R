@@ -25,7 +25,7 @@ fn_df <-
   mutate( bname = basename(as.character(fns))) %>% 
   separate( bname, c('spp', 'vr', 'window', 'type'), sep = '_') %>% 
   mutate( type = str_remove(type, pattern = '\\.RDS$' )) 
-  
+
 fn_df <- 
   fn_df %>% 
   group_by( spp, vr , type ) %>% 
@@ -115,47 +115,10 @@ A_pred <-
 
 #---------------------------------------------------------- # 
 # generate observed area per quad per year ---------------- # 
-X <- 
-  gdat %>% 
-  mutate( quad =  QuadName) %>% 
-  group_by( quad , year) %>% 
-  summarise( area = sum(exp(logarea.t0), na.rm = T))  %>%
-  mutate( cover0 = 100*area/(100*100))
 
-K_obs <- gd$IBM_Y
-K_obs <- exp( K_obs*Y_scale + Y_center)
-R_obs <- median(a)*rd$IBM_Y
+cover <- readRDS('data/temp_data/all_cover.RDS')
 
-K_obs <- data.frame( quad = gd$IBM_quad_name, year = gd$IBM_year_name + 1, area = K_obs)
-R_obs <- data.frame( quad = rd$IBM_quad_name, year = rd$IBM_year_name + 1, area = R_obs)
-
-K_obs <- 
-  K_obs %>% 
-  group_by( quad, year ) %>% 
-  summarise(area = sum( area, na.rm = T)) 
-
-A_obs <- 
-  R_obs %>% 
-  left_join(K_obs, by = c('quad', 'year')) %>% 
-  ungroup() %>% 
-  gather( type, area, area.x, area.y) %>% 
-  group_by( quad, year) %>% 
-  summarise( area = sum(area, na.rm = T)) %>%
-  mutate( cover = 100*area/(100*100))
-
-
-A_obs <- 
-  X %>% 
-  full_join(A_obs , by = c('quad', 'year')) %>% 
-  arrange( quad, year ) %>%
-  ungroup( )%>% 
-  mutate( cover_fill = ifelse( is.na(cover), cover0, cover)) %>%
-  mutate( start_year = is.na(cover) & !is.na(cover0 )) %>% 
-  select( quad, year, cover_fill, start_year)
-
-A_obs <- 
-  expand.grid( year = seq( min( A_obs$year) - 1, max(A_obs$year) ) + 1, quad = unique( A_obs$quad )) %>% 
-  left_join(A_obs, by = c('quad', 'year')) 
+# -------------- # 
 
 A_pred <- 
   expand.grid( year = seq( min( A_pred$year) - 1, max(A_pred$year) ) + 1, quad = unique( A_pred$quad )) %>% 

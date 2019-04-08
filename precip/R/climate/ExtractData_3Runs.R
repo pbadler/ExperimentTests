@@ -10,6 +10,30 @@ library(Rsoilwat31) # Install from GitHub :
 #                             system2(command = "git", args = "clone -b master --single-branch --recursive https://github.com/Burke-Lauenroth-Lab/Rsoilwat.git Rsoilwat")
 #                             tools::Rcmd(args = paste("INSTALL Rsoilwat"))
 
+
+# Steps for installing the old version of Rsoilwat needed to get this to work 
+#  In a Mac open a command line shell 
+#
+# 1. clone rSOILWAT2 git repo into a directory 
+#   >> git clone https://github.com/Burke-Lauenroth-Lab/Rsoilwat.git Rsoilwat_v31
+# 2. Then checkout the the last commit of the repo before it changed to the 
+#  the new package name.  
+#   >> cd Rsoilwat_v31 
+#   >> git checkout v1.2.4 
+# 3. Then check the README.md file for the old instructions 
+# 4. Then you need to initialize and update the submodules
+#   >> git submodule init
+#   >> git submodule update 
+# 5. Then you need to run the installer shell script 
+#   >> bash tools/TarAndInstall_31n.sh 
+# 6. Then back up outside of the directory 
+#   >> cd .. 
+# 7. Then install the package from the command line 
+#   >> R CMD INSTALL Rsoilwat_v31 
+# 
+# And that should work to get the package installed 
+
+
 #Step 1 - Set working directory
 dir.prj <- "data/SW_files/"
 

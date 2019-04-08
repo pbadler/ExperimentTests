@@ -8,6 +8,8 @@ source('analysis/stan_data_functions.R')
 
 vr <- 'recruitment'
 
+stan_model_file <- 'analysis/recruitment/recruitment.stan'
+
 testing <- T
 if( testing ){ 
   
@@ -106,7 +108,7 @@ for(i in 1:nrow(model_list)){
                                  hold = hold, 
                                  IBM = 1)
   
-  mod <- rstan::stan_model(paste0('analysis/', vr, '/', vr, '_new.stan')) # load stan model 
+  mod <- rstan::stan_model(stan_model_file) # load stan model 
   
   print( paste( '### ---- species', sp, '; climate window', window, '--------------------##'))
   print( paste( '### ---- working on model', i, 'of', nrow(model_list),' -------------###' ))
