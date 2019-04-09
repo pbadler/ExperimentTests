@@ -52,99 +52,82 @@ model_list <-
 )
 
 
-model_list <- model_list %>% ungroup()
+model_list <- 
+  model_list %>% 
+  group_by(spp) %>%  
+  mutate( IBM_ID = row_number()) 
+
+model_list %>% 
+  write_csv('output/IBM_model_table.csv')
 
 # loop species and climate / non-climate IBMs 
-
 i = 1
-spp <- species_list[i]
 
-gd <- readRDS( as.character(model_list$growth_data[1]))
-rd <- readRDS( as.character(model_list$recruitment_data[1]))
-sd <- readRDS( as.character(model_list$survival_data[1]))
-
-gfit <- readRDS( as.character(model_list$growth_model[1]))
-sfit <- readRDS( as.character(model_list$survival_model[1]))
-rfit <- readRDS( as.character(model_list$recruitment_model[1]))
-
-# generate predicted area per quad per year -------------- # 
-S <- binomial(link='logit')$linkinv(rstan::extract( sfit, 'IBM_mu')$IBM_mu)
-G <- rstan::extract( gfit, 'IBM_Y_hat')$IBM_Y_hat
-
-# Test that the predictions can be rescaled correctly to cm^2 #  
-Y_attrib <- gd$IBM_Y_attrib
-Y_center <- Y_attrib$`scaled:center`
-Y_scale <- Y_attrib$`scaled:scale`
-
-gdat <- readRDS('data/temp_data/ARTR_growth_survival_dataframe.RDS')
-
-Y1 <- (gd$IBM_Y*Y_scale + Y_center)
-Y2 <- gdat$logarea.t1
-all.equal(Y1, Y2)
-#------------------------------------------------------------ # 
-
-G <- exp( G*Y_scale + Y_center ) # tranform to cm scale
-R <- rstan::extract( rfit, 'IBM_Y_hat')$IBM_Y_hat
-
-a <- get_recruit_area(spp)
-
-K <- S*G  # survival by size 
-R <- R*median(a)
-
-K <- data.frame( quad = sd$IBM_quad_name, year = sd$IBM_year_name + 1, t(K))
-R <- data.frame( quad = rd$IBM_quad_name, year = rd$IBM_year_name + 1, t(R))
-
-K <- 
-  K %>% 
-  gather( sim, area, starts_with('X')) %>%
-  group_by( quad, year, sim) %>% 
-  summarise(area = sum( area ))
-
-R <- 
-  R %>% 
-  gather( sim, area, starts_with('X')) 
-
-A_pred <- 
-  R %>% 
-  left_join(K, by = c('quad', 'year', 'sim')) %>% 
-  ungroup() %>% 
-  gather( type, area, area.x, area.y) %>% 
-  group_by( quad, year, sim) %>% 
-  summarise( area = sum(area, na.rm = T)) %>%
-  mutate( cover = 100*area/(100*100))
-
-#---------------------------------------------------------- # 
-# generate observed area per quad per year ---------------- # 
-
-cover <- readRDS('data/temp_data/all_cover.RDS')
-
-# -------------- # 
-
-A_pred <- 
-  expand.grid( year = seq( min( A_pred$year) - 1, max(A_pred$year) ) + 1, quad = unique( A_pred$quad )) %>% 
-  left_join(A_pred, by = c('quad', 'year')) %>% 
-  left_join(quads, by = c('quad' = 'QuadName')) %>% 
-  mutate( era = cut(year, include.lowest = T, breaks = c(min(year), 1960, 2004, 2018), labels = c('early', 'mid', 'late'))) %>% 
-  select( quad, Treatment, year, era, cover, sim )
-
-A_pred_summary <- 
-  A_pred %>% 
-  group_by( year, quad, Treatment, era) %>% 
-  summarise( avg = mean(cover, na.rm = T), 
-             low5 = quantile(cover, 0.05, na.rm = T), 
-             low25 = quantile(cover, 0.25, na.rm = T),
-             med50 = quantile(cover, 0.5, na.rm = T),
-             upper75 = quantile(cover, 0.75, na.rm = T), 
-             upper95 = quantile(cover, 0.95, na.rm = T)) %>% 
-  mutate( year_label = as.numeric( str_sub(year, 3, 5)) )
-
-pred_df <- 
-  A_pred_summary %>% 
-  left_join(
-    A_obs %>% 
-      rename('cover_obs' = cover_fill), 
-    by = c('quad', 'year')
-  )
-
-saveRDS(pred_df, 'output/IBM_cover_predictions.RDS')
-
+for(i in 1:nrow( model_list)){ 
+  spp <- model_list$spp[i]
+  IBM_ID <- model_list$IBM_ID[i]
+  
+  gd <- readRDS( as.character(model_list$growth_data[i]))
+  rd <- readRDS( as.character(model_list$recruitment_data[i]))
+  sd <- readRDS( as.character(model_list$survival_data[i]))
+  
+  gfit <- readRDS( as.character(model_list$growth_model[i]))
+  sfit <- readRDS( as.character(model_list$survival_model[i]))
+  rfit <- readRDS( as.character(model_list$recruitment_model[i]))
+  
+  # generate predicted area per quad per year -------------- # 
+  S <- binomial(link='logit')$linkinv(rstan::extract( sfit, 'IBM_mu')$IBM_mu)
+  G <- rstan::extract( gfit, 'IBM_Y_hat')$IBM_Y_hat
+  
+  # Test that the predictions can be rescaled correctly to cm^2 #  
+  Y_attrib <- gd$IBM_Y_attrib
+  Y_center <- Y_attrib$`scaled:center`
+  Y_scale <- Y_attrib$`scaled:scale`
+  
+  gdat <- readRDS(paste0('data/temp_data/', spp, '_growth_survival_dataframe.RDS'))
+  
+  Y1 <- (gd$IBM_Y*Y_scale + Y_center)
+  Y2 <- gdat$logarea.t1
+  all.equal(Y1, Y2)
+  #------------------------------------------------------------ # 
+  
+  G <- exp( G*Y_scale + Y_center ) # tranform to cm scale
+  R <- rstan::extract( rfit, 'IBM_Y_hat')$IBM_Y_hat
+  
+  a <- get_recruit_area(spp)
+  
+  K <- S*G  # survival by size 
+  R <- R*median(a)
+  
+  K <- data.frame( quad = sd$IBM_quad_name, year = sd$IBM_year_name + 1, t(K))
+  R <- data.frame( quad = rd$IBM_quad_name, year = rd$IBM_year_name + 1, t(R))
+  
+  K <- 
+    K %>% 
+    gather( sim, area, starts_with('X')) %>%
+    group_by( quad, year, sim) %>% 
+    summarise(area = sum( area ))
+  
+  R <- 
+    R %>% 
+    gather( sim, area, starts_with('X')) 
+  
+  A_pred <- 
+    R %>% 
+    left_join(K, by = c('quad', 'year', 'sim')) %>% 
+    ungroup() %>% 
+    gather( type, area, area.x, area.y) %>% 
+    group_by( quad, year, sim) %>% 
+    summarise( area = sum(area, na.rm = T)) %>%
+    mutate( cover = 100*area/(100*100))
+  
+  A_pred <- 
+    expand.grid( year = seq( min( A_pred$year) - 1, max(A_pred$year) ) + 1, quad = unique( A_pred$quad )) %>% 
+    left_join(A_pred, by = c('quad', 'year')) %>% 
+    left_join(quads, by = c('quad' = 'QuadName')) %>% 
+    select( quad, Treatment, year, cover, sim )
+  
+  A_pred$spp <- spp 
+  
+  saveRDS(A_pred, paste0( 'output/IBM_', spp, '_model_', IBM_ID, '_cover_predictions.RDS'))
+}  
