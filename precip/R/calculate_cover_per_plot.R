@@ -11,11 +11,8 @@ species_codes <-   function(x){
   toupper( lapply( temp_split, paste0, collapse = ''))
 }
 
-my_path <- '~/Dropbox' # this should be set within the overall analysis script 
-root <- my_path
-
 sppList=c("ARTR","HECO","POSE","PSSP")
-dataDir <- file.path(root,"driversdata/data")
+dataDir <- file.path(my_path,"driversdata/data")
 
 old <- read_csv(file.path(dataDir, 'idaho/allrecords_cover.csv'))
 new <- read_csv(file.path(dataDir, 'idaho_modern/allrecords_cover.csv'))

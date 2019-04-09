@@ -6,7 +6,7 @@
 
 rm(list = ls() ) 
 
-setwd("~/Dropbox/projects/ExperimentTests/precip")
+setwd("~/Dropbox/projects/ExperimentTests/precip") # this is set automatically if you open this as an R project
 my_path <- "~/Dropbox" # this is needed to get to the driversdata directory
 
 library(rstan)
@@ -35,7 +35,7 @@ rm(list=setdiff(ls(), "my_path")) # clean up, but leave my_path
 
 # 2. Cover trends
 
-source('analysis/analysis/plot_cover.R')
+source('analysis/plot_cover.R')
 rm(list=setdiff(ls(), "my_path")) # clean up, but leave my_path
 
 # ----- Model Fitting/Selection ---------------------------------- # 
