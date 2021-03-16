@@ -13,7 +13,7 @@ startYr=2011
 # doGroup=1  # E1 exclosure
 L=100 # dimension of square quadrat (cm)
 expand=1  # 1 = 1x1 m^2, 2 = 2x2m^2, etc
-#sppList=c("ARTR","HECO","POSE","PSSP")
+sppList=c("ARTR","HECO","POSE","PSSP")
 myCol=c("black","gold1","blue","red")
 minSize=0.25
 maxSize=c(8000,500,500,500)
@@ -237,6 +237,6 @@ matplot(output2[,1],output2[,2:NCOL(output2)],type="o",
   col=myCol,lty=c(rep("solid",Nspp),c(rep("dashed",Nspp))),
   pch=c(rep(16,Nspp),rep(1,Nspp)),xlab="Year",ylab="Density")
 
-write.table(output1,paste0("ibm/",outfile1),row.names=F,sep=",")
-write.table(output2,paste0("ibm/",outfile2),row.names=F,sep=",")
+#write.table(output1,paste0("ibm/",outfile1),row.names=F,sep=",")
+#write.table(output2,paste0("ibm/",outfile2),row.names=F,sep=",")
 
